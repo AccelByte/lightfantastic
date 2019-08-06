@@ -5,7 +5,7 @@ Customer Facing Unity 3D Sample Game
 Using Unity Version 2019.1.13f
 
 ## Overview
-
+A sample implementation of our Unity SDK in a game that uses the breadth of the AccelByte features.
 
 ## Resources
 
