@@ -51,11 +51,13 @@ namespace ABRuntimeLogic
         private Text sessionId;
         #endregion
 
+        private AccelByteLobbyLogic abLobbyLogic;
         private UIElementHandler uiHandler;
 
 
         void Awake()
         {
+            abLobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
             uiHandler = gameObject.GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -198,7 +200,9 @@ namespace ABRuntimeLogic
                 {
                     //Progress to Main Menu
                     uiHandler.FadeLogin();
-                    //uiHandler.FadeMenu();
+                    uiHandler.FadePersistentFriends();
+                    uiHandler.FadeMenu();
+                    abLobbyLogic.ConnectToLobby();
                 }
             }
         }

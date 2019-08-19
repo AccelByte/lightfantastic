@@ -7,13 +7,21 @@ namespace UITools
 {
     public class UIElementHandler : MonoBehaviour
     {
-        #region
+        #region UIPanels
         [SerializeField]
         private CanvasGroup registerPanel;
         [SerializeField]
         private CanvasGroup verifyPanel;
         [SerializeField]
         private CanvasGroup loginPanel;
+        [SerializeField]
+        private CanvasGroup menuPanel;
+        [SerializeField]
+        private CanvasGroup persistentFriendsPanel;
+        [SerializeField]
+        private CanvasGroup friendPanel;
+        [SerializeField]
+        private CanvasGroup searchFriendPanel;
 
         private CanvasGroup currentPanel;
         #endregion
@@ -60,6 +68,54 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(verifyPanel));
+            }
+        }
+        
+        //Fade In/Out the Verify UI Panel
+        public void FadeMenu()
+        {
+            if (menuPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(menuPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(menuPanel));
+            }
+        }
+
+        public void FadePersistentFriends()
+        {
+            if (persistentFriendsPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(persistentFriendsPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(persistentFriendsPanel));
+            }
+        }
+
+        public void FadeFriends()
+        {
+            if (friendPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(friendPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(friendPanel));
+            }
+        }
+        public void FadeSearchFriends()
+        {
+            if (searchFriendPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(searchFriendPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(searchFriendPanel));
             }
         }
 
