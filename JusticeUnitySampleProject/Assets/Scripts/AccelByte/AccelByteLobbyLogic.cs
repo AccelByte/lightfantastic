@@ -79,7 +79,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public  void SendFriendRequest(string friendId, ResultCallback callback)
     {
-        abLobby.RequestFriend(friendId, OnSendFriendRequest);
+        abLobby.RequestFriend(friendId, callback);
     }
 
     private void AcceptFriendRequest()
@@ -88,7 +88,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.AcceptFriend("34a7490bd80a49888cc315e6db8c1e40", OnAcceptFriendRequest);
     }
 
-    private void GetIncomingFriendsRequest()
+    public void GetIncomingFriendsRequest()
     {
         abLobby.ListIncomingFriends(OnGetIncomingFriendsRequest);
     }
@@ -126,7 +126,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         for (int i = 0; i < friendScrollContent.childCount; i++)
         {
-            Destroy(friendScrollContent.GetChild(i));
+            Destroy(friendScrollContent.GetChild(i).gameObject);
         }
         if (result.IsError)
         {
@@ -177,22 +177,26 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void OnSendFriendRequest(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("SendFriendRequest failed:" + result.Error.Message);
-            Debug.Log("SendFriendRequest Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("Request sent successfully.");
-        }
-    }
+    //private void OnSendFriendRequest(Result result)
+    //{
+    //    if (result.IsError)
+    //    {
+    //        Debug.Log("SendFriendRequest failed:" + result.Error.Message);
+    //        Debug.Log("SendFriendRequest Response Code: " + result.Error.Code);
+    //        //Show Error Message
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Request sent successfully.");
+    //    }
+    //}
 
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
+        for (int i = 0; i < friendScrollContent.childCount; i++)
+        {
+            Destroy(friendScrollContent.GetChild(i).gameObject);
+        }
         if (result.IsError)
         {
             Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
@@ -207,6 +211,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             {
                 Debug.Log("Friend Id: " + friendId);
                 //Get person's name, picture, etc
+                Friends abInvites = result.Value;
+                for (int i = 0; i < abInvites.friendsId.Length; i++)
+                {
+                    Debug.Log("Friend ID: " + abFriendsStatus.friendsId[i]);
+                    FriendPrefab friend = Instantiate(friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
+                    friend.transform.SetParent(friendScrollContent, false);
+
+                    friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], string.Empty);
+                    
+                    friendScrollView.Rebuild(CanvasUpdate.Layout);
+                }
             }
         }
     }
@@ -248,7 +263,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         for (int i = 0; i < friendSearchScrollContent.childCount; i++)
         {
-            Destroy(friendSearchScrollContent.GetChild(i));
+            Destroy(friendSearchScrollContent.GetChild(i).gameObject);
         }
 
         if (result.IsError)
