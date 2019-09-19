@@ -36,7 +36,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns all profiles for specified users via callback when completed.</param>
         public void BatchGetGameProfiles(ICollection<string> userIds, ResultCallback<UserGameProfiles[]> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -44,7 +44,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.BatchGetGameProfiles(this.@namespace, userIds, this.session.SessionId, callback));
+                this.api.BatchGetGameProfiles(this.@namespace, userIds, this.session.AuthorizationToken, callback));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns all profiles of current user via callback when completed.</param>
         public void GetAllGameProfiles(ResultCallback<GameProfile[]> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -61,7 +61,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetAllGameProfiles(this.@namespace, this.session.UserId, this.session.SessionId, callback));
+                this.api.GetAllGameProfiles(this.@namespace, this.session.UserId, this.session.AuthorizationToken, callback));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns the created game profile via callback when completed.</param>
         public void CreateGameProfile(GameProfileRequest gameProfile, ResultCallback<GameProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -82,7 +82,7 @@ namespace AccelByte.Api
                 this.api.CreateGameProfile(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     gameProfile,
                     callback));
         }
@@ -94,7 +94,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a profile of current user via callback when completed. </param>
         public void GetGameProfile(string profileId, ResultCallback<GameProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -105,7 +105,7 @@ namespace AccelByte.Api
                 this.api.GetGameProfile(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     profileId,
                     callback));
         }
@@ -117,7 +117,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns updated game profile via callback when completed.</param>
         public void UpdateGameProfile(GameProfile gameProfile, ResultCallback<GameProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -128,7 +128,7 @@ namespace AccelByte.Api
                 this.api.UpdateGameProfile(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     gameProfile.profileId,
                     gameProfile,
                     callback));
@@ -143,7 +143,7 @@ namespace AccelByte.Api
         public void UpdateGameProfile(string profileId, GameProfileRequest gameProfile,
             ResultCallback<GameProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -154,7 +154,7 @@ namespace AccelByte.Api
                 this.api.UpdateGameProfile(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     profileId,
                     gameProfile,
                     callback));
@@ -167,7 +167,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns boolean status via callback when completed.</param>
         public void DeleteGameProfile(string profileId, ResultCallback callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -178,7 +178,7 @@ namespace AccelByte.Api
                 this.api.DeleteGameProfile(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     profileId,
                     callback));
         }
@@ -192,7 +192,7 @@ namespace AccelByte.Api
         public void GetGameProfileAttribute(string profileId, string attributeName,
             ResultCallback<GameProfileAttribute> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -203,7 +203,7 @@ namespace AccelByte.Api
                 this.api.GetGameProfileAtrribute(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     profileId,
                     attributeName,
                     callback));
@@ -218,7 +218,7 @@ namespace AccelByte.Api
         public void UpdateGameProfileAttribute(string profileId, GameProfileAttribute attribute,
             ResultCallback<GameProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -229,7 +229,7 @@ namespace AccelByte.Api
                 this.api.UpdateGameProfileAtrribute(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     profileId,
                     attribute,
                     callback));

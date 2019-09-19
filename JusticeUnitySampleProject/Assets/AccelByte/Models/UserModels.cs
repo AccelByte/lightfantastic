@@ -54,7 +54,7 @@ namespace AccelByte.Models
     {
         [DataMember] public AuthenticationType AuthType { get; set; }
         [DataMember] public string DisplayName { get; set; }
-        [DataMember(Name = "LoginId")] public string UserName { get; set; }
+        [DataMember(Name = "LoginId")] public string Username { get; set; }
         [DataMember] public string Password { get; set; }
         [DataMember] public string Country { get; set; }
         [DataMember] public string DateOfBirth { get; set; }

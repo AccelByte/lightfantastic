@@ -3,25 +3,21 @@
 // and restrictions contact your company contract manager.
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Net;
 using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
-using Utf8Json;
 
 namespace AccelByte.Api
 {
     internal class OrdersApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
 
-        internal OrdersApi(string baseUrl, UnityHttpWorker httpWorker)
+        internal OrdersApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
@@ -35,20 +31,21 @@ namespace AccelByte.Api
             Assert.IsNotNull(userAccessToken, "Can't create order! UserAccessToken parameter is null!");
             Assert.IsNotNull(orderRequest, "Can't create order! OrderRequest parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePost(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/orders")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .WithBody(JsonSerializer.Serialize(orderRequest))
-                .Accepts(MediaType.ApplicationJson);
+                .WithBody(orderRequest.ToUtf8Json())
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<OrderInfo>();
+            var result = response.TryParseJson<OrderInfo>();
             callback.Try(result);
         }
 
@@ -60,20 +57,21 @@ namespace AccelByte.Api
             Assert.IsNotNull(userAccessToken, "Can't get user's order! UserAccessToken parameter is null!");
             Assert.IsNotNull(orderNumber, "Can't get user's order! OrderNumber parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/orders/{orderNo}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithPathParam("orderNo", orderNumber)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<OrderInfo>();
+            var result = response.TryParseJson<OrderInfo>();
             callback.Try(result);
         }
 
@@ -84,7 +82,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(userId, "Can't get user's order! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user's order! UserAccessToken parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/orders")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
@@ -92,13 +90,14 @@ namespace AccelByte.Api
                 .WithQueryParam("page", page.ToString())
                 .WithQueryParam("size", size.ToString())
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<PagedOrderInfo>();
+            var result = response.TryParseJson<PagedOrderInfo>();
             callback.Try(result);
         }
 
@@ -110,20 +109,21 @@ namespace AccelByte.Api
             Assert.IsNotNull(userAccessToken, "Can't get user's order history! UserAccessToken parameter is null!");
             Assert.IsNotNull(orderNo, "Can't get user's order history! OrderNo parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/orders/{orderNo}/history")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithPathParam("orderNo", orderNo)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<OrderHistoryInfo[]>();
+            var result = response.TryParseJson<OrderHistoryInfo[]>();
             callback.Try(result);
         }
     }

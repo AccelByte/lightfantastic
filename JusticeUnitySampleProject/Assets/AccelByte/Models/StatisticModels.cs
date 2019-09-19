@@ -2,7 +2,6 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace AccelByte.Models
@@ -19,12 +18,6 @@ namespace AccelByte.Models
         TIED
     }
 
-    public enum StatisticType
-    {
-        INT,
-        FLOAT
-    }
-
     [DataContract]
     public class StatInfo
     {
@@ -39,9 +32,8 @@ namespace AccelByte.Models
         [DataMember] public bool setAsGlobal { get; set; }
         [DataMember] public StatisticSetBy setBy { get; set; }
         [DataMember] public string statCode { get; set; }
-        [DataMember] StatisticStatus status { get; set; }
-        [DataMember] StatisticType type { get; set; }
-        [DataMember] string updatedAt { get; set; }
+        [DataMember] public StatisticStatus status { get; set; }
+        [DataMember] public string updatedAt { get; set; }
     }
 
     [DataContract]
@@ -49,23 +41,46 @@ namespace AccelByte.Models
     {
         [DataMember] public string createdAt { get; set; }
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
-        [DataMember] string profileId { get; set; }
-        [DataMember] string statCode { get; set; }
-        [DataMember] string statName { get; set; }
-        [DataMember] string updatedAt { get; set; }
-        [DataMember] float value { get; set; }
+        [DataMember] public string profileId { get; set; }
+        [DataMember] public string statCode { get; set; }
+        [DataMember] public string statName { get; set; }
+        [DataMember] public string updatedAt { get; set; }
+        [DataMember] public float value { get; set; }
     }
 
     [DataContract]
     public class StatItemIncResult
     {
-        [DataMember] float currentValue { get; set; }
+        [DataMember] public float currentValue { get; set; }
     }
 
     [DataContract]
     public class StatItemPagingSlicedResult
     {
-        [DataMember] StatItemInfo[] data { get; set; }
-        [DataMember] Paging paging { get; set; }
+        [DataMember] public StatItemInfo[] data { get; set; }
+        [DataMember] public Paging paging { get; set; }
+    }
+
+    [DataContract]
+    public class BulkUserStatItemInc
+    {
+        [DataMember] public float inc { get; set; }
+        [DataMember] public string profileId { get; set; }
+        [DataMember] public string statCode { get; set; }
+    }
+
+    [DataContract]
+    public class BulkStatItemInc
+    {
+        [DataMember] public float inc { get; set; }
+        [DataMember] public string statCode { get; set; }
+    }
+
+    [DataContract]
+    public class BulkStatItemOperationResult
+    {
+        [DataMember] public StatItemIncResult detail { get; set; }
+        [DataMember] public string statCode { get; set; }
+        [DataMember] public bool success { get; set; }
     }
 }

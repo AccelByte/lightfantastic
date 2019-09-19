@@ -9,9 +9,11 @@ namespace AccelByte.Models
     [DataContract]
     public class Config
     {
-        [DataMember] public string BaseUrl { get; set; }
         [DataMember] public string PublisherNamespace { get; set; }
         [DataMember] public string Namespace { get; set; }
+        [DataMember] public bool UseSessionManagement { get; set; }
+        [DataMember] public string BaseUrl { get; set; }
+        [DataMember] public string LoginServerUrl { get; set; }
         [DataMember] public string IamServerUrl { get; set; }
         [DataMember] public string PlatformServerUrl { get; set; }
         [DataMember] public string BasicServerUrl { get; set; }
@@ -29,7 +31,7 @@ namespace AccelByte.Models
         /// </summary>
         public Config ShallowCopy()
         {
-            return (Config)MemberwiseClone();
+            return (Config) MemberwiseClone();
         }
 
         /// <summary>
@@ -37,7 +39,6 @@ namespace AccelByte.Models
         /// </summary>
         public void Expand()
         {
-
             if (this.BaseUrl != null)
             {
                 int index;
@@ -47,19 +48,21 @@ namespace AccelByte.Models
                 string httpsBaseUrl = "https://" + this.BaseUrl;
                 string wssBaseUrl = "wss://" + this.BaseUrl;
 
-                if (this.IamServerUrl == null) this.IamServerUrl = httpsBaseUrl+"/iam";
+                if (this.LoginServerUrl == null) this.LoginServerUrl = httpsBaseUrl;
 
-                if (this.PlatformServerUrl == null) this.PlatformServerUrl = httpsBaseUrl+"/platform";
+                if (this.IamServerUrl == null) this.IamServerUrl = httpsBaseUrl + "/iam";
 
-                if (this.BasicServerUrl == null) this.BasicServerUrl = httpsBaseUrl+"/basic";
+                if (this.PlatformServerUrl == null) this.PlatformServerUrl = httpsBaseUrl + "/platform";
 
-                if (this.LobbyServerUrl == null) this.LobbyServerUrl = wssBaseUrl+"/lobby/";
+                if (this.BasicServerUrl == null) this.BasicServerUrl = httpsBaseUrl + "/basic";
 
-                if (this.CloudStorageServerUrl == null) this.CloudStorageServerUrl = httpsBaseUrl+"/binary-store";
+                if (this.LobbyServerUrl == null) this.LobbyServerUrl = wssBaseUrl + "/lobby/";
 
-                if (this.TelemetryServerUrl == null) this.TelemetryServerUrl = httpsBaseUrl+"/telemetry";
+                if (this.CloudStorageServerUrl == null) this.CloudStorageServerUrl = httpsBaseUrl + "/binary-store";
 
-                if (this.GameProfileServerUrl == null) this.GameProfileServerUrl = httpsBaseUrl+"/soc-profile";
+                if (this.TelemetryServerUrl == null) this.TelemetryServerUrl = httpsBaseUrl + "/telemetry";
+
+                if (this.GameProfileServerUrl == null) this.GameProfileServerUrl = httpsBaseUrl + "/soc-profile";
 
                 if (this.StatisticServerUrl == null) this.StatisticServerUrl = httpsBaseUrl + "/statistic";
             }
@@ -81,19 +84,19 @@ namespace AccelByte.Models
                 string httpsBaseUrl = "https://" + this.BaseUrl;
                 string wssBaseUrl = "wss://" + this.BaseUrl;
 
-                if (this.IamServerUrl == httpsBaseUrl+"/iam") this.IamServerUrl = null;
+                if (this.IamServerUrl == httpsBaseUrl + "/iam") this.IamServerUrl = null;
 
-                if (this.PlatformServerUrl == httpsBaseUrl+"/platform") this.PlatformServerUrl = null;
+                if (this.PlatformServerUrl == httpsBaseUrl + "/platform") this.PlatformServerUrl = null;
 
-                if (this.BasicServerUrl == httpsBaseUrl+"/basic") this.BasicServerUrl = null;
+                if (this.BasicServerUrl == httpsBaseUrl + "/basic") this.BasicServerUrl = null;
 
-                if (this.LobbyServerUrl == wssBaseUrl+"/lobby/") this.LobbyServerUrl = null;
+                if (this.LobbyServerUrl == wssBaseUrl + "/lobby/") this.LobbyServerUrl = null;
 
-                if (this.CloudStorageServerUrl == httpsBaseUrl+"/binary-store") this.CloudStorageServerUrl = null;
+                if (this.CloudStorageServerUrl == httpsBaseUrl + "/binary-store") this.CloudStorageServerUrl = null;
 
-                if (this.TelemetryServerUrl == httpsBaseUrl+"/telemetry") this.TelemetryServerUrl = null;
+                if (this.TelemetryServerUrl == httpsBaseUrl + "/telemetry") this.TelemetryServerUrl = null;
 
-                if (this.GameProfileServerUrl == httpsBaseUrl+"/soc-profile") this.GameProfileServerUrl = null;
+                if (this.GameProfileServerUrl == httpsBaseUrl + "/soc-profile") this.GameProfileServerUrl = null;
 
                 if (this.StatisticServerUrl == httpsBaseUrl + "/statistic") this.StatisticServerUrl = null;
             }

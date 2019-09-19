@@ -57,8 +57,6 @@ namespace ABRuntimeLogic
 
         void Awake()
         {
-            abLobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
-            uiHandler = gameObject.GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
         }
@@ -90,7 +88,7 @@ namespace ABRuntimeLogic
         //Attempts to log the user in
         public void Login()
         {
-            abUser.LoginWithUserName(loginEmail.text, loginPassword.text, OnLogin);
+            abUser.LoginWithUsername(loginEmail.text, loginPassword.text, OnLogin);
         }
 
         //Gets the user's top level account details
@@ -189,7 +187,7 @@ namespace ABRuntimeLogic
             {
                 abUserData = result.Value;
                 userId.text = "UserId: " + abUserData.UserId;
-                sessionId.text = "SessionId: " + abUser.Session.SessionId;
+                sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
                 if (!abUserData.EmailVerified)
                 {

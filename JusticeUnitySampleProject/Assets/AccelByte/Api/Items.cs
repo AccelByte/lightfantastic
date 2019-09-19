@@ -44,7 +44,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(region, "Can't get item; Region parameter is null!");
             Assert.IsNotNull(language, "Can't get item; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -52,7 +52,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetItem(this.@namespace, this.session.SessionId, itemId, region, language, callback));
+                this.api.GetItem(this.@namespace, this.session.AuthorizationToken, itemId, region, language, callback));
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(criteria, "Can't get items by criteria; Criteria parameter is null!");
             Assert.IsNotNull(language, "Can't get items by criteria; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -79,7 +79,7 @@ namespace AccelByte.Api
             this.coroutineRunner.Run(
                 this.api.GetItemsByCriteria(
                     this.@namespace,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     region,
                     language,
                     criteria,

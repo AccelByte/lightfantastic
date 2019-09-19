@@ -6,19 +6,18 @@ using System.Collections;
 using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
 
 namespace AccelByte.Api
 {
     internal class WalletApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
 
-        internal WalletApi(string baseUrl, UnityHttpWorker httpWorker)
+        internal WalletApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
@@ -35,20 +34,21 @@ namespace AccelByte.Api
 
             Assert.IsNotNull(currencyCode, "Can't get wallet info by currency code! CurrencyCode parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/me/wallets/{currencyCode}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithPathParam("currencyCode", currencyCode)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<WalletInfo>();
+            var result = response.TryParseJson<WalletInfo>();
             callback.Try(result);
         }
     }

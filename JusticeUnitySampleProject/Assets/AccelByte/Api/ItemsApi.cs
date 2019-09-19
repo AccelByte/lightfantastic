@@ -5,23 +5,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
 
 namespace AccelByte.Api
 {
     internal class ItemsApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
 
-        internal ItemsApi(string baseUrl, UnityHttpWorker httpWorker)
+        internal ItemsApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
@@ -36,20 +34,22 @@ namespace AccelByte.Api
             Assert.IsNotNull(region, "Can't get item! Region parameter is null!");
             Assert.IsNotNull(language, "Can't get item! Language parameter is null!");
 
-            var builder = HttpRequestBuilder
-            .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/{itemId}/locale")
+            var request = HttpRequestBuilder
+                .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/{itemId}/locale")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("itemId", itemId)
                 .WithQueryParam("region", region)
                 .WithQueryParam("language", language)
                 .WithBearerAuth(accessToken)
-                .Accepts(MediaType.ApplicationJson);
-            UnityWebRequest request = null;
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            IHttpResponse response = null;
 
-            Result<Item> result = request.TryParseResponseJson<Item>();
-            
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<Item>();
+
             callback.Try(result);
         }
 
@@ -92,20 +92,21 @@ namespace AccelByte.Api
                 }
             }
 
-            var builder = HttpRequestBuilder
-            .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/byCriteria")
+            var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/byCriteria")
                 .WithPathParam("namespace", @namespace)
                 .WithQueryParam("region", region)
                 .WithQueryParam("language", language)
                 .WithQueries(queries)
                 .WithBearerAuth(accessToken)
-                .Accepts(MediaType.ApplicationJson);
-            UnityWebRequest request = null;
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            IHttpResponse response = null;
 
-            Result<PagedItems> result = request.TryParseResponseJson<PagedItems>();
-            
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<PagedItems>();
+
             callback.Try(result);
         }
     }

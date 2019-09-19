@@ -34,14 +34,14 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed.</param>
         public void GetUserProfile(ResultCallback<UserProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
                 return;
             }
 
-            this.coroutineRunner.Run(this.api.GetUserProfile(this.@namespace, this.session.SessionId, callback));
+            this.coroutineRunner.Run(this.api.GetUserProfile(this.@namespace, this.session.AuthorizationToken, callback));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed</param>
         public void CreateUserProfile(CreateUserProfileRequest createRequest, ResultCallback<UserProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -60,7 +60,7 @@ namespace AccelByte.Api
 
             this.coroutineRunner.Run(this.api.CreateUserProfile(
                         this.@namespace,
-                        this.session.SessionId,
+                        this.session.AuthorizationToken,
                         createRequest,
                         callback));
         }
@@ -72,7 +72,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed</param>
         public void UpdateUserProfile(UpdateUserProfileRequest updateRequest, ResultCallback<UserProfile> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -81,7 +81,7 @@ namespace AccelByte.Api
 
             this.coroutineRunner.Run(this.api.UpdateUserProfile(
                         this.@namespace,
-                        this.session.SessionId,
+                        this.session.AuthorizationToken,
                         updateRequest,
                         callback));
         }

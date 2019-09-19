@@ -16,7 +16,7 @@ namespace AccelByte.Api
         private readonly CategoriesApi api;
         private readonly CoroutineRunner coroutineRunner;
         private readonly ISession session;
-        private string @namespace;
+        private readonly string @namespace;
 
         internal Categories(CategoriesApi api, ISession session, string @namespace, CoroutineRunner coroutineRunner)
         {
@@ -42,7 +42,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(categoryPath, "Can't get category; CategoryPath parameter is null!");
             Assert.IsNotNull(language, "Can't get category; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -50,7 +50,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetCategory(this.@namespace, this.session.SessionId, categoryPath, language, callback));
+                this.api.GetCategory(this.@namespace, this.session.AuthorizationToken, categoryPath, language, callback));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace AccelByte.Api
         {
             Assert.IsNotNull(language, "Can't get root categories; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -70,7 +70,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetRootCategories(this.@namespace, this.session.SessionId, language, callback));
+                this.api.GetRootCategories(this.@namespace, this.session.AuthorizationToken, language, callback));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(categoryPath, "Can't get child categories; CategoryPath parameter is null!");
             Assert.IsNotNull(language, "Can't get child categories; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -92,12 +92,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetChildCategories(
-                    this.@namespace,
-                    this.session.SessionId,
-                    categoryPath,
-                    language,
-                    callback));
+                this.api.GetChildCategories(this.@namespace, this.session.AuthorizationToken, categoryPath, language, callback));
         }
 
         /// <summary>
@@ -112,7 +107,7 @@ namespace AccelByte.Api
             Assert.IsNotNull(categoryPath, "Can't get descendant categories; Language parameter is null!");
             Assert.IsNotNull(language, "Can't get descendant categories; Language parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -122,7 +117,7 @@ namespace AccelByte.Api
             this.coroutineRunner.Run(
                 this.api.GetDescendantCategories(
                     this.@namespace,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     categoryPath,
                     language,
                     callback));

@@ -16,8 +16,8 @@ namespace AccelByte.Api
         private readonly string clientId;
         private readonly CoroutineRunner coroutineRunner;
 
-        internal Telemetry(TelemetryApi api, ISession session, string @namespace, string clientId, CoroutineRunner 
-        coroutineRunner)
+        internal Telemetry(TelemetryApi api, ISession session, string @namespace, string clientId,
+            CoroutineRunner coroutineRunner)
         {
             Assert.IsNotNull(api, "api parameter can not be null.");
             Assert.IsNotNull(session, "session parameter can not be null");
@@ -42,27 +42,15 @@ namespace AccelByte.Api
         /// <typeparam name="T">A class that implements DataContract and DataMember attribute</typeparam>
         public void SendEvent<T>(TelemetryEventTag eventTag, T eventData, ResultCallback callback) where T : class
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
                 return;
             }
 
-            if (eventData is string)
-            {
-                callback.TryError(ErrorCode.InvalidRequest);
-
-                return;
-            }
-
-            this.coroutineRunner.Run(this.api.SendEvent(
-                        this.@namespace,
-                        this.clientId,
-                        this.session.UserId,
-                        eventTag,
-                        eventData,
-                        callback));
+            this.coroutineRunner.Run(
+                this.api.SendEvent(this.@namespace, this.clientId, this.session.UserId, eventTag, eventData, callback));
         }
     }
 }

@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using AccelByte.Core;
 using AccelByte.Models;
-using HybridWebSocket;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace AccelByte.Api
 {
@@ -103,25 +103,20 @@ namespace AccelByte.Api
         private readonly ISession session;
         private readonly CoroutineRunner coroutineRunner;
         private readonly object syncToken = new object();
-
-        private IWebSocket webSocket;
+        private readonly IWebSocket webSocket;
         private long id;
         private Coroutine maintainConnectionCoroutine;
 
         public event EventHandler OnRetryAttemptFailed;
 
-        internal Lobby(string websocketUrl, ISession session, CoroutineRunner coroutineRunner)
+        internal Lobby(string websocketUrl, IWebSocket webSocket, ISession session, CoroutineRunner coroutineRunner)
         {
-            this.websocketUrl = websocketUrl;
-            this.session = session;
-            this.coroutineRunner = coroutineRunner;
-        }
+            Assert.IsNotNull(webSocket);
+            Assert.IsNotNull(coroutineRunner);
 
-        internal Lobby(IWebSocket webSocket, CoroutineRunner coroutineRunner)
-        {
+            this.websocketUrl = websocketUrl;
             this.webSocket = webSocket;
-            this.webSocket.OnMessage += HandleOnMessage;
-            this.webSocket.OnClose += HandleOnClose;
+            this.session = session;
             this.coroutineRunner = coroutineRunner;
         }
 
@@ -138,28 +133,26 @@ namespace AccelByte.Api
         /// <summary>
         /// Lobby connection status
         /// </summary>
-        public bool IsConnected { get {return this.webSocket.ReadyState == WsState.Open; } }
+        public bool IsConnected {
+            get
+            {
+                return this.webSocket.ReadyState == WsState.Open;
+            } 
+        }
 
         /// <summary>
         /// Connect to lobby with current logged in user credentials.
         /// </summary>
         public void Connect()
         {
-            if (this.webSocket == null || this.webSocket.ReadyState == WsState.Closed || this.webSocket.ReadyState == WsState.Closing)
+            if (!this.session.IsValid())
             {
-                if (this.websocketUrl != null && this.session.IsAuthenticated)
-                {
-                    this.webSocket = new WebSocket(this.websocketUrl, this.session.SessionId);
-                    this.webSocket.OnMessage += HandleOnMessage;
-                    this.webSocket.OnClose += HandleOnClose;
-                }
-                else
-                {
-                    throw new Exception("Websocket can't be created because of invalid URL or access token.");
-                }
+                throw new Exception("Cannot connect to websocket because user is not logged in.");
             }
 
-            this.webSocket.Connect();
+            this.webSocket.OnMessage += HandleOnMessage;
+            this.webSocket.OnClose += HandleOnClose;
+            this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
             this.maintainConnectionCoroutine = this.coroutineRunner.Run(
                 MaintainConnection(Lobby.BackoffDelay, Lobby.MaxDelay, Lobby.TotalTimeout));
         }
@@ -203,7 +196,7 @@ namespace AccelByte.Api
                         while (this.webSocket.ReadyState == WsState.Closed &&
                             (DateTime.Now - firstClosedTime) < TimeSpan.FromSeconds(totalTimeout))
                         {
-                            this.webSocket.Connect();
+                            this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
                             float randomizedDelay = (float) (nextDelay + ((rand.NextDouble()*0.5) - 0.5));
 
                             yield return new WaitForSeconds(randomizedDelay / 1000f);
@@ -233,6 +226,9 @@ namespace AccelByte.Api
         /// </summary>
         public void Disconnect()
         {
+            this.webSocket.OnMessage -= HandleOnMessage;
+            this.webSocket.OnClose -= HandleOnClose;
+
             this.coroutineRunner.Stop(this.maintainConnectionCoroutine);
 
             if (this.webSocket != null)

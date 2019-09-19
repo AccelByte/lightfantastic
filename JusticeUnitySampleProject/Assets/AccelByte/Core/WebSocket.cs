@@ -2,63 +2,17 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using AOT;
-using UnityEngine;
+using AccelByte.Core;
 #if !UNITY_WEBGL || UNITY_EDITOR
 using WebSocketSharp;
-
 #endif
 
 namespace HybridWebSocket
 {
-    public delegate void OnOpenHandler();
-
-    public delegate void OnMessageHandler(string data);
-
-    public delegate void OnErrorHandler(string errorMsg);
-
-    public delegate void OnCloseHandler(ushort closeCode);
-
-    public enum WsState { Connecting, Open, Closing, Closed }
-
-    public enum WsCloseCode
-    {
-        /* Do NOT use NotSet - it's only purpose is to indicate that the close code cannot be parsed. */
-        NotSet = 0,
-        Normal = 1000,
-        Away = 1001,
-        ProtocolError = 1002,
-        UnsupportedData = 1003,
-        Undefined = 1004,
-        NoStatus = 1005,
-        Abnormal = 1006,
-        InvalidData = 1007,
-        PolicyViolation = 1008,
-        TooBig = 1009,
-        MandatoryExtension = 1010,
-        ServerError = 1011,
-        TlsHandshakeFailure = 1015
-    }
-
-    public interface IWebSocket
-    {
-        void Connect();
-        void Close(WsCloseCode code = WsCloseCode.Normal, string reason = null);
-        void Send(string message);
-
-        void Ping();
-        WsState ReadyState { get; }
-        event OnOpenHandler OnOpen;
-        event OnMessageHandler OnMessage;
-        event OnErrorHandler OnError;
-        event OnCloseHandler OnClose;
-    }
-
 #if UNITY_WEBGL && !UNITY_EDITOR
-    public static class JslibInterop
+    internal static class JslibInterop
     {
         private delegate void InteropOnOpenHandler(uint instanceId);
 
@@ -223,26 +177,31 @@ namespace HybridWebSocket
         }
     }
 
-    public class WebSocket : IWebSocket
+    internal class WebSocket : IWebSocket
     {
-        private readonly uint objectId;
-
-        public WebSocket(string url, string protocols)
-        {
-            this.objectId = JslibInterop.WsCreate(url, protocols);
-        }
+        private uint? objectId;
 
         ~WebSocket()
         {
-            JslibInterop.WsResetEvents(this.objectId);
-            JslibInterop.WsDestroy(this.objectId);
+            if (this.objectId.HasValue)
+            {
+                JslibInterop.WsResetEvents(this.objectId.Value);
+                JslibInterop.WsDestroy(this.objectId.Value);
+            }
+            
+            this.objectId = null;
         }
 
         public WsState ReadyState 
         { 
             get
             {
-                uint state = JslibInterop.WsGetReadyState(this.objectId);
+                if (!this.objectId.HasValue)
+                {
+                    return WsState.Closed;
+                }
+                
+                uint state = JslibInterop.WsGetReadyState(this.objectId.Value);
 
                 switch (state)
                 {
@@ -264,69 +223,171 @@ namespace HybridWebSocket
             }
         }
 
-        public void Connect()
+        public void Connect(string url, string protocols)
         {
-            JslibInterop.WsOpen(this.objectId);
+            this.objectId = JslibInterop.WsCreate(url, protocols);
+            JslibInterop.WsOpen(this.objectId.Value);
         }
 
         public void Close(WsCloseCode code = WsCloseCode.Normal, string reason = null)
         {
-            JslibInterop.WsClose(this.objectId, (int)code, reason);
+            if (this.objectId.HasValue)
+            {
+                JslibInterop.WsClose(this.objectId.Value, (int) code, reason);
+            }
         }
 
         public void Send(string message)
         {
-            JslibInterop.WsSend(this.objectId, message);
+            if (this.objectId.HasValue)
+            {
+                JslibInterop.WsSend(this.objectId.Value, message);
+            }
         }
 
         public void Ping()
         {
-            JslibInterop.WsSend(this.objectId, "");
+            if (this.objectId.HasValue)
+            {
+                JslibInterop.WsSend(this.objectId.Value, "");
+            }
         }
 
         public event OnOpenHandler OnOpen
         {
-            add { JslibInterop.WsAddOnOpen(this.objectId, value); }
-            remove { JslibInterop.WsRemoveOnOpen(this.objectId, value); }
+            add
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsAddOnOpen(this.objectId.Value, value);
+                }
+            }
+            remove
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsRemoveOnOpen(this.objectId.Value, value);
+                }
+            }
         }
 
         public event OnMessageHandler OnMessage
         {
-            add { JslibInterop.WsAddOnMessage(this.objectId, value); }
-            remove { JslibInterop.WsRemoveOnMessage(this.objectId, value); }
+            add
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsAddOnMessage(this.objectId.Value, value);
+                }
+            }
+            
+            remove
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsRemoveOnMessage(this.objectId.Value, value);
+                }
+            }
         }
 
         public event OnErrorHandler OnError
         {
-            add { JslibInterop.WsAddOnError(this.objectId, value); }
-            remove { JslibInterop.WsRemoveOnError(this.objectId, value); }
+            add
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsAddOnError(this.objectId.Value, value);
+                }
+            }
+            
+            remove
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsRemoveOnError(this.objectId.Value, value);
+                }
+            }
         }
 
         public event OnCloseHandler OnClose
         {
-            add { JslibInterop.WsAddOnClose(this.objectId, value); }
-            remove { JslibInterop.WsRemoveOnClose(this.objectId, value); }
+            add
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsAddOnClose(this.objectId.Value, value);
+                }
+            }
+            
+            remove
+            {
+                if (this.objectId.HasValue)
+                {
+                    JslibInterop.WsRemoveOnClose(this.objectId.Value, value);
+                }
+            }
         }
     }
 #else
 
-    public class WebSocket : IWebSocket
+    internal class WebSocket : IWebSocket
     {
-        private readonly WebSocketSharp.WebSocket webSocket;
+        private WebSocketSharp.WebSocket webSocket;
+        private bool IsProxySet = false;
+        private string ProxyUrl;
+        private string ProxyUsername;
+        private string ProxyPassword;
 
         public event OnOpenHandler OnOpen;
         public event OnMessageHandler OnMessage;
         public event OnErrorHandler OnError;
         public event OnCloseHandler OnClose;
 
-        public WebSocket(string url, string protocols = null)
-            : this(new WebSocketSharp.WebSocket(url, protocols)) { }
+        ~WebSocket()
+        {
+            this.OnOpen = null;
+            this.OnMessage = null;
+            this.OnError = null;
+            this.OnClose = null;
+        }
 
-        public WebSocket(WebSocketSharp.WebSocket webSocket)
+        public WsState ReadyState
+        {
+            get
+            {
+                if (this.webSocket == null)
+                {
+                    return WsState.Closed;
+                }
+                
+                switch (this.webSocket.ReadyState)
+                {
+                    case WebSocketState.Open: return WsState.Open;
+                    case WebSocketState.Closed: return WsState.Closed;
+                    case WebSocketState.Closing: return WsState.Closing;
+                    case WebSocketState.Connecting: return WsState.Connecting;
+                    default: throw new WebSocketInvalidStateException("Unrecognized websocket ready state.");
+                }
+            }
+        }
+
+        public void SetProxy(string url, string username, string password)
+        {
+            this.ProxyUrl = url;
+            this.ProxyUsername = username;
+            this.ProxyPassword = password;
+            this.IsProxySet = true;
+        }
+
+        public void Connect(string url, string protocols)
         {
             try
             {
-                this.webSocket = webSocket;
+                this.webSocket = new WebSocketSharp.WebSocket(url, protocols);
+                if (IsProxySet)
+                {
+                    this.webSocket.SetProxy(this.ProxyUrl, this.ProxyUsername, this.ProxyPassword);
+                }
 
                 this.webSocket.OnOpen += (sender, ev) =>
                 {
@@ -374,33 +435,7 @@ namespace HybridWebSocket
             {
                 throw new WebSocketUnexpectedException("Websocket cannot be created.", e);
             }
-        }
 
-        ~WebSocket()
-        {
-            this.OnOpen = null;
-            this.OnMessage = null;
-            this.OnError = null;
-            this.OnClose = null;
-        }
-
-        public WsState ReadyState
-        {
-            get
-            {
-                switch (this.webSocket.ReadyState)
-                {
-                    case WebSocketState.Open: return WsState.Open;
-                    case WebSocketState.Closed: return WsState.Closed;
-                    case WebSocketState.Closing: return WsState.Closing;
-                    case WebSocketState.Connecting: return WsState.Connecting;
-                    default: throw new WebSocketInvalidStateException("Unrecognized websocket ready state.");
-                }
-            }
-        }
-
-        public void Connect()
-        {
             switch (this.webSocket.ReadyState)
             {
             case WebSocketState.Open: return;
@@ -466,22 +501,4 @@ namespace HybridWebSocket
         }
     }
 #endif
-
-    public abstract class WebSocketException : Exception
-    {
-        public WebSocketException(string message, Exception innerException = null)
-            : base(message, innerException) { }
-    }
-
-    public class WebSocketUnexpectedException : WebSocketException
-    {
-        public WebSocketUnexpectedException(string message, Exception innerException = null)
-            : base(message, innerException) { }
-    }
-
-    public class WebSocketInvalidStateException : WebSocketException
-    {
-        public WebSocketInvalidStateException(string message, Exception innerException = null)
-            : base(message, innerException) { }
-    }
 }

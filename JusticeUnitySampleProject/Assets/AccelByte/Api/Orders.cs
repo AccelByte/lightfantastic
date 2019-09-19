@@ -40,7 +40,7 @@ namespace AccelByte.Api
         {
             Assert.IsNotNull(orderRequest, "Can't create order; OrderRequest parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -51,7 +51,7 @@ namespace AccelByte.Api
                 this.api.CreateOrder(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     orderRequest,
                     callback));
         }
@@ -65,7 +65,7 @@ namespace AccelByte.Api
         {
             Assert.IsNotNull(orderNo, "Can't get user's order; OrderNo parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -73,7 +73,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetUserOrder(this.@namespace, this.session.UserId, this.session.SessionId, orderNo, callback));
+                this.api.GetUserOrder(this.@namespace, this.session.UserId, this.session.AuthorizationToken, orderNo, callback));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains PagedOrderInfo via callback when completed</param>
         public void GetUserOrders(uint startPage, uint size, ResultCallback<PagedOrderInfo> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -95,7 +95,7 @@ namespace AccelByte.Api
                 this.api.GetUserOrders(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     startPage,
                     size,
                     callback));
@@ -111,7 +111,7 @@ namespace AccelByte.Api
         {
             Assert.IsNotNull(orderNo, "Can't get user's order history info; OrderNo parameter is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -122,7 +122,7 @@ namespace AccelByte.Api
                 this.api.GetUserOrderHistory(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     orderNo,
                     callback));
         }

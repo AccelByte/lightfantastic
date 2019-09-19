@@ -8,8 +8,8 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using AccelByte.Core;
 using AccelByte.Models;
+using HybridWebSocket;
 using UnityEngine;
-using Utf8Json;
 
 namespace AccelByte.Api
 {
@@ -36,7 +36,6 @@ namespace AccelByte.Api
 
         static AccelBytePlugin()
         {
-
 #if UNITY_WEBGL && !UNITY_EDITOR
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 new [] {
@@ -61,23 +60,46 @@ namespace AccelByte.Api
 
             string wholeJsonText = ((TextAsset) configFile).text;
 
-            AccelBytePlugin.config = JsonSerializer.Deserialize<Config>(wholeJsonText);
+            AccelBytePlugin.config = wholeJsonText.ToObject<Config>();
             AccelBytePlugin.config.Expand();
             AccelBytePlugin.coroutineRunner = new CoroutineRunner();
             AccelBytePlugin.httpWorker = new UnityHttpWorker();
-            var authApi = new AuthenticationApi(AccelBytePlugin.config.IamServerUrl, AccelBytePlugin.config.Namespace, AccelBytePlugin.httpWorker);
+            ILoginSession loginSession;
+
+            if (AccelBytePlugin.config.UseSessionManagement)
+            {
+                loginSession = new ManagedLoginSession(
+                    AccelBytePlugin.config.LoginServerUrl,
+                    AccelBytePlugin.config.Namespace,
+                    AccelBytePlugin.config.ClientId,
+                    AccelBytePlugin.config.ClientSecret,
+                    AccelBytePlugin.config.RedirectUri,
+                    AccelBytePlugin.httpWorker);
+            }
+            else
+            {
+                loginSession = new OauthLoginSession(
+                    AccelBytePlugin.config.LoginServerUrl,
+                    AccelBytePlugin.config.Namespace,
+                    AccelBytePlugin.config.ClientId,
+                    AccelBytePlugin.config.ClientSecret,
+                    AccelBytePlugin.config.RedirectUri,
+                    AccelBytePlugin.httpWorker,
+                    AccelBytePlugin.coroutineRunner);
+            }
+
 
             AccelBytePlugin.user = new User(
-                authApi,
-                new UserApi(AccelBytePlugin.config.IamServerUrl, AccelBytePlugin.config.Namespace, AccelBytePlugin.httpWorker),
-                AccelBytePlugin.config.Namespace,
-                AccelBytePlugin.config.ClientId,
-                AccelBytePlugin.config.ClientSecret,
-                AccelBytePlugin.config.RedirectUri,
-                AccelBytePlugin.coroutineRunner);
+                loginSession,
+                new UserAccount(
+                    AccelBytePlugin.config.IamServerUrl,
+                    AccelBytePlugin.config.Namespace,
+                    loginSession,
+                    AccelBytePlugin.httpWorker),
+                AccelBytePlugin.coroutineRunner,
+                AccelBytePlugin.config.UseSessionManagement);
 
             ServicePointManager.ServerCertificateValidationCallback = AccelBytePlugin.OnCertificateValidated;
-
         }
 
         private static bool OnCertificateValidated(object sender, X509Certificate certificate, X509Chain chain,
@@ -121,7 +143,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.userProfiles = new UserProfiles(
                     new UserProfilesApi(AccelBytePlugin.config.BasicServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -135,7 +157,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.categories = new Categories(
                     new CategoriesApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -149,7 +171,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.items = new Items(
                     new ItemsApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -163,7 +185,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.orders = new Orders(
                     new OrdersApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -177,13 +199,12 @@ namespace AccelByte.Api
                 AccelBytePlugin.wallet = new Wallet(
                     new WalletApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
             return AccelBytePlugin.wallet;
         }
-
 
         public static Telemetry GetTelemetry()
         {
@@ -192,7 +213,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.telemetry = new Telemetry(
                     new TelemetryApi(AccelBytePlugin.config.TelemetryServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.config.ClientId,
                     AccelBytePlugin.coroutineRunner);
             }
@@ -206,6 +227,7 @@ namespace AccelByte.Api
             {
                 AccelBytePlugin.lobby = new Lobby(
                     AccelBytePlugin.config.LobbyServerUrl,
+                    new WebSocket(),
                     AccelBytePlugin.user.Session,
                     AccelBytePlugin.coroutineRunner);
             }
@@ -220,7 +242,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.cloudStorage = new CloudStorage(
                     new CloudStorageApi(AccelBytePlugin.config.CloudStorageServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -234,7 +256,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.gameProfiles = new GameProfiles(
                     new GameProfilesApi(AccelBytePlugin.config.GameProfileServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -248,7 +270,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.entitlements = new Entitlements(
                     new EntitlementApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -262,7 +284,7 @@ namespace AccelByte.Api
                 AccelBytePlugin.statistic = new Statistic(
                     new StatisticApi(AccelBytePlugin.config.StatisticServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
-                    AccelBytePlugin.Config.Namespace,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 

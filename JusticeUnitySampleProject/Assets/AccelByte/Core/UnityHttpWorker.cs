@@ -1,3 +1,7 @@
+// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -8,22 +12,26 @@ using Random = System.Random;
 
 namespace AccelByte.Core
 {
-    public class UnityHttpWorker
+    public class UnityHttpWorker : IHttpWorker
     {
         public event Action<UnityWebRequest> ServerErrorOccured;
         
         public event Action<UnityWebRequest> NetworkErrorOccured;
 
-        public IEnumerator SendWithRetry(HttpRequestBuilder requestBuilder, Action<UnityWebRequest> requestDoneCallback, 
-            uint totalTimeout = 60000, uint initialDelay = 1000, uint maxDelay = 30000)
+        public UnityHttpWorker()
+        {
+            SetRetryParameters();
+        }
+
+        public IEnumerator SendRequest(IHttpRequest request, Action<IHttpResponse> requestDoneCallback)
         {
             var rand = new Random();
-            uint nextDelay = initialDelay;
+            uint nextDelay = this.initialDelay;
             var stopwatch = new Stopwatch();
-            UnityWebRequest request;
+            UnityWebRequest unityWebRequest;
             stopwatch.Start();
 
-            if (requestBuilder == null)
+            if (request == null)
             {
                 if (requestDoneCallback != null)
                 {
@@ -35,29 +43,29 @@ namespace AccelByte.Core
 
             do
             {
-                request = requestBuilder.ToUnityWebRequest();
-                request.timeout = (int)(totalTimeout / 1000);
+                unityWebRequest = request.GetUnityWebRequest();
+                unityWebRequest.timeout = (int)(this.totalTimeout / 1000);
 
-                yield return request.SendWebRequest();
+                yield return unityWebRequest.SendWebRequest();
 
-                if (request.isNetworkError)
+                if (unityWebRequest.isNetworkError)
                 {
                     Action<UnityWebRequest> netErrorHandler = this.NetworkErrorOccured;
 
                     if (netErrorHandler != null)
                     {
-                        netErrorHandler(request);
+                        netErrorHandler(unityWebRequest);
                     }
 
                     if (requestDoneCallback != null)
                     {
-                        requestDoneCallback(request);
+                        requestDoneCallback(unityWebRequest.GetHttpResponse());
                     }
                     
                     yield break;
                 }
 
-                switch ((HttpStatusCode) request.responseCode)
+                switch ((HttpStatusCode) unityWebRequest.responseCode)
                 {
                 case HttpStatusCode.InternalServerError:
                 case HttpStatusCode.BadGateway:
@@ -67,7 +75,7 @@ namespace AccelByte.Core
 
                     if (serverErrorHandler != null)
                     {
-                        serverErrorHandler(request);
+                        serverErrorHandler(unityWebRequest);
                     }
                     
                     float delaySeconds = (float) (0.75f * nextDelay + 0.5 * rand.NextDouble() * nextDelay) / 1000f;
@@ -76,9 +84,9 @@ namespace AccelByte.Core
 
                     nextDelay *= 2;
 
-                    if (nextDelay > maxDelay)
+                    if (nextDelay > this.maxDelay)
                     {
-                        nextDelay = maxDelay;
+                        nextDelay = this.maxDelay;
                     }
 
                     break;
@@ -86,18 +94,29 @@ namespace AccelByte.Core
                 default:
                     if (requestDoneCallback != null)
                     {
-                        requestDoneCallback(request);
+                        requestDoneCallback(unityWebRequest.GetHttpResponse());
                     }
                     
                     yield break;
                 }
             }
-            while (stopwatch.Elapsed < TimeSpan.FromMilliseconds(totalTimeout));
+            while (stopwatch.Elapsed < TimeSpan.FromMilliseconds(this.totalTimeout));
             
             if (requestDoneCallback != null)
             {
-                requestDoneCallback(request);
+                requestDoneCallback(unityWebRequest.GetHttpResponse());
             }
         }
+
+        public void SetRetryParameters(uint totalTimeout = 60000, uint initialDelay = 1000, uint maxDelay = 30000)
+        {
+            this.totalTimeout = totalTimeout;
+            this.initialDelay = initialDelay;
+            this.maxDelay = maxDelay;
+        }
+
+        private uint totalTimeout;
+        private uint initialDelay;
+        private uint maxDelay;
     }
 }

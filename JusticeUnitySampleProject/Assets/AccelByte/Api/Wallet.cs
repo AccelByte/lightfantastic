@@ -40,7 +40,7 @@ namespace AccelByte.Api
         {
             Assert.IsNotNull(currencyCode, "Can't get wallet info by currency code; CurrencyCode is null!");
 
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -50,7 +50,7 @@ namespace AccelByte.Api
             this.coroutineRunner.Run(this.api.GetWalletInfoByCurrencyCode(
                         this.@namespace,
                         this.session.UserId,
-                        this.session.SessionId,
+                        this.session.AuthorizationToken,
                         currencyCode,
                         callback));
         }

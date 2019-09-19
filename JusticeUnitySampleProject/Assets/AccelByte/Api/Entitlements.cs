@@ -37,7 +37,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void GetUserEntitlements(int offset, int limit, ResultCallback<PagedEntitlements> callback)
         {
-            if (!this.session.IsAuthenticated)
+            if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
 
@@ -48,7 +48,7 @@ namespace AccelByte.Api
                 this.api.GetUserEntitlements(
                     this.@namespace,
                     this.session.UserId,
-                    this.session.SessionId,
+                    this.session.AuthorizationToken,
                     offset,
                     limit,
                     callback));

@@ -21,6 +21,12 @@ namespace AccelByte.Api
             set { AccelByteSettings.Instance.config.PublisherNamespace = value; }
         }
 
+        public static bool UseSessionManagement
+        {
+            get { return AccelByteSettings.Instance.config.UseSessionManagement; }
+            set { AccelByteSettings.Instance.config.UseSessionManagement = value; }
+        }
+
         public static string Namespace
         {
             get { return AccelByteSettings.Instance.config.Namespace; }
@@ -31,6 +37,12 @@ namespace AccelByte.Api
         {
             get { return AccelByteSettings.Instance.config.BaseUrl; }
             set { AccelByteSettings.Instance.config.BaseUrl = value; }
+        }
+
+        public static string LoginServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.LoginServerUrl; }
+            set { AccelByteSettings.Instance.config.LoginServerUrl = value; }
         }
 
         public static string IamServerUrl

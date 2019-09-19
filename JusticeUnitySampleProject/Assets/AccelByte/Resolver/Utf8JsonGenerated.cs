@@ -6,7 +6,6 @@
 namespace Utf8Json.Resolvers
 {
     using System;
-    using Utf8Json;
 
     public class GeneratedResolver : global::Utf8Json.IJsonFormatterResolver
     {
@@ -244,7 +243,6 @@ namespace Utf8Json.Resolvers
 
 namespace Utf8Json.Formatters.AccelByte.Models
 {
-    using System;
     using Utf8Json;
 
 
@@ -9175,7 +9173,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.DisplayName);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteString(value.UserName);
+            writer.WriteString(value.Username);
             writer.WriteRaw(this.____stringByteKeys[3]);
             writer.WriteString(value.Password);
             
@@ -9241,7 +9239,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var ____result = new global::AccelByte.Models.RegisterUserRequest();
             if(__AuthType__b__) ____result.AuthType = __AuthType__;
             if(__DisplayName__b__) ____result.DisplayName = __DisplayName__;
-            if(__UserName__b__) ____result.UserName = __UserName__;
+            if(__UserName__b__) ____result.Username = __UserName__;
             if(__Password__b__) ____result.Password = __Password__;
 
             return ____result;

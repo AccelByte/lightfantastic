@@ -4,25 +4,23 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
 
 namespace AccelByte.Api
 {
     public class CloudStorageApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
 
-        internal CloudStorageApi(string baseUrl, UnityHttpWorker httpWorker)
+        internal CloudStorageApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
         }
@@ -34,19 +32,20 @@ namespace AccelByte.Api
             Assert.IsNotNull(userId, "Can't get all slots! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get all slots! accessToken parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithBearerAuth(accessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<Slot[]>();
+            var result = response.TryParseJson<Slot[]>();
             callback.Try(result);
         }
 
@@ -58,30 +57,31 @@ namespace AccelByte.Api
             Assert.IsNotNull(accessToken, "Can't get the slot! accessToken parameter is null!");
             Assert.IsNotNull(slotId, "Can't get the slot! slotId parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots/{slotId}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithPathParam("slotId", slotId)
                 .WithBearerAuth(accessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.OctedStream);
+                .Accepts(MediaType.OctedStream)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             Result<byte[]> result;
 
-            switch ((HttpStatusCode) request.responseCode)
+            switch ((HttpStatusCode) response.Code)
             {
             case HttpStatusCode.OK:
-                result = Result<byte[]>.CreateOk(request.downloadHandler.data);
+                result = Result<byte[]>.CreateOk(response.BodyBytes);
 
                 break;
 
             default:
-                result = Result<byte[]>.CreateError((ErrorCode) request.responseCode);
+                result = Result<byte[]>.CreateError((ErrorCode) response.Code);
 
                 break;
             }
@@ -107,9 +107,9 @@ namespace AccelByte.Api
             }
 
             FormDataContent formDataContent = new FormDataContent();
-            formDataContent.Add(data, filename);
+            formDataContent.Add(filename, data);
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePost(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
@@ -117,13 +117,14 @@ namespace AccelByte.Api
                 .Accepts(MediaType.ApplicationJson)
                 .WithBearerAuth(accessToken)
                 .WithContentType(formDataContent.GetMediaType())
-                .WithBody(formDataContent);
+                .WithBody(formDataContent)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<Slot>();
+            var result = response.TryParseJson<Slot>();
             callback.Try(result);
         }
 
@@ -146,9 +147,9 @@ namespace AccelByte.Api
             }
 
             FormDataContent formDataContent = new FormDataContent();
-            formDataContent.Add(data, filename);
+            formDataContent.Add(filename, data);
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePut(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots/{slotId}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
@@ -157,13 +158,14 @@ namespace AccelByte.Api
                 .Accepts(MediaType.ApplicationJson)
                 .WithBearerAuth(accessToken)
                 .WithContentType(formDataContent.GetMediaType())
-                .WithBody(formDataContent);
+                .WithBody(formDataContent)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<Slot>();
+            var result = response.TryParseJson<Slot>();
             callback.Try(result);
         }
 
@@ -178,7 +180,7 @@ namespace AccelByte.Api
             FormDataContent customAttribute = new FormDataContent();
             customAttribute.Add("customAttribute", customMetadata);
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePut(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots/{slotId}/metadata")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
@@ -188,13 +190,14 @@ namespace AccelByte.Api
                 .Accepts(MediaType.ApplicationJson)
                 .WithBearerAuth(accessToken)
                 .WithContentType(customAttribute.GetMediaType())
-                .WithBody(customAttribute);
+                .WithBody(customAttribute)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<Slot>();
+            var result = response.TryParseJson<Slot>();
             callback.Try(result);
         }
 
@@ -206,19 +209,20 @@ namespace AccelByte.Api
             Assert.IsNotNull(accessToken, "Can't create a slot! accessToken parameter is null!");
             Assert.IsNotNull(slotId, "Can't create a slot! fileSection parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateDelete(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/slots/{slotId}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("userId", userId)
                 .WithPathParam("slotId", slotId)
                 .Accepts(MediaType.ApplicationJson)
-                .WithBearerAuth(accessToken);
+                .WithBearerAuth(accessToken)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponse();
+            var result = response.TryParse();
             callback.Try(result);
         }
     }

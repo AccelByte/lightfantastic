@@ -6,20 +6,18 @@ using System.Collections;
 using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
-using Utf8Json;
 
 namespace AccelByte.Api
 {
     internal class UserProfilesApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
 
-        internal UserProfilesApi(string baseUrl, UnityHttpWorker httpWorker)
+        internal UserProfilesApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
@@ -31,17 +29,18 @@ namespace AccelByte.Api
             Assert.IsNotNull(@namespace, "Can't get user profile! Namespace parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user profile! UserAccessToken parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/me/profiles")
                 .WithPathParam("namespace", @namespace)
                 .WithBearerAuth(userAccessToken)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<UserProfile>();
+            var result = response.TryParseJson<UserProfile>();
 
             callback.Try(result);
         }
@@ -56,19 +55,20 @@ namespace AccelByte.Api
                 createRequest.language,
                 "Can't create user profile! CreateRequest.language parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePost(this.baseUrl + "/public/namespaces/{namespace}/users/me/profiles")
                 .WithPathParam("namespace", @namespace)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
                 .Accepts(MediaType.ApplicationJson)
-                .WithBody(JsonSerializer.Serialize(createRequest));
+                .WithBody(createRequest.ToUtf8Json())
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<UserProfile>();
+            var result = response.TryParseJson<UserProfile>();
 
             callback.Try(result);
         }
@@ -80,19 +80,20 @@ namespace AccelByte.Api
             Assert.IsNotNull(userAccessToken, "Can't update user profile! UserAccessToken parameter is null!");
             Assert.IsNotNull(updateRequest, "Can't update user profile! ProfileRequest parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePut(this.baseUrl + "/public/namespaces/{namespace}/users/me/profiles")
                 .WithPathParam("namespace", @namespace)
                 .WithBearerAuth(userAccessToken)
                 .WithContentType(MediaType.ApplicationJson)
                 .Accepts(MediaType.ApplicationJson)
-                .WithBody(JsonSerializer.Serialize(updateRequest));
+                .WithBody(updateRequest.ToUtf8Json())
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<UserProfile>();
+            var result = response.TryParseJson<UserProfile>();
             callback.Try(result);
         }
 
@@ -103,18 +104,19 @@ namespace AccelByte.Api
             Assert.IsNotNull(userId, "Can't get user profile public info! userId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user profile public info! UserAccessToken parameter is null!");
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/users/{user_id}/profiles/public")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("user_id", userId)
                 .WithBearerAuth(userAccessToken)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<PublicUserProfile>();
+            var result = response.TryParseJson<PublicUserProfile>();
             callback.Try(result);
         }
 
@@ -128,18 +130,19 @@ namespace AccelByte.Api
 
             Assert.IsNotNull(userIds, "Can't get user profile info by ids! userIds parameter is null!");
 
-            var builder = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/profiles/public")
+            var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/profiles/public")
                 .WithPathParam("namespace", @namespace)
                 .WithBearerAuth(userAccessToken)
                 .Accepts(MediaType.ApplicationJson)
                 .WithContentType(MediaType.ApplicationJson)
-                .WithQueryParam("userIds", string.Join(",", userIds));
+                .WithQueryParam("userIds", string.Join(",", userIds))
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<PublicUserProfile[]>();
+            var result = response.TryParseJson<PublicUserProfile[]>();
             callback.Try(result);
         }
 
@@ -148,16 +151,17 @@ namespace AccelByte.Api
             Assert.IsNotNull(@namespace, "Can't get time zones! Namespace parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get time zones! UserAccessToken parameter is null!");
 
-            var builder = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/misc/timezones")
+            var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/misc/timezones")
                 .WithPathParam("namespace", @namespace)
                 .WithBearerAuth(userAccessToken)
-                .Accepts(MediaType.ApplicationJson);
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponseJson<string[]>();
+            var result = response.TryParseJson<string[]>();
             callback.Try(result);
         }
     }

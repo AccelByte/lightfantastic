@@ -62,6 +62,9 @@ namespace AccelByte.Core
         UserWalletDoesNotExist = 3543,
         WalletAlreadyExist = 3571,
 
+        //AccelByte Statistic error codes
+        StatisticNotFound = 12241,
+
         //Client side error codes
         GeneralClientError = 14000,
         ErrorFromException = 14001,

@@ -4,27 +4,24 @@
 
 using System;
 using System.Collections;
-using System.Net;
 using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Networking;
-using Utf8Json;
 
 namespace AccelByte.Api
 {
     internal class TelemetryApi
     {
         private readonly string baseUrl;
-        private readonly UnityHttpWorker httpWorker;
+        private readonly IHttpWorker httpWorker;
         private readonly uint agentType;
         private readonly string deviceId;
 
-        public TelemetryApi(string baseUrl, UnityHttpWorker httpWorker)
+        public TelemetryApi(string baseUrl, IHttpWorker httpWorker)
         {
-            Assert.IsNotNull(baseUrl, "Creating "+ GetType().Name + " failed. Parameter baseUrl is null");
-            Assert.IsNotNull(httpWorker, "Creating "+ GetType().Name + " failed. Parameter httpWorker is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+            Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
@@ -103,10 +100,6 @@ namespace AccelByte.Api
         public IEnumerator SendEvent<T>(string @namespace, string clientId, string userID, TelemetryEventTag eventTag,
             T eventData, ResultCallback callback) where T : class
         {
-            Assert.IsTrue(
-                typeof(T).IsSerializable,
-                "Event data of type " + typeof(T) + " is not serializable. Try add [Serializable] attribute.");
-
             string nowTime = DateTime.UtcNow.ToString("O");
             string strEventData;
 
@@ -116,7 +109,7 @@ namespace AccelByte.Api
             }
             else
             {
-                strEventData = JsonSerializer.ToJsonString(eventData);
+                strEventData = eventData.ToJsonString();
             }
 
             string jsonString = string.Format(
@@ -147,7 +140,7 @@ namespace AccelByte.Api
                 eventTag.UX,
                 userID);
 
-            var builder = HttpRequestBuilder
+            var request = HttpRequestBuilder
                 .CreatePost(
                     this.baseUrl +
                     "/public/namespaces/{namespace}/events/gameclient/{appID}/{eventType}/{eventLevel}/{eventID}")
@@ -157,13 +150,14 @@ namespace AccelByte.Api
                 .WithPathParam("eventLevel", eventTag.Level.ToString())
                 .WithPathParam("eventID", eventTag.Id.ToString())
                 .WithContentType(MediaType.ApplicationJson)
-                .WithBody(jsonString);
+                .WithBody(jsonString)
+                .GetResult();
 
-            UnityWebRequest request = null;
+            IHttpResponse response = null;
 
-            yield return this.httpWorker.SendWithRetry(builder, req => request = req);
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = request.TryParseResponse();
+            var result = response.TryParse();
             callback.Try(result);
         }
     }

@@ -34,14 +34,6 @@ namespace AccelByte.Core
             }
         }
 
-        public static void TryError<T>(this ResultCallback<T> callback, Error error)
-        {
-            if (callback != null)
-            {
-                callback(Result<T>.CreateError(error));
-            }
-        }
-
         public static void Try(this ResultCallback callback, Result param)
         {
             if (callback != null)
@@ -58,11 +50,11 @@ namespace AccelByte.Core
             }
         }
 
-        public static void TryError(this ResultCallback callback, ErrorCode errorCode)
+        public static void TryError(this ResultCallback callback, ErrorCode errorCode, string errorMessage = null)
         {
             if (callback != null)
             {
-                callback(Result.CreateError(errorCode));
+                callback(Result.CreateError(errorCode, errorMessage));
             }
         }
 
