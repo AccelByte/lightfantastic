@@ -57,6 +57,8 @@ namespace ABRuntimeLogic
 
         void Awake()
         {
+            abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
+            uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
         }
@@ -118,9 +120,9 @@ namespace ABRuntimeLogic
             {
                 Debug.Log("Register successful.");
                 abUserData = result.Value;
+                abUser.LoginWithUsername(registerEmail.text, registerPassword.text, OnLogin);
                 //Show Verification Panel
                 uiHandler.FadeRegister();
-                uiHandler.FadeVerify();
             }
         }
 
@@ -137,7 +139,9 @@ namespace ABRuntimeLogic
             {
                 Debug.Log("Verification successful.");
                 uiHandler.FadeVerify();
-                //FadeInMenu
+                uiHandler.FadePersistentFriends();
+                uiHandler.FadeMenu();
+                abLobbyLogic.ConnectToLobby();
             }
         }
 
@@ -191,7 +195,6 @@ namespace ABRuntimeLogic
 
                 if (!abUserData.EmailVerified)
                 {
-                    uiHandler.FadeLogin();
                     uiHandler.FadeVerify();
                 }
                 else
@@ -217,6 +220,8 @@ namespace ABRuntimeLogic
             {
                 uiHandler.FadeCurrent();
                 uiHandler.FadeLogin();
+                loginEmail.text = string.Empty;
+                loginPassword.text = string.Empty;
             }
         }
         #endregion

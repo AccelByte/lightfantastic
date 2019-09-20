@@ -205,7 +205,6 @@ GameObject:
   m_Component:
   - component: {fileID: 15925290}
   - component: {fileID: 15925289}
-  - component: {fileID: 15925288}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -213,30 +212,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &15925288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 15925287}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03f62455f26600c4e9af36d0807b2c8c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  registerEmail: {fileID: 0}
-  registerDisplayName: {fileID: 0}
-  registerPassword: {fileID: 0}
-  registerConfirmPassword: {fileID: 0}
-  registerDobDay: {fileID: 0}
-  registerDobMonth: {fileID: 0}
-  registerDobYear: {fileID: 0}
-  verificationCode: {fileID: 0}
-  loginEmail: {fileID: 0}
-  loginPassword: {fileID: 0}
-  userId: {fileID: 0}
-  sessionId: {fileID: 0}
 --- !u!108 &15925289
 Light:
   m_ObjectHideFlags: 0
@@ -8506,6 +8481,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2006644173}
+        m_MethodName: LoadFriendsList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1267008141
@@ -11470,7 +11456,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1575711604}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2006644169}
+        m_MethodName: Logout
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1575711604
@@ -12536,6 +12533,17 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2006644173}
         m_MethodName: GetIncomingFriendsRequest
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2006644173}
+        m_MethodName: GetOutgoingFriendsRequest
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15247,6 +15255,10 @@ MonoBehaviour:
   friendSearchScrollView: {fileID: 2134149037}
   friendSearchScrollContent: {fileID: 19474879}
   friendSearchPrefab: {fileID: 352853018492665128, guid: ca2cae755f6ad99459a9eab88a09fc8d,
+    type: 3}
+  friendInvitePrefab: {fileID: 3792861767804642571, guid: 5c674dd238b7cf544be94e54de34e15f,
+    type: 3}
+  sentInvitePrefab: {fileID: 3792861767804642571, guid: 0bd1503d2035c6c49bc018e837cc43f7,
     type: 3}
 --- !u!114 &2006644174
 MonoBehaviour:
