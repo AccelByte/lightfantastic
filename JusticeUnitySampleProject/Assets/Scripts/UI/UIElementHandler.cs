@@ -22,6 +22,10 @@ namespace UITools
         private CanvasGroup friendPanel;
         [SerializeField]
         private CanvasGroup searchFriendPanel;
+        [SerializeField]
+        private CanvasGroup matchmakingPanel;
+        [SerializeField]
+        private CanvasGroup multiplayerOptionPanel;
 
         private CanvasGroup currentPanel;
         #endregion
@@ -116,6 +120,30 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(searchFriendPanel));
+            }
+        }
+
+        public void FadeMatchmaking()
+        {
+            if (matchmakingPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(matchmakingPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(matchmakingPanel));
+            }
+        }
+
+        public void FadeMultiplayerOption()
+        {
+            if (multiplayerOptionPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(multiplayerOptionPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(multiplayerOptionPanel));
             }
         }
 

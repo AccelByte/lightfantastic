@@ -11,6 +11,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
 {
     Lobby abLobby;
     FriendsStatus abFriendsStatus;
+    PartyInvitation abPartyInvitation;
+    string gameMode = "raid-mode";
 
     List<string> friendNames;
 
@@ -32,6 +34,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform friendInvitePrefab;
     [SerializeField]
     private Transform sentInvitePrefab;
+    [SerializeField]
+    private Transform matchmakingStatus;
 
     private UIElementHandler uiHandler;
 
@@ -51,12 +55,33 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("Connected To Lobby");
             LoadFriendsList();
+            abLobby.InvitedToParty += result => OnInvitedToParty(result);
+            abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
+            abLobby.DSUpdated += result => OnSuccessMatch(result);
+            abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
         }
         else
         {
             Debug.Log("Not Connected To Lobby. Attempting to Connect...");
 
             abLobby.Connect();
+        }
+    }
+
+    public void DisconnectFromLobby()
+    {
+        if (abLobby.IsConnected)
+        {
+            Debug.Log("Disconnect from lobby");
+            LoadFriendsList();
+            abLobby.InvitedToParty -= OnInvitedToParty;
+            abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
+            abLobby.DSUpdated -= OnSuccessMatch;
+            abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
+        }
+        else
+        {
+            Debug.Log("There is no Connection to lobby");
         }
     }
 
@@ -106,6 +131,28 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.ListOutgoingFriends(OnGetOutgoingFriendsRequest);
     }
 
+    public void CreateParty()
+    {
+        abLobby.CreateParty(OnPartyCreated);
+    }
+
+    public void LeaveParty()
+    {
+        abLobby.LeaveParty(OnLeaveParty);
+    }
+
+    public void FindMatch()
+    {
+        abLobby.StartMatchmaking(gameMode, OnFindMatch);
+    }
+
+    public void OnJoinPartyClicked()
+    {
+        if (abPartyInvitation != null)
+        {
+            abLobby.JoinParty(abPartyInvitation.partyID, abPartyInvitation.invitationToken, OnJoinedParty);
+        }
+    }
 
     #region AccelByte Lobby Callbacks
     private void OnLoadFriendsListRequest(Result<Friends> result)
@@ -272,6 +319,114 @@ public class AccelByteLobbyLogic : MonoBehaviour
             friend.transform.SetParent(friendSearchScrollContent, false);
             friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.DisplayName, result.Value.UserId);
             friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
+        }
+    }
+
+    private void OnPartyCreated(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
+            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
+            matchmakingStatus.GetComponent<Text>().text = "Failed to create a party";
+
+        }
+        else
+        {
+            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
+            matchmakingStatus.GetComponent<Text>().text = "Waiting for other players";
+        }
+    }
+
+    private void OnLeaveParty(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnLeaveParty failed:" + result.Error.Message);
+            Debug.Log("OnLeaveParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnLeaveParty Left a party");
+        }
+    }
+
+    private void OnJoinedParty(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnJoinedParty failed:" + result.Error.Message);
+            Debug.Log("OnJoinedParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
+        }
+    }
+
+    private void OnInvitedToParty(Result<PartyInvitation> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnInvitedToParty failed:" + result.Error.Message);
+            Debug.Log("OnInvitedToParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnInvitedToParty Successfully");
+            abPartyInvitation = result.Value;
+        }
+    }
+
+    private void OnFindMatch(Result<MatchmakingCode> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnFindMatch failed:" + result.Error.Message);
+            Debug.Log("OnFindMatch Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnFindMatch Finding matchmaking . . .");
+        }
+    }
+
+    private void OnFindMatchCompleted(Result<MatchmakingNotif> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnFindMatchCompleted failed:" + result.Error.Message);
+            Debug.Log("OnFindMatchCompleted Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnFindMatchCompleted Finding matchmaking Completed");
+        }
+    }
+
+    private void OnSuccessMatch(Result<DsNotif> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnSuccessMatch failed:" + result.Error.Message);
+            Debug.Log("OnSuccessMatch Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnSuccessMatch success match completed");
+        }
+    }
+
+    private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetReadyConfirmationStatus failed:" + result.Error.Message);
+            Debug.Log("OnGetReadyConfirmationStatus Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
         }
     }
     #endregion
