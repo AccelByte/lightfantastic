@@ -15,6 +15,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     string gameMode = "raid-mode";
 
     List<string> friendNames;
+    List<string> friendUserID;
 
     [SerializeField]
     private ScrollRect friendScrollView;
@@ -36,6 +37,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform sentInvitePrefab;
     [SerializeField]
     private Transform matchmakingStatus;
+    [SerializeField]
+    private Transform popupPartyInvitation;
+    [SerializeField]
+    private Transform popupPartyControl;
 
     private UIElementHandler uiHandler;
 
@@ -45,6 +50,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
         abLobby = AccelBytePlugin.GetLobby();
         friendNames = new List<string>();
+        friendUserID = new List<string>();
     }
 
     public void ConnectToLobby()
@@ -136,6 +142,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.CreateParty(OnPartyCreated);
     }
 
+    public void InviteToParty(string id, ResultCallback callback)
+    {
+        string invitedPlayerId = id;
+
+        abLobby.InviteToParty(invitedPlayerId, callback);
+    }
+
     public void LeaveParty()
     {
         abLobby.LeaveParty(OnLeaveParty);
@@ -152,6 +165,31 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             abLobby.JoinParty(abPartyInvitation.partyID, abPartyInvitation.invitationToken, OnJoinedParty);
         }
+        else
+        {
+            Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
+        }
+
+        popupPartyInvitation.gameObject.SetActive(false);
+    }
+
+    public void OnDeclinePartyClicked()
+    {
+        popupPartyInvitation.gameObject.SetActive(false);
+        Debug.Log("OnDeclinePartyClicked Join party failed");
+    }
+
+    public void OnPlayerPartyProfileClicked()
+    {
+        // If in a party then show the party control menu party leader can invite, kick and leave the party.
+        // party member only able to leave the party.
+        popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+    }
+
+    public void OnLeavePartyButtonClicked()
+    {
+        popupPartyControl.gameObject.SetActive(false);
+        LeaveParty();
     }
 
     #region AccelByte Lobby Callbacks
@@ -206,11 +244,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
                     if (abFriendsStatus.availability[i] == "0")
                     {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], daysInactive.ToString() + " days ago");
+                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], daysInactive.ToString() + " days ago", friendUserID[i]);
                     }
                     else
                     {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], "Online");
+                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], "Online", friendUserID[i]);
                     }
                     friendScrollView.Rebuild(CanvasUpdate.Layout);
                 }
@@ -230,6 +268,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
             friendNames.Add(result.Value.DisplayName);
+            friendUserID.Add(result.Value.UserId);
         }
     }
 
@@ -360,6 +399,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
+            // On joined should change the party slot with player info
             Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
         }
     }
@@ -373,8 +413,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnInvitedToParty Successfully");
+            Debug.Log("OnInvitedToParty Received Invitation from" + result.Value.from);
             abPartyInvitation = result.Value;
+            popupPartyInvitation.gameObject.SetActive(true);
         }
     }
 

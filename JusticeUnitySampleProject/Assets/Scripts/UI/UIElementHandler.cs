@@ -140,10 +140,15 @@ namespace UITools
             if (multiplayerOptionPanel.alpha == MAX_ALPHA)
             {
                 StartCoroutine(FadeOut(multiplayerOptionPanel));
+                //multiplayerOptionPanel.alpha = MIN_ALPHA;
+                //multiplayerOptionPanel.gameObject.SetActive(false);
+                currentPanel = menuPanel;
             }
             else
             {
                 StartCoroutine(FadeIn(multiplayerOptionPanel));
+                //multiplayerOptionPanel.alpha = MAX_ALPHA;
+                //multiplayerOptionPanel.gameObject.SetActive(true);
             }
         }
 
