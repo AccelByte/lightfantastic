@@ -16288,6 +16288,12 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 411089288623223183, guid: 652203ff455754e4e9157a88eccda121,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 84158fda7bc620c43a5c64ed4488b811,
+        type: 3}
     - target: {fileID: 1930498006298052233, guid: 652203ff455754e4e9157a88eccda121,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -16312,6 +16318,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833925417091693284, guid: 652203ff455754e4e9157a88eccda121,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833925417091693284, guid: 652203ff455754e4e9157a88eccda121,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 652203ff455754e4e9157a88eccda121, type: 3}

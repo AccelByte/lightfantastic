@@ -6,14 +6,15 @@ using AccelByte.Api;
 using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
+using System;
 
 public class AccelByteLobbyLogic : MonoBehaviour
 {
-    Lobby abLobby;
-    FriendsStatus abFriendsStatus;
+    private Lobby abLobby;
 
-    List<string> friendNames;
+    private IDictionary<string, FriendData> friendList;
 
+    #region UI Fields
     [SerializeField]
     private ScrollRect friendScrollView;
     [SerializeField]
@@ -34,29 +35,32 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform sentInvitePrefab;
 
     private UIElementHandler uiHandler;
+    #endregion
 
     private void Awake()
     {
         uiHandler = gameObject.GetComponent<UIElementHandler>();
 
+        //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
-        friendNames = new List<string>();
+        friendList = new Dictionary<string, FriendData>();
     }
 
     public void ConnectToLobby()
     {
-
+        //Establish connection to the lobby service
         abLobby.Connect();
         if (abLobby.IsConnected)
         {
-            Debug.Log("Connected To Lobby");
+            //If we successfully connected, load our friend list.
+            Debug.Log("Successfully Connected to the AccelByte Lobby Service");
             LoadFriendsList();
         }
         else
         {
-            Debug.Log("Not Connected To Lobby. Attempting to Connect...");
-
-            abLobby.Connect();
+            //If we don't connect Retry.
+            Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
+            ConnectToLobby();
         }
     }
 
@@ -71,9 +75,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.ListFriendsStatus(OnListFriendsStatusRequest);
     }
 
-    private void GetFriendInfo(string friendId)
+    public void GetFriendInfo(string friendId, ResultCallback<UserData> callback)
     {
-        AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetFriendInfoRequest);
+        AccelBytePlugin.GetUser().GetUserByUserId(friendId, callback);
     }
 
     public void FindFriendByEmail()
@@ -123,20 +127,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
             for (int i = 0; i < result.Value.friendsId.Length; i++)
             {
                 Debug.Log(result.Value.friendsId[i]);
-                GetFriendInfo(result.Value.friendsId[i]);
+                GetFriendInfo(result.Value.friendsId[i], OnGetFriendInfoRequest);
             }
             ListFriendsStatus();
         }
     }
 
-
     //THIS REALLY NEEDS TO RETURN THE DISPLAY NAME
     private void OnListFriendsStatusRequest(Result<FriendsStatus> result)
     {
-        for (int i = 0; i < friendScrollContent.childCount; i++)
-        {
-            Destroy(friendScrollContent.GetChild(i).gameObject);
-        }
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("ListFriendsStatusRequest failed:" + result.Error.Message);
@@ -145,29 +145,36 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            if (friendNames.Count > 0)
+            if (friendList.Count > 0)
             {
                 Debug.Log("ListFriendsStatusRequest sent successfully.");
-                abFriendsStatus = result.Value;
-                for (int i = 0; i < abFriendsStatus.friendsId.Length; i++)
-                {
-                    Debug.Log("Friends Status: ID: " + abFriendsStatus.friendsId[i] + " Last Seen: " + abFriendsStatus.lastSeenAt[i] + " Availability: " + abFriendsStatus.availability[i] + " Activity: " + abFriendsStatus.activity[i]);
-                    //Get person's name, picture, etc
-                    int daysInactive = System.DateTime.Now.Subtract(abFriendsStatus.lastSeenAt[i]).Days;
-                    FriendPrefab friend = Instantiate(friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
-                    friend.transform.SetParent(friendScrollContent, false);
 
-                    if (abFriendsStatus.availability[i] == "0")
-                    {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], daysInactive.ToString() + " days ago");
-                    }
-                    else
-                    {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], "Online");
-                    }
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
+                for (int i = 0; i < result.Value.friendsId.Length; i++)
+                {
+                    friendList[result.Value.friendsId[i]] = new FriendData(result.Value.friendsId[i], friendList[result.Value.friendsId[i]].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
                 }
+                RefreshFriendsUI();
             }
+        }
+    }
+
+    private void RefreshFriendsUI()
+    {
+        foreach (KeyValuePair<string, FriendData> friend in friendList)
+        {
+            int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
+            FriendPrefab friendPrefab = Instantiate(this.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
+            friendPrefab.transform.SetParent(friendScrollContent, false);
+
+            if (friend.Value.IsOnline == "0")
+            {
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago");
+            }
+            else
+            {
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online");
+            }
+            friendScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
 
@@ -182,16 +189,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            friendNames.Add(result.Value.DisplayName);
+            if (!friendList.ContainsKey(result.Value.UserId))
+            {
+                friendList.Add(result.Value.UserId, new FriendData(result.Value.UserId, result.Value.DisplayName, new DateTime(1970, 12, 30), "1"));
+            }
         }
     }
 
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
-        for (int i = 0; i < friendScrollContent.childCount; i++)
-        {
-            Destroy(friendScrollContent.GetChild(i).gameObject);
-        }
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
@@ -212,15 +219,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     Transform friend = Instantiate(friendInvitePrefab, Vector3.zero, Quaternion.identity);
                     friend.transform.SetParent(friendScrollContent, false);
 
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId, friendId);
-                    
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
+                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
                 }
             }
         }
+        friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
+
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
     {
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
@@ -229,7 +237,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("Loaded incoming friends list successfully.");
+            Debug.Log("Loaded outgoing friends list successfully.");
 
             foreach (string friendId in result.Value.friendsId)
             {
@@ -242,12 +250,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     Transform friend = Instantiate(sentInvitePrefab, Vector3.zero, Quaternion.identity);
                     friend.transform.SetParent(friendScrollContent, false);
 
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId, friendId);
+                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
 
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
                 }
             }
         }
+
+        friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
     private void OnFindFriendByEmailRequest(Result<UserData> result)
@@ -275,4 +284,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
     #endregion
+
+    private void ClearFriendsUIPrefabs()
+    {
+        for (int i = 0; i < friendScrollContent.childCount; i++)
+        {
+            Destroy(friendScrollContent.GetChild(i).gameObject);
+        }
+    }
 }
