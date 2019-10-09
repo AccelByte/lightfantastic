@@ -244,9 +244,9 @@ GameObject:
   - component: {fileID: 9201884282910642597}
   - component: {fileID: 9201884282910642596}
   - component: {fileID: 9201884282910642599}
-  - component: {fileID: 6129317102616723633}
+  - component: {fileID: 8627797506029108529}
   m_Layer: 5
-  m_Name: PartyPrefab
+  m_Name: MatchmakingMemberPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -356,7 +356,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &6129317102616723633
+--- !u!114 &8627797506029108529
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -365,8 +365,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9201884282910642593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35a3987a973b9e84eada2f18be081c1d, type: 3}
+  m_Script: {fileID: 11500000, guid: 491055e368e59284c84d5038c1dfb68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usernameText: {fileID: 9201884282006853251}
-  lastSeenText: {fileID: 425474538943081679}
