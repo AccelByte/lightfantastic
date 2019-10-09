@@ -14,6 +14,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     PartyInvitation abPartyInvitation;
     string gameMode = "raid-mode";
 
+    bool isInParty;
+
     List<string> friendNames;
     List<string> friendUserID;
 
@@ -41,6 +43,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform popupPartyInvitation;
     [SerializeField]
     private Transform popupPartyControl;
+    [SerializeField]
+    private Transform[] partyMemberButton;
 
     private UIElementHandler uiHandler;
 
@@ -154,12 +158,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.LeaveParty(OnLeaveParty);
     }
 
+    public void GetPartyInfo()
+    {
+        abLobby.GetPartyInfo(OnGetPartyInfo);
+    }
+
     public void FindMatch()
     {
         abLobby.StartMatchmaking(gameMode, OnFindMatch);
     }
 
-    public void OnJoinPartyClicked()
+    public void OnAcceptPartyClicked()
     {
         if (abPartyInvitation != null)
         {
@@ -245,10 +254,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     if (abFriendsStatus.availability[i] == "0")
                     {
                         friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], daysInactive.ToString() + " days ago", friendUserID[i]);
+                        friend.GetComponent<FriendPrefab>().SetFriendInfo(false, isInParty);
                     }
                     else
                     {
                         friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], "Online", friendUserID[i]);
+                        friend.GetComponent<FriendPrefab>().SetFriendInfo(true, isInParty);
                     }
                     friendScrollView.Rebuild(CanvasUpdate.Layout);
                 }
@@ -374,6 +385,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
             matchmakingStatus.GetComponent<Text>().text = "Waiting for other players";
+            isInParty = true;
         }
     }
 
@@ -386,7 +398,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < partyMemberButton.Length; i++)
+            {
+                partyMemberButton[i].GetComponent<Button>().interactable = true;
+                Destroy(partyMemberButton[i].GetChild(1).gameObject);
+            }
+
             Debug.Log("OnLeaveParty Left a party");
+            isInParty = false;
         }
     }
 
@@ -401,6 +420,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             // On joined should change the party slot with player info
             Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
+            isInParty = true;
+
+            for (int i = 0; i < result.Value.members.Length; i++)
+            {
+                UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+                string ownId= data.UserId;
+                if (result.Value.members[i] != ownId)
+                {
+                    partyMemberButton[i].GetComponent<PartyPrefab>().SetupPlayerProfile(data.UserId,data.DisplayName,data.EmailAddress);
+                    partyMemberButton[i].GetComponent<Button>().interactable = false;
+                    Debug.Log("Party Member: " + result.Value.members[i]);
+                }
+            }
         }
     }
 
@@ -415,7 +447,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnInvitedToParty Received Invitation from" + result.Value.from);
             abPartyInvitation = result.Value;
-            popupPartyInvitation.gameObject.SetActive(true);
+            StartCoroutine(ShowPopupPartyInvitation());
+        }
+    }
+
+    private void OnGetPartyInfo(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetPartyInfo failed:" + result.Error.Message);
+            Debug.Log("OnGetPartyInfo Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetPartyInfo Retrieved successfully");
         }
     }
 
@@ -471,4 +516,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
     #endregion
+
+    IEnumerator ShowPopupPartyInvitation()
+    {
+        yield return new WaitForSecondsRealtime(5.0f);
+        popupPartyInvitation.gameObject.SetActive(true);
+        Debug.Log("ShowPopupPartyInvitation Popup is opened");
+    }
 }

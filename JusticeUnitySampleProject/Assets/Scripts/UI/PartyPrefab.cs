@@ -6,13 +6,19 @@ using UnityEngine.UI;
 public class PartyPrefab : MonoBehaviour
 {
     [SerializeField]
-    private Text usernameText;
-    [SerializeField]
-    private Text lastSeenText;
+    private GameObject playerProfile;
 
-    public void SetupPartyUI(string username,string lastSeen)
+    private Transform playerImage;
+
+    private string userID;
+    private string displayName;
+    private string emailAddress;
+
+    public void SetupPlayerProfile(string id, string name, string email)
     {
-        usernameText.text = username;
-        lastSeenText.text = lastSeen;
+        playerImage = Instantiate(playerProfile,transform).transform;
+        userID = id;
+        displayName = name;
+        emailAddress = email;
     }
 }

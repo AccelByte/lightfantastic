@@ -12,6 +12,13 @@ public class FriendPrefab : MonoBehaviour
     private Text lastSeenText;
 
     private string userID;
+    private bool isInviterHasParty;
+    private bool isUserOnline;
+
+    private void Awake()
+    {
+        userID = "";
+    }
 
     // Start is called before the first frame update
     public void SetupFriendUI(string username, string lastSeen, string userId)
@@ -23,7 +30,21 @@ public class FriendPrefab : MonoBehaviour
 
     public void InviteFriendToParty()
     {
-        AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
+        //if (!isInviterHasParty)
+        //{
+        //    AccelByteManager.Instance.LobbyLogic.CreateParty();
+        //    StartCoroutine(InviteToPartyDelayed());
+        //}
+        //else
+        //{
+            AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
+        //}
+    }
+
+    public void SetFriendInfo(bool isOnline, bool inParty)
+    {
+        isInviterHasParty = inParty;
+        isUserOnline = isOnline;
     }
 
     private void OnInviteParty(Result result)
@@ -37,5 +58,11 @@ public class FriendPrefab : MonoBehaviour
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party ID: " + userID);
         }
+    }
+
+    IEnumerator InviteToPartyDelayed()
+    {
+        yield return new WaitForSeconds(2.0f);
+        AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
     }
 }

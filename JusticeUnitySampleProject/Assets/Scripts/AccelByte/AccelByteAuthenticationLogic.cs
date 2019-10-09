@@ -104,6 +104,11 @@ namespace ABRuntimeLogic
         {
             abUser.Logout(OnLogout);
         }
+
+        public UserData GetUserData()
+        {
+            return abUserData;
+        }
         #endregion
 
         #region AccelByte Authentication Callbacks
