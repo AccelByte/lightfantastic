@@ -56,41 +56,12 @@ public class PartyPrefab : MonoBehaviour
     {
         if (isInitiated)
         {
-            // setup the member info
-            SetupPlayerProfilePopup();
             // show popup
-            AccelByteManager.Instance.LobbyLogic.OnPlayerPartyProfileClicked();
+            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName);
         }
         else
         {
             Debug.Log("SetupPlayerProfilePopup Popup is not yet setup");
         }
-    }
-
-    public void SetupPlayerProfilePopup()
-    {
-        playerNameText.text = displayName;
-        playerEmailText.text = emailAddress;
-
-        // TODO: set player profile image
-
-
-        // TODO: Fix button set for 
-        //    party leader :  Leader commands = Onclick for own player profile            :: show his own info, leave and disband party command
-        //                                    = Onclick for other member's player profile :: show other player's info and kick command
-        //    party member :  Member commands = Onclick for own player profile            :: show his own info, leave party command
-        //                                    = Onclick for other member's player profile :: show other player's info
-
-        LeaderCommand.gameObject.SetActive(false);
-        MemberCommand.gameObject.SetActive(false);
-        if (GetIsPartyLeader())
-        {
-            //LeaderCommand.gameObject.SetActive(!LeaderCommand.gameObject.activeSelf);
-            MemberCommand.gameObject.SetActive(!MemberCommand.gameObject.activeSelf);
-        }
-        //else
-        //{
-        //    MemberCommand.gameObject.SetActive(!MemberCommand.gameObject.activeSelf);
-        //}
     }
 }

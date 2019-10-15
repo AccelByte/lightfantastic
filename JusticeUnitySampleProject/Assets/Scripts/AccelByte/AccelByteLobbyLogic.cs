@@ -609,19 +609,84 @@ public class AccelByteLobbyLogic : MonoBehaviour
             // if user id is the same then abpartyinfo members index +1 to skip add own info to party slot
             if (abPartyInfo.members[i] == ownId)
             {
+                Debug.Log("RefreshPartyPopupUI this is local user");
                 offset++;
             }
 
             if ((i + offset) >= abPartyInfo.members.Length)
             {
+                Debug.Log("RefreshPartyPopupUI out of index");
                 return;
             }
 
             // setup player profile + leader party info 
-            Debug.Log("RefreshPartyPopupUI Member names entered: " + PartyDisplayNames[i + offset]);
+            Debug.Log("RefreshPartyPopupUI Member names entered: " + PartyDisplayNames[i]);
             Debug.Log("RefreshPartyPopupUI member user id entered: " + (i + offset) + " - " + abPartyInfo.members[i + offset]);
             partyMemberButton[i].GetComponent<PartyPrefab>().SetupPlayerProfile(abPartyInfo.members[i + offset], PartyDisplayNames[i], "1", abPartyInfo.leaderID);
             //partyMemberButton[i].GetComponent<Button>().interactable = false;
+        }
+    }
+
+    public void OnLocalPlayerProfileButtonClicked()
+    {
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        ShowPlayerProfile(data.DisplayName, true);
+    }
+
+    public void ShowPlayerProfile(string playerName, bool isLocalPlayerButton = false)
+    {
+        if (isInParty)
+        {
+            Transform localLeaderCommand = null;
+            Transform localmemberCommand = null;
+            Transform memberCommand = null;
+
+            UnityEngine.UI.Image img_playerProfile = popupPartyControl.GetComponentInChildren<UnityEngine.UI.Image>();
+            Text txt_playerName = null;
+
+            foreach(Transform child in popupPartyControl)
+            {
+                if (child.name == "LocalLeaderCommand")
+                {
+                    localLeaderCommand = child;
+                }
+                else if (child.name == "LocalMemberCommand")
+                {
+                    localmemberCommand = child;
+                }
+                else if (child.name == "MemberCommand")
+                {
+                    memberCommand = child;
+                }
+                else if (child.name == "PlayerNameText")
+                {
+                    txt_playerName = child.GetComponent<Text>();
+                    txt_playerName.text = playerName;
+                }
+            }
+
+            localLeaderCommand.gameObject.SetActive(false);
+            localmemberCommand.gameObject.SetActive(false);
+            memberCommand.gameObject.SetActive(false);
+
+            UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+            bool isPartyLeader = data.UserId == abPartyInfo.leaderID;
+
+            if (isPartyLeader && isLocalPlayerButton)
+            {
+                localLeaderCommand.gameObject.SetActive(true); ;
+            }
+            else if (!isPartyLeader && isLocalPlayerButton)
+            {
+                localmemberCommand.gameObject.SetActive(true);
+            }
+            else if(isPartyLeader && !isLocalPlayerButton)
+            {
+                memberCommand.gameObject.SetActive(true);
+            }
+
+            // show the popup
+            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
         }
     }
 
@@ -636,7 +701,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         while (!isPartyUpdateReady)
         {
-            yield return new WaitForSecondsRealtime(1.0f);            
+            yield return new WaitForSecondsRealtime(1.0f);
             Debug.Log("PartyUpdateReady is ready");
             //calling update for party slot display
             UpdatePartySlotDisplay();

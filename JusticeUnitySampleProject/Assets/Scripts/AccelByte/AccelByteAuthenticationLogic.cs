@@ -46,6 +46,8 @@ namespace ABRuntimeLogic
 
         #region Debug UI Fields
         [SerializeField]
+        private Text displayName;
+        [SerializeField]
         private Text userId;
         [SerializeField]
         private Text sessionId;
@@ -195,6 +197,7 @@ namespace ABRuntimeLogic
             else
             {
                 abUserData = result.Value;
+                displayName.text = "DisplayName: " + abUserData.DisplayName;
                 userId.text = "UserId: " + abUserData.UserId;
                 sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
