@@ -15,10 +15,26 @@ public class InvitationPrefab : MonoBehaviour
     private Button declineInviteButton;
 
     private string userId;
-    public void SetupInvitationPrefab(string username, string id)
+    public void SetupInvitationPrefab(string id)
     {
-        usernameText.text = username;
+        AccelByteManager.Instance.LobbyLogic.GetFriendInfo(id, OnGetFriendInfoRequest);
+        
         userId = id;
+    }
+
+    private void OnGetFriendInfoRequest(Result<AccelByte.Models.UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
+            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("OnGetFriendInfoRequest sent successfully.");
+            usernameText.text = result.Value.DisplayName;
+        }
     }
 
     public void AcceptInvite()
@@ -58,4 +74,5 @@ public class InvitationPrefab : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
 }

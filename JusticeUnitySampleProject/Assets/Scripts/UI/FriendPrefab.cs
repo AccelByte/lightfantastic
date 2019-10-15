@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using AccelByte.Core;
+using AccelByte.Models;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +8,7 @@ using AccelByte.Core;
 
 public class FriendPrefab : MonoBehaviour
 {
+    private string userId;
     [SerializeField]
     private Text usernameText;
     [SerializeField]

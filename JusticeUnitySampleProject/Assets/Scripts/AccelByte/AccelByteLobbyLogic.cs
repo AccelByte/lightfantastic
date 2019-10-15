@@ -6,19 +6,21 @@ using AccelByte.Api;
 using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
+using System;
 
 public class AccelByteLobbyLogic : MonoBehaviour
 {
-    Lobby abLobby;
-    FriendsStatus abFriendsStatus;
-    PartyInvitation abPartyInvitation;
-    string gameMode = "raid-mode";
+    private Lobby abLobby;
 
-    bool isInParty;
+    private IDictionary<string, FriendData> friendList;
+    private PartyInvitation abPartyInvitation;
+    private PartyInfo abPartyInfo;
+    private string gameMode = "raid-mode";
+    private bool isInParty;
+    private bool isPartyUpdateReady;
+    private List<string> PartyDisplayNames;
 
-    List<string> friendNames;
-    List<string> friendUserID;
-
+    #region UI Fields
     [SerializeField]
     private ScrollRect friendScrollView;
     [SerializeField]
@@ -47,37 +49,40 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform[] partyMemberButton;
 
     private UIElementHandler uiHandler;
+    #endregion
 
     private void Awake()
     {
         uiHandler = gameObject.GetComponent<UIElementHandler>();
 
+        //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
-        friendNames = new List<string>();
-        friendUserID = new List<string>();
+        friendList = new Dictionary<string, FriendData>();
+        PartyDisplayNames = new List<string>();
     }
 
     public void ConnectToLobby()
     {
-
+        //Establish connection to the lobby service
         abLobby.Connect();
         if (abLobby.IsConnected)
         {
-            Debug.Log("Connected To Lobby");
+            //If we successfully connected, load our friend list.
+            Debug.Log("Successfully Connected to the AccelByte Lobby Service");
             LoadFriendsList();
             abLobby.InvitedToParty += result => OnInvitedToParty(result);
+            abLobby.JoinedParty += result => OnMemberJoinedParty(result);
             abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
             abLobby.DSUpdated += result => OnSuccessMatch(result);
             abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
         }
         else
         {
-            Debug.Log("Not Connected To Lobby. Attempting to Connect...");
-
-            abLobby.Connect();
+            //If we don't connect Retry.
+            Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
+            ConnectToLobby();
         }
     }
-
     public void DisconnectFromLobby()
     {
         if (abLobby.IsConnected)
@@ -106,9 +111,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.ListFriendsStatus(OnListFriendsStatusRequest);
     }
 
-    private void GetFriendInfo(string friendId)
+    public void GetFriendInfo(string friendId, ResultCallback<UserData> callback)
     {
-        AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetFriendInfoRequest);
+        AccelBytePlugin.GetUser().GetUserByUserId(friendId, callback);
     }
 
     public void FindFriendByEmail()
@@ -192,7 +197,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         // If in a party then show the party control menu party leader can invite, kick and leave the party.
         // party member only able to leave the party.
-        popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+        if (isInParty)
+        {
+            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+        }
     }
 
     public void OnLeavePartyButtonClicked()
@@ -217,20 +225,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
             for (int i = 0; i < result.Value.friendsId.Length; i++)
             {
                 Debug.Log(result.Value.friendsId[i]);
-                GetFriendInfo(result.Value.friendsId[i]);
+                GetFriendInfo(result.Value.friendsId[i], OnGetFriendInfoRequest);
             }
             ListFriendsStatus();
         }
     }
 
-
     //THIS REALLY NEEDS TO RETURN THE DISPLAY NAME
     private void OnListFriendsStatusRequest(Result<FriendsStatus> result)
     {
-        for (int i = 0; i < friendScrollContent.childCount; i++)
-        {
-            Destroy(friendScrollContent.GetChild(i).gameObject);
-        }
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("ListFriendsStatusRequest failed:" + result.Error.Message);
@@ -239,31 +243,38 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            if (friendNames.Count > 0)
+            if (friendList.Count > 0)
             {
                 Debug.Log("ListFriendsStatusRequest sent successfully.");
-                abFriendsStatus = result.Value;
-                for (int i = 0; i < abFriendsStatus.friendsId.Length; i++)
-                {
-                    Debug.Log("Friends Status: ID: " + abFriendsStatus.friendsId[i] + " Last Seen: " + abFriendsStatus.lastSeenAt[i] + " Availability: " + abFriendsStatus.availability[i] + " Activity: " + abFriendsStatus.activity[i]);
-                    //Get person's name, picture, etc
-                    int daysInactive = System.DateTime.Now.Subtract(abFriendsStatus.lastSeenAt[i]).Days;
-                    FriendPrefab friend = Instantiate(friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
-                    friend.transform.SetParent(friendScrollContent, false);
 
-                    if (abFriendsStatus.availability[i] == "0")
-                    {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], daysInactive.ToString() + " days ago", friendUserID[i]);
-                        friend.GetComponent<FriendPrefab>().SetFriendInfo(false, isInParty);
-                    }
-                    else
-                    {
-                        friend.GetComponent<FriendPrefab>().SetupFriendUI(friendNames[i], "Online", friendUserID[i]);
-                        friend.GetComponent<FriendPrefab>().SetFriendInfo(true, isInParty);
-                    }
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
+                for (int i = 0; i < result.Value.friendsId.Length; i++)
+                {
+                    friendList[result.Value.friendsId[i]] = new FriendData(result.Value.friendsId[i], friendList[result.Value.friendsId[i]].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
                 }
+                RefreshFriendsUI();
             }
+        }
+    }
+
+    private void RefreshFriendsUI()
+    {
+        foreach (KeyValuePair<string, FriendData> friend in friendList)
+        {
+            int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
+            FriendPrefab friendPrefab = Instantiate(this.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
+            friendPrefab.transform.SetParent(friendScrollContent, false);
+
+            if (friend.Value.IsOnline == "0")
+            {
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago", friend.Value.UserId);
+                friendPrefab.GetComponent<FriendPrefab>().SetFriendInfo(false, isInParty);
+            }
+            else
+            {
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online",  friend.Value.UserId);
+                friendPrefab.GetComponent<FriendPrefab>().SetFriendInfo(true, isInParty);
+            }
+            friendScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
 
@@ -278,17 +289,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            friendNames.Add(result.Value.DisplayName);
-            friendUserID.Add(result.Value.UserId);
+            if (!friendList.ContainsKey(result.Value.UserId))
+            {
+                friendList.Add(result.Value.UserId, new FriendData(result.Value.UserId, result.Value.DisplayName, new DateTime(1970, 12, 30), "1"));
+            }
         }
     }
 
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
-        for (int i = 0; i < friendScrollContent.childCount; i++)
-        {
-            Destroy(friendScrollContent.GetChild(i).gameObject);
-        }
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
@@ -309,15 +319,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     Transform friend = Instantiate(friendInvitePrefab, Vector3.zero, Quaternion.identity);
                     friend.transform.SetParent(friendScrollContent, false);
 
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId, friendId);
-                    
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
+                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
                 }
             }
         }
+        friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
+
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
     {
+        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
@@ -326,7 +337,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("Loaded incoming friends list successfully.");
+            Debug.Log("Loaded outgoing friends list successfully.");
 
             foreach (string friendId in result.Value.friendsId)
             {
@@ -339,12 +350,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     Transform friend = Instantiate(sentInvitePrefab, Vector3.zero, Quaternion.identity);
                     friend.transform.SetParent(friendScrollContent, false);
 
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId, friendId);
+                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
 
-                    friendScrollView.Rebuild(CanvasUpdate.Layout);
                 }
             }
         }
+
+        friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
     private void OnFindFriendByEmailRequest(Result<UserData> result)
@@ -371,8 +383,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
-
-    private void OnPartyCreated(Result<PartyInfo> result)
+	
+	private void OnPartyCreated(Result<PartyInfo> result)
     {
         if (result.IsError)
         {
@@ -401,7 +413,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
             for (int i = 0; i < partyMemberButton.Length; i++)
             {
                 partyMemberButton[i].GetComponent<Button>().interactable = true;
-                Destroy(partyMemberButton[i].GetChild(1).gameObject);
+                if (partyMemberButton[i].childCount > 1)
+                {
+                    Destroy(partyMemberButton[i].GetChild(1).gameObject);
+                }
             }
 
             Debug.Log("OnLeaveParty Left a party");
@@ -418,21 +433,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            // On joined should change the party slot with player info
+            // On joined should change the party slot with newer players info
             Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
             isInParty = true;
-
-            for (int i = 0; i < result.Value.members.Length; i++)
-            {
-                UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-                string ownId= data.UserId;
-                if (result.Value.members[i] != ownId)
-                {
-                    partyMemberButton[i].GetComponent<PartyPrefab>().SetupPlayerProfile(data.UserId,data.DisplayName,data.EmailAddress);
-                    partyMemberButton[i].GetComponent<Button>().interactable = false;
-                    Debug.Log("Party Member: " + result.Value.members[i]);
-                }
-            }
+            abPartyInfo = result.Value;
+            UpdatePartySlotDisplay();
         }
     }
 
@@ -451,6 +456,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void OnMemberJoinedParty(Result<JoinNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnMemberJoinedParty failed:" + result.Error.Message);
+            Debug.Log("OnMemberJoinedParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnMemberJoinedParty Retrieved successfully");
+            GetPartyInfo();
+            StartCoroutine(WaitForUpdatePartySlot());
+        }
+    }
+
     private void OnGetPartyInfo(Result<PartyInfo> result)
     {
         if (result.IsError)
@@ -461,6 +481,25 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetPartyInfo Retrieved successfully");
+            abPartyInfo = result.Value;
+            isPartyUpdateReady = true;
+        }
+    }
+
+    private void OnGetPartyUserInfoRequest(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetPartyUserInfoRequest failed:" + result.Error.Message);
+            Debug.Log("OnGetPartyUserInfoRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("OnGetPartyUserInfoRequest sent successfully.");
+            //Setup user profile popup
+            PartyDisplayNames.Add(result.Value.DisplayName);
+            RefreshPartyPopupUI();
         }
     }
 
@@ -516,11 +555,92 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
     #endregion
+	
+    private void ClearFriendsUIPrefabs()
+    {
+        for (int i = 0; i < friendScrollContent.childCount; i++)
+        {
+            Destroy(friendScrollContent.GetChild(i).gameObject);
+        }
+    }
+
+    private void UpdatePartySlotDisplay()
+    {
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        string ownId = data.UserId;
+        int offset = 0;
+
+        Debug.Log("UpdatePartySlotDisplay member count: " + abPartyInfo.members.Length);
+
+        // Search for user id in friendlist, if N/A then getUserID
+        for (int i = 0; i < abPartyInfo.members.Length; i++)
+
+        {
+            Debug.Log("UpdatePartySlotDisplay member : " + abPartyInfo.members[i]);
+            if (abPartyInfo.members[i] == ownId)
+            {
+                offset++;
+            }
+
+            if ((i + offset) >= abPartyInfo.members.Length)
+            {
+                return;
+            }
+
+            GetFriendInfo(abPartyInfo.members[i + offset], OnGetPartyUserInfoRequest);            
+
+            Debug.Log("UpdatePartySlotDisplay: " + (i + offset) + " - " + abPartyInfo.members[i + offset]);
+        }        
+    }
+
+    private void RefreshPartyPopupUI()
+    {
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        string ownId = data.UserId;
+        int offset = 0;
+
+        Debug.Log("RefreshPartyPopupUI Member count: " + PartyDisplayNames.Count);
+
+        // copying from RefreshFriendsUI
+        for (int i = 0; i < PartyDisplayNames.Count; i++)
+        {
+            Debug.Log("RefreshPartyPopupUI Member names: " + PartyDisplayNames[i]);
+
+            // if user id is the same then abpartyinfo members index +1 to skip add own info to party slot
+            if (abPartyInfo.members[i] == ownId)
+            {
+                offset++;
+            }
+
+            if ((i + offset) >= abPartyInfo.members.Length)
+            {
+                return;
+            }
+
+            // setup player profile + leader party info 
+            Debug.Log("RefreshPartyPopupUI Member names entered: " + PartyDisplayNames[i + offset]);
+            Debug.Log("RefreshPartyPopupUI member user id entered: " + (i + offset) + " - " + abPartyInfo.members[i + offset]);
+            partyMemberButton[i].GetComponent<PartyPrefab>().SetupPlayerProfile(abPartyInfo.members[i + offset], PartyDisplayNames[i], "1", abPartyInfo.leaderID);
+            //partyMemberButton[i].GetComponent<Button>().interactable = false;
+        }
+    }
 
     IEnumerator ShowPopupPartyInvitation()
     {
-        yield return new WaitForSecondsRealtime(5.0f);
+        yield return new WaitForSecondsRealtime(2.0f);
         popupPartyInvitation.gameObject.SetActive(true);
         Debug.Log("ShowPopupPartyInvitation Popup is opened");
+    }
+
+    IEnumerator WaitForUpdatePartySlot()
+    {
+        while (!isPartyUpdateReady)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);            
+            Debug.Log("PartyUpdateReady is ready");
+            //calling update for party slot display
+            UpdatePartySlotDisplay();
+        }
+        isPartyUpdateReady = false;
     }
 }
