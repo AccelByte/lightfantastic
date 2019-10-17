@@ -16,8 +16,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInvitation abPartyInvitation;
     private PartyInfo abPartyInfo;
     private string gameMode = "raid-mode";
-    private bool isInParty;
+    private bool isLocalPlayerInParty;
     private bool isPartyUpdateReady;
+    private bool isPartyCreatedReady;
     private List<string> PartyDisplayNames;
 
     #region UI Fields
@@ -45,6 +46,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform popupPartyInvitation;
     [SerializeField]
     private Transform popupPartyControl;
+    private Transform localLeaderCommand;
+    private Transform localmemberCommand;
+    private Transform memberCommand;
+    private Transform PlayerNameText;
     [SerializeField]
     private Transform[] partyMemberButton;
 
@@ -59,6 +64,32 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         PartyDisplayNames = new List<string>();
+
+        SetupPopupPartyControl();
+    }
+
+    private void SetupPopupPartyControl()
+    {
+        foreach (Transform child in popupPartyControl)
+        {
+            if (child.name == "LocalLeaderCommand")
+            {
+                localLeaderCommand = child;
+            }
+            else if (child.name == "LocalMemberCommand")
+            {
+                localmemberCommand = child;
+            }
+            else if (child.name == "MemberCommand")
+            {
+                memberCommand = child;
+            }
+            else if (child.name == "PlayerNameText")
+            {
+                PlayerNameText = child;
+            }
+            // TODO: Add player Image & player stats
+        }
     }
 
     public void ConnectToLobby()
@@ -75,6 +106,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
             abLobby.DSUpdated += result => OnSuccessMatch(result);
             abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
+            abLobby.KickedFromParty += result => OnKickedFromParty(result);
         }
         else
         {
@@ -90,9 +122,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Disconnect from lobby");
             LoadFriendsList();
             abLobby.InvitedToParty -= OnInvitedToParty;
+            abLobby.JoinedParty -= OnMemberJoinedParty;
             abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
             abLobby.DSUpdated -= OnSuccessMatch;
             abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
+            abLobby.KickedFromParty -= OnKickedFromParty;
         }
         else
         {
@@ -151,6 +185,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.CreateParty(OnPartyCreated);
     }
 
+    public void CreateParty(ResultCallback<PartyInfo> callback)
+    {
+        abLobby.CreateParty(callback);
+    }
+
+    public void CreateAndInvitePlayer(string userId)
+    {
+        abLobby.CreateParty(OnPartyCreated);
+        StartCoroutine(InviteToPartyDelayed(userId));
+    }
+
     public void InviteToParty(string id, ResultCallback callback)
     {
         string invitedPlayerId = id;
@@ -158,6 +203,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.InviteToParty(invitedPlayerId, callback);
     }
 
+    public void KickPartyMember(string id)
+    {
+        abLobby.KickPartyMember(id, OnKickPartyMember);
+    }
     public void LeaveParty()
     {
         abLobby.LeaveParty(OnLeaveParty);
@@ -197,8 +246,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         // If in a party then show the party control menu party leader can invite, kick and leave the party.
         // party member only able to leave the party.
-        if (isInParty)
+        if (isLocalPlayerInParty)
         {
+            // Remove listerner before closing
+            if (popupPartyControl.gameObject.activeSelf)
+            {
+                memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+            }
             popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
         }
     }
@@ -267,12 +321,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             if (friend.Value.IsOnline == "0")
             {
                 friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago", friend.Value.UserId);
-                friendPrefab.GetComponent<FriendPrefab>().SetFriendInfo(false, isInParty);
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
             }
             else
             {
-                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online",  friend.Value.UserId);
-                friendPrefab.GetComponent<FriendPrefab>().SetFriendInfo(true, isInParty);
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online",  friend.Value.UserId, friend.Value.IsOnline == "1");
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
             }
             friendScrollView.Rebuild(CanvasUpdate.Layout);
         }
@@ -397,7 +451,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
             matchmakingStatus.GetComponent<Text>().text = "Waiting for other players";
-            isInParty = true;
+            isLocalPlayerInParty = true;
+            isPartyCreatedReady = true;
         }
     }
 
@@ -410,17 +465,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < partyMemberButton.Length; i++)
-            {
-                partyMemberButton[i].GetComponent<Button>().interactable = true;
-                if (partyMemberButton[i].childCount > 1)
-                {
-                    Destroy(partyMemberButton[i].GetChild(1).gameObject);
-                }
-            }
+            ClearPartySlot();
 
             Debug.Log("OnLeaveParty Left a party");
-            isInParty = false;
+            isLocalPlayerInParty = false;
         }
     }
 
@@ -435,9 +483,39 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             // On joined should change the party slot with newer players info
             Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
-            isInParty = true;
+            isLocalPlayerInParty = true;
             abPartyInfo = result.Value;
             UpdatePartySlotDisplay();
+        }
+    }
+
+    private void OnKickedFromParty(Result<KickNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnKickedFromParty failed:" + result.Error.Message);
+            Debug.Log("OnKickedFromParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            // On joined should change the party slot with newer players info
+            Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
+            isLocalPlayerInParty = false;
+
+            ClearPartySlot();
+        }
+    }
+
+    private void OnInviteParty(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnInviteParty failed:" + result.Error.Message);
+            Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnInviteParty Succeded on Inviting player to party");
         }
     }
 
@@ -466,6 +544,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnMemberJoinedParty Retrieved successfully");
+            GetPartyInfo();
+            StartCoroutine(WaitForUpdatePartySlot());
+        }
+    }
+
+    private void OnKickPartyMember(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnKickPartyMember failed:" + result.Error.Message);
+            Debug.Log("OnKickPartyMember Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnKickPartyMember Retrieved successfully");
+            // Clear party slot and update the party slot
+            ClearPartySlot();
             GetPartyInfo();
             StartCoroutine(WaitForUpdatePartySlot());
         }
@@ -564,6 +659,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void ClearPartySlot()
+    {
+        for (int i = 0; i < partyMemberButton.Length; i++)
+        {
+            //partyMemberButton[i].GetComponent<Button>().interactable = true;
+            if (partyMemberButton[i].childCount > 1)
+            {
+                Destroy(partyMemberButton[i].GetChild(1).gameObject);
+            }
+        }
+
+        PartyDisplayNames.Clear();
+    }
+
     private void UpdatePartySlotDisplay()
     {
         UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
@@ -633,41 +742,25 @@ public class AccelByteLobbyLogic : MonoBehaviour
         ShowPlayerProfile(data.DisplayName, true);
     }
 
-    public void ShowPlayerProfile(string playerName, bool isLocalPlayerButton = false)
+    // TODO: Add more player info here player name, email, image, stats ingame
+    public void ShowPlayerProfile(string playerName, bool isLocalPlayerButton = false, string userId = "")
     {
-        if (isInParty)
+        // If visible then toogle it off to refresh the data
+        if (popupPartyControl.gameObject.activeSelf)
         {
-            Transform localLeaderCommand = null;
-            Transform localmemberCommand = null;
-            Transform memberCommand = null;
+            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+            memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        }
+        Debug.Log("ShowPlayerProfile Processing popup");
 
+        if (isLocalPlayerInParty)
+        {
             UnityEngine.UI.Image img_playerProfile = popupPartyControl.GetComponentInChildren<UnityEngine.UI.Image>();
-            Text txt_playerName = null;
-
-            foreach(Transform child in popupPartyControl)
-            {
-                if (child.name == "LocalLeaderCommand")
-                {
-                    localLeaderCommand = child;
-                }
-                else if (child.name == "LocalMemberCommand")
-                {
-                    localmemberCommand = child;
-                }
-                else if (child.name == "MemberCommand")
-                {
-                    memberCommand = child;
-                }
-                else if (child.name == "PlayerNameText")
-                {
-                    txt_playerName = child.GetComponent<Text>();
-                    txt_playerName.text = playerName;
-                }
-            }
 
             localLeaderCommand.gameObject.SetActive(false);
             localmemberCommand.gameObject.SetActive(false);
             memberCommand.gameObject.SetActive(false);
+            PlayerNameText.GetComponent<Text>().text = playerName;
 
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
             bool isPartyLeader = data.UserId == abPartyInfo.leaderID;
@@ -685,14 +778,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 memberCommand.gameObject.SetActive(true);
             }
 
-            // show the popup
+            Debug.Log("ShowPlayerProfile assigned Usertokick");
+            memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(userId));
+
+            // Show the popup
             popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
         }
     }
 
+    private void OnKickFromPartyClicked(string userId)
+    {
+        Debug.Log("ShowPlayerProfile Usertokick userId");
+        KickPartyMember(userId);
+    }
+    
     IEnumerator ShowPopupPartyInvitation()
     {
-        yield return new WaitForSecondsRealtime(2.0f);
+        yield return new WaitForSecondsRealtime(1.0f);
         popupPartyInvitation.gameObject.SetActive(true);
         Debug.Log("ShowPopupPartyInvitation Popup is opened");
     }
@@ -707,5 +809,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UpdatePartySlotDisplay();
         }
         isPartyUpdateReady = false;
+    }
+
+    IEnumerator InviteToPartyDelayed(string userID)
+    {
+        isPartyCreatedReady = false;
+        while (!isPartyCreatedReady)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            InviteToParty(userID, OnInviteParty);
+        }
     }
 }

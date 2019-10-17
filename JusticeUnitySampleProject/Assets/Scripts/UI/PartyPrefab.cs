@@ -8,24 +8,12 @@ public class PartyPrefab : MonoBehaviour
     [SerializeField]
     private GameObject playerProfile;    
 
-    [SerializeField]
-    private Text playerNameText;
-    [SerializeField]
-    private Text playerEmailText;
-    [SerializeField]
-    private Image playerProfileImage;
-    [SerializeField]
-    private Transform LeaderCommand;
-    [SerializeField]
-    private Transform MemberCommand;
-
     private Transform playerImage;
     private string userID;
     private string displayName;
     private string emailAddress;
     private string partyLeaderID;
     private bool isInitiated;
-    private bool isPartyLeader;
 
     private bool GetIsPartyLeader()
     {
@@ -56,12 +44,19 @@ public class PartyPrefab : MonoBehaviour
     {
         if (isInitiated)
         {
-            // show popup
-            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName);
+            // show popup profile
+            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName, false, userID);
+            Debug.Log("PartyPrefab SetupPlayerProfilePopup Popup is shown");
         }
         else
         {
-            Debug.Log("SetupPlayerProfilePopup Popup is not yet setup");
+            Debug.Log("PartyPrefab SetupPlayerProfilePopup Popup is not yet setup");
         }
+    }
+
+    public void OnKickButtonClicked()
+    {
+        AccelByteManager.Instance.LobbyLogic.KickPartyMember(userID);
+        Debug.Log("PartyPrefab OnKickButtonClicked Popup is not yet setup");
     }
 }

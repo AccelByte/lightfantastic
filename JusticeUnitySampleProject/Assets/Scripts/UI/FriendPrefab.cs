@@ -13,10 +13,11 @@ public class FriendPrefab : MonoBehaviour
     private Text usernameText;
     [SerializeField]
     private Text lastSeenText;
+    [SerializeField]
+    private Transform InviteButton;
 
     private string userID;
-    private bool isInviterHasParty;
-    private bool isUserOnline;
+    private bool hasParty;
 
     private void Awake()
     {
@@ -24,30 +25,39 @@ public class FriendPrefab : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    public void SetupFriendUI(string username, string lastSeen, string userId)
+    public void SetupFriendUI(string username, string lastSeen, string userId, bool isOnline = false)
     {
         usernameText.text = username;
         lastSeenText.text = lastSeen;
         userID = userId;
+
+        SetInviteButtonVisibility(isOnline);
     }
 
     public void InviteFriendToParty()
     {
-        //if (!isInviterHasParty)
-        //{
-        //    AccelByteManager.Instance.LobbyLogic.CreateParty();
-        //    StartCoroutine(InviteToPartyDelayed());
-        //}
-        //else
-        //{
+        // Create party first if not in party yet
+        // If not yet have a party, create a party then to call invitetoparty
+        if (!hasParty)
+        {
+            AccelByteManager.Instance.LobbyLogic.CreateAndInvitePlayer(userID);
+        }
+        else
+        {
+            // Else directly invite to party
             AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
-        //}
+        }
     }
 
-    public void SetFriendInfo(bool isOnline, bool inParty)
+    public void SetInviterPartyStatus(bool inParty)
     {
-        isInviterHasParty = inParty;
-        isUserOnline = isOnline;
+        hasParty = inParty;
+    }
+
+    private void SetInviteButtonVisibility(bool visible)
+    {
+        //InviteButton.gameObject.SetActive(visible);
+        InviteButton.gameObject.SetActive(true);
     }
 
     private void OnInviteParty(Result result)
@@ -61,11 +71,5 @@ public class FriendPrefab : MonoBehaviour
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party ID: " + userID);
         }
-    }
-
-    IEnumerator InviteToPartyDelayed()
-    {
-        yield return new WaitForSeconds(2.0f);
-        AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
     }
 }

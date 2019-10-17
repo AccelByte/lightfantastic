@@ -373,6 +373,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameText: {fileID: 6321439390382427407}
   lastSeenText: {fileID: 3309719617630385987}
+  InviteButton: {fileID: 6737157113926364283}
 --- !u!1 &7083678168605184933
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,7 +513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.17138863, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
