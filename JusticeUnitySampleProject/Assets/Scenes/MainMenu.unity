@@ -5091,11 +5091,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerProfile: {fileID: 5595215640407840108, guid: 4a4be26e89c2f44408817c703f87c9db,
     type: 3}
-  playerNameText: {fileID: 1700288449}
-  playerEmailText: {fileID: 932817629}
-  playerProfileImage: {fileID: 1838586431}
-  LeaderCommand: {fileID: 1430376137}
-  MemberCommand: {fileID: 796240930}
 --- !u!1 &555228856
 GameObject:
   m_ObjectHideFlags: 0
@@ -8526,11 +8521,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerProfile: {fileID: 5595215640407840108, guid: 4a4be26e89c2f44408817c703f87c9db,
     type: 3}
-  playerNameText: {fileID: 1700288449}
-  playerEmailText: {fileID: 932817629}
-  playerProfileImage: {fileID: 1838586431}
-  LeaderCommand: {fileID: 1430376137}
-  MemberCommand: {fileID: 796240930}
 --- !u!1 &985070351
 GameObject:
   m_ObjectHideFlags: 0
@@ -10091,11 +10081,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerProfile: {fileID: 5595215640407840108, guid: 4a4be26e89c2f44408817c703f87c9db,
     type: 3}
-  playerNameText: {fileID: 1700288449}
-  playerEmailText: {fileID: 932817629}
-  playerProfileImage: {fileID: 1838586431}
-  LeaderCommand: {fileID: 1430376137}
-  MemberCommand: {fileID: 796240930}
 --- !u!1001 &1187246833
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20355,7 +20340,7 @@ MonoBehaviour:
   matchmakingStatus: {fileID: 1570624666}
   popupPartyInvitation: {fileID: 1528522260}
   popupPartyControl: {fileID: 1942811271}
-  partyMemberButton:
+  partyMemberButtons:
   - {fileID: 1182718949}
   - {fileID: 973753375}
   - {fileID: 555224923}
