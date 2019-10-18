@@ -17,9 +17,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInfo abPartyInfo;
     private string gameMode = "raid-mode";
     private bool isLocalPlayerInParty;
-    private bool isPartyUpdateReady;
-    private bool isPartyCreatedReady;
+    private bool isReadyToUpdatePartySlot;
+    private bool isReadyToInviteToParty;
     private List<string> PartyDisplayNames;
+    private List<string> PartyIDs;
 
     #region UI Fields
     [SerializeField]
@@ -51,7 +52,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform memberCommand;
     private Transform PlayerNameText;
     [SerializeField]
-    private Transform[] partyMemberButton;
+    private Transform[] partyMemberButtons;
 
     private UIElementHandler uiHandler;
     #endregion
@@ -64,32 +65,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         PartyDisplayNames = new List<string>();
+        PartyIDs = new List<string>();
 
         SetupPopupPartyControl();
     }
 
     private void SetupPopupPartyControl()
     {
-        foreach (Transform child in popupPartyControl)
-        {
-            if (child.name == "LocalLeaderCommand")
-            {
-                localLeaderCommand = child;
-            }
-            else if (child.name == "LocalMemberCommand")
-            {
-                localmemberCommand = child;
-            }
-            else if (child.name == "MemberCommand")
-            {
-                memberCommand = child;
-            }
-            else if (child.name == "PlayerNameText")
-            {
-                PlayerNameText = child;
-            }
-            // TODO: Add player Image & player stats
-        }
+        localLeaderCommand = popupPartyControl.Find("LocalLeaderCommand");
+        localmemberCommand = popupPartyControl.Find("LocalMemberCommand");
+        memberCommand = popupPartyControl.Find("MemberCommand");
+        PlayerNameText = popupPartyControl.Find("PlayerNameText");
+        
+        // TODO: Add player Image & player stats
     }
 
     public void ConnectToLobby()
@@ -107,6 +95,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.DSUpdated += result => OnSuccessMatch(result);
             abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
             abLobby.KickedFromParty += result => OnKickedFromParty(result);
+            abLobby.LeaveFromParty += result => OnMemberLeftParty(result);
         }
         else
         {
@@ -127,6 +116,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.DSUpdated -= OnSuccessMatch;
             abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
             abLobby.KickedFromParty -= OnKickedFromParty;
+            abLobby.LeaveFromParty -= OnMemberLeftParty;
         }
         else
         {
@@ -193,7 +183,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     public void CreateAndInvitePlayer(string userId)
     {
         abLobby.CreateParty(OnPartyCreated);
-        StartCoroutine(InviteToPartyDelayed(userId));
+        StartCoroutine(WaitForInviteToParty(userId));
     }
 
     public void InviteToParty(string id, ResultCallback callback)
@@ -451,8 +441,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
             matchmakingStatus.GetComponent<Text>().text = "Waiting for other players";
+            abPartyInfo = result.Value;
             isLocalPlayerInParty = true;
-            isPartyCreatedReady = true;
+            isReadyToInviteToParty = true;
         }
     }
 
@@ -465,7 +456,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            ClearPartySlot();
+            ClearPartySlots();
 
             Debug.Log("OnLeaveParty Left a party");
             isLocalPlayerInParty = false;
@@ -502,7 +493,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
             isLocalPlayerInParty = false;
 
-            ClearPartySlot();
+            ClearPartySlots();
         }
     }
 
@@ -549,6 +540,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void OnMemberLeftParty(Result<LeaveNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnMemberLeftParty failed:" + result.Error.Message);
+            Debug.Log("OnMemberLeftParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
+            //ClearPartySlots();
+            GetPartyInfo();
+            StartCoroutine(WaitForUpdatePartySlot());
+        }
+    }
+
     private void OnKickPartyMember(Result result)
     {
         if (result.IsError)
@@ -560,7 +567,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnKickPartyMember Retrieved successfully");
             // Clear party slot and update the party slot
-            ClearPartySlot();
+            //ClearPartySlots();
             GetPartyInfo();
             StartCoroutine(WaitForUpdatePartySlot());
         }
@@ -577,7 +584,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnGetPartyInfo Retrieved successfully");
             abPartyInfo = result.Value;
-            isPartyUpdateReady = true;
+            isReadyToUpdatePartySlot = true;
         }
     }
 
@@ -659,46 +666,39 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void ClearPartySlot()
+    private void ClearPartySlots()
     {
-        for (int i = 0; i < partyMemberButton.Length; i++)
+        // Clear the party slot buttons
+        for (int i = 0; i < partyMemberButtons.Length; i++)
         {
-            //partyMemberButton[i].GetComponent<Button>().interactable = true;
-            if (partyMemberButton[i].childCount > 1)
-            {
-                Destroy(partyMemberButton[i].GetChild(1).gameObject);
-            }
+            partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
         }
 
         PartyDisplayNames.Clear();
+        PartyIDs.Clear();
     }
 
     private void UpdatePartySlotDisplay()
     {
+        ClearPartySlots();
+
         UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
         string ownId = data.UserId;
-        int offset = 0;
 
         Debug.Log("UpdatePartySlotDisplay member count: " + abPartyInfo.members.Length);
 
         // Search for user id in friendlist, if N/A then getUserID
         for (int i = 0; i < abPartyInfo.members.Length; i++)
-
         {
             Debug.Log("UpdatePartySlotDisplay member : " + abPartyInfo.members[i]);
             if (abPartyInfo.members[i] == ownId)
             {
-                offset++;
+                Debug.Log("UpdatePartySlotDisplay member is local player");
+                continue;
             }
 
-            if ((i + offset) >= abPartyInfo.members.Length)
-            {
-                return;
-            }
-
-            GetFriendInfo(abPartyInfo.members[i + offset], OnGetPartyUserInfoRequest);            
-
-            Debug.Log("UpdatePartySlotDisplay: " + (i + offset) + " - " + abPartyInfo.members[i + offset]);
+            PartyIDs.Add(abPartyInfo.members[i]);
+            GetFriendInfo(abPartyInfo.members[i], OnGetPartyUserInfoRequest);            
         }        
     }
 
@@ -706,7 +706,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
         string ownId = data.UserId;
-        int offset = 0;
 
         Debug.Log("RefreshPartyPopupUI Member count: " + PartyDisplayNames.Count);
 
@@ -715,31 +714,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("RefreshPartyPopupUI Member names: " + PartyDisplayNames[i]);
 
-            // if user id is the same then abpartyinfo members index +1 to skip add own info to party slot
-            if (abPartyInfo.members[i] == ownId)
-            {
-                Debug.Log("RefreshPartyPopupUI this is local user");
-                offset++;
-            }
-
-            if ((i + offset) >= abPartyInfo.members.Length)
-            {
-                Debug.Log("RefreshPartyPopupUI out of index");
-                return;
-            }
-
             // setup player profile + leader party info 
             Debug.Log("RefreshPartyPopupUI Member names entered: " + PartyDisplayNames[i]);
-            Debug.Log("RefreshPartyPopupUI member user id entered: " + (i + offset) + " - " + abPartyInfo.members[i + offset]);
-            partyMemberButton[i].GetComponent<PartyPrefab>().SetupPlayerProfile(abPartyInfo.members[i + offset], PartyDisplayNames[i], "1", abPartyInfo.leaderID);
+            partyMemberButtons[i].GetComponent<PartyPrefab>().SetupPlayerProfile(PartyIDs[i], PartyDisplayNames[i], "1", abPartyInfo.leaderID);
+            Debug.Log("RefreshPartyPopupUI Successfully setup the party slot: " + PartyIDs[i]);
             //partyMemberButton[i].GetComponent<Button>().interactable = false;
         }
     }
 
     public void OnLocalPlayerProfileButtonClicked()
     {
-        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-        ShowPlayerProfile(data.DisplayName, true);
+        // If in a party then show the party control menu party leader can invite, kick and leave the party.
+        // party member only able to leave the party.
+        if (isLocalPlayerInParty)
+        {
+            UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+            ShowPlayerProfile(data.DisplayName, true);
+        }
     }
 
     // TODO: Add more player info here player name, email, image, stats ingame
@@ -778,7 +769,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 memberCommand.gameObject.SetActive(true);
             }
 
-            Debug.Log("ShowPlayerProfile assigned Usertokick");
+            Debug.Log("ShowPlayerProfile assigned Usertobekicked");
             memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(userId));
 
             // Show the popup
@@ -788,7 +779,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnKickFromPartyClicked(string userId)
     {
-        Debug.Log("ShowPlayerProfile Usertokick userId");
+        Debug.Log("OnKickFromPartyClicked Usertokick userId");
         KickPartyMember(userId);
     }
     
@@ -801,23 +792,32 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     IEnumerator WaitForUpdatePartySlot()
     {
-        while (!isPartyUpdateReady)
+        bool isActive = true;
+        while (isActive)
         {
             yield return new WaitForSecondsRealtime(1.0f);
-            Debug.Log("PartyUpdateReady is ready");
             //calling update for party slot display
-            UpdatePartySlotDisplay();
+            if (isReadyToUpdatePartySlot)
+            {
+                Debug.Log("WaitForUpdatePartySlot PartyUpdateReady is ready");
+                UpdatePartySlotDisplay();
+                isReadyToUpdatePartySlot = isActive = false;
+            }
         }
-        isPartyUpdateReady = false;
     }
 
-    IEnumerator InviteToPartyDelayed(string userID)
+    IEnumerator WaitForInviteToParty(string userID)
     {
-        isPartyCreatedReady = false;
-        while (!isPartyCreatedReady)
+        bool isActive = true;
+        while (isActive)
         {
             yield return new WaitForSecondsRealtime(1.0f);
-            InviteToParty(userID, OnInviteParty);
+            if (isReadyToInviteToParty)
+            {
+                Debug.Log("WaitForInviteToParty InviteToParty is ready");
+                InviteToParty(userID, OnInviteParty);
+                isReadyToInviteToParty = isActive = false;
+            }
         }
     }
 }

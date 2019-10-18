@@ -52,6 +52,7 @@ public class FriendPrefab : MonoBehaviour
     public void SetInviterPartyStatus(bool inParty)
     {
         hasParty = inParty;
+        Debug.Log("SetInviterPartyStatus has party false");
     }
 
     private void SetInviteButtonVisibility(bool visible)

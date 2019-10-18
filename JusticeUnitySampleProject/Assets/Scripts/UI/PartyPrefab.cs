@@ -59,4 +59,18 @@ public class PartyPrefab : MonoBehaviour
         AccelByteManager.Instance.LobbyLogic.KickPartyMember(userID);
         Debug.Log("PartyPrefab OnKickButtonClicked Popup is not yet setup");
     }
+
+    public void OnClearProfileButton()
+    {
+        if (isInitiated)
+        {
+            Destroy(playerImage.gameObject);
+            userID = "";
+            displayName = "";
+            emailAddress = "";
+            partyLeaderID = "";
+
+            isInitiated = false;
+        }
+    }
 }
