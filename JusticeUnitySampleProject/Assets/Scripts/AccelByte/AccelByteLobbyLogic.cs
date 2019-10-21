@@ -456,9 +456,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            ClearPartySlots();
-
             Debug.Log("OnLeaveParty Left a party");
+            ClearPartySlots();
             isLocalPlayerInParty = false;
         }
     }
@@ -489,10 +488,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            // On joined should change the party slot with newer players info
             Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
             isLocalPlayerInParty = false;
-
             ClearPartySlots();
         }
     }
@@ -519,9 +516,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnInvitedToParty Received Invitation from" + result.Value.from);
+            Debug.Log("OnInvitedToParty Received Invitation from " + result.Value.from);
+            AccelBytePlugin.GetUser().GetUserByUserId(result.Value.from, OnGetUserOnInvite);
             abPartyInvitation = result.Value;
-            StartCoroutine(ShowPopupPartyInvitation());
+        }
+    }
+
+    private void OnGetUserOnInvite(Result<UserData> result)
+    {
+        if(result.IsError)
+        {
+            Debug.Log("OnGetUserOnInvite failed:" + result.Error.Message);
+            Debug.Log("OnGetUserOnInvite Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.DisplayName);
+            StartCoroutine(ShowPopupPartyInvitation(result.Value.DisplayName));
         }
     }
 
@@ -550,7 +561,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
-            //ClearPartySlots();
             GetPartyInfo();
             StartCoroutine(WaitForUpdatePartySlot());
         }
@@ -566,8 +576,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnKickPartyMember Retrieved successfully");
-            // Clear party slot and update the party slot
-            //ClearPartySlots();
             GetPartyInfo();
             StartCoroutine(WaitForUpdatePartySlot());
         }
@@ -783,9 +791,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         KickPartyMember(userId);
     }
     
-    IEnumerator ShowPopupPartyInvitation()
+    IEnumerator ShowPopupPartyInvitation(string displayName)
     {
         yield return new WaitForSecondsRealtime(1.0f);
+        popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + displayName;
         popupPartyInvitation.gameObject.SetActive(true);
         Debug.Log("ShowPopupPartyInvitation Popup is opened");
     }
