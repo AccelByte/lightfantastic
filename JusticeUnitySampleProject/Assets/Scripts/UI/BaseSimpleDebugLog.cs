@@ -60,7 +60,7 @@ public class BaseSimpleDebugLog : MonoBehaviour
     {
         while (isEnabled)
         {
-            yield return new WaitForSeconds(clearLogDelay);
+            yield return new WaitForSecondsRealtime(clearLogDelay);
             logQueue.Clear();
             logText = string.Empty;
         }

@@ -7616,7 +7616,7 @@ GameObject:
   - component: {fileID: 932817630}
   - component: {fileID: 932817629}
   m_Layer: 5
-  m_Name: PlayerEmail
+  m_Name: PlayerEmailText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

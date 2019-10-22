@@ -45,7 +45,7 @@ public class PartyPrefab : MonoBehaviour
         if (isInitiated)
         {
             // show popup profile
-            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName, false, userID);
+            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName, emailAddress, false, userID);
             Debug.Log("PartyPrefab SetupPlayerProfilePopup Popup is shown");
         }
         else
