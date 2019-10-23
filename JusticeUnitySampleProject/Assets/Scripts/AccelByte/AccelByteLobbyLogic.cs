@@ -18,10 +18,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInfo abPartyInfo;
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
-    private string gameMode = "raid-mode";
+    //private string gameMode = "raid-mode";
+    private string gameMode = "test";
     private bool isLocalPlayerInParty;
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
+    private List<string> ChatList;
 
     #region UI Fields
     [SerializeField]
@@ -47,6 +49,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     [SerializeField]
     private Transform popupPartyInvitation;
     [SerializeField]
+    private Transform popupMatchConfirmation;
+    [SerializeField]
     private Transform popupPartyControl;
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -55,6 +59,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform playerEmailText;
     [SerializeField]
     private Transform[] partyMemberButtons;
+    [SerializeField]
+    private Transform ChatTextbox;
 
     private UIElementHandler uiHandler;
     #endregion
@@ -67,6 +73,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         partyMemberList = new Dictionary<string, PartyData>();
+        ChatList = new List<string>();
 
         SetupPopupPartyControl();
     }
@@ -219,17 +226,37 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.StartMatchmaking(gameMode, OnFindMatch);
     }
 
-    public void FindMatchCancel()
+    public void FindMatchButtonClicked()
+    {
+        if (!isLocalPlayerInParty)
+        {
+            abLobby.CreateParty(OnPartyCreatedFindMatch);
+        }
+        else
+        {
+            abLobby.StartMatchmaking(gameMode, OnFindMatch);
+        }
+    }
+
+    public void FindMatchCancelClicked()
     {
         abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
     }
 
-    public void OnConfirmReadyForMatchClicked()
+    public void OnAcceptReadyForMatchClicked()
     {
         if (abMatchmakingNotif != null)
         {
             abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
         }
+
+        popupMatchConfirmation.gameObject.SetActive(false);
+    }
+
+    public void OnDeclineReadyForMatchClicked()
+    {
+        abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
+        popupMatchConfirmation.gameObject.SetActive(false);
     }
 
     public void OnAcceptPartyClicked()
@@ -465,6 +492,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void OnPartyCreatedFindMatch(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
+            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
+
+        }
+        else
+        {
+            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
+            abPartyInfo = result.Value;
+            isLocalPlayerInParty = true;
+            FindMatch();
+        }
+    }
+
     private void OnLeaveParty(Result result)
     {
         if (result.IsError)
@@ -667,7 +711,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnFindMatch Finding matchmaking . . .");
+            Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
+            WriteInChatBox("Searching a match game mode" + gameMode);
         }
     }
 
@@ -684,7 +729,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
             if (result.Value.status == "done")
             {
                 Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
+                WriteInChatBox(" Match Found: " + result.Value.matchId);
                 abMatchmakingNotif = result.Value;
+                popupMatchConfirmation.gameObject.SetActive(true);
             }
         }
     }
@@ -698,7 +745,37 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnFindMatchCanceled Finding matchmaking . . .");
+            Debug.Log("OnFindMatchCanceled The Match is canceled");
+            WriteInChatBox(" Match Canceled");
+        }
+    }
+
+    private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetReadyConfirmationStatus failed:" + result.Error.Message);
+            Debug.Log("OnGetReadyConfirmationStatus Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
+            Debug.Log("OnGetReadyConfirmationStatus: " + result.Value.userId + " is ready");
+            WriteInChatBox("Player " + result.Value.userId + " is ready");
+        }
+    }
+
+    private void OnReadyForMatchConfirmation(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnReadyForMatchConfirmation failed:" + result.Error.Message);
+            Debug.Log("OnReadyForMatchConfirmation Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnReadyForMatchConfirmation Waiting for other player . . .");
+            WriteInChatBox("Waiting for other players . . .");
         }
     }
 
@@ -713,33 +790,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnSuccessMatch success match completed");
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
+            WriteInChatBox("Match Success IP: " + result.Value.ip + " Port: " + result.Value.port);
             abDSNotif = result.Value;
-        }
-    }
-
-    private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetReadyConfirmationStatus failed:" + result.Error.Message);
-            Debug.Log("OnGetReadyConfirmationStatus Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
-        }
-    }
-
-    private void OnReadyForMatchConfirmation(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnReadyForMatchConfirmation failed:" + result.Error.Message);
-            Debug.Log("OnReadyForMatchConfirmation Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnReadyForMatchConfirmation Waiting for other player . . .");
         }
     }
     #endregion
@@ -883,5 +935,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 isReadyToInviteToParty = isActive = false;
             }
         }
+    }
+
+    private void WriteInChatBox(string chat)
+    {
+        string textChat = "";
+
+        if (ChatList.Count >= 5)
+        {
+            ChatList.RemoveAt(0);
+        }
+        ChatList.Add(chat);
+
+        foreach (var s in ChatList)
+        {
+            textChat += s + "\n";
+        }
+        ChatTextbox.GetComponentInChildren<Text>().text = textChat;
     }
 }
