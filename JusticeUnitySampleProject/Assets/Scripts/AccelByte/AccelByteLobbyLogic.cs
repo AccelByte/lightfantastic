@@ -61,6 +61,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform[] partyMemberButtons;
     [SerializeField]
     private Transform ChatTextbox;
+    [SerializeField]
+    private Transform matchmakingBoard;
+    private Transform matchmakingBoardSearchLayout;
+    private Transform matchmakingBoardMatchFoundLayout;
+    private Transform loadingDots;
+    private Transform timeLeftText;
 
     private UIElementHandler uiHandler;
     #endregion
@@ -76,6 +82,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         ChatList = new List<string>();
 
         SetupPopupPartyControl();
+        SetupMatchmakingBoard();
     }
 
     private void SetupPopupPartyControl()
@@ -87,6 +94,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
         playerEmailText = popupPartyControl.Find("PlayerEmailText");
 
         // TODO: Add player Image & player stats
+    }
+
+    private void SetupMatchmakingBoard()
+    {
+        matchmakingBoardSearchLayout = matchmakingBoard.Find("SearchModeLayout");
+        matchmakingBoardMatchFoundLayout = matchmakingBoard.Find("MatchFoundLayout");
+        loadingDots = matchmakingBoardSearchLayout.Find("LoadingDots");
+        timeLeftText = matchmakingBoardSearchLayout.Find("TimeText");
     }
 
     public void ConnectToLobby()
@@ -713,6 +728,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
             WriteInChatBox("Searching a match game mode" + gameMode);
+            ToogleShowMatchmakingBoard();
         }
     }
 
@@ -791,6 +807,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnSuccessMatch success match completed");
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
             WriteInChatBox("Match Success IP: " + result.Value.ip + " Port: " + result.Value.port);
+            ToogleShowMatchmakingBoard(true);
             abDSNotif = result.Value;
         }
     }
@@ -934,6 +951,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 InviteToParty(userID, OnInviteParty);
                 isReadyToInviteToParty = isActive = false;
             }
+        }
+    }
+
+    public void ToogleShowMatchmakingBoard(bool gameFound = false)
+    {
+        matchmakingBoardSearchLayout.gameObject.SetActive(false);
+        matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
+        matchmakingBoard.gameObject.SetActive(!matchmakingBoard.gameObject.activeSelf);
+
+        if (gameFound)
+        {
+            matchmakingBoardMatchFoundLayout.gameObject.SetActive(true);
+            matchmakingBoard.gameObject.SetActive(true);
+        }
+        else
+        {
+            matchmakingBoardSearchLayout.gameObject.SetActive(true);
         }
     }
 
