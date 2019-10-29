@@ -18,8 +18,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInfo abPartyInfo;
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
-    //private string gameMode = "raid-mode";
     private string gameMode = "test";
+    //private string gameMode = "coop2_2";
+    //private string gameMode = "cooptest";
     private bool isLocalPlayerInParty;
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
@@ -117,6 +118,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.JoinedParty += result => OnMemberJoinedParty(result);
             abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
             abLobby.DSUpdated += result => OnSuccessMatch(result);
+            abLobby.RematchmakingNotif += result => OnRematchmaking(result);
             abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
             abLobby.KickedFromParty += result => OnKickedFromParty(result);
             abLobby.LeaveFromParty += result => OnMemberLeftParty(result);
@@ -138,6 +140,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.JoinedParty -= OnMemberJoinedParty;
             abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
             abLobby.DSUpdated -= OnSuccessMatch;
+            abLobby.RematchmakingNotif -= OnRematchmaking;
             abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
             abLobby.KickedFromParty -= OnKickedFromParty;
             abLobby.LeaveFromParty -= OnMemberLeftParty;
@@ -742,12 +745,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnFindMatchCompleted Finding matchmaking Completed");
+            WriteInChatBox(" Match status: " + result.Value.status);
             if (result.Value.status == "done")
             {
                 Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
                 WriteInChatBox(" Match Found: " + result.Value.matchId);
                 abMatchmakingNotif = result.Value;
-                popupMatchConfirmation.gameObject.SetActive(true);
+
+                // Auto comfirm ready consent
+                abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
             }
         }
     }
@@ -811,6 +817,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abDSNotif = result.Value;
         }
     }
+
+    private void OnRematchmaking(Result<RematchmakingNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnRematchmaking failed:" + result.Error.Message);
+            Debug.Log("OnRematchmaking Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log(string.Format("OnRematchmaking OnProgress. Banned for {0} seconds", result.Value.banDuration));
+            WriteInChatBox(string.Format("OnRematchmaking... Banned for {0} seconds", result.Value.banDuration));
+        }
+    }
     #endregion
 
     private void ClearFriendsUIPrefabs()
@@ -834,9 +854,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void RefreshPartySlots()
     {
-        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-        string ownId = data.UserId;
-
         if (partyMemberList.Count > 0)
         {
             int j = 0;
@@ -869,12 +886,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
             popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
             memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         }
-        Debug.Log("ShowPlayerProfile Processing popup");
 
         if (isLocalPlayerInParty)
         {
-            UnityEngine.UI.Image img_playerProfile = popupPartyControl.GetComponentInChildren<UnityEngine.UI.Image>();
-
             localLeaderCommand.gameObject.SetActive(false);
             localmemberCommand.gameObject.SetActive(false);
             memberCommand.gameObject.SetActive(false);
@@ -897,7 +911,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 memberCommand.gameObject.SetActive(true);
             }
 
-            Debug.Log("ShowPlayerProfile assigned Usertobekicked");
             memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(userId));
 
             // Show the popup
