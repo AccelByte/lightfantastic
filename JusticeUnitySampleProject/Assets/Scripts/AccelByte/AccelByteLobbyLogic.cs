@@ -730,8 +730,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
-            WriteInChatBox("Searching a match game mode" + gameMode);
-            ToogleShowMatchmakingBoard();
+            WriteInChatBox("Searching a match game mode " + gameMode);
+            ShowMatchmakingBoard(true);
         }
     }
 
@@ -745,15 +745,24 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnFindMatchCompleted Finding matchmaking Completed");
+            Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
             WriteInChatBox(" Match status: " + result.Value.status);
+            abMatchmakingNotif = result.Value;
             if (result.Value.status == "done")
             {
-                Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
                 WriteInChatBox(" Match Found: " + result.Value.matchId);
-                abMatchmakingNotif = result.Value;
 
                 // Auto comfirm ready consent
                 abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
+            }
+            // if in a party and party leader start a matchmaking
+            else if (result.Value.status == "start")
+            {
+                ShowMatchmakingBoard(true);
+            }
+            else if (result.Value.status == "cancel")
+            {
+                ShowMatchmakingBoard(false);
             }
         }
     }
@@ -811,9 +820,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnSuccessMatch success match completed");
+            if (result.Value.status == "done")
+            {
+
+            }
+
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
+            WriteInChatBox("Match Success status " + result.Value.status + " isOK " + result.Value.isOK + " pod: " + result.Value.podName);
             WriteInChatBox("Match Success IP: " + result.Value.ip + " Port: " + result.Value.port);
-            ToogleShowMatchmakingBoard(true);
+            ShowMatchmakingBoard(true, true);
             abDSNotif = result.Value;
         }
     }
@@ -860,7 +875,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
-                partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value.UserID, member.Value.PlayerName, member.Value.PlayerEmail, abPartyInfo.leaderID);
+                //partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value.UserID, member.Value.PlayerName, member.Value.PlayerEmail, abPartyInfo.leaderID);
+                partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
             }
         }
@@ -967,11 +983,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void ToogleShowMatchmakingBoard(bool gameFound = false)
+    public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
         matchmakingBoardSearchLayout.gameObject.SetActive(false);
         matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
-        matchmakingBoard.gameObject.SetActive(!matchmakingBoard.gameObject.activeSelf);
+        matchmakingBoard.gameObject.SetActive(show);
 
         if (gameFound)
         {
