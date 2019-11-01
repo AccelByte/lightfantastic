@@ -777,6 +777,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnFindMatchCanceled The Match is canceled");
+            ShowMatchmakingBoard(false);
             WriteInChatBox(" Match Canceled");
         }
     }
