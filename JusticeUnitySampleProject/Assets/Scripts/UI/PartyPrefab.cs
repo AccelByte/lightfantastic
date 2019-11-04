@@ -9,24 +9,31 @@ public class PartyPrefab : MonoBehaviour
     private GameObject playerProfile;    
 
     private Transform playerImage;
-    private string userID;
-    private string displayName;
-    private string emailAddress;
     private string partyLeaderID;
     private bool isInitiated;
 
-    private bool GetIsPartyLeader()
+    private PartyData partyData;
+
+    void Awake()
     {
-        return (userID == partyLeaderID);
+        partyData = new PartyData();
     }
 
-    public void SetupPlayerProfile(string id, string name, string email, string leaderID)
+    private bool GetIsPartyLeader()
+    {
+        return (partyData.UserID == partyLeaderID);
+    }
+
+    public void SetupPlayerProfile(PartyData data, string leaderID)
     {
         playerImage = Instantiate(playerProfile,transform).transform;
-        userID = id;
-        displayName = name;
-        emailAddress = email;
         partyLeaderID = leaderID;
+
+        partyData.UserID = data.UserID;
+        partyData.PlayerName = data.PlayerName;
+        partyData.PlayerEmail = data.PlayerEmail;
+
+        partyData = data;
 
         if (GetIsPartyLeader())
         {
@@ -45,7 +52,7 @@ public class PartyPrefab : MonoBehaviour
         if (isInitiated)
         {
             // show popup profile
-            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(displayName, emailAddress, false, userID);
+            AccelByteManager.Instance.LobbyLogic.ShowPlayerProfile(partyData);
             Debug.Log("PartyPrefab SetupPlayerProfilePopup Popup is shown");
         }
         else
@@ -56,7 +63,7 @@ public class PartyPrefab : MonoBehaviour
 
     public void OnKickButtonClicked()
     {
-        AccelByteManager.Instance.LobbyLogic.KickPartyMember(userID);
+        AccelByteManager.Instance.LobbyLogic.KickPartyMember(partyData.UserID);
         Debug.Log("PartyPrefab OnKickButtonClicked Popup is not yet setup");
     }
 
@@ -65,9 +72,9 @@ public class PartyPrefab : MonoBehaviour
         if (isInitiated)
         {
             Destroy(playerImage.gameObject);
-            userID = "";
-            displayName = "";
-            emailAddress = "";
+            partyData.UserID = "";
+            partyData.PlayerName = "";
+            partyData.PlayerEmail = "";
             partyLeaderID = "";
 
             isInitiated = false;

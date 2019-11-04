@@ -8,7 +8,6 @@ using AccelByte.Core;
 
 public class FriendPrefab : MonoBehaviour
 {
-    private string userId;
     [SerializeField]
     private Text usernameText;
     [SerializeField]
@@ -57,8 +56,7 @@ public class FriendPrefab : MonoBehaviour
 
     private void SetInviteButtonVisibility(bool visible)
     {
-        //InviteButton.gameObject.SetActive(visible);
-        InviteButton.gameObject.SetActive(true);
+        InviteButton.gameObject.SetActive(visible);
     }
 
     private void OnInviteParty(Result result)

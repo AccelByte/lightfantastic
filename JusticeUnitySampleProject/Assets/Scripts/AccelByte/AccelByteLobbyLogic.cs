@@ -19,8 +19,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
     private string gameMode = "test";
-    //private string gameMode = "coop2_2";
-    //private string gameMode = "cooptest";
     private bool isLocalPlayerInParty;
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
@@ -113,6 +111,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             //If we successfully connected, load our friend list.
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
+            abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
             LoadFriendsList();
             abLobby.InvitedToParty += result => OnInvitedToParty(result);
             abLobby.JoinedParty += result => OnMemberJoinedParty(result);
@@ -135,6 +134,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         if (abLobby.IsConnected)
         {
             Debug.Log("Disconnect from lobby");
+            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             LoadFriendsList();
             abLobby.InvitedToParty -= OnInvitedToParty;
             abLobby.JoinedParty -= OnMemberJoinedParty;
@@ -492,8 +492,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
             friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
-	
-	private void OnPartyCreated(Result<PartyInfo> result)
+
+    private void OnSetUserStatus(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnSetUserStatus failed:" + result.Error.Message);
+            Debug.Log("OnSetUserStatus Response Code::" + result.Error.Code);
+
+        }
+        else
+        {
+            Debug.Log("OnSetUserStatus Success ");
+        }
+    }
+
+    private void OnPartyCreated(Result<PartyInfo> result)
     {
         if (result.IsError)
         {
@@ -730,7 +744,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
-            WriteInChatBox("Searching a match game mode " + gameMode);
+            WriteInDebugBox("Searching a match game mode " + gameMode);
             ShowMatchmakingBoard(true);
         }
     }
@@ -746,11 +760,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnFindMatchCompleted Finding matchmaking Completed");
             Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
-            WriteInChatBox(" Match status: " + result.Value.status);
+            WriteInDebugBox(" Match status: " + result.Value.status);
             abMatchmakingNotif = result.Value;
             if (result.Value.status == "done")
             {
-                WriteInChatBox(" Match Found: " + result.Value.matchId);
+                WriteInDebugBox(" Match Found: " + result.Value.matchId);
 
                 // Auto comfirm ready consent
                 abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
@@ -778,7 +792,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnFindMatchCanceled The Match is canceled");
             ShowMatchmakingBoard(false);
-            WriteInChatBox(" Match Canceled");
+            WriteInDebugBox(" Match Canceled");
         }
     }
 
@@ -793,7 +807,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
             Debug.Log("OnGetReadyConfirmationStatus: " + result.Value.userId + " is ready");
-            WriteInChatBox("Player " + result.Value.userId + " is ready");
+            WriteInDebugBox("Player " + result.Value.userId + " is ready");
         }
     }
 
@@ -807,7 +821,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnReadyForMatchConfirmation Waiting for other player . . .");
-            WriteInChatBox("Waiting for other players . . .");
+            WriteInDebugBox("Waiting for other players . . .");
         }
     }
 
@@ -827,8 +841,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
 
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
-            WriteInChatBox("Match Success status " + result.Value.status + " isOK " + result.Value.isOK + " pod: " + result.Value.podName);
-            WriteInChatBox("Match Success IP: " + result.Value.ip + " Port: " + result.Value.port);
+            WriteInDebugBox("Match Success status " + result.Value.status + " isOK " + result.Value.isOK + " pod: " + result.Value.podName);
+            WriteInDebugBox("Match Success IP: " + result.Value.ip + " Port: " + result.Value.port);
             ShowMatchmakingBoard(true, true);
             abDSNotif = result.Value;
         }
@@ -844,7 +858,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log(string.Format("OnRematchmaking OnProgress. Banned for {0} seconds", result.Value.banDuration));
-            WriteInChatBox(string.Format("OnRematchmaking... Banned for {0} seconds", result.Value.banDuration));
+            WriteInDebugBox(string.Format("OnRematchmaking... Banned for {0} seconds", result.Value.banDuration));
         }
     }
     #endregion
@@ -876,7 +890,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
-                //partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value.UserID, member.Value.PlayerName, member.Value.PlayerEmail, abPartyInfo.leaderID);
                 partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
             }
@@ -890,12 +903,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         if (isLocalPlayerInParty)
         {
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            ShowPlayerProfile(data.DisplayName, data.EmailAddress, true);
+            ShowPlayerProfile(new PartyData(data.UserId, data.DisplayName, data.EmailAddress), true);
         }
     }
 
     // TODO: Add more player info here player name, email, image, stats ingame
-    public void ShowPlayerProfile(string playerName, string playerEmail, bool isLocalPlayerButton = false, string userId = "")
+    public void ShowPlayerProfile(PartyData memberData, bool isLocalPlayerButton = false)
     {
         // If visible then toogle it off to refresh the data
         if (popupPartyControl.gameObject.activeSelf)
@@ -909,8 +922,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             localLeaderCommand.gameObject.SetActive(false);
             localmemberCommand.gameObject.SetActive(false);
             memberCommand.gameObject.SetActive(false);
-            PlayerNameText.GetComponent<Text>().text = playerName;
-            playerEmailText.GetComponent<Text>().text = playerEmail;
+            PlayerNameText.GetComponent<Text>().text = memberData.PlayerName;
+            playerEmailText.GetComponent<Text>().text = memberData.PlayerEmail;
 
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
             bool isPartyLeader = data.UserId == abPartyInfo.leaderID;
@@ -928,7 +941,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 memberCommand.gameObject.SetActive(true);
             }
 
-            memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(userId));
+            memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(memberData.UserID));
 
             // Show the popup
             popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
@@ -1001,7 +1014,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void WriteInChatBox(string chat)
+    private void WriteInDebugBox(string chat)
     {
         string textChat = "";
 
@@ -1016,5 +1029,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             textChat += s + "\n";
         }
         ChatTextbox.GetComponentInChildren<Text>().text = textChat;
+    }
+
+    // On quit set user status to offline
+    private void OnApplicationQuit()
+    {
+        Debug.Log("Application ending after " + Time.time + " seconds");
+        abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
     }
 }
