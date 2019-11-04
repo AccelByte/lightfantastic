@@ -115,7 +115,7 @@ namespace ABRuntimeLogic
 
         #region AccelByte Authentication Callbacks
         //Handles the Registration Response, continues to the Verification Panel on Success
-        private void OnRegister(Result<UserData> result)
+        private void OnRegister(Result<RegisterUserResponse> result)
         {
             if (result.IsError)
             {
@@ -126,7 +126,6 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("Register successful.");
-                abUserData = result.Value;
                 abUser.LoginWithUsername(registerEmail.text, registerPassword.text, OnLogin);
                 //Show Verification Panel
                 uiHandler.FadeRegister();
@@ -197,11 +196,11 @@ namespace ABRuntimeLogic
             else
             {
                 abUserData = result.Value;
-                displayName.text = "DisplayName: " + abUserData.DisplayName;
-                userId.text = "UserId: " + abUserData.UserId;
+                displayName.text = "DisplayName: " + abUserData.displayName;
+                userId.text = "UserId: " + abUserData.userId;
                 sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.EmailVerified)
+                if (!abUserData.emailVerified)
                 {
                     uiHandler.FadeVerify();
                 }

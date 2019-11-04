@@ -1,4 +1,7 @@
-﻿using AccelByte.Core;
+﻿#pragma warning disable 0105
+#pragma warning disable 0649
+
+using AccelByte.Core;
 using AccelByte.Models;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#pragma warning disable 0649
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -169,7 +171,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindFriendByEmail()
     {
-        AccelBytePlugin.GetUser().GetUserByLoginId(emailToFind.text, OnFindFriendByEmailRequest);
+        AccelBytePlugin.GetUser().GetUserByEmailAddress(emailToFind.text, OnFindFriendByEmailRequest);
     }
 
     public  void SendFriendRequest(string friendId, ResultCallback callback)
@@ -398,9 +400,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            if (!friendList.ContainsKey(result.Value.UserId))
+            if (!friendList.ContainsKey(result.Value.userId))
             {
-                friendList.Add(result.Value.UserId, new FriendData(result.Value.UserId, result.Value.DisplayName, new DateTime(1970, 12, 30), "1"));
+                friendList.Add(result.Value.userId, new FriendData(result.Value.userId, result.Value.displayName, new DateTime(1970, 12, 30), "1"));
             }
         }
     }
@@ -468,7 +470,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
-    private void OnFindFriendByEmailRequest(Result<UserData> result)
+    private void OnFindFriendByEmailRequest(Result<PagedPublicUsersInfo> result)
     {
         for (int i = 0; i < friendSearchScrollContent.childCount; i++)
         {
@@ -483,12 +485,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("Search Results:");
-            Debug.Log("Display Name: " + result.Value.DisplayName);
-            Debug.Log("UserID: " + result.Value.UserId);
+            Debug.Log("Display Name: " + result.Value.data[0].displayName);
+            Debug.Log("UserID: " + result.Value.data[0].userId);
 
             SearchFriendPrefab friend = Instantiate(friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
             friend.transform.SetParent(friendSearchScrollContent, false);
-            friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.DisplayName, result.Value.UserId);
+            friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
             friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
@@ -634,8 +636,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.DisplayName);
-            StartCoroutine(ShowPopupPartyInvitation(result.Value.DisplayName));
+            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
+            StartCoroutine(ShowPopupPartyInvitation(result.Value.displayName));
         }
     }
 
@@ -725,11 +727,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
             // TODO: store userdata locally
             // Add the member info to partymemberlist
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            string ownId = data.UserId;
-            if (!partyMemberList.ContainsKey(result.Value.UserId) && (result.Value.UserId != ownId))
+            string ownId = data.userId;
+            if (!partyMemberList.ContainsKey(result.Value.userId) && (result.Value.userId != ownId))
             {
-                Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.UserId + " DisplayName: " + result.Value.DisplayName);
-                partyMemberList.Add(result.Value.UserId, new PartyData(result.Value.UserId, result.Value.DisplayName, result.Value.EmailAddress));
+                Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.userId + " DisplayName: " + result.Value.displayName);
+                partyMemberList.Add(result.Value.userId, new PartyData(result.Value.userId, result.Value.displayName, result.Value.emailAddress));
             }
         }
     }
@@ -903,7 +905,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         if (isLocalPlayerInParty)
         {
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            ShowPlayerProfile(new PartyData(data.UserId, data.DisplayName, data.EmailAddress), true);
+            ShowPlayerProfile(new PartyData(data.userId, data.displayName, data.emailAddress), true);
         }
     }
 
@@ -926,7 +928,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             playerEmailText.GetComponent<Text>().text = memberData.PlayerEmail;
 
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            bool isPartyLeader = data.UserId == abPartyInfo.leaderID;
+            bool isPartyLeader = data.userId == abPartyInfo.leaderID;
 
             if (isPartyLeader && isLocalPlayerButton)
             {
