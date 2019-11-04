@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AccelByte.Core;
 using UnityEngine;
 using UnityEngine.UI;
+#pragma warning disable 0649
 
 public class SearchFriendPrefab : MonoBehaviour
 {

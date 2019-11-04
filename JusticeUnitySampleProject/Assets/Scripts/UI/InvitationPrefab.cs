@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AccelByte.Core;
@@ -33,7 +35,7 @@ public class InvitationPrefab : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            usernameText.text = result.Value.DisplayName;
+            usernameText.text = result.Value.displayName;
         }
     }
 
