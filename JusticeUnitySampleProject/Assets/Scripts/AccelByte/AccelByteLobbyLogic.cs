@@ -24,7 +24,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private bool isLocalPlayerInParty;
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
-    private List<string> ChatList;
+    private List<string> chatList;
+    private MultiplayerMenu multiplayerConnect;
 
     #region UI Fields
     [SerializeField]
@@ -80,7 +81,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         partyMemberList = new Dictionary<string, PartyData>();
-        ChatList = new List<string>();
+        chatList = new List<string>();
+        multiplayerConnect = gameObject.GetComponent<MultiplayerMenu>();
 
         SetupPopupPartyControl();
         SetupMatchmakingBoard();
@@ -764,19 +766,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
             WriteInDebugBox(" Match status: " + result.Value.status);
             abMatchmakingNotif = result.Value;
-            if (result.Value.status == "done")
+            if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
-                WriteInDebugBox(" Match Found: " + result.Value.matchId);
-
                 // Auto comfirm ready consent
                 abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
+                WriteInDebugBox(" Match Found: " + result.Value.matchId);
             }
             // if in a party and party leader start a matchmaking
-            else if (result.Value.status == "start")
+            else if (result.Value.status == MatchmakingNotifStatus.start.ToString())
             {
                 ShowMatchmakingBoard(true);
             }
-            else if (result.Value.status == "cancel")
+            else if (result.Value.status == MatchmakingNotifStatus.cancel.ToString())
             {
                 ShowMatchmakingBoard(false);
             }
@@ -837,9 +838,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnSuccessMatch success match completed");
-            if (result.Value.status == "done")
-            {
 
+            // DSM on process creating DS
+            if (result.Value.status == DSNotifStatus.CREATE.ToString())
+            {
+                // Show countdown waiting for the DS creation
+                WriteInDebugBox("Waiting for the game server!");
+            }
+            // DS is ready
+            else if (result.Value.status == DSNotifStatus.READY.ToString())
+            {
+                // Set IP and port to persistent and connect to the game
+                WriteInDebugBox("Entering the game!");
+
+                multiplayerConnect.SetIPAddressPort(result.Value.ip, result.Value.port.ToString());
+                multiplayerConnect.Connect();
             }
 
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
@@ -1020,13 +1033,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         string textChat = "";
 
-        if (ChatList.Count >= 5)
+        if (chatList.Count >= 5)
         {
-            ChatList.RemoveAt(0);
+            chatList.RemoveAt(0);
         }
-        ChatList.Add(chat);
+        chatList.Add(chat);
 
-        foreach (var s in ChatList)
+        foreach (var s in chatList)
         {
             textChat += s + "\n";
         }
@@ -1037,6 +1050,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
-        abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+        if (abLobby.IsConnected)
+        {
+            abLobby.LeaveParty(OnLeaveParty);
+            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+        }
     }
 }
