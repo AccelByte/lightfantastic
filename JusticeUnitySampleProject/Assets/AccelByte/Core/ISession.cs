@@ -26,3 +26,25 @@ namespace AccelByte.Api {
         }
     }
 }
+
+namespace AccelByte.Server
+{
+    public interface ISession
+    {
+        string AuthorizationToken { get; }
+    }
+
+    public static class SessionExtension
+    {
+        public static bool IsValid(this ISession session)
+        {
+            return session != null && !string.IsNullOrEmpty(session.AuthorizationToken);
+        }
+
+        public static void AssertValid(this ISession session)
+        {
+            Assert.IsNotNull(session);
+            Assert.IsFalse(string.IsNullOrEmpty(session.AuthorizationToken));
+        }
+    }
+}
