@@ -24,6 +24,8 @@ namespace AccelByte.Server
         private static Server server;
         private static TokenData accessToken;
 
+        private static readonly WebServer webServer;
+
         public static Config Config { get { return AccelbyteServerPlugin.config; } }
 
         static AccelbyteServerPlugin()
@@ -67,7 +69,11 @@ namespace AccelByte.Server
                 AccelbyteServerPlugin.httpWorker,
                 AccelbyteServerPlugin.coroutineRunner);
 
-            AccelbyteServerPlugin.serverCredentials = new ServerCredentials(loginSession, coroutineRunner);
+            AccelbyteServerPlugin.serverCredentials = new ServerCredentials(loginSession, AccelbyteServerPlugin.coroutineRunner);
+
+            AccelbyteServerPlugin.webServer = new WebServer(AccelbyteServerPlugin.config.Namespace, AccelbyteServerPlugin.config.BaseUrl);
+
+            Debug.Log("AccelByteServerPlugin init");
         }
         public static Server GetServer()
         {
@@ -77,9 +83,20 @@ namespace AccelByte.Server
                     new ServerApi(AccelbyteServerPlugin.config.BaseUrl, AccelbyteServerPlugin.config.Namespace, AccelbyteServerPlugin.httpWorker),
                     AccelbyteServerPlugin.serverCredentials.Session,
                     AccelbyteServerPlugin.coroutineRunner);
+                Debug.Log("AccelByteServerPlugin Getserver Create Server");
             }
 
             return AccelbyteServerPlugin.server;
+        }
+
+        public static ServerCredentials GetServerCredentials()
+        {
+            return AccelbyteServerPlugin.serverCredentials;
+        }
+
+        public static WebServer GetWebServer()
+        {
+            return AccelbyteServerPlugin.webServer;
         }
     }
 }

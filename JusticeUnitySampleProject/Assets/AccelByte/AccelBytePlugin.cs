@@ -100,6 +100,8 @@ namespace AccelByte.Api
                 AccelBytePlugin.config.UseSessionManagement);
 
             ServicePointManager.ServerCertificateValidationCallback = AccelBytePlugin.OnCertificateValidated;
+
+            Debug.Log("AccelBytePlugin init");
         }
 
         private static bool OnCertificateValidated(object sender, X509Certificate certificate, X509Chain chain,

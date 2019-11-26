@@ -3,47 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Net;
+using AccelByte.Core;
+using UnityEngine.Assertions;
 
 namespace AccelByte.Server
 {
-    public class WebServer : MonoBehaviour
+    public class WebServer
     {
         private string ClaimPrefix;
         private bool IsCheckingResponse;
         private bool IsWebserverStarted;
-        private int PortNumber;
+        private uint PortNumber;
+
+        private readonly string Namespace;
+        private readonly string BaseUrl;
 
         private HttpListener abHttpListener;
         private HttpListenerContext HttpContext;
         private HttpListenerRequest HttpRequest;
         private HttpListenerResponse HttpResponse;
 
-        void Awake()
+        const string SERVER_RESPONSE = "200";
+
+        internal WebServer(string nameSpace, string baseUrl)
         {
-            //IsCheckingResponse = true;
-            //ClaimPrefix = "https://api.demo.accelbyte.io:9991/dsm/namespaces/unitySampleGame/sessions/claim/";
-            //ClaimPrefix = "http://lukka.com:8080/test/";
-            ClaimPrefix = "http://localhost:8080/test/";
+            Assert.IsNotNull(nameSpace, "Creating " + GetType().Name + " failed. Parameter Namespace is null");
+            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
+
+            this.Namespace = nameSpace;
+            this.BaseUrl = baseUrl;
+
+            Debug.Log("WebServer baseURL: " + baseUrl);
+
+            //Start();
         }
 
-        void Start()
+        public void Start()
         {
             Debug.Log("Webserver Start...");
-
-            StartWebserverConnection();
-            ListenToRequestASync();
+            StartWebserverConnection(8080);
         }
 
-        private void StartWebserverConnection()
+        private void StartWebserverConnection(uint portNumber)
         {
-            Debug.Log("Webserver StartWebserverConnection Start...");
-            Debug.Log(string.Format("Webserver with prefix: {0}", ClaimPrefix));
+            Assert.IsFalse(portNumber == 0, "Creating " + GetType().Name + "failed. Parameter portNumber is 0");
 
+            this.PortNumber = portNumber;
+
+            ClaimPrefix = "http://localhost:8080/claim/";
+            //ClaimPrefix = string.Format("https://{0}:{1}/dsm/namespaces/{2}/sessions/claim/", this.BaseUrl, this.PortNumber, this.Namespace);
+
+            Debug.Log(string.Format("Webserver StartWebserverConnection with prefix: {0}", ClaimPrefix));
+
+            Debug.Log("Webserver StartWebserverConnection Start...");
             // Set up a listener.
             abHttpListener = new HttpListener();
             abHttpListener.Prefixes.Add(ClaimPrefix);
             abHttpListener.Start();
 
+            ListenToRequestASync();
             IsWebserverStarted = true;
         }
 
@@ -65,14 +83,19 @@ namespace AccelByte.Server
             IAsyncResult result = abHttpListener.BeginGetContext(new AsyncCallback(OnRequestCallback), abHttpListener);
         }
 
+        private void ListenToRequestASync(AsyncCallback requestCallback)
+        {
+            Debug.Log("Webserver Async Webserver Listening...");
+            IAsyncResult result = abHttpListener.BeginGetContext(requestCallback, abHttpListener);
+        }
+
         // Construct a response.
         private void ConstructResponse()
         {
             Debug.Log("Webserver ConstructResponse ...");
 
             // Construct a response.
-            string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(SERVER_RESPONSE);
 
             // Get a response stream and write the response to it.
             HttpResponse.ContentLength64 = buffer.Length;

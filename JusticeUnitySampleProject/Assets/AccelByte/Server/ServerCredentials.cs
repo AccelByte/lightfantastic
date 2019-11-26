@@ -27,9 +27,9 @@ namespace AccelByte.Server
             this.sessionAdapter = new AccelByteServerSession();
         }
 
-        public ISession Session { get { return this.sessionAdapter; } }
+        public AccelByteServerSession Session { get { return this.sessionAdapter; } }
 
-        public void GetAccessToken(ResultCallback<TokenData> callback)
+        public void GetAccessToken(ResultCallback callback)
         {
             this.coroutineRunner.Run(GetAccessTokenAsync(callback));
         }
@@ -64,16 +64,14 @@ namespace AccelByte.Server
         /// </summary>
         /// <param name="callback"> returns token data parameters </param>
         /// <returns></returns>
-        private IEnumerator GetAccessTokenAsync(ResultCallback<TokenData> callback)
+        private IEnumerator GetAccessTokenAsync(ResultCallback callback)
         {
-            Result<TokenData> clientLoginResult = null;
-
             yield return this.loginSession.LoginWithClientCredential(
-                clientResult => clientLoginResult = clientResult);
+                callback);
+
+            callback.TryOk();
 
             this.sessionAdapter.AuthorizationToken = this.loginSession.AuthorizationToken;
-
-            callback.Try(clientLoginResult);
         }
 
         /// <summary>

@@ -10,6 +10,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
+using AccelByte.Server;
+using AccelByte.Core;
+using AccelByte.Models;
+
 public class MultiplayerMenu : MonoBehaviour
 {
 	public bool DontChangeSceneOnConnect = false;
@@ -39,6 +43,9 @@ public class MultiplayerMenu : MonoBehaviour
     private string IPAddress;
     private string PortNumber;
 
+    private Server abServer;
+    private ServerCredentials abServerCredentials;
+
     private void Start()
     {
         IPAddress = "127.0.0.1";
@@ -67,10 +74,51 @@ public class MultiplayerMenu : MonoBehaviour
             NetWorker.RefreshLocalUdpListings(ushort.Parse(PortNumber));
         }
 
-#if UNITY_SERVER        
+#if UNITY_SERVER
         Debug.Log("running as host automatically");
-        Host();
+        // TODO: call this to login and get access token
+        abServerCredentials = AccelbyteServerPlugin.GetServerCredentials();
+        abServerCredentials.GetAccessToken(OnGetAccessToken);
 #endif
+    }
+
+    private void OnGetAccessToken(Result result)
+    {
+        Debug.Log("MultiplayerMenu OnGetAccessToken");
+        if (result.IsError)
+        {
+            Debug.Log("MultiplayerMenu OnGetAccessToken failed:" + result.Error.Message);
+            Debug.Log("MultiplayerMenu OnGetAccessToken Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("MultiplayerMenu OnGetAccessToken Success!");
+
+            // TODO: call this after login to get server up
+            abServer = AccelbyteServerPlugin.GetServer();
+            // TODO: call this after get server registered to DSM
+            abServer.RegisterServer(ushort.Parse(PortNumber), OnRegisterServer);
+        }
+    }
+
+    private void OnRegisterServer(Result<Result> result)
+    {
+        Debug.Log("MultiplayerMenu OnRegisterServer");
+        if (result.IsError)
+        {
+            Debug.Log("MultiplayerMenu OnRegisterServer failed:" + result.Error.Message);
+            Debug.Log("MultiplayerMenu OnRegisterServer Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("MultiplayerMenu OnRegisterServer Success!");
+            // TODO: Start webserver to get matchmaking data from DSM
+            AccelbyteServerPlugin.GetWebServer().Start();
+            // Start Hosting multiplayer
+            Host();
+        }
     }
 
     private string GetLocalIPAddress()

@@ -19,8 +19,8 @@ namespace AccelByte.Server
         {
             Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
             Assert.IsFalse(
-                string.IsNullOrEmpty(@namespace),
-                "Creating " + GetType().Name + " failed. Parameter ns is null.");
+                string.IsNullOrEmpty(nameSpace),
+                "Creating " + GetType().Name + " failed. Parameter namespace is null.");
             Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
             this.baseUrl = baseUrl;

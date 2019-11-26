@@ -27,7 +27,7 @@ namespace AccelByte.Server
 {
     internal interface ILoginSession : ISession
     {
-        IEnumerator LoginWithClientCredential(ResultCallback<TokenData> callback);
+        IEnumerator LoginWithClientCredential(ResultCallback callback);
 
         IEnumerator Logout(ResultCallback callback);
     }

@@ -12,7 +12,7 @@ using UnityEngine.Assertions;
 
 namespace AccelByte.Server
 {
-    class AccelByteServerSession : ISession
+    public class AccelByteServerSession : ISession
     {
         public string AuthorizationToken { get; set; }
     }
@@ -26,17 +26,18 @@ namespace AccelByte.Server
         private readonly CoroutineRunner coroutineRunner;
         private readonly AccelByteServerSession sessionAdapter;
         private readonly string @namespace;
-        private readonly string podName;
         private readonly ServerApi api;
 
-        internal Server(ServerApi server, ISession session, CoroutineRunner coroutineRunner)
+        private string podName;
+
+        internal Server(ServerApi server, AccelByteServerSession session, CoroutineRunner coroutineRunner)
         {
-            Assert.IsNotNull(api, "api parameter can not be null.");
+            Assert.IsNotNull(server, "api parameter can not be null.");
             Assert.IsNotNull(session, "session parameter can not be null");
             Assert.IsNotNull(coroutineRunner, "coroutineRunner parameter can not be null. Construction failed");
 
             this.coroutineRunner = coroutineRunner;
-            this.sessionAdapter = new AccelByteServerSession();
+            this.sessionAdapter = session;
             this.api = server;
             this.podName = Environment.GetEnvironmentVariable("POD_NAME");
         }
@@ -47,7 +48,7 @@ namespace AccelByte.Server
         /// <param name="podName">Podname from DSM available in environment variable</param>
         /// <param name="port">UDP port that used for multiplayer connection</param>
         /// <param name="callback">Returns a Result via callback when completed</param>
-        public void RegisterServer(int port, ResultCallback<Result> callback)
+        public void RegisterServer(int portNumber, ResultCallback<Result> callback)
         {
             Assert.IsNotNull(podName, "Can't Register server; podName is null!");
 
@@ -57,10 +58,10 @@ namespace AccelByte.Server
                 return;
             }
 
-            var registerServerRequest = new RegisterServerRequest
+            RegisterServerRequest registerServerRequest = new RegisterServerRequest
             {
-                podName = podName,
-                port = port
+                podName = this.podName,
+                port = portNumber
             };
 
             this.coroutineRunner.Run(this.api.Register(

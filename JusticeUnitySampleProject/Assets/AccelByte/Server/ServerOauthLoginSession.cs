@@ -51,7 +51,7 @@ namespace AccelByte.Server
 
         public string AuthorizationToken { get { return this.tokenData != null ? this.tokenData.access_token : null; } }
 
-        public IEnumerator LoginWithClientCredential(ResultCallback<TokenData> callback)
+        public IEnumerator LoginWithClientCredential(ResultCallback callback)
         {
             IHttpRequest request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/token")
                 .WithBasicAuth(this.clientId, this.clientSecret)
@@ -66,10 +66,15 @@ namespace AccelByte.Server
 
             Result<TokenData> result = response.TryParseJson<TokenData>();
             this.tokenData = result.Value;
+            Debug.Log("LoginWithClientCredential refresh_token: " + result.Value.refresh_token);
+            Debug.Log("LoginWithClientCredential Namespace: " + result.Value.Namespace);
+            Debug.Log("LoginWithClientCredential access_token: " + result.Value.access_token);
+            Debug.Log("LoginWithClientCredential display_name: " + result.Value.display_name);
 
             if (!result.IsError)
             {
-                this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
+                // TODO Do we need  to maintain access token
+                //this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 Debug.Log("Login Success");
             }
             else
