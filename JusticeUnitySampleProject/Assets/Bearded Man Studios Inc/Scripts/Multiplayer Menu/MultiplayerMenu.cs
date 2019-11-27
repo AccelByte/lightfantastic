@@ -82,6 +82,7 @@ public class MultiplayerMenu : MonoBehaviour
 #endif
     }
 
+#if UNITY_SERVER
     private void OnGetAccessToken(Result result)
     {
         Debug.Log("MultiplayerMenu OnGetAccessToken");
@@ -120,6 +121,7 @@ public class MultiplayerMenu : MonoBehaviour
             Host();
         }
     }
+#endif // UNITY_SERVER
 
     private string GetLocalIPAddress()
     {

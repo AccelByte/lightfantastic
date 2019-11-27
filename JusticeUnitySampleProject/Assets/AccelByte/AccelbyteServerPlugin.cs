@@ -72,8 +72,6 @@ namespace AccelByte.Server
             AccelbyteServerPlugin.serverCredentials = new ServerCredentials(loginSession, AccelbyteServerPlugin.coroutineRunner);
 
             AccelbyteServerPlugin.webServer = new WebServer(AccelbyteServerPlugin.config.Namespace, AccelbyteServerPlugin.config.BaseUrl);
-
-            Debug.Log("AccelByteServerPlugin init");
         }
         public static Server GetServer()
         {
