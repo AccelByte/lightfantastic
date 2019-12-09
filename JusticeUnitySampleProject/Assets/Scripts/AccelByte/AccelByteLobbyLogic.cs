@@ -486,14 +486,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("Search Results:");
-            Debug.Log("Display Name: " + result.Value.data[0].displayName);
-            Debug.Log("UserID: " + result.Value.data[0].userId);
+            if (result.Value.data.Length > 0)
+            {
+                Debug.Log("Search Results:");
+                Debug.Log("Display Name: " + result.Value.data[0].displayName);
+                Debug.Log("UserID: " + result.Value.data[0].userId);
 
-            SearchFriendPrefab friend = Instantiate(friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
-            friend.transform.SetParent(friendSearchScrollContent, false);
-            friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
-            friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
+                SearchFriendPrefab friend = Instantiate(friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
+                friend.transform.SetParent(friendSearchScrollContent, false);
+                friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
+                friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
+            }
+            else
+            {
+                Debug.Log("Search Results: Not Found!");
+            }
         }
     }
 
@@ -840,7 +847,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnSuccessMatch success match completed");
 
             // DSM on process creating DS
-            if (result.Value.status == DSNotifStatus.CREATE.ToString())
+            if (result.Value.status == DSNotifStatus.CREATING.ToString())
             {
                 // Show countdown waiting for the DS creation
                 WriteInDebugBox("Waiting for the game server!");
@@ -851,8 +858,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 // Set IP and port to persistent and connect to the game
                 WriteInDebugBox("Entering the game!");
 
-                multiplayerConnect.SetIPAddressPort(result.Value.ip, result.Value.port.ToString());
-                multiplayerConnect.Connect();
+                Debug.Log("Lobby OnSuccessMatch Connect");
+                StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString()));
             }
 
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
@@ -1012,6 +1019,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    IEnumerator WaitForGameServerReady(string ip, string port)
+    {
+        bool isActive = true;
+        while (isActive)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            multiplayerConnect.SetIPAddressPort(ip, port);
+            multiplayerConnect.Connect();
+            isActive = false;
+        }
+    }
+
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
         matchmakingBoardSearchLayout.gameObject.SetActive(false);
@@ -1055,5 +1074,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.LeaveParty(OnLeaveParty);
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
         }
+    }
+
+    public void HostingGameServer()
+    {
+        multiplayerConnect.Host();
+    }
+
+    public void ConnecttoGameServer()
+    {
+        multiplayerConnect.Connect();
     }
 }

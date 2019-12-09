@@ -68,6 +68,8 @@ namespace AccelByte.Api
 
             IHttpResponse response = null;
 
+            Debug.Log(string.Format("loginsession LoginWithUsername URL from httprequestbuilder: {0}", request.Url));
+
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             Result<TokenData> result = response.TryParseJson<TokenData>();

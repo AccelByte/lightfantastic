@@ -12,11 +12,18 @@ public class BaseSimpleDebugLog : MonoBehaviour
     private Queue logQueue = new Queue();
     private bool isEnabled = false;
 
+    private List<string> LogList;
+
+    void Awake()
+    {
+        LogList = new List<string>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Debug Log Started");
-        StartCoroutine(ClearLogs());
+        //StartCoroutine(ClearLogs());
     }
 
     void OnEnable()
@@ -31,22 +38,66 @@ public class BaseSimpleDebugLog : MonoBehaviour
         isEnabled = false;
     }
 
+    //void DebugLogHandler(string logString, string stackTrace, LogType type)
+    //{
+    //    logText = logString;
+    //    string logFormat = "\n [" + type + "] : " + logText;
+
+    //    logQueue.Enqueue(logFormat);
+    //    if (type == LogType.Exception)
+    //    {
+    //        logFormat = "\n" + stackTrace;
+    //        logQueue.Enqueue(logFormat);
+    //    }
+
+    //    logText = string.Empty;
+    //    foreach (string newLog in logQueue)
+    //    {
+    //        logText += newLog;
+    //    }
+    //}
+
     void DebugLogHandler(string logString, string stackTrace, LogType type)
     {
         logText = logString;
         string logFormat = "\n [" + type + "] : " + logText;
-        logQueue.Enqueue(logFormat);
+
+        if (LogList.Count >= 30)
+        {
+            LogList.RemoveAt(0);
+        }
+
+        LogList.Add(logFormat);
         if (type == LogType.Exception)
         {
             logFormat = "\n" + stackTrace;
-            logQueue.Enqueue(logFormat);
+            LogList.Add(logFormat);
         }
+
         logText = string.Empty;
-        foreach (string newLog in logQueue)
+        foreach (string newLog in LogList)
         {
             logText += newLog;
         }
     }
+
+    void WriteInChatBox(string chat)
+    {
+        string textChat = "";
+
+        if (LogList.Count >= 10)
+        {
+            LogList.RemoveAt(0);
+        }
+        LogList.Add(chat);
+
+        foreach (var s in LogList)
+        {
+            textChat += s + "\n";
+        }
+        logText = textChat;
+    }
+
     // Update is called once per frame
     void Update()
     {

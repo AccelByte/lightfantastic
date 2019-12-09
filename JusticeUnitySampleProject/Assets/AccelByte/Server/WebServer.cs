@@ -25,16 +25,9 @@ namespace AccelByte.Server
 
         const string SERVER_RESPONSE = "200";
 
-        internal WebServer(string nameSpace, string baseUrl)
+        internal WebServer()
         {
-            Assert.IsNotNull(nameSpace, "Creating " + GetType().Name + " failed. Parameter Namespace is null");
-            Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
-
-            this.Namespace = nameSpace;
-            this.BaseUrl = baseUrl;
-
-            Debug.Log("WebServer baseURL: " + baseUrl);
-
+            Debug.Log("WebServer Start: ");
             //Start();
         }
 

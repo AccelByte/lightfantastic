@@ -9,16 +9,16 @@ namespace AccelByte.Models
     [DataContract]
     public class RegisterServerRequest
     {
-        [DataMember] public string podName { get; set; }
+        [DataMember] public string pod_name { get; set; }
         [DataMember] public int port { get; set; }
     }
 
     [DataContract]
     public class ShutdownServerNotif
     {
-        [DataMember] public bool killServer { get; set; }
-        [DataMember] public string podName { get; set; }
-        [DataMember] public string sessionId { get; set; }
+        [DataMember] public bool kill_me { get; set; }
+        [DataMember] public string pod_name { get; set; }
+        [DataMember] public string session_id { get; set; }
     }
 
     [DataContract]

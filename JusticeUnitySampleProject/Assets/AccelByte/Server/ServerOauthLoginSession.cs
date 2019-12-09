@@ -53,6 +53,8 @@ namespace AccelByte.Server
 
         public IEnumerator LoginWithClientCredential(ResultCallback callback)
         {
+            Debug.Log("LoginWithClientCredential start login");
+
             IHttpRequest request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/token")
                 .WithBasicAuth(this.clientId, this.clientSecret)
                 .WithContentType(MediaType.ApplicationForm)
@@ -61,6 +63,11 @@ namespace AccelByte.Server
                 .GetResult();
 
             IHttpResponse response = null;
+
+            Debug.Log("LoginWithClientCredential request sent");
+            Debug.Log("LoginWithClientCredential " + request.Url);
+
+            Debug.Log(string.Format("LoginOauth LoginWithClientCredential URL from httprequestbuilder: {0}", request.Url));
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
@@ -75,12 +82,12 @@ namespace AccelByte.Server
             {
                 // TODO Do we need  to maintain access token
                 //this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
-                Debug.Log("Login Success");
+                Debug.Log("LoginWithClientCredential Login Success");
             }
             else
             {
-                Debug.Log("Login ErrorCode : " + result.Error.Code);
-                Debug.Log("Login Error Message : " + result.Error.Message);
+                Debug.Log("LoginWithClientCredential Login ErrorCode : " + result.Error.Code);
+                Debug.Log("LoginWithClientCredential Login Error Message : " + result.Error.Message);
             }
         }
 

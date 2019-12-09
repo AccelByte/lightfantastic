@@ -112,31 +112,46 @@ namespace BeardedManStudios.Forge.Networking
 
 			try
 			{
+                UnityEngine.Debug.Log("UDPClient overrideBindingPort");
 				ushort clientPort = overrideBindingPort;
 
-				// Make sure not to listen on the same port as the server for local networks
-				if (clientPort == port)
-					clientPort++;
+                // Make sure not to listen on the same port as the server for local networks
+                if (clientPort == port)
+                {
+                    clientPort++;
+                    UnityEngine.Debug.Log("UDPClient Make sure not to listen on the same port as the server for local networks");
+                    UnityEngine.Debug.Log("UDPClient clientport: " + clientPort.ToString());
+                }
 
 				for (; ; clientPort++)
 				{
 					try
 					{
-						Client = new CachedUdpClient(clientPort);
-						break;
+                        UnityEngine.Debug.Log("UDPClient CachedUdpClient");
+                        Client = new CachedUdpClient(clientPort);
+                        UnityEngine.Debug.Log("UDPClient CachedUdpClient clientPort: " + clientPort);
+                        break;
 					}
 					catch
 					{
-						if (port == 0)
-							throw new BaseNetworkException("There were no ports available starting from port " + port);
+                        UnityEngine.Debug.Log("UDPClient clientPort catch");
+                        UnityEngine.Debug.Log("UDPClient clientPort: "+ clientPort);
+                        if (port == 0)
+                        {
+                            UnityEngine.Debug.Log("UDPClient port == 0");
+                            throw new BaseNetworkException("There were no ports available starting from port " + port);
+                        }
 					}
 				}
 
 				Client.EnableBroadcast = true;
 
-				// If the server is behind a NAT, request for the port punch by the nat server
-				if (!string.IsNullOrEmpty(natHost))
-					nat.Connect(host, port, clientPort, natHost, natPort);
+                // If the server is behind a NAT, request for the port punch by the nat server
+                if (!string.IsNullOrEmpty(natHost))
+                {
+                    UnityEngine.Debug.Log("UDPClient the server is behind a NAT");
+                    nat.Connect(host, port, clientPort, natHost, natPort);
+                }
 
 				// Do any generic initialization in result of the successful bind
 				OnBindSuccessful();
@@ -151,11 +166,15 @@ namespace BeardedManStudios.Forge.Networking
 				{
 					// Setup the identity of the server as a player
 					server = new NetworkingPlayer(0, host, true, ResolveHost(host, port), this);
-				}
+                    UnityEngine.Debug.Log("UDPClient Setup the identity of the server as a player");
+                }
 				catch (ArgumentException)
 				{
-					if (connectAttemptFailed != null)
-						connectAttemptFailed(this);
+                    if (connectAttemptFailed != null)
+                    {
+                        connectAttemptFailed(this);
+                        UnityEngine.Debug.Log("UDPClient connectAttemptFailed");
+                    }
 
 					throw;
 				}
@@ -191,7 +210,9 @@ namespace BeardedManStudios.Forge.Networking
 			}
 			catch (Exception e)
 			{
-				Logging.BMSLog.LogException(e);
+                UnityEngine.Debug.Log("UDPClient in result of the binding failure");
+
+                Logging.BMSLog.LogException(e);
 				// Do any generic initialization in result of the binding failure
 				OnBindFailure();
 

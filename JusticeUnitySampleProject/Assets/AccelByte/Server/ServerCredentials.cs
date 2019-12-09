@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using AccelByte.Core;
 using AccelByte.Models;
+using UnityEngine;
 
 namespace AccelByte.Server
 {
@@ -69,9 +70,12 @@ namespace AccelByte.Server
             yield return this.loginSession.LoginWithClientCredential(
                 callback);
 
-            callback.TryOk();
-
+            Debug.Log("ServerCredentials GetAccessTokenAsync loginSession auth token: " + this.loginSession.AuthorizationToken);
             this.sessionAdapter.AuthorizationToken = this.loginSession.AuthorizationToken;
+
+            Debug.Log("ServerCredentials GetAccessTokenAsync sessionAdapter auth token: " + this.sessionAdapter.AuthorizationToken);
+
+            callback.TryOk();
         }
 
         /// <summary>

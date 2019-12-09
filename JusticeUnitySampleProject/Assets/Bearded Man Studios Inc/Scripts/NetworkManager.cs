@@ -72,7 +72,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public virtual void Initialize(NetWorker networker, string masterServerHost = "", ushort masterServerPort = 15940, JSONNode masterServerRegisterData = null)
 		{
-			Networker = networker;
+            Debug.Log("Networkmanager Initialize start");
+
+            Networker = networker;
 			networker.objectCreated += CreatePendingObjects;
 			Networker.binaryMessageReceived += ReadBinary;
 			SetupObjectCreatedEvent();
@@ -80,15 +82,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			UnityObjectMapper.Instance.UseAsDefault();
 			NetworkObject.Factory = new NetworkObjectFactory();
 
-			if (Networker is IServer)
+            Debug.Log("Networkmanager Initialize start");
+            if (Networker is IServer)
 			{
-				if (!string.IsNullOrEmpty(masterServerHost))
+                Debug.Log("Networkmanager Initialize Networker IServer");
+                if (!string.IsNullOrEmpty(masterServerHost))
 				{
 					_masterServerHost = masterServerHost;
 					_masterServerPort = masterServerPort;
 
 					RegisterOnMasterServer(masterServerRegisterData);
-				}
+                    Debug.Log("Networkmanager Initialize RegisterOnMasterServer");
+                }
 
 				Networker.playerAccepted += PlayerAcceptedSceneSetup;
 

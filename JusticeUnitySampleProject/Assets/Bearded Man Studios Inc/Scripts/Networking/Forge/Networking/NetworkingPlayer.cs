@@ -289,8 +289,9 @@ namespace BeardedManStudios.Forge.Networking
 		/// </summary>
 		public void Ping()
 		{
-			LastPing = Networker.Time.Timestep;
-		}
+            LastPing = Networker.Time.Timestep;
+            UnityEngine.Debug.Log("networkingplayer Ping: " + LastPing);
+        }
 
 		/// <summary>
 		/// Called by the server to check and see if this player has timed out
@@ -298,7 +299,8 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns>True if the player has timed out</returns>
 		public bool TimedOut()
 		{
-			return LastPing + TimeoutMilliseconds <= Networker.Time.Timestep;
+            UnityEngine.Debug.Log("networkingplayer timeout");
+            return LastPing + TimeoutMilliseconds <= Networker.Time.Timestep;
 		}
 
 		/// <summary>
@@ -312,7 +314,8 @@ namespace BeardedManStudios.Forge.Networking
 
 		public void OnDisconnect()
 		{
-			Disconnected = true;
+            UnityEngine.Debug.Log("networkingplayer disconnect");
+            Disconnected = true;
 			Connected = false;
 
 			StopComposers();

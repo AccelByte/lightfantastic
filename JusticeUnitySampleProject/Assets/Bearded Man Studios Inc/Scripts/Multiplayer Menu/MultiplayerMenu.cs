@@ -114,12 +114,16 @@ public class MultiplayerMenu : MonoBehaviour
         }
         else
         {
-            Debug.Log("MultiplayerMenu OnRegisterServer Success!");
-            // TODO: Start webserver to get matchmaking data from DSM
-            AccelbyteServerPlugin.GetWebServer().Start();
-            // Start Hosting multiplayer
-            Host();
+            //Debug.Log("MultiplayerMenu OnRegisterServer Success!");
+            //// TODO: Start webserver to get matchmaking data from DSM
+            //AccelbyteServerPlugin.GetWebServer().Start();
+            //// Start Hosting multiplayer
+            //Host();
         }
+        // Start webserver
+        AccelbyteServerPlugin.GetWebServer().Start();
+        // Start Hosting multiplayer
+        Host();
     }
 #endif // UNITY_SERVER
 
@@ -164,12 +168,14 @@ public class MultiplayerMenu : MonoBehaviour
 
 		if (useTCP)
 		{
-			client = new TCPClient();
+            Debug.Log("MultiplayerMenu Connect UseTCP IP: " + IPAddress);
+            client = new TCPClient();
 			((TCPClient)client).Connect(IPAddress, (ushort)port);
 		}
 		else
 		{
-			client = new UDPClient();
+            Debug.Log("MultiplayerMenu Connect UseUDP IP: " + IPAddress);
+            client = new UDPClient();
 			if (natServerHost.Trim().Length == 0)
 				((UDPClient)client).Connect(IPAddress, (ushort)port);
 			else
@@ -223,10 +229,16 @@ public class MultiplayerMenu : MonoBehaviour
 		{
 			server = new UDPServer(64);
 
-			if (natServerHost.Trim().Length == 0)
-				((UDPServer)server).Connect(IPAddress, ushort.Parse(PortNumber));
-			else
-				((UDPServer)server).Connect(port: ushort.Parse(PortNumber), natHost: natServerHost, natPort: natServerPort);
+            if (natServerHost.Trim().Length == 0)
+            {
+                Debug.Log("MultiplayerMenu Server Connect IP: " + IPAddress);
+                ((UDPServer)server).Connect(IPAddress, ushort.Parse(PortNumber));
+            }
+            else
+            {
+                ((UDPServer)server).Connect(port: ushort.Parse(PortNumber), natHost: natServerHost, natPort: natServerPort);
+                Debug.Log("MultiplayerMenu Server Connect IP using NAT: " + IPAddress);
+            }
 		}
 
 		server.playerTimeout += (player, sender) =>
@@ -240,17 +252,17 @@ public class MultiplayerMenu : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.H))
-			Host();
-		else if (Input.GetKeyDown(KeyCode.C))
-			Connect();
-		else if (Input.GetKeyDown(KeyCode.L))
-		{
-			NetWorker.localServerLocated -= TestLocalServerFind;
-			NetWorker.localServerLocated += TestLocalServerFind;
-			NetWorker.RefreshLocalUdpListings();
-		}
-	}
+        if (Input.GetKeyDown(KeyCode.H))
+            Host();
+        else if (Input.GetKeyDown(KeyCode.C))
+            Connect();
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            NetWorker.localServerLocated -= TestLocalServerFind;
+            NetWorker.localServerLocated += TestLocalServerFind;
+            NetWorker.RefreshLocalUdpListings();
+        }
+    }
 
 	private void TestLocalServerFind(NetWorker.BroadcastEndpoints endpoint, NetWorker sender)
 	{
@@ -259,26 +271,34 @@ public class MultiplayerMenu : MonoBehaviour
 
 	public void Connected(NetWorker networker)
 	{
-		if (!networker.IsBound)
+        Debug.Log("MultiplayerMenu Connected - Start");
+
+        if (!networker.IsBound)
 		{
-			Debug.LogError("NetWorker failed to bind");
+            Debug.Log("MultiplayerMenu Connected - NetWorker failed to bind");
+            Debug.LogError("NetWorker failed to bind");
 			return;
 		}
 
-		if (mgr == null && networkManager == null)
-		{
-			Debug.LogWarning("A network manager was not provided, generating a new one instead");
-			networkManager = new GameObject("Network Manager");
-			mgr = networkManager.AddComponent<NetworkManager>();
-		}
-		else if (mgr == null)
-			mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+        if (mgr == null && networkManager == null)
+        {
+            Debug.Log("MultiplayerMenu Connected - A network manager was not provided, generating a new one instead");
+            Debug.LogWarning("A network manager was not provided, generating a new one instead");
+            networkManager = new GameObject("Network Manager");
+            mgr = networkManager.AddComponent<NetworkManager>();
+        }
+        else if (mgr == null)
+        {
+            Debug.Log("MultiplayerMenu Connected - instantiate network manager");
+            mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+        }
 
 		// If we are using the master server we need to get the registration data
 		JSONNode masterServerData = null;
 		if (!string.IsNullOrEmpty(masterServerHost))
 		{
-			string serverId = "myGame";
+            Debug.Log("MultiplayerMenu Connected - MasterServerRegisterData");
+            string serverId = "myGame";
 			string serverName = "Forge Game";
 			string type = "Deathmatch";
 			string mode = "Teams";
@@ -287,24 +307,33 @@ public class MultiplayerMenu : MonoBehaviour
 			masterServerData = mgr.MasterServerRegisterData(networker, serverId, serverName, type, mode, comment, useElo, eloRequired);
 		}
 
-		mgr.Initialize(networker, masterServerHost, masterServerPort, masterServerData);
+        Debug.Log("MultiplayerMenu Connected - Initialize networker");
+        mgr.Initialize(networker, masterServerHost, masterServerPort, masterServerData);
 
-		if (useInlineChat && networker.IsServer)
-			SceneManager.sceneLoaded += CreateInlineChat;
+        if (useInlineChat && networker.IsServer)
+        {
+            Debug.Log("MultiplayerMenu Connected - create in line chat");
+            SceneManager.sceneLoaded += CreateInlineChat;
+        }
 
 		if (networker is IServer)
 		{
+            Debug.Log("MultiplayerMenu Connected networker is IServer");
+
             if (!DontChangeSceneOnConnect)
             {
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                Debug.Log("MultiplayerMenu Connected Load Level");
                 SceneManager.LoadScene("ActionPhase_One");
             }
             else
             {
+                Debug.Log("MultiplayerMenu Connected - FLUSH");
                 NetworkObject.Flush(networker); //Called because we are already in the correct scene!
             }
 		}
-	}
+        Debug.Log("MultiplayerMenu Connected - END");
+    }
 
 	private void CreateInlineChat(Scene arg0, LoadSceneMode arg1)
 	{

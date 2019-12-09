@@ -7,6 +7,7 @@ using System.Collections;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine.Assertions;
+using UnityEngine;
 
 //TODO: Do authentication using server creadentials
 
@@ -32,6 +33,7 @@ namespace AccelByte.Server
 
         internal Server(ServerApi server, AccelByteServerSession session, CoroutineRunner coroutineRunner)
         {
+            Debug.Log("Server init server start");
             Assert.IsNotNull(server, "api parameter can not be null.");
             Assert.IsNotNull(session, "session parameter can not be null");
             Assert.IsNotNull(coroutineRunner, "coroutineRunner parameter can not be null. Construction failed");
@@ -40,6 +42,9 @@ namespace AccelByte.Server
             this.sessionAdapter = session;
             this.api = server;
             this.podName = Environment.GetEnvironmentVariable("POD_NAME");
+
+            Debug.Log("Server init sessionAdapter: "+ sessionAdapter.AuthorizationToken);
+            Debug.Log("Server init podName: " + this.podName);
         }
 
         /// <summary>
@@ -54,16 +59,22 @@ namespace AccelByte.Server
 
             if (!this.sessionAdapter.IsValid())
             {
+                Debug.Log("Server RegisterServer session is not valid");
                 callback.TryError(ErrorCode.IsNotLoggedIn);
                 return;
             }
 
+            Debug.Log("Server RegisterServer portName"+ portNumber);
+
             RegisterServerRequest registerServerRequest = new RegisterServerRequest
             {
-                podName = this.podName,
+                pod_name = this.podName,
                 port = portNumber
+
+
             };
 
+            Debug.Log("Server RegisterServer start run register");
             this.coroutineRunner.Run(this.api.Register(
                         registerServerRequest,
                         this.sessionAdapter.AuthorizationToken,
@@ -89,9 +100,9 @@ namespace AccelByte.Server
 
             var shutdownServerNotif = new ShutdownServerNotif
             {
-                killServer = shutdownServer,
-                podName = podname,
-                sessionId = sessionID
+                kill_me = shutdownServer,
+                pod_name = podname,
+                session_id = sessionID
             };
 
             this.coroutineRunner.Run(this.api.Shutdown(

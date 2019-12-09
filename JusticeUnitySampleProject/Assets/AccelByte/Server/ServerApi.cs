@@ -6,6 +6,7 @@ using System.Collections;
 using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.Assertions;
+using UnityEngine;
 
 namespace AccelByte.Server
 {
@@ -17,6 +18,7 @@ namespace AccelByte.Server
 
         internal ServerApi(string baseUrl, string nameSpace, IHttpWorker httpWorker)
         {
+            Debug.Log("ServerApi init serverapi start");
             Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
             Assert.IsFalse(
                 string.IsNullOrEmpty(nameSpace),
@@ -34,7 +36,9 @@ namespace AccelByte.Server
             Assert.IsNotNull(registerServerRequest, "Register failed. registerserverRequest is null!");
             Assert.IsNotNull(accessToken, "Can't update a slot! accessToken parameter is null!");
 
-            var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/dsm/namespaces/{namespace}/servers/register")
+            Debug.Log(string.Format("ServerApi Register: {0}/namespaces/{1}/servers/register", this.baseUrl, @namespace));
+
+            var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/namespaces/{namespace}/servers/register")
                 .WithPathParam("namespace", this.@namespace)
                 .WithContentType(MediaType.ApplicationJson)
                 .WithBearerAuth(accessToken)
@@ -42,6 +46,8 @@ namespace AccelByte.Server
                 .GetResult();
 
             IHttpResponse response = null;
+
+            Debug.Log(string.Format("ServerApi Register URL from httprequestbuilder: {0}", request.Url));
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
@@ -55,7 +61,7 @@ namespace AccelByte.Server
             Assert.IsNotNull(shutdownServerNotif, "Register failed. shutdownServerNotif is null!");
             Assert.IsNotNull(accessToken, "Can't update a slot! accessToken parameter is null!");
 
-            var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/dsm/namespaces/{namespace}/servers/shutdown")
+            var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/namespaces/{namespace}/servers/shutdown")
                 .WithPathParam("namespace", this.@namespace)
                 .WithContentType(MediaType.ApplicationJson)
                 .WithBearerAuth(accessToken)

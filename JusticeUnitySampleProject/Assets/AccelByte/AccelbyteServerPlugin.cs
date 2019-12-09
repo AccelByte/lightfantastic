@@ -18,7 +18,7 @@ namespace AccelByte.Server
     {
         private static readonly ServerCredentials serverCredentials;
 
-        private static readonly Config config;
+        private static readonly ServerConfig serverConfig;
         private static readonly CoroutineRunner coroutineRunner;
         private static readonly UnityHttpWorker httpWorker;
         private static Server server;
@@ -26,7 +26,7 @@ namespace AccelByte.Server
 
         private static readonly WebServer webServer;
 
-        public static Config Config { get { return AccelbyteServerPlugin.config; } }
+        public static ServerConfig ServerConfig { get { return AccelbyteServerPlugin.serverConfig; } }
 
         static AccelbyteServerPlugin()
         {
@@ -45,40 +45,43 @@ namespace AccelByte.Server
             );
 #endif
 
-            var configFile = Resources.Load("AccelByteSDKConfig");
+            var configFile = Resources.Load("AccelByteServerSDKConfig");
 
             if (configFile == null)
             {
-                throw new Exception("'AccelByteSDKConfig.json' isn't found in the Project/Assets/Resources directory");
+                throw new Exception("'AccelByteServerSDKConfig.json' isn't found in the Project/Assets/Resources directory");
             }
 
             string wholeJsonText = ((TextAsset)configFile).text;
 
-            AccelbyteServerPlugin.config = wholeJsonText.ToObject<Config>();
-            AccelbyteServerPlugin.config.Expand();
+            Debug.Log("ServerConfig Json: " + wholeJsonText);
+
+            AccelbyteServerPlugin.serverConfig = wholeJsonText.ToObject<ServerConfig>();
+            AccelbyteServerPlugin.serverConfig.Expand();
             AccelbyteServerPlugin.coroutineRunner = new CoroutineRunner();
             AccelbyteServerPlugin.httpWorker = new UnityHttpWorker();
             ILoginSession loginSession;
 
             loginSession = new ServerOauthLoginSession(
-                AccelbyteServerPlugin.config.IamServerUrl,
-                AccelbyteServerPlugin.config.Namespace,
-                AccelbyteServerPlugin.config.ClientId,
-                AccelbyteServerPlugin.config.ClientSecret,
-                AccelbyteServerPlugin.config.RedirectUri,
+                AccelbyteServerPlugin.serverConfig.IamServerUrl,
+                AccelbyteServerPlugin.serverConfig.Namespace,
+                AccelbyteServerPlugin.serverConfig.ClientId,
+                AccelbyteServerPlugin.serverConfig.ClientSecret,
+                AccelbyteServerPlugin.serverConfig.RedirectUri,
                 AccelbyteServerPlugin.httpWorker,
                 AccelbyteServerPlugin.coroutineRunner);
 
             AccelbyteServerPlugin.serverCredentials = new ServerCredentials(loginSession, AccelbyteServerPlugin.coroutineRunner);
 
-            AccelbyteServerPlugin.webServer = new WebServer(AccelbyteServerPlugin.config.Namespace, AccelbyteServerPlugin.config.BaseUrl);
+            AccelbyteServerPlugin.webServer = new WebServer();
         }
         public static Server GetServer()
         {
+            Debug.Log("AccelByteServerPlugin start get server");
             if (AccelbyteServerPlugin.server == null)
             {
                 AccelbyteServerPlugin.server = new Server(
-                    new ServerApi(AccelbyteServerPlugin.config.BaseUrl, AccelbyteServerPlugin.config.Namespace, AccelbyteServerPlugin.httpWorker),
+                    new ServerApi(AccelbyteServerPlugin.serverConfig.DSMServerUrl, AccelbyteServerPlugin.serverConfig.Namespace, AccelbyteServerPlugin.httpWorker),
                     AccelbyteServerPlugin.serverCredentials.Session,
                     AccelbyteServerPlugin.coroutineRunner);
                 Debug.Log("AccelByteServerPlugin Getserver Create Server");
