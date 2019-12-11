@@ -70,6 +70,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform loadingDots;
     private Transform timeLeftText;
 
+    //Notification
+    [SerializeField]
+    private Text generalNotificationTitle;
+    [SerializeField]
+    private Text generalNotificationText;
+    [SerializeField]
+    private Text incomingFriendNotificationTitle;
+    [SerializeField]
+    private InvitationPrefab invite;
+
     private UIElementHandler uiHandler;
     #endregion
 
@@ -117,14 +127,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
             abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
             LoadFriendsList();
-            abLobby.InvitedToParty += result => OnInvitedToParty(result);
-            abLobby.JoinedParty += result => OnMemberJoinedParty(result);
-            abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
-            abLobby.DSUpdated += result => OnSuccessMatch(result);
-            abLobby.RematchmakingNotif += result => OnRematchmaking(result);
-            abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
-            abLobby.KickedFromParty += result => OnKickedFromParty(result);
-            abLobby.LeaveFromParty += result => OnMemberLeftParty(result);
+            SetupGeneralCallbacks();
+            SetupFriendCallbacks();
+            SetupMatchmakingCallbacks();
+            SetupChatCallbacks();
         }
         else
         {
@@ -133,6 +139,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             ConnectToLobby();
         }
     }
+
     public void DisconnectFromLobby()
     {
         if (abLobby.IsConnected)
@@ -140,19 +147,54 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             LoadFriendsList();
-            abLobby.InvitedToParty -= OnInvitedToParty;
-            abLobby.JoinedParty -= OnMemberJoinedParty;
-            abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
-            abLobby.DSUpdated -= OnSuccessMatch;
-            abLobby.RematchmakingNotif -= OnRematchmaking;
-            abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
-            abLobby.KickedFromParty -= OnKickedFromParty;
-            abLobby.LeaveFromParty -= OnMemberLeftParty;
+            UnsubscribeAllCallbacks();
         }
         else
         {
             Debug.Log("There is no Connection to lobby");
         }
+    }
+
+    private void SetupGeneralCallbacks()
+    {
+        abLobby.OnNotification += result => OnNotificationReceived(result);
+    }
+
+    private void SetupFriendCallbacks()
+    {
+        abLobby.OnIncomingFriendRequest += result => OnIncomingFriendsRequest(result);
+        abLobby.FriendRequestAccepted += result => OnFriendRequestAccepted(result);
+        abLobby.FriendsStatusChanged += result => OnFriendsStatusChanged(result);
+    }
+
+    private void SetupMatchmakingCallbacks()
+    {
+        abLobby.InvitedToParty += result => OnInvitedToParty(result);
+        abLobby.JoinedParty += result => OnMemberJoinedParty(result);
+        abLobby.MatchmakingCompleted += result => OnFindMatchCompleted(result);
+        abLobby.DSUpdated += result => OnSuccessMatch(result);
+        abLobby.RematchmakingNotif += result => OnRematchmaking(result);
+        abLobby.ReadyForMatchConfirmed += result => OnGetReadyConfirmationStatus(result);
+        abLobby.KickedFromParty += result => OnKickedFromParty(result);
+        abLobby.LeaveFromParty += result => OnMemberLeftParty(result);
+    }
+
+    private void SetupChatCallbacks()
+    {
+        abLobby.PersonalChatReceived += result => OnPersonalChatReceived(result);
+        abLobby.PartyChatReceived += result => OnPartyChatReceived(result);
+    }
+
+    private void UnsubscribeAllCallbacks()
+    {
+        abLobby.InvitedToParty -= OnInvitedToParty;
+        abLobby.JoinedParty -= OnMemberJoinedParty;
+        abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
+        abLobby.DSUpdated -= OnSuccessMatch;
+        abLobby.RematchmakingNotif -= OnRematchmaking;
+        abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
+        abLobby.KickedFromParty -= OnKickedFromParty;
+        abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
 
     public void LoadFriendsList()
@@ -1085,4 +1127,65 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         multiplayerConnect.Connect();
     }
+
+    #region AccelByte Notification Callbacks
+    private void OnNotificationReceived(Result<Notification> result)
+    {
+        generalNotificationTitle.text = result.Value.topic;
+        generalNotificationText.text = result.Value.payload;
+        uiHandler.ShowNotification(uiHandler.generalNotification);
+    }
+
+    //This is for updating your friends list with up to date player information
+    private void OnFriendsStatusChanged(Result<FriendsStatusNotif> result)
+    {
+        string friendName = friendList[result.Value.userID].DisplayName;
+        friendList[result.Value.userID] = new FriendData(result.Value.userID, friendName, result.Value.lastSeenAt, result.Value.availability);
+        RefreshFriendsUI();
+    }
+
+    //Updating your friends list if someone accepts your friend request
+    private void OnFriendRequestAccepted(Result<Friend> result)
+    {
+        throw new NotImplementedException();
+        
+    }
+
+    //You have a new friend invite!
+    private void OnIncomingFriendsRequest(Result<Friend> result)
+    {
+        GetFriendInfo(result.Value.friendId, OnGetFriendInfoIncomingFriendRequest);
+    }
+    private void OnGetFriendInfoIncomingFriendRequest(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
+            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            if (!friendList.ContainsKey(result.Value.userId))
+            {
+                incomingFriendNotificationTitle.text = result.Value.displayName + " sent you a friend request!";
+                invite.SetupInvitationPrefab(result.Value.userId);
+                uiHandler.ShowNotification(uiHandler.inviteNotification);
+            }
+        }
+    }
+
+
+    private void OnPersonalChatReceived(Result<ChatMesssage> result)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void OnPartyChatReceived(Result<ChatMesssage> result)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
+
+
 }

@@ -28,6 +28,10 @@ namespace UITools
         private CanvasGroup multiplayerOptionPanel;
 
         private CanvasGroup currentPanel;
+
+        //Notifications
+        public Transform generalNotification;
+        public Transform inviteNotification;
         #endregion
 
         private const float MAX_ALPHA = 1f;
@@ -192,5 +196,19 @@ namespace UITools
             panelToFade.alpha = MAX_ALPHA;
             currentPanel = panelToFade;
         }
+        public void ShowNotification(Transform notificationToShow)
+        {
+            StartCoroutine(TimedNotification(notificationToShow));
+        }
+
+        public IEnumerator TimedNotification(Transform notificationToShow)
+        {
+            notificationToShow.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(5f);
+
+            notificationToShow.gameObject.SetActive(false);
+        }
     }
+
 }
