@@ -7,6 +7,96 @@ using System.Runtime.Serialization;
 
 namespace AccelByte.Models
 {
+    #region Enum
+
+    public enum ItemType
+    {
+        NONE,
+        COINS,
+        INGAMEITEM,
+        BUNDLE,
+        APP,
+        CODE
+    }
+
+    public enum ItemStatus
+    {
+        NONE,
+        ACTIVE,
+        INACTIVE
+    }
+
+    public enum CurrencyType
+    {
+        NONE,
+        REAL,
+        VIRTUAL
+    }
+
+    public enum EntitlementClazz
+    {
+        NONE,
+        APP,
+        ENTITLEMENT,
+        DISTRIBUTION,
+        CODE
+    }
+
+    public enum EntitlementStatus
+    {
+        NONE,
+        ACTIVE,
+        INACTIVE,
+        CONSUMED,
+        DISTRIBUTED,
+        REVOKED
+    }
+
+    public enum EntitlementAppType
+    {
+        NONE,
+        GAME,
+        SOFTWARE,
+        DLC,
+        DEMO
+    }
+
+    public enum EntitlementType
+    {
+        NONE,
+        DURABLE,
+        CONSUMABLE
+    }
+
+    public enum OrderStatus
+    {
+        NONE,
+        INIT,
+        CHARGED,
+        CHARGEBACK,
+        CHARGEBACK_REVERSED,
+        FULFILLED,
+        FULFILL_FAILED,
+        REFUNDING,
+        REFUNDED,
+        REFUND_FAILED,
+        CLOSED,
+        DELETED
+    }
+
+    public enum EntitlementSource
+    {
+        NONE,
+        PURCHASE,
+        IAP,
+        PROMOTION,
+        ACHIEVEMENT,
+        REFERRAL_BONUS,
+        REDEEM_CODE,
+        OTHER
+    }
+
+    #endregion
 
     #region Wallet
 
@@ -41,14 +131,14 @@ namespace AccelByte.Models
         [DataMember] public string userId { get; set; }
         [DataMember] public string currencyCode { get; set; }
         [DataMember] public string currencySymbol { get; set; }
+        [DataMember] public double balance { get; set; }
         [DataMember] public DateTime createdAt { get; set; }
         [DataMember] public DateTime updatedAt { get; set; }
-        [DataMember] public double balance { get; set; }
-        [DataMember] public string status { get; set; }
+        [DataMember] public ItemStatus status { get; set; }
     }
 
     [DataContract]
-    public class WalletTransaction
+    public class WalletTransactionInfo
     {
         [DataMember] public string walletId { get; set; }
         [DataMember] public int amount { get; set; }
@@ -63,9 +153,9 @@ namespace AccelByte.Models
     }
 
     [DataContract]
-    public class PagedWalletTransactions
+    public class WalletTransactionPagingSlicedResult
     {
-        [DataMember] public WalletTransaction[] data { get; set; }
+        [DataMember] public WalletTransactionInfo[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
     }
 
@@ -74,15 +164,14 @@ namespace AccelByte.Models
     #region Categories
 
     [DataContract]
-    public class Category
+    public class CategoryInfo
     {
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
         [DataMember] public string parentCategoryPath { get; set; }
         [DataMember] public string categoryPath { get; set; }
-        [DataMember] public string displayName { get; set; }
-        [DataMember] public Category[] childCategories { get; set; }
         [DataMember] public DateTime createdAt { get; set; }
         [DataMember] public DateTime updatedAt { get; set; }
+        [DataMember] public string displayName { get; set; }
         [DataMember] public bool root { get; set; }
     }
 
@@ -91,7 +180,7 @@ namespace AccelByte.Models
     #region Items
 
     [DataContract]
-    public class RegionData
+    public class RegionDataItem
     {
         [DataMember] public int price { get; set; }
         [DataMember] public int discountPercentage { get; set; }
@@ -102,42 +191,8 @@ namespace AccelByte.Models
         [DataMember] public string currencyNamespace { get; set; }
         [DataMember] public DateTime purchaseAt { get; set; }
         [DataMember] public DateTime expireAt { get; set; }
-        [DataMember] public int totalNum { get; set; }
-        [DataMember] public int totalNumPerAccount { get; set; }
         [DataMember] public DateTime discountPurchaseAt { get; set; }
         [DataMember] public DateTime discountExpireAt { get; set; }
-        [DataMember] public int discountTotalNum { get; set; }
-        [DataMember] public int discountTotalNumPerAccount { get; set; }
-    }
-
-    //Type-safe enum for ItemType
-    public sealed class ItemType
-    {
-        private readonly string name;
-
-        public static readonly ItemType Product = new ItemType("PRODUCT");
-        public static readonly ItemType Coins = new ItemType("COINS");
-        public static readonly ItemType InGameItem = new ItemType("INGAMEITEM");
-        public static readonly ItemType Bundle = new ItemType("BUNDLE");
-        public static readonly ItemType App = new ItemType("APP");
-        public static readonly ItemType Code = new ItemType("CODE");
-
-        private ItemType(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
-    }
-
-    public sealed class ItemStatus
-    {
-        private readonly string name;
-
-        public static readonly ItemStatus Active = new ItemStatus("ACTIVE");
-        public static readonly ItemStatus Inactive = new ItemStatus("INACTIVE");
-        public static readonly ItemStatus Deleted = new ItemStatus("DELETED");
-
-        private ItemStatus(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
     }
 
     [DataContract]
@@ -146,19 +201,24 @@ namespace AccelByte.Models
         [DataMember] public string itemId { get; set; }
         [DataMember] public string appId { get; set; }
         [DataMember] public EntitlementAppType appType { get; set; }
+        [DataMember] public string baseAppId { get; set; }
         [DataMember] public string sku { get; set; }
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
         [DataMember] public string name { get; set; }
+        [DataMember] public EntitlementType entitlementType { get; set; }
         [DataMember] public int useCount { get; set; }
+        [DataMember] public bool stackable { get; set; }
         [DataMember] public ItemType itemType { get; set; }
-        [DataMember] public string targetCurrencyCode { get; set; }
+        [DataMember] public string thumbnailUrl { get; set; }
         [DataMember] public string targetNamespace { get; set; }
+        [DataMember] public string targetCurrencyCode { get; set; }
+        [DataMember] public string targetItemId { get; set; }
         [DataMember] public string title { get; set; }
-        [DataMember] public Image thumbnailImage { get; set; }
-        [DataMember] public RegionData regionDataItem { get; set; }
+        [DataMember] public RegionDataItem regionDataItem { get; set; }
         [DataMember] public string[] itemIds { get; set; }
         [DataMember] public int maxCountPerUser { get; set; }
         [DataMember] public int maxCount { get; set; }
+        [DataMember] public string boothName { get; set; }
         [DataMember] public string region { get; set; }
         [DataMember] public string language { get; set; }
     }
@@ -166,17 +226,23 @@ namespace AccelByte.Models
     [DataContract]
     public class ItemCriteria
     {
-        [DataMember] public ItemType ItemType { get; set; }
-        [DataMember] public string CategoryPath { get; set; }
-        [DataMember] public ItemStatus ItemStatus { get; set; }
-        [DataMember] public int? Page { get; set; }
-        [DataMember] public int? Size { get; set; }
-        [DataMember] public string SortBy { get; set; }
+        [DataMember] public ItemType itemType { get; set; }
+        [DataMember] public EntitlementAppType appType { get; set; }
+        [DataMember] public string region { get; set; }
+        [DataMember] public string language { get; set; }
+        [DataMember] public string categoryPath { get; set; }
+        [DataMember] public string baseAppId { get; set; }
+        [DataMember] public string[] tags { get; set; }
+        [DataMember] public int? offset { get; set; }
+        [DataMember] public int? limit { get; set; }
+        [DataMember] public string sortBy { get; set; }
     }
 
     [DataContract]
     public class Image
     {
+        [DataMember(Name = "as")] public string As { get; set; }
+        [DataMember] public string caption { get; set; }
         [DataMember] public int height { get; set; }
         [DataMember] public int width { get; set; }
         [DataMember] public string imageUrl { get; set; }
@@ -184,41 +250,95 @@ namespace AccelByte.Models
     }
 
     [DataContract]
-    public class Item
+    public class PopulatedItemInfo
     {
         [DataMember] public string title { get; set; }
         [DataMember] public string description { get; set; }
         [DataMember] public string longDescription { get; set; }
-        [DataMember] public Image[] images { get; set; }
-        [DataMember] public Image thumbnailImage { get; set; }
         [DataMember] public string itemId { get; set; }
         [DataMember] public string appId { get; set; }
-        [DataMember] public string appType { get; set; } //"GAME"
+        [DataMember] public EntitlementAppType appType { get; set; } //"GAME"
+        [DataMember] public string baseAppId { get; set; }
         [DataMember] public string sku { get; set; }
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
-        [DataMember] public string entitlementName { get; set; }
-        [DataMember] public string entitlementType { get; set; }
+        [DataMember] public string name { get; set; }
+        [DataMember] public EntitlementType entitlementType { get; set; }
         [DataMember] public int useCount { get; set; }
+        [DataMember] public bool stackable { get; set; }
         [DataMember] public string categoryPath { get; set; }
-        [DataMember] public string status { get; set; }
-        [DataMember] public string itemType { get; set; }
-        [DataMember] public DateTime createdAt { get; set; }
-        [DataMember] public DateTime updatedAt { get; set; }
+        [DataMember] public ItemStatus status { get; set; }
+        [DataMember] public ItemType itemType { get; set; }
+        [DataMember] public string targetNamespace { get; set; }
         [DataMember] public string targetCurrencyCode { get; set; }
-        [DataMember] public RegionData[] regionData { get; set; }
+        [DataMember] public string targetItemId { get; set; }
+        [DataMember] public Image[] images { get; set; }
+        [DataMember] public string thumbnailUrl { get; set; }
+        [DataMember] public RegionDataItem[] regionData { get; set; }
         [DataMember] public string[] itemIds { get; set; }
         [DataMember] public string[] tags { get; set; }
+        [DataMember] public int maxCountPerUser { get; set; }
+        [DataMember] public int maxCount { get; set; }
+        [DataMember] public string clazz { get; set; }
+        [DataMember] public string boothName { get; set; }
+        [DataMember] public int displayOrder { get; set; }
+        [DataMember] public string ext { get; set; }
+        [DataMember] public string region { get; set; }
+        [DataMember] public string language { get; set; }
+        [DataMember] public DateTime createdAt { get; set; }
+        [DataMember] public DateTime updatedAt { get; set; }
+        [DataMember] public ItemInfo[] items { get; set; }
+        [DataMember] public string localExt { get; set; }
     }
 
     [DataContract]
-    public class PagedItems
+    public class ItemInfo
     {
-        [DataMember] public Item[] data { get; set; }
+        [DataMember] public string title { get; set; }
+        [DataMember] public string description { get; set; }
+        [DataMember] public string longDescription { get; set; }
+        [DataMember] public string itemId { get; set; }
+        [DataMember] public string appId { get; set; }
+        [DataMember] public EntitlementAppType appType { get; set; } //"GAME"
+        [DataMember] public string baseAppId { get; set; }
+        [DataMember] public string sku { get; set; }
+        [DataMember(Name = "namespace")] public string Namespace { get; set; }
+        [DataMember] public string name { get; set; }
+        [DataMember] public EntitlementType entitlementType { get; set; }
+        [DataMember] public int useCount { get; set; }
+        [DataMember] public bool stackable { get; set; }
+        [DataMember] public string categoryPath { get; set; }
+        [DataMember] public ItemStatus status { get; set; }
+        [DataMember] public ItemType itemType { get; set; }
+        [DataMember] public string targetNamespace { get; set; }
+        [DataMember] public string targetCurrencyCode { get; set; }
+        [DataMember] public string targetItemId { get; set; }
+        [DataMember] public Image[] images { get; set; }
+        [DataMember] public string thumbnailUrl { get; set; }
+        [DataMember] public RegionDataItem[] regionData { get; set; }
+        [DataMember] public string[] itemIds { get; set; }
+        [DataMember] public string[] tags { get; set; }
+        [DataMember] public int maxCountPerUser { get; set; }
+        [DataMember] public int maxCount { get; set; }
+        [DataMember] public string clazz { get; set; }
+        [DataMember] public string boothName { get; set; }
+        [DataMember] public int displayOrder { get; set; }
+        [DataMember] public string ext { get; set; }
+        [DataMember] public string region { get; set; }
+        [DataMember] public string language { get; set; }
+        [DataMember] public DateTime createdAt { get; set; }
+        [DataMember] public DateTime updatedAt { get; set; }
+        [DataMember] public string localExt { get; set; }
+    }
+
+    [DataContract]
+    public class ItemPagingSlicedResult
+    {
+        [DataMember] public ItemInfo[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
     }
 
     #endregion
-    
+
     #region Orders
 
     [DataContract]
@@ -247,6 +367,7 @@ namespace AccelByte.Models
         [DataMember(Name = "operator")] public string Operator { get; set; }
         [DataMember] public string action { get; set; }
         [DataMember] public string reason { get; set; }
+        [DataMember(Name = "namespace")] public string Namespace { get; set; }
         [DataMember] public string userId { get; set; }
         [DataMember] public DateTime createdAt { get; set; }
         [DataMember] public DateTime updatedAt { get; set; }
@@ -256,35 +377,38 @@ namespace AccelByte.Models
     public class OrderInfo
     {
         [DataMember] public string orderNo { get; set; }
+        [DataMember] public string paymentOrderNo { get; set; }
+        [DataMember(Name = "namespace")] public string Namespace { get; set; }
         [DataMember] public string userId { get; set; }
         [DataMember] public string itemId { get; set; }
         [DataMember] public bool sandbox { get; set; }
         [DataMember] public int quantity { get; set; }
         [DataMember] public int price { get; set; }
         [DataMember] public int discountedPrice { get; set; }
+        [DataMember] public string paymentProvider { get; set; }
         [DataMember] public int vat { get; set; }
         [DataMember] public int salesTax { get; set; }
         [DataMember] public int paymentProviderFee { get; set; }
         [DataMember] public int paymentMethodFee { get; set; }
         [DataMember] public CurrencySummary currency { get; set; }
-        [DataMember] public PaymentUrl paymentUrl { get; set; }
         [DataMember] public string paymentStationUrl { get; set; }
-        [DataMember] public OrderTransaction[] transactions { get; set; }
-        [DataMember] public string[] entitlementIds { get; set; }
-
-        //['INIT', 'CHARGED', 'CHARGE_FAILED', 'FULFILLED', 'FULFILL_FAILED', 'REFUNDING', 'REFUNDED', 'DELETED'],
-        [DataMember] public string status { get; set; }
-
+        [DataMember] public ItemSnapshot itemSnapshot { get; set; }
+        [DataMember] public string region { get; set; }
+        [DataMember] public string language { get; set; }
+        [DataMember] public OrderStatus status { get; set; } //['INIT', 'CHARGED', 'CHARGE_FAILED', 'FULFILLED', 'FULFILL_FAILED', 'REFUNDING', 'REFUNDED', 'DELETED'],
         [DataMember] public string statusReason { get; set; }
-        [DataMember(Name = "namespace")] public string Namespace { get; set; }
         [DataMember] public DateTime createdTime { get; set; }
         [DataMember] public DateTime chargedTime { get; set; }
         [DataMember] public DateTime fulfilledTime { get; set; }
         [DataMember] public DateTime refundedTime { get; set; }
+        [DataMember] public DateTime chargebackTime { get; set; }
+        [DataMember] public DateTime chargebackReversedTime { get; set; }
+        [DataMember] public DateTime createdAt { get; set; }
+        [DataMember] public DateTime updatedAt { get; set; }
     }
 
     [DataContract]
-    public class PagedOrderInfo
+    public class OrderPagingSlicedResult
     {
         [DataMember] public OrderInfo[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
@@ -298,8 +422,9 @@ namespace AccelByte.Models
         [DataMember] public int price { get; set; }
         [DataMember] public int discountedPrice { get; set; }
         [DataMember] public string currencyCode { get; set; }
-        [DataMember] public string returnUrl { get; set; }
         [DataMember] public string region { get; set; }
+        [DataMember] public string language { get; set; }
+        [DataMember] public string returnUrl { get; set; }
     }
 
     [DataContract]
@@ -323,79 +448,21 @@ namespace AccelByte.Models
         [DataMember] public string txStartTime { get; set; }
         [DataMember] public string txEndTime { get; set; }
     }
-    
+
     #endregion
-    
+
     #region Entitlements
 
-    //Type-safe enum for EntitlementClazz
-    public sealed class EntitlementClazz
-    {
-        private readonly string name;
-
-        public static readonly EntitlementClazz App = new EntitlementClazz("APP");
-        public static readonly EntitlementClazz Entitlement = new EntitlementClazz("ENTITLEMENT");
-        public static readonly EntitlementClazz Distribution = new EntitlementClazz("DISTRIBUTION");
-        public static readonly EntitlementClazz Code = new EntitlementClazz("CODE");
-
-        private EntitlementClazz(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
-    }
-
-    public sealed class EntitlementStatus
-    {
-        private readonly string name;
-
-        public static readonly EntitlementStatus Active = new EntitlementStatus("ACTIVE");
-        public static readonly EntitlementStatus Inactive = new EntitlementStatus("INACTIVE");
-        public static readonly EntitlementStatus Distributed = new EntitlementStatus("DISTRIBUTED");
-        public static readonly EntitlementStatus Revoked = new EntitlementStatus("REVOKED");
-        public static readonly EntitlementStatus Deleted = new EntitlementStatus("DELETED");
-
-        private EntitlementStatus(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
-    }
-
-    //Type-safe enum for EntitlementAppType
-    public sealed class EntitlementAppType
-    {
-        private readonly string name;
-
-        public static readonly EntitlementAppType Game = new EntitlementAppType("GAME");
-        public static readonly EntitlementAppType Software = new EntitlementAppType("SOFTWARE");
-        public static readonly EntitlementAppType DLC = new EntitlementAppType("DLC");
-        public static readonly EntitlementAppType Demo = new EntitlementAppType("DEMO");
-
-        private EntitlementAppType(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
-    }
-
-    //Type-safe enum for EntitlementType
-    public sealed class EntitlementType
-    {
-        private readonly string name;
-
-        public static readonly EntitlementType Durable = new EntitlementType("DURABLE");
-        public static readonly EntitlementType Consumable = new EntitlementType("CONSUMABLE");
-
-        private EntitlementType(string name) { this.name = name; }
-
-        public override string ToString() { return this.name; }
-    }
-
     [DataContract]
-    public class Entitlement
+    public class EntitlementInfo
     {
         [DataMember] public string id { get; set; }
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
-        [DataMember] public string clazz { get; set; }
-        [DataMember] public string type { get; set; }
-        [DataMember] public string status { get; set; }
+        [DataMember] public EntitlementClazz clazz { get; set; } // ['APP', 'ENTITLEMENT', 'DISTRIBUTION', 'CODE']
+        [DataMember] public EntitlementType type { get; set; } //  ['DURABLE', 'CONSUMABLE']
+        [DataMember] public EntitlementStatus status { get; set; } // ['ACTIVE', 'INACTIVE', 'CONSUMED', 'DISTRIBUTED', 'REVOKED']
         [DataMember] public string appId { get; set; }
-        [DataMember] public string appType { get; set; }
+        [DataMember] public EntitlementAppType appType { get; set; } // ['GAME', 'SOFTWARE', 'DLC', 'DEMO']
         [DataMember] public string sku { get; set; }
         [DataMember] public string userId { get; set; }
         [DataMember] public string itemId { get; set; }
@@ -405,6 +472,7 @@ namespace AccelByte.Models
         [DataMember] public string name { get; set; }
         [DataMember] public int useCount { get; set; }
         [DataMember] public int quantity { get; set; }
+        [DataMember] public EntitlementSource source { get; set; } // ['PURCHASE', 'IAP', 'PROMOTION', 'ACHIEVEMENT', 'REFERRAL_BONUS', 'REDEEM_CODE', 'OTHER']
         [DataMember] public int distributedQuantity { get; set; }
         [DataMember] public string targetNamespace { get; set; }
         [DataMember] public ItemSnapshot itemSnapshot { get; set; }
@@ -416,11 +484,11 @@ namespace AccelByte.Models
     }
 
     [DataContract]
-    public class PagedEntitlements
+    public class EntitlementPagingSlicedResult
     {
-        [DataMember] public Entitlement[] data { get; set; }
+        [DataMember] public EntitlementInfo[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
     }
-    
+
     #endregion
 }

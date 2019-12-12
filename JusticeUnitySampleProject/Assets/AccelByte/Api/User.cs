@@ -47,6 +47,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns Result via callback when completed</param>
         public void LoginWithUsername(string username, string password, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(LoginWithUserNameAsync(username, password, callback));
         }
 
@@ -110,6 +111,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns Result via callback when completed</param>
         public void LoginWithOtherPlatform(PlatformType platformType, string platformToken, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(LoginWithOtherPlatformAsync(platformType, platformToken, callback));
         }
 
@@ -127,6 +129,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns Result via callback when completed</param>
         public void LoginWithLauncher(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             string authCode = Environment.GetEnvironmentVariable(User.AuthorizationCodeEnvironmentVariable);
 
             this.coroutineRunner.Run(LoginWithAuthorizationCodeAsync(authCode, callback));
@@ -144,6 +147,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns Result via callback when completed</param>
         public void LoginWithDeviceId(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(LoginWithDeviceIdAsync(callback));
         }
 
@@ -157,6 +161,7 @@ namespace AccelByte.Api
         /// </summary>
         public void Logout(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.sessionAdapter.UserId = null;
 
             if (!this.sessionAdapter.IsValid())
@@ -179,6 +184,7 @@ namespace AccelByte.Api
         public void Register(string emailAddress, string password, string displayName, string country, DateTime dateOfBirth,
             ResultCallback<RegisterUserResponse> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             var registerUserRequest = new RegisterUserRequest
             {
                 authType = AuthenticationType.EMAILPASSWD,
@@ -198,11 +204,13 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserData via callback</param>
         public void GetData(ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(GetDataAsync(callback));
         }
 
         private IEnumerator GetDataAsync(ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (this.userDataCache != null)
             {
                 callback.TryOk(this.userDataCache);
@@ -219,6 +227,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserData via callback</param>
         public void RefreshData(ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.userDataCache = null;
 
             this.coroutineRunner.Run(RefreshDataAsync(callback));
@@ -248,6 +257,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserData via callback when completed</param>
         public void Update(UpdateUserRequest updateRequest, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(UpdateAsync(updateRequest, callback));
         }
 
@@ -274,6 +284,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserData via callback when completed</param>
         public void Upgrade(string userName, string password, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(UpgradeAsync(userName, password, callback));
         }
 
@@ -297,6 +308,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void SendVerificationCode(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(SendVerificationCodeAsync(callback));
         }
 
@@ -330,6 +342,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns Result via callback when completed</param>
         public void Verify(string verificationCode, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(this.userAccount.Verify(verificationCode, "email", callback));
         }
 
@@ -340,6 +353,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void SendResetPasswordCode(string userName, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(this.userAccount.SendPasswordResetCode(userName, callback));
         }
 
@@ -352,6 +366,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void ResetPassword(string resetCode, string userName, string newPassword, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.coroutineRunner.Run(this.userAccount.ResetPassword(resetCode, userName, newPassword, callback));
         }
 
@@ -363,6 +378,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void LinkOtherPlatform(PlatformType platformType, string platformTicket, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -383,6 +399,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a result via callback when completed</param>
         public void UnlinkOtherPlatform(PlatformType platformType, string platformTicket, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -400,6 +417,7 @@ namespace AccelByte.Api
         /// completed.</param>
         public void GetPlatformLinks(ResultCallback<PagedPlatformLinks> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -423,6 +441,7 @@ namespace AccelByte.Api
         /// <param name="callback"> Return a Result that contains UserData when completed. </param>
         public void GetUserByEmailAddress(string emailAddress, ResultCallback<PagedPublicUsersInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -440,6 +459,7 @@ namespace AccelByte.Api
         /// <param name="callback"> Return a Result that contains UserData when completed. </param>
         public void GetUserByUserId(string userId, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

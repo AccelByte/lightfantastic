@@ -22,13 +22,3 @@ namespace AccelByte.Api
         IEnumerator Logout(ResultCallback callback);
     }
 }
-
-namespace AccelByte.Server
-{
-    internal interface ILoginSession : ISession
-    {
-        IEnumerator LoginWithClientCredential(ResultCallback callback);
-
-        IEnumerator Logout(ResultCallback callback);
-    }
-}

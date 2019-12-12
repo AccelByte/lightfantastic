@@ -36,6 +36,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns all profiles for specified users via callback when completed.</param>
         public void BatchGetGameProfiles(ICollection<string> userIds, ResultCallback<UserGameProfiles[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -53,6 +54,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns all profiles of current user via callback when completed.</param>
         public void GetAllGameProfiles(ResultCallback<GameProfile[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -71,6 +73,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns the created game profile via callback when completed.</param>
         public void CreateGameProfile(GameProfileRequest gameProfile, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -94,6 +97,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a profile of current user via callback when completed. </param>
         public void GetGameProfile(string profileId, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -117,6 +121,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns updated game profile via callback when completed.</param>
         public void UpdateGameProfile(GameProfile gameProfile, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -143,6 +148,7 @@ namespace AccelByte.Api
         public void UpdateGameProfile(string profileId, GameProfileRequest gameProfile,
             ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -167,6 +173,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns boolean status via callback when completed.</param>
         public void DeleteGameProfile(string profileId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -192,6 +199,7 @@ namespace AccelByte.Api
         public void GetGameProfileAttribute(string profileId, string attributeName,
             ResultCallback<GameProfileAttribute> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -218,6 +226,7 @@ namespace AccelByte.Api
         public void UpdateGameProfileAttribute(string profileId, GameProfileAttribute attribute,
             ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

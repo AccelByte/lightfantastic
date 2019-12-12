@@ -24,8 +24,9 @@ namespace AccelByte.Api
         }
 
         public IEnumerator GetUserEntitlements(string @namespace, string userId, string userAccessToken, int offset,
-            int limit, ResultCallback<PagedEntitlements> callback)
+            int limit, ResultCallback<EntitlementPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get user entitlements! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get user entitlements! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user entitlements! UserAccessToken parameter is null!");
@@ -45,7 +46,7 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<PagedEntitlements>();
+            var result = response.TryParseJson<EntitlementPagingSlicedResult>();
             callback.Try(result);
         }
     }

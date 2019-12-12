@@ -38,6 +38,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void GetWalletInfoByCurrencyCode(string currencyCode, ResultCallback<WalletInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(currencyCode, "Can't get wallet info by currency code; CurrencyCode is null!");
 
             if (!this.session.IsValid())

@@ -24,8 +24,9 @@ namespace AccelByte.Api
         }
 
         public IEnumerator GetCategory(string @namespace, string accessToken, string categoryPath, string language,
-            ResultCallback<Category> callback)
+            ResultCallback<CategoryInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get category! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get category! AccessToken parameter is null!");
             Assert.IsNotNull(language, "Can't get category! Language parameter is null!");
@@ -44,13 +45,14 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<Category>();
+            var result = response.TryParseJson<CategoryInfo>();
             callback.Try(result);
         }
 
         public IEnumerator GetRootCategories(string @namespace, string accessToken, string language,
-            ResultCallback<Category[]> callback)
+            ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get root categories! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get root categories! AccessToken parameter is null!");
             Assert.IsNotNull(language, "Can't get root categories! Language parameter is null!");
@@ -66,13 +68,14 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<Category[]>();
+            var result = response.TryParseJson<CategoryInfo[]>();
             callback.Try(result);
         }
 
         public IEnumerator GetChildCategories(string @namespace, string accessToken, string categoryPath,
-            string language, ResultCallback<Category[]> callback)
+            string language, ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get child categories! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get child categories! AccessToken parameter is null!");
             Assert.IsNotNull(categoryPath, "Can't get child categories! CategoryPath parameter is null!");
@@ -91,13 +94,14 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<Category[]>();
+            var result = response.TryParseJson<CategoryInfo[]>();
             callback.Try(result);
         }
 
         public IEnumerator GetDescendantCategories(string @namespace, string accessToken, string categoryPath,
-            string language, ResultCallback<Category[]> callback)
+            string language, ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get descendant categories! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get descendant categories! AccessToken parameter is null!");
             Assert.IsNotNull(categoryPath, "Can't get descendant categories! CategoryPath parameter is null!");
@@ -116,7 +120,7 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<Category[]>();
+            var result = response.TryParseJson<CategoryInfo[]>();
             callback.Try(result);
         }
     }

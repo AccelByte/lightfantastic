@@ -145,6 +145,7 @@ namespace AccelByte.Api
         /// </summary>
         public void Connect()
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 throw new Exception("Cannot connect to websocket because user is not logged in.");
@@ -226,6 +227,7 @@ namespace AccelByte.Api
         /// </summary>
         public void Disconnect()
         {
+            Report.GetFunctionLog(this.GetType().Name);
             this.webSocket.OnMessage -= HandleOnMessage;
             this.webSocket.OnClose -= HandleOnClose;
 
@@ -252,6 +254,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains PartyInfo via callback when completed.</param>
         public void GetPartyInfo(ResultCallback<PartyInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyInfoRequest, callback);
         }
 
@@ -261,6 +264,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contain PartyInfo via callback when completed.</param>
         public void CreateParty(ResultCallback<PartyInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyCreateRequest, callback);
         }
 
@@ -270,6 +274,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void LeaveParty(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyLeaveRequest, callback);
         }
 
@@ -280,6 +285,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void InviteToParty(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyInviteRequest, new PartyInviteRequest {friendID = userId}, callback);
         }
 
@@ -291,6 +297,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains PartyInfo via callback when completed</param>
         public void JoinParty(string partyID, string invitationToken, ResultCallback<PartyInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(
                 MessageType.partyJoinRequest,
                 new PartyJoinRequest {partyID = partyID, invitationToken = invitationToken},
@@ -304,6 +311,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void KickPartyMember(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyKickRequest, new PartyKickRequest {memberID = userId}, callback);
         }
 
@@ -314,6 +322,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void SendPartyChat(string chatMessage, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.partyChatRequest, new PartyChatRequest {payload = chatMessage}, callback);
         }
 
@@ -325,6 +334,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void SendPersonalChat(string userId, string chatMessage, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(
                 MessageType.personalChatRequest,
                 new PersonalChatRequest {to = userId, payload = chatMessage},
@@ -339,6 +349,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void SetUserStatus(UserStatus status, string activity, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(
                 MessageType.setUserStatusRequest,
                 new SetUserStatusRequest {availability = (uint) status, activity = activity},
@@ -351,6 +362,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Friends Status via callback when completed.</param>
         public void ListFriendsStatus(ResultCallback<FriendsStatus> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.friendsStatusRequest, callback);
         }
 
@@ -360,6 +372,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void PullAsyncNotifications(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.offlineNotificationRequest, callback);
         }
 
@@ -370,6 +383,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void RequestFriend(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.requestFriendsRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -380,6 +394,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void Unfriend(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.unfriendRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -389,6 +404,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Friends via callback when completed.</param>
         public void ListOutgoingFriends(ResultCallback<Friends> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.listOutgoingFriendsRequest, callback);
         }
 
@@ -399,6 +415,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed.</param>
         public void CancelFriendRequest(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.cancelFriendsRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -408,6 +425,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Friends via callback when completed.</param>
         public void ListIncomingFriends(ResultCallback<Friends> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.listIncomingFriendsRequest, callback);
         }
 
@@ -418,6 +436,7 @@ namespace AccelByte.Api
         /// <param name="callback">Result of the function.</param>
         public void AcceptFriend(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.acceptFriendsRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -428,6 +447,7 @@ namespace AccelByte.Api
         /// <param name="callback">Result of the function.</param>
         public void RejectFriend(string userId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.rejectFriendsRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -437,6 +457,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Friends via callback when completed.</param>
         public void LoadFriendsList(ResultCallback<Friends> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.listOfFriendsRequest, callback);
         }
 
@@ -447,6 +468,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains FriendshipStatus via callback when completed.</param>
         public void GetFriendshipStatus(string userId, ResultCallback<FriendshipStatus> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.getFriendshipStatusRequest, new Friend {friendId = userId}, callback);
         }
 
@@ -457,6 +479,7 @@ namespace AccelByte.Api
         /// <param name="callback">Result of the function with a start matchmaking status code.</param>
         public void StartMatchmaking(string gameMode, ResultCallback<MatchmakingCode> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.startMatchmakingRequest, new GameMode {gameMode = gameMode}, callback);
         }
 
@@ -467,6 +490,7 @@ namespace AccelByte.Api
         /// <param name="callback"></param>
         public void ConfirmReadyForMatch(string matchId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.setReadyConsentRequest, new ReadyConsentRequest { matchId = matchId }, callback);
         }
 
@@ -477,6 +501,7 @@ namespace AccelByte.Api
         /// <param name="callback">Result of the function with a cancel matchmaking status code.</param>
         public void CancelMatchmaking(string gameMode, ResultCallback<MatchmakingCode> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             SendRequest(MessageType.cancelMatchmakingRequest, new GameMode {gameMode = gameMode}, callback);
         }
 
@@ -595,6 +620,7 @@ namespace AccelByte.Api
 
         private void HandleOnMessage(string message)
         {
+            Report.GetWebSocketResponse(message);
             long messageId;
             MessageType messageType;
             ErrorCode errorCode = AwesomeFormat.ReadHeader(message, out messageType, out messageId);
@@ -675,6 +701,7 @@ namespace AccelByte.Api
 
         private static void HandleNotification<T>(string message, ResultCallback<T> handler) where T : class, new()
         {
+            Report.GetWebSocketNotification(message);
             if (handler == null)
             {
                 return;

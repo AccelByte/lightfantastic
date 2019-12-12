@@ -32,17 +32,16 @@ namespace AccelByte.Api
         }
 
         /// <summary>
-        /// Get Item by itemId
+        /// Get ItemInfo by itemId
         /// </summary>
         /// <param name="itemId">Item ID to get item with</param>
         /// <param name="region">Region of the item</param>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains Item via callback when completed.</param>
-        public void GetItemById(string itemId, string region, string language, ResultCallback<Item> callback)
+        /// <param name="callback">Returns a Result that contains ItemInfo via callback when completed.</param>
+        public void GetItemById(string itemId, string region, string language, ResultCallback<PopulatedItemInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(itemId, "Can't get item; ItemId parameter is null!");
-            Assert.IsNotNull(region, "Can't get item; Region parameter is null!");
-            Assert.IsNotNull(language, "Can't get item; Language parameter is null!");
 
             if (!this.session.IsValid())
             {
@@ -57,17 +56,17 @@ namespace AccelByte.Api
 
         /// <summary>
         /// Get Items by criteria. Set ItemCriteria fields as null if you don't want to specify the criteria. The result
-        /// callback will returns a PagedItems that contains Items within it.
+        /// callback will returns a ItemPagingSlicedResult that contains Items within it.
         /// </summary>
         /// <param name="criteria">Criteria to search items</param>
         /// <param name="region">Region of items</param>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains PagedItems via callback when completed.</param>
-        public void GetItemsByCriteria(ItemCriteria criteria, string region, string language,
-            ResultCallback<PagedItems> callback)
+        /// <param name="callback">Returns a Result that contains ItemPagingSlicedResult via callback when completed.</param>
+        public void GetItemsByCriteria(ItemCriteria criteria,
+            ResultCallback<ItemPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(criteria, "Can't get items by criteria; Criteria parameter is null!");
-            Assert.IsNotNull(language, "Can't get items by criteria; Language parameter is null!");
 
             if (!this.session.IsValid())
             {
@@ -80,8 +79,6 @@ namespace AccelByte.Api
                 this.api.GetItemsByCriteria(
                     this.@namespace,
                     this.session.AuthorizationToken,
-                    region,
-                    language,
                     criteria,
                     callback));
         }

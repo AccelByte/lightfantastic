@@ -20,6 +20,7 @@ namespace AccelByte.Api
 
         public TelemetryApi(string baseUrl, IHttpWorker httpWorker)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
             Assert.IsNotNull(httpWorker, "Creating " + GetType().Name + " failed. Parameter httpWorker is null");
 
@@ -100,6 +101,7 @@ namespace AccelByte.Api
         public IEnumerator SendEvent<T>(string @namespace, string clientId, string userID, TelemetryEventTag eventTag,
             T eventData, ResultCallback callback) where T : class
         {
+            Report.GetFunctionLog(this.GetType().Name);
             string nowTime = DateTime.UtcNow.ToString("O");
             string strEventData;
 

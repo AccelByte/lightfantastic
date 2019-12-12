@@ -28,6 +28,7 @@ namespace AccelByte.Api
         public IEnumerator GetAllSlots(string @namespace, string userId, string accessToken,
             ResultCallback<Slot[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get all slots! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get all slots! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get all slots! accessToken parameter is null!");
@@ -52,6 +53,7 @@ namespace AccelByte.Api
         public IEnumerator GetSlot(string @namespace, string userId, string accessToken, string slotId,
             ResultCallback<byte[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get the slot! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get the slot! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get the slot! accessToken parameter is null!");
@@ -92,6 +94,7 @@ namespace AccelByte.Api
         public IEnumerator CreateSlot(string @namespace, string userId, string accessToken, byte[] data,
             string filename, ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't create a slot! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't create a slot! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't create a slot! accessToken parameter is null!");
@@ -131,6 +134,7 @@ namespace AccelByte.Api
         public IEnumerator UpdateSlot(string @namespace, string userId, string accessToken, string slotId, byte[] data,
             string filename, ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't update a slot! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't update a slot! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't update a slot! accessToken parameter is null!");
@@ -172,6 +176,7 @@ namespace AccelByte.Api
         public IEnumerator UpdateSlotMetadata(string @namespace, string userId, string accessToken, string slotId,
             string[] tags, string label, string customMetadata, ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't update a slot! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't update a slot! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't update a slot! accessToken parameter is null!");
@@ -204,6 +209,7 @@ namespace AccelByte.Api
         public IEnumerator DeleteSlot(string @namespace, string userId, string accessToken, string slotId,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't create a slot! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't create a slot! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't create a slot! accessToken parameter is null!");

@@ -42,6 +42,7 @@ namespace AccelByte.Api
         /// <typeparam name="T">A class that implements DataContract and DataMember attribute</typeparam>
         public void SendEvent<T>(TelemetryEventTag eventTag, T eventData, ResultCallback callback) where T : class
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

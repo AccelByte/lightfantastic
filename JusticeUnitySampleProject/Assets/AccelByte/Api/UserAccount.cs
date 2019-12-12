@@ -33,6 +33,7 @@ namespace AccelByte.Api
         public IEnumerator Register(RegisterUserRequest registerUserRequest,
             ResultCallback<RegisterUserResponse> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(registerUserRequest, "Register failed. registerUserRequest is null!");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/users")
@@ -51,6 +52,7 @@ namespace AccelByte.Api
 
         public IEnumerator GetData(ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/v3/public/users/me")
                 .WithPathParam("namespace", this.@namespace)
                 .WithPathParam("userId", this.session.UserId)
@@ -68,6 +70,7 @@ namespace AccelByte.Api
 
         public IEnumerator Update(UpdateUserRequest updateUserRequest, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(updateUserRequest, "Update failed. updateUserRequest is null!");
 
             var request = HttpRequestBuilder.CreatePatch(this.baseUrl + "/v3/public/namespaces/{namespace}/users/me")
@@ -88,6 +91,7 @@ namespace AccelByte.Api
 
         public IEnumerator Upgrade(string username, string password, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(username, "Can't upgrade headless account! UserName parameter is null!");
             Assert.IsNotNull(password, "Can't upgrade headless account! Password parameter is null!");
 
@@ -110,6 +114,7 @@ namespace AccelByte.Api
         public IEnumerator SendVerificationCode(VerificationContext context, string emailAddress,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(emailAddress, "Can't send verification code! Username parameter is null!");
 
             var request = HttpRequestBuilder
@@ -129,6 +134,7 @@ namespace AccelByte.Api
 
         public IEnumerator Verify(string verificationCode, string contactType, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(verificationCode, "Can't post verification code! VerificationCode parameter is null!");
             Assert.IsNotNull(contactType, "Can't post verification code! ContactType parameter is null!");
 
@@ -154,6 +160,7 @@ namespace AccelByte.Api
 
         public IEnumerator SendPasswordResetCode(string emailAddress, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(emailAddress, "Can't request reset password code! emailAddress parameter is null!");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/users/forgot")
@@ -173,6 +180,7 @@ namespace AccelByte.Api
         public IEnumerator ResetPassword(string resetCode, string emailAddress, string newPassword,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             string jsonResetRequest = string.Format(
                 "{{" + "\"code\": \"{0}\"," + "\"emailAddress\": \"{1}\"," + "\"newPassword\": \"{2}\"" + "}}",
                 resetCode,
@@ -195,6 +203,7 @@ namespace AccelByte.Api
 
         public IEnumerator LinkOtherPlatform(string platformId, string ticket, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(platformId, "Can't link platform account! Email parameter is null!");
             Assert.IsNotNull(ticket, "Can't link platform account! Password parameter is null!");
 
@@ -218,6 +227,7 @@ namespace AccelByte.Api
 
         public IEnumerator UnlinkOtherPlatform(string platformId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(platformId, "Can't unlink platfrom account! Email parameter is null!");
 
             var request = HttpRequestBuilder
@@ -238,6 +248,7 @@ namespace AccelByte.Api
 
         public IEnumerator GetPlatformLinks(ResultCallback<PagedPlatformLinks> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             var request = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/v3/public/namespaces/{namespace}/users/{userId}/platforms")
                 .WithPathParam("namespace", this.@namespace)
@@ -257,6 +268,7 @@ namespace AccelByte.Api
 
         public IEnumerator GetUserByEmailAddress(string emailAdress, ResultCallback<PagedPublicUsersInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(emailAdress, "Can't get user data! loginId parameter is null!");
 
             var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/v3/public/namespaces/{namespace}/users")
@@ -277,6 +289,7 @@ namespace AccelByte.Api
 
         public IEnumerator GetUserByUserId(string userId, ResultCallback<UserData> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(userId, "Can't get user data! userId parameter is null!");
 
             var request = HttpRequestBuilder

@@ -38,6 +38,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains OrderInfo via callback when completed</param>
         public void CreateOrder(OrderRequest orderRequest, ResultCallback<OrderInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(orderRequest, "Can't create order; OrderRequest parameter is null!");
 
             if (!this.session.IsValid())
@@ -63,6 +64,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains OrderInfo via callback when completed</param>
         public void GetUserOrder(string orderNo, ResultCallback<OrderInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(orderNo, "Can't get user's order; OrderNo parameter is null!");
 
             if (!this.session.IsValid())
@@ -81,9 +83,10 @@ namespace AccelByte.Api
         /// </summary>
         /// <param name="startPage">Page number</param>
         /// <param name="size">Size of each page</param>
-        /// <param name="callback">Returns a Result that contains PagedOrderInfo via callback when completed</param>
-        public void GetUserOrders(uint startPage, uint size, ResultCallback<PagedOrderInfo> callback)
+        /// <param name="callback">Returns a Result that contains OrderPagingSlicedResult via callback when completed</param>
+        public void GetUserOrders(uint startPage, uint size, ResultCallback<OrderPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -109,6 +112,7 @@ namespace AccelByte.Api
         /// when completed.</param>
         public void GetUserOrderHistory(string orderNo, ResultCallback<OrderHistoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(orderNo, "Can't get user's order history info; OrderNo parameter is null!");
 
             if (!this.session.IsValid())

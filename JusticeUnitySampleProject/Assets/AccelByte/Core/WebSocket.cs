@@ -469,6 +469,7 @@ namespace HybridWebSocket
 
             try
             {
+                Report.GetWebSocketRequest(message);
                 this.webSocket.SendAsync(message, null);
             }
             catch (Exception e)

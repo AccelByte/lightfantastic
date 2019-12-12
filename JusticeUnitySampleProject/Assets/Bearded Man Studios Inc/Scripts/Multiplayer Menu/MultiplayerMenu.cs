@@ -10,9 +10,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
-using AccelByte.Server;
-using AccelByte.Core;
-using AccelByte.Models;
+//using AccelByte.Server;
+//using AccelByte.Core;
+//using AccelByte.Models;
 
 public class MultiplayerMenu : MonoBehaviour
 {
@@ -43,8 +43,8 @@ public class MultiplayerMenu : MonoBehaviour
     private string IPAddress;
     private string PortNumber;
 
-    private Server abServer;
-    private ServerCredentials abServerCredentials;
+    //private Server abServer;
+    //private ServerCredentials abServerCredentials;
 
     private void Start()
     {

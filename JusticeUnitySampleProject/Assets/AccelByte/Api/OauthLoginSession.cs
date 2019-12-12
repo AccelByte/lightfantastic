@@ -1,3 +1,7 @@
+// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
 using System;
 using System.Collections;
 using AccelByte.Core;
@@ -53,6 +57,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithUsername(string username, string password, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(username, "Username parameter is null.");
             Assert.IsNotNull(password, "Password parameter is null.");
 
@@ -67,8 +72,6 @@ namespace AccelByte.Api
                 .GetResult();
 
             IHttpResponse response = null;
-
-            Debug.Log(string.Format("loginsession LoginWithUsername URL from httprequestbuilder: {0}", request.Url));
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
@@ -88,6 +91,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithDeviceId(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             DeviceProvider deviceProvider = DeviceProvider.GetFromSystemInfo();
 
             IHttpRequest request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/platforms/{platformId}/token")
@@ -120,6 +124,7 @@ namespace AccelByte.Api
         public IEnumerator LoginWithOtherPlatform(PlatformType platformType, string platformToken,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(platformToken, "PlatformToken parameter is null.");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/platforms/{platformId}/token")
@@ -151,6 +156,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithAuthorizationCode(string code, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(code, "Code parameter is null.");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/token")
@@ -182,6 +188,7 @@ namespace AccelByte.Api
 
         public IEnumerator Logout(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/oauth/revoke/token")
                 .WithBearerAuth(this.AuthorizationToken)
                 .WithContentType(MediaType.ApplicationForm)

@@ -26,6 +26,7 @@ namespace AccelByte.Api
         public IEnumerator GetWalletInfoByCurrencyCode(string @namespace, string userId, string userAccessToken,
             string currencyCode, ResultCallback<WalletInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get wallet info by currency code! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get wallet info by currency code! UserId parameter is null!");
             Assert.IsNotNull(

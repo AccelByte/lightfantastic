@@ -36,9 +36,10 @@ namespace AccelByte.Api
         /// </summary>
         /// <param name="categoryPath">Category path this category identified by</param>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains Category via callback when completed</param>
-        public void GetCategory(string categoryPath, string language, ResultCallback<Category> callback)
+        /// <param name="callback">Returns a Result that contains CategoryInfo via callback when completed</param>
+        public void GetCategory(string categoryPath, string language, ResultCallback<CategoryInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(categoryPath, "Can't get category; CategoryPath parameter is null!");
             Assert.IsNotNull(language, "Can't get category; Language parameter is null!");
 
@@ -57,9 +58,10 @@ namespace AccelByte.Api
         /// Get all categories in root path
         /// </summary>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains Category array via callback when completed</param>
-        public void GetRootCategories(string language, ResultCallback<Category[]> callback)
+        /// <param name="callback">Returns a Result that contains CategoryInfo array via callback when completed</param>
+        public void GetRootCategories(string language, ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(language, "Can't get root categories; Language parameter is null!");
 
             if (!this.session.IsValid())
@@ -78,9 +80,10 @@ namespace AccelByte.Api
         /// </summary>
         /// <param name="categoryPath">Parent category path</param>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains Category array via callback when completed</param>
-        public void GetChildCategories(string categoryPath, string language, ResultCallback<Category[]> callback)
+        /// <param name="callback">Returns a Result that contains CategoryInfo array via callback when completed</param>
+        public void GetChildCategories(string categoryPath, string language, ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(categoryPath, "Can't get child categories; CategoryPath parameter is null!");
             Assert.IsNotNull(language, "Can't get child categories; Language parameter is null!");
 
@@ -97,13 +100,14 @@ namespace AccelByte.Api
 
         /// <summary>
         /// Get all descendants of the category identified by category path. Descendant categories will also include
-        /// grand children categories in flat Category array
+        /// grand children categories in flat CategoryInfo array
         /// </summary>
         /// <param name="categoryPath">Parent category path</param>
         /// <param name="language">Display language</param>
-        /// <param name="callback">Returns a Result that contains Category array via callback when completed</param>
-        public void GetDescendantCategories(string categoryPath, string language, ResultCallback<Category[]> callback)
+        /// <param name="callback">Returns a Result that contains CategoryInfo array via callback when completed</param>
+        public void GetDescendantCategories(string categoryPath, string language, ResultCallback<CategoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(categoryPath, "Can't get descendant categories; Language parameter is null!");
             Assert.IsNotNull(language, "Can't get descendant categories; Language parameter is null!");
 

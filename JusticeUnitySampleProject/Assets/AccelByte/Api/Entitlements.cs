@@ -35,8 +35,9 @@ namespace AccelByte.Api
         /// Get list of entitlements owned by a user
         /// </summary>
         /// <param name="callback">Returns a Result via callback when completed</param>
-        public void GetUserEntitlements(int offset, int limit, ResultCallback<PagedEntitlements> callback)
+        public void GetUserEntitlements(int offset, int limit, ResultCallback<EntitlementPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

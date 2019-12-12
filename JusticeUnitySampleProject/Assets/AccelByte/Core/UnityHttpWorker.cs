@@ -46,7 +46,11 @@ namespace AccelByte.Core
                 unityWebRequest = request.GetUnityWebRequest();
                 unityWebRequest.timeout = (int)(this.totalTimeout / 1000);
 
+                Report.GetHttpRequest(request, unityWebRequest);
+
                 yield return unityWebRequest.SendWebRequest();
+
+                Report.GetHttpResponse(unityWebRequest);
 
                 if (unityWebRequest.isNetworkError)
                 {

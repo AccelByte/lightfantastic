@@ -26,6 +26,7 @@ namespace AccelByte.Api
         public IEnumerator BatchGetGameProfiles(string @namespace, ICollection<string> userIds, string accessToken,
             ResultCallback<UserGameProfiles[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get all game profiles! namespace parameter is null!");
             Assert.IsNotNull(userIds, "Can't get all game profiles! userIds parameter is null!");
             Assert.IsNotNull(accessToken, "Can't all game profiles! accessToken parameter is null!");
@@ -50,6 +51,7 @@ namespace AccelByte.Api
         public IEnumerator GetAllGameProfiles(string @namespace, string userId, string accessToken,
             ResultCallback<GameProfile[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get all game profiles! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get all game profiles! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't all game profiles! accessToken parameter is null!");
@@ -75,6 +77,7 @@ namespace AccelByte.Api
         public IEnumerator CreateGameProfile(string @namespace, string userId, string accessToken,
             GameProfileRequest gameProfile, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't create a game profile! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't create a game profile! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't create a game profile! accessToken parameter is null!");
@@ -102,6 +105,7 @@ namespace AccelByte.Api
         public IEnumerator GetGameProfile(string @namespace, string userId, string accessToken, string profileId,
             ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get a game profile! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get a game profile! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get a game profile! accessToken parameter is null!");
@@ -129,6 +133,7 @@ namespace AccelByte.Api
         public IEnumerator UpdateGameProfile(string @namespace, string userId, string accessToken, string profileId,
             GameProfileRequest gameProfile, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't update a game profile! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't update a game profile! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't update a game profile! accessToken parameter is null!");
@@ -158,6 +163,7 @@ namespace AccelByte.Api
         public IEnumerator DeleteGameProfile(string @namespace, string userId, string accessToken, string profileId,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't delete a game profile! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't delete a game profile! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't delete a game profile! accessToken parameter is null!");
@@ -185,6 +191,7 @@ namespace AccelByte.Api
         public IEnumerator GetGameProfileAtrribute(string @namespace, string userId, string accessToken,
             string profileId, string attributeName, ResultCallback<GameProfileAttribute> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get a game profile attribute! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get a game profile attribute! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get a game profile attribute! accessToken parameter is null!");
@@ -216,6 +223,7 @@ namespace AccelByte.Api
         public IEnumerator UpdateGameProfileAtrribute(string @namespace, string userId, string accessToken,
             string profileId, GameProfileAttribute attribute, ResultCallback<GameProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't update a game profile attribute! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't update a game profile attribute! userId parameter is null!");
             Assert.IsNotNull(accessToken, "Can't update a game profile attribute! accessToken parameter is null!");

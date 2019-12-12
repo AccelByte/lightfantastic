@@ -41,28 +41,58 @@ namespace AccelByte.Core
         GatewayTimeout = 504,
         HttpVersionNotSupported = 505,
 
+        //AccelByte Global Service error codes (20000 - 20022)
+        UnauthorizedAccess = 20001,
+        ValidationError = 20002,
+        OptimisticLock = 20006,
+        TooManyRequests = 20007,
+        UserNotFound = 20008,
+        UnknownError = 20009,
+        UserIsNotLinkedToNamespace = 20017,
+        ActionBanned = 20016,
+        UnableToParseRequestBody = 20019,
+        TokenIsNotUserToken = 20022,
+
         //AccelByte Launcher error codes (20 - 99)
 
         //AccelByte E-Commerce error codes (1000 - 5000)
-        OptimisticLock = 2006,
-        NamespaceNotFound = 2141,
-        UserProfileNotFound = 2241,
+        StoreNotFound = 30141,
+        PublisherStoreNotExist = 30142,
         CategoryNotFound = 30241,
         ItemNotFound = 30341,
-        StoreNotFound = 3043,
-        OrderPriceMismatch = 3221,
-        OrderNotFound = 3241,
-        OrderInvalidStatus = 3272,
-        WalletExceedMaxTransactionAmountPerDay = 3521,
-        WalletExceedMaxAmountPerTransaction = 3522,
-        WalletInactive = 3523,
-        WalletExceedMaxBalanceAmount = 3525,
-        UserWalletDoesNotExist = 3543,
+        EntitlementNotDistributable = 31121,
+        ExceedDistributeQuantity = 31122,
+        PublisherNamespaceNotDistributable = 31123,
+        EntitlementIdNotFound = 31141,
+        EntitlementAppIdNotFound = 31142,
+        DistributionReceiverNotFound = 31241,
+        DistributionReceiverAlreadyExist = 31271,
+        OrderPriceMismatch = 32121,
+        OrderNotFound = 32141,
+        OrderInvalidStatus = 32172,
+        OrderReceiptNotDownloadable = 32173,
+        ExceedItemMaxCountPerUser = 32175,
+        ExceedItemMaxCount = 32176,
+        OrderNotCancelable = 32177,
+        WalletExceedMaxTransactionAmountPerDay = 35121,
+        WalletExceedMaxAmountPerTransaction = 35122,
+        WalletInactive = 35123,
+        WalletInsufficientBalance = 35124,
+        WalletExceedMaxBalanceAmount = 35125,
+        UserWalletDoesNotExist = 35141,
+        CurrencyNotFound = 36141,
+        NamespaceNotFound = 2141,
+        UserProfileNotFound = 2241,
         WalletAlreadyExist = 3571,
-        PublisherStoreNotExist = 30142,
+
 
         //AccelByte Statistic error codes
-        StatisticNotFound = 12241,
+        StatisticNotFound = 70131,
+        InvalidStatOperator = 70330,
+        StatNotDecreasable = 70334,
+        UserStatsNotFound = 70335,
+        UserStatAlreadyExist = 70336,
+        StatValueOutOfRange = 70337,
 
         //Client side error codes
         GeneralClientError = 14000,
@@ -90,13 +120,6 @@ namespace AccelByte.Core
         UserUnderage = 10130,
         EmailAlreadyUsed = 10133,
         CountryNotFound = 10154,
-        
-        UnauthorizedAccess = 20001,
-        ValidationError = 20002,
-        TooManyRequests = 20001,
-        UserNotFound = 20008,
-        TokenIsNotUserToken = 20022,
-        UnableToParseRequestBody = 20019,
         
     }
 

@@ -26,6 +26,7 @@ namespace AccelByte.Api
         public IEnumerator CreateOrder(string @namespace, string userId, string userAccessToken,
             OrderRequest orderRequest, ResultCallback<OrderInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't create order! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't create order! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't create order! UserAccessToken parameter is null!");
@@ -52,6 +53,7 @@ namespace AccelByte.Api
         public IEnumerator GetUserOrder(string @namespace, string userId, string userAccessToken, string orderNumber,
             ResultCallback<OrderInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get user's order! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get user's order! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user's order! UserAccessToken parameter is null!");
@@ -76,8 +78,9 @@ namespace AccelByte.Api
         }
 
         public IEnumerator GetUserOrders(string @namespace, string userId, string userAccessToken, uint page, uint size,
-            ResultCallback<PagedOrderInfo> callback)
+            ResultCallback<OrderPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get user's order! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get user's order! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user's order! UserAccessToken parameter is null!");
@@ -97,13 +100,14 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<PagedOrderInfo>();
+            var result = response.TryParseJson<OrderPagingSlicedResult>();
             callback.Try(result);
         }
 
         public IEnumerator GetUserOrderHistory(string @namespace, string userId, string userAccessToken, string orderNo,
             ResultCallback<OrderHistoryInfo[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get user's order history! Namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get user's order history! UserId parameter is null!");
             Assert.IsNotNull(userAccessToken, "Can't get user's order history! UserAccessToken parameter is null!");

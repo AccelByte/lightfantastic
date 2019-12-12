@@ -34,6 +34,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Slot info array via callback when completed.</param>
         public void GetAllSlots(ResultCallback<Slot[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -52,6 +53,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains data via callback when completed.</param>
         public void GetSlot(string slotId, ResultCallback<byte[]> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -71,6 +73,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Slot info via callback when completed.</param>
         public void CreateSlot(byte[] data, string dataName, ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -91,6 +94,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains Slot info via callback when completed.</param>
         public void UpdateSlot(string slotId, byte[] data, string dataName, ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -120,6 +124,7 @@ namespace AccelByte.Api
         public void UpdateSlotMetadata(string slotId, string[] tags, string label, string customMetadata,
             ResultCallback<Slot> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.Try(Result<Slot>.CreateError(ErrorCode.IsNotLoggedIn, "User is not logged in"));
@@ -146,6 +151,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result via callback when completed</param>
         public void DeleteSlot(string slotId, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

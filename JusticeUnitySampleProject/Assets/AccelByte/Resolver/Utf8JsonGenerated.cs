@@ -43,109 +43,108 @@ namespace Utf8Json.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(101)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(100)
             {
-                {typeof(global::AccelByte.Models.WalletTransaction[]), 0 },
-                {typeof(global::AccelByte.Models.Category[]), 1 },
-                {typeof(global::AccelByte.Models.Image[]), 2 },
-                {typeof(global::AccelByte.Models.RegionData[]), 3 },
-                {typeof(global::AccelByte.Models.Item[]), 4 },
-                {typeof(global::AccelByte.Models.OrderTransaction[]), 5 },
-                {typeof(global::AccelByte.Models.OrderInfo[]), 6 },
-                {typeof(global::AccelByte.Models.Entitlement[]), 7 },
-                {typeof(global::System.Collections.Generic.Dictionary<string, string>), 8 },
-                {typeof(global::AccelByte.Models.GameProfilePublicInfo[]), 9 },
-                {typeof(global::AccelByte.Models.Slot[]), 10 },
-                {typeof(global::AccelByte.Models.UserGameProfiles[]), 11 },
-                {typeof(global::AccelByte.Models.GameProfile[]), 12 },
-                {typeof(global::AccelByte.Models.OrderHistoryInfo[]), 13 },
-                {typeof(global::AccelByte.Models.PlatformLink[]), 14 },
-                {typeof(global::AccelByte.Models.PublicUserProfile[]), 15 },
-                {typeof(global::AccelByte.Models.StatItemInfo[]), 16 },
-                {typeof(global::AccelByte.Models.Ban[]), 17 },
-                {typeof(global::AccelByte.Models.Permission[]), 18 },
-                {typeof(global::AccelByte.Models.PublicUserInfo[]), 19 },
-                {typeof(global::AccelByte.Models.UserProfile), 20 },
-                {typeof(global::AccelByte.Models.PublicUserProfile), 21 },
-                {typeof(global::AccelByte.Models.CreateUserProfileRequest), 22 },
-                {typeof(global::AccelByte.Models.UpdateUserProfileRequest), 23 },
-                {typeof(global::AccelByte.Models.Slot), 24 },
-                {typeof(global::AccelByte.Models.Config), 25 },
-                {typeof(global::AccelByte.Models.CurrencySummary), 26 },
-                {typeof(global::AccelByte.Models.BalanceInfo), 27 },
-                {typeof(global::AccelByte.Models.WalletInfo), 28 },
-                {typeof(global::AccelByte.Models.WalletTransaction), 29 },
-                {typeof(global::AccelByte.Models.Paging), 30 },
-                {typeof(global::AccelByte.Models.PagedWalletTransactions), 31 },
-                {typeof(global::AccelByte.Models.Category), 32 },
-                {typeof(global::AccelByte.Models.RegionData), 33 },
+                {typeof(global::AccelByte.Models.WalletTransactionInfo[]), 0 },
+                {typeof(global::AccelByte.Models.Image[]), 1 },
+                {typeof(global::AccelByte.Models.RegionDataItem[]), 2 },
+                {typeof(global::AccelByte.Models.ItemInfo[]), 3 },
+                {typeof(global::AccelByte.Models.OrderInfo[]), 4 },
+                {typeof(global::AccelByte.Models.EntitlementInfo[]), 5 },
+                {typeof(global::System.Collections.Generic.Dictionary<string, string>), 6 },
+                {typeof(global::AccelByte.Models.GameProfilePublicInfo[]), 7 },
+                {typeof(global::AccelByte.Models.Slot[]), 8 },
+                {typeof(global::AccelByte.Models.UserGameProfiles[]), 9 },
+                {typeof(global::AccelByte.Models.GameProfile[]), 10 },
+                {typeof(global::AccelByte.Models.OrderHistoryInfo[]), 11 },
+                {typeof(global::AccelByte.Models.PlatformLink[]), 12 },
+                {typeof(global::AccelByte.Models.PublicUserProfile[]), 13 },
+                {typeof(global::AccelByte.Models.StatItemInfo[]), 14 },
+                {typeof(global::AccelByte.Models.Ban[]), 15 },
+                {typeof(global::AccelByte.Models.Permission[]), 16 },
+                {typeof(global::AccelByte.Models.PublicUserInfo[]), 17 },
+                {typeof(global::AccelByte.Models.UserProfile), 18 },
+                {typeof(global::AccelByte.Models.PublicUserProfile), 19 },
+                {typeof(global::AccelByte.Models.CreateUserProfileRequest), 20 },
+                {typeof(global::AccelByte.Models.UpdateUserProfileRequest), 21 },
+                {typeof(global::AccelByte.Models.Slot), 22 },
+                {typeof(global::AccelByte.Models.Config), 23 },
+                {typeof(global::AccelByte.Models.CurrencySummary), 24 },
+                {typeof(global::AccelByte.Models.BalanceInfo), 25 },
+                {typeof(global::AccelByte.Models.WalletInfo), 26 },
+                {typeof(global::AccelByte.Models.WalletTransactionInfo), 27 },
+                {typeof(global::AccelByte.Models.Paging), 28 },
+                {typeof(global::AccelByte.Models.WalletTransactionPagingSlicedResult), 29 },
+                {typeof(global::AccelByte.Models.CategoryInfo), 30 },
+                {typeof(global::AccelByte.Models.RegionDataItem), 31 },
+                {typeof(global::AccelByte.Models.ItemSnapshot), 32 },
+                {typeof(global::AccelByte.Models.ItemCriteria), 33 },
                 {typeof(global::AccelByte.Models.Image), 34 },
-                {typeof(global::AccelByte.Models.ItemSnapshot), 35 },
-                {typeof(global::AccelByte.Models.ItemCriteria), 36 },
-                {typeof(global::AccelByte.Models.Item), 37 },
-                {typeof(global::AccelByte.Models.PagedItems), 38 },
-                {typeof(global::AccelByte.Models.PaymentUrl), 39 },
-                {typeof(global::AccelByte.Models.Price), 40 },
-                {typeof(global::AccelByte.Models.OrderHistoryInfo), 41 },
-                {typeof(global::AccelByte.Models.OrderTransaction), 42 },
-                {typeof(global::AccelByte.Models.OrderInfo), 43 },
-                {typeof(global::AccelByte.Models.PagedOrderInfo), 44 },
-                {typeof(global::AccelByte.Models.OrderRequest), 45 },
-                {typeof(global::AccelByte.Models.Entitlement), 46 },
-                {typeof(global::AccelByte.Models.PagedEntitlements), 47 },
-                {typeof(global::AccelByte.Models.ServiceError), 48 },
-                {typeof(global::AccelByte.Models.OAuthError), 49 },
-                {typeof(global::AccelByte.Models.GameProfile), 50 },
-                {typeof(global::AccelByte.Models.GameProfileRequest), 51 },
-                {typeof(global::AccelByte.Models.GameProfileAttribute), 52 },
-                {typeof(global::AccelByte.Models.GameProfilePublicInfo), 53 },
-                {typeof(global::AccelByte.Models.UserGameProfiles), 54 },
-                {typeof(global::AccelByte.Models.Notification), 55 },
-                {typeof(global::AccelByte.Models.ChatMesssage), 56 },
-                {typeof(global::AccelByte.Models.PersonalChatRequest), 57 },
-                {typeof(global::AccelByte.Models.PartyInfo), 58 },
-                {typeof(global::AccelByte.Models.PartyInviteRequest), 59 },
-                {typeof(global::AccelByte.Models.PartyInvitation), 60 },
-                {typeof(global::AccelByte.Models.PartyChatRequest), 61 },
-                {typeof(global::AccelByte.Models.PartyJoinRequest), 62 },
-                {typeof(global::AccelByte.Models.PartyKickRequest), 63 },
-                {typeof(global::AccelByte.Models.JoinNotification), 64 },
-                {typeof(global::AccelByte.Models.KickNotification), 65 },
-                {typeof(global::AccelByte.Models.LeaveNotification), 66 },
-                {typeof(global::AccelByte.Models.GameMode), 67 },
-                {typeof(global::AccelByte.Models.MatchmakingNotif), 68 },
-                {typeof(global::AccelByte.Models.DsNotif), 69 },
-                {typeof(global::AccelByte.Models.MatchmakingCode), 70 },
-                {typeof(global::AccelByte.Models.ReadyConsentRequest), 71 },
-                {typeof(global::AccelByte.Models.ReadyForMatchConfirmation), 72 },
-                {typeof(global::AccelByte.Models.RematchmakingNotification), 73 },
-                {typeof(global::AccelByte.Models.FriendshipStatus), 74 },
-                {typeof(global::AccelByte.Models.Friends), 75 },
-                {typeof(global::AccelByte.Models.Friend), 76 },
-                {typeof(global::AccelByte.Models.FriendsStatus), 77 },
-                {typeof(global::AccelByte.Models.FriendsStatusNotif), 78 },
-                {typeof(global::AccelByte.Models.OnlineFriends), 79 },
-                {typeof(global::AccelByte.Models.PlatformLink), 80 },
-                {typeof(global::AccelByte.Models.Collection), 81 },
-                {typeof(global::AccelByte.Models.StatInfo), 82 },
-                {typeof(global::AccelByte.Models.StatItemInfo), 83 },
-                {typeof(global::AccelByte.Models.StatItemIncResult), 84 },
-                {typeof(global::AccelByte.Models.StatItemPagingSlicedResult), 85 },
-                {typeof(global::AccelByte.Models.BulkUserStatItemInc), 86 },
-                {typeof(global::AccelByte.Models.BulkStatItemInc), 87 },
-                {typeof(global::AccelByte.Models.BulkStatItemOperationResult), 88 },
-                {typeof(global::AccelByte.Models.TelemetryEventTag), 89 },
-                {typeof(global::AccelByte.Models.TokenData), 90 },
-                {typeof(global::AccelByte.Models.SessionData), 91 },
-                {typeof(global::AccelByte.Models.Ban), 92 },
-                {typeof(global::AccelByte.Models.Permission), 93 },
-                {typeof(global::AccelByte.Models.UserData), 94 },
-                {typeof(global::AccelByte.Models.PublicUserInfo), 95 },
-                {typeof(global::AccelByte.Models.PagedPublicUsersInfo), 96 },
-                {typeof(global::AccelByte.Models.RegisterUserRequest), 97 },
-                {typeof(global::AccelByte.Models.RegisterUserResponse), 98 },
-                {typeof(global::AccelByte.Models.UpdateUserRequest), 99 },
-                {typeof(global::AccelByte.Models.PagedPlatformLinks), 100 },
+                {typeof(global::AccelByte.Models.ItemInfo), 35 },
+                {typeof(global::AccelByte.Models.PopulatedItemInfo), 36 },
+                {typeof(global::AccelByte.Models.ItemPagingSlicedResult), 37 },
+                {typeof(global::AccelByte.Models.PaymentUrl), 38 },
+                {typeof(global::AccelByte.Models.Price), 39 },
+                {typeof(global::AccelByte.Models.OrderHistoryInfo), 40 },
+                {typeof(global::AccelByte.Models.OrderInfo), 41 },
+                {typeof(global::AccelByte.Models.OrderPagingSlicedResult), 42 },
+                {typeof(global::AccelByte.Models.OrderRequest), 43 },
+                {typeof(global::AccelByte.Models.OrderTransaction), 44 },
+                {typeof(global::AccelByte.Models.EntitlementInfo), 45 },
+                {typeof(global::AccelByte.Models.EntitlementPagingSlicedResult), 46 },
+                {typeof(global::AccelByte.Models.ServiceError), 47 },
+                {typeof(global::AccelByte.Models.OAuthError), 48 },
+                {typeof(global::AccelByte.Models.GameProfile), 49 },
+                {typeof(global::AccelByte.Models.GameProfileRequest), 50 },
+                {typeof(global::AccelByte.Models.GameProfileAttribute), 51 },
+                {typeof(global::AccelByte.Models.GameProfilePublicInfo), 52 },
+                {typeof(global::AccelByte.Models.UserGameProfiles), 53 },
+                {typeof(global::AccelByte.Models.Notification), 54 },
+                {typeof(global::AccelByte.Models.ChatMesssage), 55 },
+                {typeof(global::AccelByte.Models.PersonalChatRequest), 56 },
+                {typeof(global::AccelByte.Models.PartyInfo), 57 },
+                {typeof(global::AccelByte.Models.PartyInviteRequest), 58 },
+                {typeof(global::AccelByte.Models.PartyInvitation), 59 },
+                {typeof(global::AccelByte.Models.PartyChatRequest), 60 },
+                {typeof(global::AccelByte.Models.PartyJoinRequest), 61 },
+                {typeof(global::AccelByte.Models.PartyKickRequest), 62 },
+                {typeof(global::AccelByte.Models.JoinNotification), 63 },
+                {typeof(global::AccelByte.Models.KickNotification), 64 },
+                {typeof(global::AccelByte.Models.LeaveNotification), 65 },
+                {typeof(global::AccelByte.Models.GameMode), 66 },
+                {typeof(global::AccelByte.Models.MatchmakingNotif), 67 },
+                {typeof(global::AccelByte.Models.DsNotif), 68 },
+                {typeof(global::AccelByte.Models.MatchmakingCode), 69 },
+                {typeof(global::AccelByte.Models.ReadyConsentRequest), 70 },
+                {typeof(global::AccelByte.Models.ReadyForMatchConfirmation), 71 },
+                {typeof(global::AccelByte.Models.RematchmakingNotification), 72 },
+                {typeof(global::AccelByte.Models.FriendshipStatus), 73 },
+                {typeof(global::AccelByte.Models.Friends), 74 },
+                {typeof(global::AccelByte.Models.Friend), 75 },
+                {typeof(global::AccelByte.Models.FriendsStatus), 76 },
+                {typeof(global::AccelByte.Models.FriendsStatusNotif), 77 },
+                {typeof(global::AccelByte.Models.OnlineFriends), 78 },
+                {typeof(global::AccelByte.Models.PlatformLink), 79 },
+                {typeof(global::AccelByte.Models.Collection), 80 },
+                {typeof(global::AccelByte.Models.StatInfo), 81 },
+                {typeof(global::AccelByte.Models.StatItemInfo), 82 },
+                {typeof(global::AccelByte.Models.StatItemIncResult), 83 },
+                {typeof(global::AccelByte.Models.StatItemPagingSlicedResult), 84 },
+                {typeof(global::AccelByte.Models.BulkUserStatItemInc), 85 },
+                {typeof(global::AccelByte.Models.BulkStatItemInc), 86 },
+                {typeof(global::AccelByte.Models.BulkStatItemOperationResult), 87 },
+                {typeof(global::AccelByte.Models.TelemetryEventTag), 88 },
+                {typeof(global::AccelByte.Models.TokenData), 89 },
+                {typeof(global::AccelByte.Models.SessionData), 90 },
+                {typeof(global::AccelByte.Models.Ban), 91 },
+                {typeof(global::AccelByte.Models.Permission), 92 },
+                {typeof(global::AccelByte.Models.UserData), 93 },
+                {typeof(global::AccelByte.Models.PublicUserInfo), 94 },
+                {typeof(global::AccelByte.Models.PagedPublicUsersInfo), 95 },
+                {typeof(global::AccelByte.Models.RegisterUserRequest), 96 },
+                {typeof(global::AccelByte.Models.RegisterUserResponse), 97 },
+                {typeof(global::AccelByte.Models.UpdateUserRequest), 98 },
+                {typeof(global::AccelByte.Models.PagedPlatformLinks), 99 },
             };
         }
 
@@ -156,107 +155,106 @@ namespace Utf8Json.Resolvers
 
             switch (key)
             {
-                case 0: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.WalletTransaction>();
-                case 1: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Category>();
-                case 2: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Image>();
-                case 3: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.RegionData>();
-                case 4: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Item>();
-                case 5: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.OrderTransaction>();
-                case 6: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.OrderInfo>();
-                case 7: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Entitlement>();
-                case 8: return new global::Utf8Json.Formatters.DictionaryFormatter<string, string>();
-                case 9: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.GameProfilePublicInfo>();
-                case 10: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Slot>();
-                case 11: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.UserGameProfiles>();
-                case 12: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.GameProfile>();
-                case 13: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.OrderHistoryInfo>();
-                case 14: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PlatformLink>();
-                case 15: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PublicUserProfile>();
-                case 16: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.StatItemInfo>();
-                case 17: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Ban>();
-                case 18: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Permission>();
-                case 19: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PublicUserInfo>();
-                case 20: return new Utf8Json.Formatters.AccelByte.Models.UserProfileFormatter();
-                case 21: return new Utf8Json.Formatters.AccelByte.Models.PublicUserProfileFormatter();
-                case 22: return new Utf8Json.Formatters.AccelByte.Models.CreateUserProfileRequestFormatter();
-                case 23: return new Utf8Json.Formatters.AccelByte.Models.UpdateUserProfileRequestFormatter();
-                case 24: return new Utf8Json.Formatters.AccelByte.Models.SlotFormatter();
-                case 25: return new Utf8Json.Formatters.AccelByte.Models.ConfigFormatter();
-                case 26: return new Utf8Json.Formatters.AccelByte.Models.CurrencySummaryFormatter();
-                case 27: return new Utf8Json.Formatters.AccelByte.Models.BalanceInfoFormatter();
-                case 28: return new Utf8Json.Formatters.AccelByte.Models.WalletInfoFormatter();
-                case 29: return new Utf8Json.Formatters.AccelByte.Models.WalletTransactionFormatter();
-                case 30: return new Utf8Json.Formatters.AccelByte.Models.PagingFormatter();
-                case 31: return new Utf8Json.Formatters.AccelByte.Models.PagedWalletTransactionsFormatter();
-                case 32: return new Utf8Json.Formatters.AccelByte.Models.CategoryFormatter();
-                case 33: return new Utf8Json.Formatters.AccelByte.Models.RegionDataFormatter();
+                case 0: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.WalletTransactionInfo>();
+                case 1: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Image>();
+                case 2: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.RegionDataItem>();
+                case 3: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.ItemInfo>();
+                case 4: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.OrderInfo>();
+                case 5: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.EntitlementInfo>();
+                case 6: return new global::Utf8Json.Formatters.DictionaryFormatter<string, string>();
+                case 7: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.GameProfilePublicInfo>();
+                case 8: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Slot>();
+                case 9: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.UserGameProfiles>();
+                case 10: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.GameProfile>();
+                case 11: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.OrderHistoryInfo>();
+                case 12: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PlatformLink>();
+                case 13: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PublicUserProfile>();
+                case 14: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.StatItemInfo>();
+                case 15: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Ban>();
+                case 16: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.Permission>();
+                case 17: return new global::Utf8Json.Formatters.ArrayFormatter<global::AccelByte.Models.PublicUserInfo>();
+                case 18: return new Utf8Json.Formatters.AccelByte.Models.UserProfileFormatter();
+                case 19: return new Utf8Json.Formatters.AccelByte.Models.PublicUserProfileFormatter();
+                case 20: return new Utf8Json.Formatters.AccelByte.Models.CreateUserProfileRequestFormatter();
+                case 21: return new Utf8Json.Formatters.AccelByte.Models.UpdateUserProfileRequestFormatter();
+                case 22: return new Utf8Json.Formatters.AccelByte.Models.SlotFormatter();
+                case 23: return new Utf8Json.Formatters.AccelByte.Models.ConfigFormatter();
+                case 24: return new Utf8Json.Formatters.AccelByte.Models.CurrencySummaryFormatter();
+                case 25: return new Utf8Json.Formatters.AccelByte.Models.BalanceInfoFormatter();
+                case 26: return new Utf8Json.Formatters.AccelByte.Models.WalletInfoFormatter();
+                case 27: return new Utf8Json.Formatters.AccelByte.Models.WalletTransactionInfoFormatter();
+                case 28: return new Utf8Json.Formatters.AccelByte.Models.PagingFormatter();
+                case 29: return new Utf8Json.Formatters.AccelByte.Models.WalletTransactionPagingSlicedResultFormatter();
+                case 30: return new Utf8Json.Formatters.AccelByte.Models.CategoryInfoFormatter();
+                case 31: return new Utf8Json.Formatters.AccelByte.Models.RegionDataItemFormatter();
+                case 32: return new Utf8Json.Formatters.AccelByte.Models.ItemSnapshotFormatter();
+                case 33: return new Utf8Json.Formatters.AccelByte.Models.ItemCriteriaFormatter();
                 case 34: return new Utf8Json.Formatters.AccelByte.Models.ImageFormatter();
-                case 35: return new Utf8Json.Formatters.AccelByte.Models.ItemSnapshotFormatter();
-                case 36: return new Utf8Json.Formatters.AccelByte.Models.ItemCriteriaFormatter();
-                case 37: return new Utf8Json.Formatters.AccelByte.Models.ItemFormatter();
-                case 38: return new Utf8Json.Formatters.AccelByte.Models.PagedItemsFormatter();
-                case 39: return new Utf8Json.Formatters.AccelByte.Models.PaymentUrlFormatter();
-                case 40: return new Utf8Json.Formatters.AccelByte.Models.PriceFormatter();
-                case 41: return new Utf8Json.Formatters.AccelByte.Models.OrderHistoryInfoFormatter();
-                case 42: return new Utf8Json.Formatters.AccelByte.Models.OrderTransactionFormatter();
-                case 43: return new Utf8Json.Formatters.AccelByte.Models.OrderInfoFormatter();
-                case 44: return new Utf8Json.Formatters.AccelByte.Models.PagedOrderInfoFormatter();
-                case 45: return new Utf8Json.Formatters.AccelByte.Models.OrderRequestFormatter();
-                case 46: return new Utf8Json.Formatters.AccelByte.Models.EntitlementFormatter();
-                case 47: return new Utf8Json.Formatters.AccelByte.Models.PagedEntitlementsFormatter();
-                case 48: return new Utf8Json.Formatters.AccelByte.Models.ServiceErrorFormatter();
-                case 49: return new Utf8Json.Formatters.AccelByte.Models.OAuthErrorFormatter();
-                case 50: return new Utf8Json.Formatters.AccelByte.Models.GameProfileFormatter();
-                case 51: return new Utf8Json.Formatters.AccelByte.Models.GameProfileRequestFormatter();
-                case 52: return new Utf8Json.Formatters.AccelByte.Models.GameProfileAttributeFormatter();
-                case 53: return new Utf8Json.Formatters.AccelByte.Models.GameProfilePublicInfoFormatter();
-                case 54: return new Utf8Json.Formatters.AccelByte.Models.UserGameProfilesFormatter();
-                case 55: return new Utf8Json.Formatters.AccelByte.Models.NotificationFormatter();
-                case 56: return new Utf8Json.Formatters.AccelByte.Models.ChatMesssageFormatter();
-                case 57: return new Utf8Json.Formatters.AccelByte.Models.PersonalChatRequestFormatter();
-                case 58: return new Utf8Json.Formatters.AccelByte.Models.PartyInfoFormatter();
-                case 59: return new Utf8Json.Formatters.AccelByte.Models.PartyInviteRequestFormatter();
-                case 60: return new Utf8Json.Formatters.AccelByte.Models.PartyInvitationFormatter();
-                case 61: return new Utf8Json.Formatters.AccelByte.Models.PartyChatRequestFormatter();
-                case 62: return new Utf8Json.Formatters.AccelByte.Models.PartyJoinRequestFormatter();
-                case 63: return new Utf8Json.Formatters.AccelByte.Models.PartyKickRequestFormatter();
-                case 64: return new Utf8Json.Formatters.AccelByte.Models.JoinNotificationFormatter();
-                case 65: return new Utf8Json.Formatters.AccelByte.Models.KickNotificationFormatter();
-                case 66: return new Utf8Json.Formatters.AccelByte.Models.LeaveNotificationFormatter();
-                case 67: return new Utf8Json.Formatters.AccelByte.Models.GameModeFormatter();
-                case 68: return new Utf8Json.Formatters.AccelByte.Models.MatchmakingNotifFormatter();
-                case 69: return new Utf8Json.Formatters.AccelByte.Models.DsNotifFormatter();
-                case 70: return new Utf8Json.Formatters.AccelByte.Models.MatchmakingCodeFormatter();
-                case 71: return new Utf8Json.Formatters.AccelByte.Models.ReadyConsentRequestFormatter();
-                case 72: return new Utf8Json.Formatters.AccelByte.Models.ReadyForMatchConfirmationFormatter();
-                case 73: return new Utf8Json.Formatters.AccelByte.Models.RematchmakingNotificationFormatter();
-                case 74: return new Utf8Json.Formatters.AccelByte.Models.FriendshipStatusFormatter();
-                case 75: return new Utf8Json.Formatters.AccelByte.Models.FriendsFormatter();
-                case 76: return new Utf8Json.Formatters.AccelByte.Models.FriendFormatter();
-                case 77: return new Utf8Json.Formatters.AccelByte.Models.FriendsStatusFormatter();
-                case 78: return new Utf8Json.Formatters.AccelByte.Models.FriendsStatusNotifFormatter();
-                case 79: return new Utf8Json.Formatters.AccelByte.Models.OnlineFriendsFormatter();
-                case 80: return new Utf8Json.Formatters.AccelByte.Models.PlatformLinkFormatter();
-                case 81: return new Utf8Json.Formatters.AccelByte.Models.CollectionFormatter();
-                case 82: return new Utf8Json.Formatters.AccelByte.Models.StatInfoFormatter();
-                case 83: return new Utf8Json.Formatters.AccelByte.Models.StatItemInfoFormatter();
-                case 84: return new Utf8Json.Formatters.AccelByte.Models.StatItemIncResultFormatter();
-                case 85: return new Utf8Json.Formatters.AccelByte.Models.StatItemPagingSlicedResultFormatter();
-                case 86: return new Utf8Json.Formatters.AccelByte.Models.BulkUserStatItemIncFormatter();
-                case 87: return new Utf8Json.Formatters.AccelByte.Models.BulkStatItemIncFormatter();
-                case 88: return new Utf8Json.Formatters.AccelByte.Models.BulkStatItemOperationResultFormatter();
-                case 89: return new Utf8Json.Formatters.AccelByte.Models.TelemetryEventTagFormatter();
-                case 90: return new Utf8Json.Formatters.AccelByte.Models.TokenDataFormatter();
-                case 91: return new Utf8Json.Formatters.AccelByte.Models.SessionDataFormatter();
-                case 92: return new Utf8Json.Formatters.AccelByte.Models.BanFormatter();
-                case 93: return new Utf8Json.Formatters.AccelByte.Models.PermissionFormatter();
-                case 94: return new Utf8Json.Formatters.AccelByte.Models.UserDataFormatter();
-                case 95: return new Utf8Json.Formatters.AccelByte.Models.PublicUserInfoFormatter();
-                case 96: return new Utf8Json.Formatters.AccelByte.Models.PagedPublicUsersInfoFormatter();
-                case 97: return new Utf8Json.Formatters.AccelByte.Models.RegisterUserRequestFormatter();
-                case 98: return new Utf8Json.Formatters.AccelByte.Models.RegisterUserResponseFormatter();
-                case 99: return new Utf8Json.Formatters.AccelByte.Models.UpdateUserRequestFormatter();
-                case 100: return new Utf8Json.Formatters.AccelByte.Models.PagedPlatformLinksFormatter();
+                case 35: return new Utf8Json.Formatters.AccelByte.Models.ItemInfoFormatter();
+                case 36: return new Utf8Json.Formatters.AccelByte.Models.PopulatedItemInfoFormatter();
+                case 37: return new Utf8Json.Formatters.AccelByte.Models.ItemPagingSlicedResultFormatter();
+                case 38: return new Utf8Json.Formatters.AccelByte.Models.PaymentUrlFormatter();
+                case 39: return new Utf8Json.Formatters.AccelByte.Models.PriceFormatter();
+                case 40: return new Utf8Json.Formatters.AccelByte.Models.OrderHistoryInfoFormatter();
+                case 41: return new Utf8Json.Formatters.AccelByte.Models.OrderInfoFormatter();
+                case 42: return new Utf8Json.Formatters.AccelByte.Models.OrderPagingSlicedResultFormatter();
+                case 43: return new Utf8Json.Formatters.AccelByte.Models.OrderRequestFormatter();
+                case 44: return new Utf8Json.Formatters.AccelByte.Models.OrderTransactionFormatter();
+                case 45: return new Utf8Json.Formatters.AccelByte.Models.EntitlementInfoFormatter();
+                case 46: return new Utf8Json.Formatters.AccelByte.Models.EntitlementPagingSlicedResultFormatter();
+                case 47: return new Utf8Json.Formatters.AccelByte.Models.ServiceErrorFormatter();
+                case 48: return new Utf8Json.Formatters.AccelByte.Models.OAuthErrorFormatter();
+                case 49: return new Utf8Json.Formatters.AccelByte.Models.GameProfileFormatter();
+                case 50: return new Utf8Json.Formatters.AccelByte.Models.GameProfileRequestFormatter();
+                case 51: return new Utf8Json.Formatters.AccelByte.Models.GameProfileAttributeFormatter();
+                case 52: return new Utf8Json.Formatters.AccelByte.Models.GameProfilePublicInfoFormatter();
+                case 53: return new Utf8Json.Formatters.AccelByte.Models.UserGameProfilesFormatter();
+                case 54: return new Utf8Json.Formatters.AccelByte.Models.NotificationFormatter();
+                case 55: return new Utf8Json.Formatters.AccelByte.Models.ChatMesssageFormatter();
+                case 56: return new Utf8Json.Formatters.AccelByte.Models.PersonalChatRequestFormatter();
+                case 57: return new Utf8Json.Formatters.AccelByte.Models.PartyInfoFormatter();
+                case 58: return new Utf8Json.Formatters.AccelByte.Models.PartyInviteRequestFormatter();
+                case 59: return new Utf8Json.Formatters.AccelByte.Models.PartyInvitationFormatter();
+                case 60: return new Utf8Json.Formatters.AccelByte.Models.PartyChatRequestFormatter();
+                case 61: return new Utf8Json.Formatters.AccelByte.Models.PartyJoinRequestFormatter();
+                case 62: return new Utf8Json.Formatters.AccelByte.Models.PartyKickRequestFormatter();
+                case 63: return new Utf8Json.Formatters.AccelByte.Models.JoinNotificationFormatter();
+                case 64: return new Utf8Json.Formatters.AccelByte.Models.KickNotificationFormatter();
+                case 65: return new Utf8Json.Formatters.AccelByte.Models.LeaveNotificationFormatter();
+                case 66: return new Utf8Json.Formatters.AccelByte.Models.GameModeFormatter();
+                case 67: return new Utf8Json.Formatters.AccelByte.Models.MatchmakingNotifFormatter();
+                case 68: return new Utf8Json.Formatters.AccelByte.Models.DsNotifFormatter();
+                case 69: return new Utf8Json.Formatters.AccelByte.Models.MatchmakingCodeFormatter();
+                case 70: return new Utf8Json.Formatters.AccelByte.Models.ReadyConsentRequestFormatter();
+                case 71: return new Utf8Json.Formatters.AccelByte.Models.ReadyForMatchConfirmationFormatter();
+                case 72: return new Utf8Json.Formatters.AccelByte.Models.RematchmakingNotificationFormatter();
+                case 73: return new Utf8Json.Formatters.AccelByte.Models.FriendshipStatusFormatter();
+                case 74: return new Utf8Json.Formatters.AccelByte.Models.FriendsFormatter();
+                case 75: return new Utf8Json.Formatters.AccelByte.Models.FriendFormatter();
+                case 76: return new Utf8Json.Formatters.AccelByte.Models.FriendsStatusFormatter();
+                case 77: return new Utf8Json.Formatters.AccelByte.Models.FriendsStatusNotifFormatter();
+                case 78: return new Utf8Json.Formatters.AccelByte.Models.OnlineFriendsFormatter();
+                case 79: return new Utf8Json.Formatters.AccelByte.Models.PlatformLinkFormatter();
+                case 80: return new Utf8Json.Formatters.AccelByte.Models.CollectionFormatter();
+                case 81: return new Utf8Json.Formatters.AccelByte.Models.StatInfoFormatter();
+                case 82: return new Utf8Json.Formatters.AccelByte.Models.StatItemInfoFormatter();
+                case 83: return new Utf8Json.Formatters.AccelByte.Models.StatItemIncResultFormatter();
+                case 84: return new Utf8Json.Formatters.AccelByte.Models.StatItemPagingSlicedResultFormatter();
+                case 85: return new Utf8Json.Formatters.AccelByte.Models.BulkUserStatItemIncFormatter();
+                case 86: return new Utf8Json.Formatters.AccelByte.Models.BulkStatItemIncFormatter();
+                case 87: return new Utf8Json.Formatters.AccelByte.Models.BulkStatItemOperationResultFormatter();
+                case 88: return new Utf8Json.Formatters.AccelByte.Models.TelemetryEventTagFormatter();
+                case 89: return new Utf8Json.Formatters.AccelByte.Models.TokenDataFormatter();
+                case 90: return new Utf8Json.Formatters.AccelByte.Models.SessionDataFormatter();
+                case 91: return new Utf8Json.Formatters.AccelByte.Models.BanFormatter();
+                case 92: return new Utf8Json.Formatters.AccelByte.Models.PermissionFormatter();
+                case 93: return new Utf8Json.Formatters.AccelByte.Models.UserDataFormatter();
+                case 94: return new Utf8Json.Formatters.AccelByte.Models.PublicUserInfoFormatter();
+                case 95: return new Utf8Json.Formatters.AccelByte.Models.PagedPublicUsersInfoFormatter();
+                case 96: return new Utf8Json.Formatters.AccelByte.Models.RegisterUserRequestFormatter();
+                case 97: return new Utf8Json.Formatters.AccelByte.Models.RegisterUserResponseFormatter();
+                case 98: return new Utf8Json.Formatters.AccelByte.Models.UpdateUserRequestFormatter();
+                case 99: return new Utf8Json.Formatters.AccelByte.Models.PagedPlatformLinksFormatter();
                 default: return null;
             }
         }
@@ -1704,9 +1702,9 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("userId"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currencyCode"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currencySymbol"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("balance"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("balance"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 7},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("status"), 8},
             };
 
@@ -1717,9 +1715,9 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("userId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currencyCode"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currencySymbol"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("balance"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("balance"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("status"),
                 
             };
@@ -1745,13 +1743,13 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.currencySymbol);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[6]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteDouble(value.balance);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[8]);
-            writer.WriteString(value.status);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Serialize(ref writer, value.status, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -1774,13 +1772,13 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __currencyCode__b__ = false;
             var __currencySymbol__ = default(string);
             var __currencySymbol__b__ = false;
+            var __balance__ = default(double);
+            var __balance__b__ = false;
             var __createdAt__ = default(global::System.DateTime);
             var __createdAt__b__ = false;
             var __updatedAt__ = default(global::System.DateTime);
             var __updatedAt__b__ = false;
-            var __balance__ = default(double);
-            var __balance__b__ = false;
-            var __status__ = default(string);
+            var __status__ = default(global::AccelByte.Models.ItemStatus);
             var __status__b__ = false;
 
             var ____count = 0;
@@ -1818,19 +1816,19 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __currencySymbol__b__ = true;
                         break;
                     case 5:
-                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __createdAt__b__ = true;
-                        break;
-                    case 6:
-                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __updatedAt__b__ = true;
-                        break;
-                    case 7:
                         __balance__ = reader.ReadDouble();
                         __balance__b__ = true;
                         break;
+                    case 6:
+                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __createdAt__b__ = true;
+                        break;
+                    case 7:
+                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __updatedAt__b__ = true;
+                        break;
                     case 8:
-                        __status__ = reader.ReadString();
+                        __status__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Deserialize(ref reader, formatterResolver);
                         __status__b__ = true;
                         break;
                     default:
@@ -1848,9 +1846,9 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__userId__b__) ____result.userId = __userId__;
             if(__currencyCode__b__) ____result.currencyCode = __currencyCode__;
             if(__currencySymbol__b__) ____result.currencySymbol = __currencySymbol__;
+            if(__balance__b__) ____result.balance = __balance__;
             if(__createdAt__b__) ____result.createdAt = __createdAt__;
             if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
-            if(__balance__b__) ____result.balance = __balance__;
             if(__status__b__) ____result.status = __status__;
 
             return ____result;
@@ -1858,12 +1856,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class WalletTransactionFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.WalletTransaction>
+    public sealed class WalletTransactionInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.WalletTransactionInfo>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public WalletTransactionFormatter()
+        public WalletTransactionInfoFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -1895,7 +1893,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.WalletTransaction value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.WalletTransactionInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -1928,7 +1926,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.WalletTransaction Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.WalletTransactionInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -2020,7 +2018,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.WalletTransaction();
+            var ____result = new global::AccelByte.Models.WalletTransactionInfo();
             if(__walletId__b__) ____result.walletId = __walletId__;
             if(__amount__b__) ____result.amount = __amount__;
             if(__reason__b__) ____result.reason = __reason__;
@@ -2150,12 +2148,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class PagedWalletTransactionsFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.PagedWalletTransactions>
+    public sealed class WalletTransactionPagingSlicedResultFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.WalletTransactionPagingSlicedResult>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public PagedWalletTransactionsFormatter()
+        public WalletTransactionPagingSlicedResultFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -2171,7 +2169,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.PagedWalletTransactions value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.WalletTransactionPagingSlicedResult value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -2181,14 +2179,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.WalletTransaction[]>().Serialize(ref writer, value.data, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.WalletTransactionInfo[]>().Serialize(ref writer, value.data, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Serialize(ref writer, value.paging, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.PagedWalletTransactions Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.WalletTransactionPagingSlicedResult Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -2196,7 +2194,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             }
             
 
-            var __data__ = default(global::AccelByte.Models.WalletTransaction[]);
+            var __data__ = default(global::AccelByte.Models.WalletTransactionInfo[]);
             var __data__b__ = false;
             var __paging__ = default(global::AccelByte.Models.Paging);
             var __paging__b__ = false;
@@ -2216,7 +2214,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 switch (key)
                 {
                     case 0:
-                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.WalletTransaction[]>().Deserialize(ref reader, formatterResolver);
+                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.WalletTransactionInfo[]>().Deserialize(ref reader, formatterResolver);
                         __data__b__ = true;
                         break;
                     case 1:
@@ -2232,7 +2230,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.PagedWalletTransactions();
+            var ____result = new global::AccelByte.Models.WalletTransactionPagingSlicedResult();
             if(__data__b__) ____result.data = __data__;
             if(__paging__b__) ____result.paging = __paging__;
 
@@ -2241,23 +2239,22 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class CategoryFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.Category>
+    public sealed class CategoryInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.CategoryInfo>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public CategoryFormatter()
+        public CategoryInfoFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("parentCategoryPath"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("categoryPath"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("displayName"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("childCategories"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("root"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("displayName"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("root"), 6},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -2265,16 +2262,15 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("namespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("parentCategoryPath"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("categoryPath"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("displayName"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("childCategories"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("displayName"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("root"),
                 
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.Category value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.CategoryInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -2290,20 +2286,18 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.categoryPath);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.displayName);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Category[]>().Serialize(ref writer, value.childCategories, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[5]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteRaw(this.____stringByteKeys[4]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.displayName);
+            writer.WriteRaw(this.____stringByteKeys[6]);
             writer.WriteBoolean(value.root);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.Category Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.CategoryInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -2317,14 +2311,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __parentCategoryPath__b__ = false;
             var __categoryPath__ = default(string);
             var __categoryPath__b__ = false;
-            var __displayName__ = default(string);
-            var __displayName__b__ = false;
-            var __childCategories__ = default(global::AccelByte.Models.Category[]);
-            var __childCategories__b__ = false;
             var __createdAt__ = default(global::System.DateTime);
             var __createdAt__b__ = false;
             var __updatedAt__ = default(global::System.DateTime);
             var __updatedAt__b__ = false;
+            var __displayName__ = default(string);
+            var __displayName__b__ = false;
             var __root__ = default(bool);
             var __root__b__ = false;
 
@@ -2355,22 +2347,18 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __categoryPath__b__ = true;
                         break;
                     case 3:
-                        __displayName__ = reader.ReadString();
-                        __displayName__b__ = true;
-                        break;
-                    case 4:
-                        __childCategories__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Category[]>().Deserialize(ref reader, formatterResolver);
-                        __childCategories__b__ = true;
-                        break;
-                    case 5:
                         __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __createdAt__b__ = true;
                         break;
-                    case 6:
+                    case 4:
                         __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __updatedAt__b__ = true;
                         break;
-                    case 7:
+                    case 5:
+                        __displayName__ = reader.ReadString();
+                        __displayName__b__ = true;
+                        break;
+                    case 6:
                         __root__ = reader.ReadBoolean();
                         __root__b__ = true;
                         break;
@@ -2383,14 +2371,13 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.Category();
+            var ____result = new global::AccelByte.Models.CategoryInfo();
             if(__Namespace__b__) ____result.Namespace = __Namespace__;
             if(__parentCategoryPath__b__) ____result.parentCategoryPath = __parentCategoryPath__;
             if(__categoryPath__b__) ____result.categoryPath = __categoryPath__;
-            if(__displayName__b__) ____result.displayName = __displayName__;
-            if(__childCategories__b__) ____result.childCategories = __childCategories__;
             if(__createdAt__b__) ____result.createdAt = __createdAt__;
             if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+            if(__displayName__b__) ____result.displayName = __displayName__;
             if(__root__b__) ____result.root = __root__;
 
             return ____result;
@@ -2398,12 +2385,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class RegionDataFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.RegionData>
+    public sealed class RegionDataItemFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.RegionDataItem>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public RegionDataFormatter()
+        public RegionDataItemFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -2416,12 +2403,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currencyNamespace"), 6},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("purchaseAt"), 7},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("expireAt"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("totalNum"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("totalNumPerAccount"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountPurchaseAt"), 11},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountExpireAt"), 12},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountTotalNum"), 13},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountTotalNumPerAccount"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountPurchaseAt"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountExpireAt"), 10},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -2435,17 +2418,13 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currencyNamespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("purchaseAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("expireAt"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("totalNum"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("totalNumPerAccount"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountPurchaseAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountExpireAt"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountTotalNum"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountTotalNumPerAccount"),
                 
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.RegionData value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.RegionDataItem value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -2473,22 +2452,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[8]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.expireAt, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[9]);
-            writer.WriteInt32(value.totalNum);
-            writer.WriteRaw(this.____stringByteKeys[10]);
-            writer.WriteInt32(value.totalNumPerAccount);
-            writer.WriteRaw(this.____stringByteKeys[11]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.discountPurchaseAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteRaw(this.____stringByteKeys[10]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.discountExpireAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[13]);
-            writer.WriteInt32(value.discountTotalNum);
-            writer.WriteRaw(this.____stringByteKeys[14]);
-            writer.WriteInt32(value.discountTotalNumPerAccount);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.RegionData Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.RegionDataItem Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -2514,18 +2485,10 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __purchaseAt__b__ = false;
             var __expireAt__ = default(global::System.DateTime);
             var __expireAt__b__ = false;
-            var __totalNum__ = default(int);
-            var __totalNum__b__ = false;
-            var __totalNumPerAccount__ = default(int);
-            var __totalNumPerAccount__b__ = false;
             var __discountPurchaseAt__ = default(global::System.DateTime);
             var __discountPurchaseAt__b__ = false;
             var __discountExpireAt__ = default(global::System.DateTime);
             var __discountExpireAt__b__ = false;
-            var __discountTotalNum__ = default(int);
-            var __discountTotalNum__b__ = false;
-            var __discountTotalNumPerAccount__ = default(int);
-            var __discountTotalNumPerAccount__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -2578,28 +2541,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __expireAt__b__ = true;
                         break;
                     case 9:
-                        __totalNum__ = reader.ReadInt32();
-                        __totalNum__b__ = true;
-                        break;
-                    case 10:
-                        __totalNumPerAccount__ = reader.ReadInt32();
-                        __totalNumPerAccount__b__ = true;
-                        break;
-                    case 11:
                         __discountPurchaseAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __discountPurchaseAt__b__ = true;
                         break;
-                    case 12:
+                    case 10:
                         __discountExpireAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __discountExpireAt__b__ = true;
-                        break;
-                    case 13:
-                        __discountTotalNum__ = reader.ReadInt32();
-                        __discountTotalNum__b__ = true;
-                        break;
-                    case 14:
-                        __discountTotalNumPerAccount__ = reader.ReadInt32();
-                        __discountTotalNumPerAccount__b__ = true;
                         break;
                     default:
                         reader.ReadNextBlock();
@@ -2610,7 +2557,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.RegionData();
+            var ____result = new global::AccelByte.Models.RegionDataItem();
             if(__price__b__) ____result.price = __price__;
             if(__discountPercentage__b__) ____result.discountPercentage = __discountPercentage__;
             if(__discountAmount__b__) ____result.discountAmount = __discountAmount__;
@@ -2620,125 +2567,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__currencyNamespace__b__) ____result.currencyNamespace = __currencyNamespace__;
             if(__purchaseAt__b__) ____result.purchaseAt = __purchaseAt__;
             if(__expireAt__b__) ____result.expireAt = __expireAt__;
-            if(__totalNum__b__) ____result.totalNum = __totalNum__;
-            if(__totalNumPerAccount__b__) ____result.totalNumPerAccount = __totalNumPerAccount__;
             if(__discountPurchaseAt__b__) ____result.discountPurchaseAt = __discountPurchaseAt__;
             if(__discountExpireAt__b__) ____result.discountExpireAt = __discountExpireAt__;
-            if(__discountTotalNum__b__) ____result.discountTotalNum = __discountTotalNum__;
-            if(__discountTotalNumPerAccount__b__) ____result.discountTotalNumPerAccount = __discountTotalNumPerAccount__;
-
-            return ____result;
-        }
-    }
-
-
-    public sealed class ImageFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.Image>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public ImageFormatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("height"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("width"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("imageUrl"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("smallImageUrl"), 3},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("height"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("width"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("imageUrl"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("smallImageUrl"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.Image value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteInt32(value.height);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteInt32(value.width);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteString(value.imageUrl);
-            writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.smallImageUrl);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::AccelByte.Models.Image Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var __height__ = default(int);
-            var __height__b__ = false;
-            var __width__ = default(int);
-            var __width__b__ = false;
-            var __imageUrl__ = default(string);
-            var __imageUrl__b__ = false;
-            var __smallImageUrl__ = default(string);
-            var __smallImageUrl__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        __height__ = reader.ReadInt32();
-                        __height__b__ = true;
-                        break;
-                    case 1:
-                        __width__ = reader.ReadInt32();
-                        __width__b__ = true;
-                        break;
-                    case 2:
-                        __imageUrl__ = reader.ReadString();
-                        __imageUrl__b__ = true;
-                        break;
-                    case 3:
-                        __smallImageUrl__ = reader.ReadString();
-                        __smallImageUrl__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::AccelByte.Models.Image();
-            if(__height__b__) ____result.height = __height__;
-            if(__width__b__) ____result.width = __width__;
-            if(__imageUrl__b__) ____result.imageUrl = __imageUrl__;
-            if(__smallImageUrl__b__) ____result.smallImageUrl = __smallImageUrl__;
 
             return ____result;
         }
@@ -2757,21 +2587,26 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appId"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appType"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sku"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemType"), 7},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetCurrencyCode"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("title"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("thumbnailImage"), 11},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("regionDataItem"), 12},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemIds"), 13},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCountPerUser"), 14},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCount"), 15},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 16},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("baseAppId"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sku"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementType"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("stackable"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemType"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("thumbnailUrl"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetCurrencyCode"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetItemId"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("title"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("regionDataItem"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemIds"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCountPerUser"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCount"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("boothName"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 22},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -2779,19 +2614,24 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("itemId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("baseAppId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sku"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("entitlementType"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("useCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("stackable"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemType"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetCurrencyCode"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("thumbnailUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetNamespace"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetCurrencyCode"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetItemId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("title"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("thumbnailImage"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("regionDataItem"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemIds"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCountPerUser"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("boothName"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
                 
@@ -2814,34 +2654,44 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[2]);
             formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Serialize(ref writer, value.appType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.sku);
+            writer.WriteString(value.baseAppId);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.Namespace);
+            writer.WriteString(value.sku);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.name);
+            writer.WriteString(value.Namespace);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            writer.WriteInt32(value.useCount);
+            writer.WriteString(value.name);
             writer.WriteRaw(this.____stringByteKeys[7]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.itemType, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Serialize(ref writer, value.entitlementType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[8]);
-            writer.WriteString(value.targetCurrencyCode);
+            writer.WriteInt32(value.useCount);
             writer.WriteRaw(this.____stringByteKeys[9]);
-            writer.WriteString(value.targetNamespace);
+            writer.WriteBoolean(value.stackable);
             writer.WriteRaw(this.____stringByteKeys[10]);
-            writer.WriteString(value.title);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.itemType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[11]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image>().Serialize(ref writer, value.thumbnailImage, formatterResolver);
+            writer.WriteString(value.thumbnailUrl);
             writer.WriteRaw(this.____stringByteKeys[12]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionData>().Serialize(ref writer, value.regionDataItem, formatterResolver);
+            writer.WriteString(value.targetNamespace);
             writer.WriteRaw(this.____stringByteKeys[13]);
-            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.itemIds, formatterResolver);
+            writer.WriteString(value.targetCurrencyCode);
             writer.WriteRaw(this.____stringByteKeys[14]);
-            writer.WriteInt32(value.maxCountPerUser);
+            writer.WriteString(value.targetItemId);
             writer.WriteRaw(this.____stringByteKeys[15]);
-            writer.WriteInt32(value.maxCount);
+            writer.WriteString(value.title);
             writer.WriteRaw(this.____stringByteKeys[16]);
-            writer.WriteString(value.region);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem>().Serialize(ref writer, value.regionDataItem, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[17]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.itemIds, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteInt32(value.maxCountPerUser);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            writer.WriteInt32(value.maxCount);
+            writer.WriteRaw(this.____stringByteKeys[20]);
+            writer.WriteString(value.boothName);
+            writer.WriteRaw(this.____stringByteKeys[21]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[22]);
             writer.WriteString(value.language);
             
             writer.WriteEndObject();
@@ -2861,25 +2711,33 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __appId__b__ = false;
             var __appType__ = default(global::AccelByte.Models.EntitlementAppType);
             var __appType__b__ = false;
+            var __baseAppId__ = default(string);
+            var __baseAppId__b__ = false;
             var __sku__ = default(string);
             var __sku__b__ = false;
             var __Namespace__ = default(string);
             var __Namespace__b__ = false;
             var __name__ = default(string);
             var __name__b__ = false;
+            var __entitlementType__ = default(global::AccelByte.Models.EntitlementType);
+            var __entitlementType__b__ = false;
             var __useCount__ = default(int);
             var __useCount__b__ = false;
+            var __stackable__ = default(bool);
+            var __stackable__b__ = false;
             var __itemType__ = default(global::AccelByte.Models.ItemType);
             var __itemType__b__ = false;
-            var __targetCurrencyCode__ = default(string);
-            var __targetCurrencyCode__b__ = false;
+            var __thumbnailUrl__ = default(string);
+            var __thumbnailUrl__b__ = false;
             var __targetNamespace__ = default(string);
             var __targetNamespace__b__ = false;
+            var __targetCurrencyCode__ = default(string);
+            var __targetCurrencyCode__b__ = false;
+            var __targetItemId__ = default(string);
+            var __targetItemId__b__ = false;
             var __title__ = default(string);
             var __title__b__ = false;
-            var __thumbnailImage__ = default(global::AccelByte.Models.Image);
-            var __thumbnailImage__b__ = false;
-            var __regionDataItem__ = default(global::AccelByte.Models.RegionData);
+            var __regionDataItem__ = default(global::AccelByte.Models.RegionDataItem);
             var __regionDataItem__b__ = false;
             var __itemIds__ = default(string[]);
             var __itemIds__b__ = false;
@@ -2887,6 +2745,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __maxCountPerUser__b__ = false;
             var __maxCount__ = default(int);
             var __maxCount__b__ = false;
+            var __boothName__ = default(string);
+            var __boothName__b__ = false;
             var __region__ = default(string);
             var __region__b__ = false;
             var __language__ = default(string);
@@ -2919,62 +2779,82 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __appType__b__ = true;
                         break;
                     case 3:
+                        __baseAppId__ = reader.ReadString();
+                        __baseAppId__b__ = true;
+                        break;
+                    case 4:
                         __sku__ = reader.ReadString();
                         __sku__b__ = true;
                         break;
-                    case 4:
+                    case 5:
                         __Namespace__ = reader.ReadString();
                         __Namespace__b__ = true;
                         break;
-                    case 5:
+                    case 6:
                         __name__ = reader.ReadString();
                         __name__b__ = true;
                         break;
-                    case 6:
+                    case 7:
+                        __entitlementType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Deserialize(ref reader, formatterResolver);
+                        __entitlementType__b__ = true;
+                        break;
+                    case 8:
                         __useCount__ = reader.ReadInt32();
                         __useCount__b__ = true;
                         break;
-                    case 7:
+                    case 9:
+                        __stackable__ = reader.ReadBoolean();
+                        __stackable__b__ = true;
+                        break;
+                    case 10:
                         __itemType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Deserialize(ref reader, formatterResolver);
                         __itemType__b__ = true;
                         break;
-                    case 8:
-                        __targetCurrencyCode__ = reader.ReadString();
-                        __targetCurrencyCode__b__ = true;
+                    case 11:
+                        __thumbnailUrl__ = reader.ReadString();
+                        __thumbnailUrl__b__ = true;
                         break;
-                    case 9:
+                    case 12:
                         __targetNamespace__ = reader.ReadString();
                         __targetNamespace__b__ = true;
                         break;
-                    case 10:
+                    case 13:
+                        __targetCurrencyCode__ = reader.ReadString();
+                        __targetCurrencyCode__b__ = true;
+                        break;
+                    case 14:
+                        __targetItemId__ = reader.ReadString();
+                        __targetItemId__b__ = true;
+                        break;
+                    case 15:
                         __title__ = reader.ReadString();
                         __title__b__ = true;
                         break;
-                    case 11:
-                        __thumbnailImage__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image>().Deserialize(ref reader, formatterResolver);
-                        __thumbnailImage__b__ = true;
-                        break;
-                    case 12:
-                        __regionDataItem__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionData>().Deserialize(ref reader, formatterResolver);
+                    case 16:
+                        __regionDataItem__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem>().Deserialize(ref reader, formatterResolver);
                         __regionDataItem__b__ = true;
                         break;
-                    case 13:
+                    case 17:
                         __itemIds__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
                         __itemIds__b__ = true;
                         break;
-                    case 14:
+                    case 18:
                         __maxCountPerUser__ = reader.ReadInt32();
                         __maxCountPerUser__b__ = true;
                         break;
-                    case 15:
+                    case 19:
                         __maxCount__ = reader.ReadInt32();
                         __maxCount__b__ = true;
                         break;
-                    case 16:
+                    case 20:
+                        __boothName__ = reader.ReadString();
+                        __boothName__b__ = true;
+                        break;
+                    case 21:
                         __region__ = reader.ReadString();
                         __region__b__ = true;
                         break;
-                    case 17:
+                    case 22:
                         __language__ = reader.ReadString();
                         __language__b__ = true;
                         break;
@@ -2991,19 +2871,24 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__itemId__b__) ____result.itemId = __itemId__;
             if(__appId__b__) ____result.appId = __appId__;
             if(__appType__b__) ____result.appType = __appType__;
+            if(__baseAppId__b__) ____result.baseAppId = __baseAppId__;
             if(__sku__b__) ____result.sku = __sku__;
             if(__Namespace__b__) ____result.Namespace = __Namespace__;
             if(__name__b__) ____result.name = __name__;
+            if(__entitlementType__b__) ____result.entitlementType = __entitlementType__;
             if(__useCount__b__) ____result.useCount = __useCount__;
+            if(__stackable__b__) ____result.stackable = __stackable__;
             if(__itemType__b__) ____result.itemType = __itemType__;
-            if(__targetCurrencyCode__b__) ____result.targetCurrencyCode = __targetCurrencyCode__;
+            if(__thumbnailUrl__b__) ____result.thumbnailUrl = __thumbnailUrl__;
             if(__targetNamespace__b__) ____result.targetNamespace = __targetNamespace__;
+            if(__targetCurrencyCode__b__) ____result.targetCurrencyCode = __targetCurrencyCode__;
+            if(__targetItemId__b__) ____result.targetItemId = __targetItemId__;
             if(__title__b__) ____result.title = __title__;
-            if(__thumbnailImage__b__) ____result.thumbnailImage = __thumbnailImage__;
             if(__regionDataItem__b__) ____result.regionDataItem = __regionDataItem__;
             if(__itemIds__b__) ____result.itemIds = __itemIds__;
             if(__maxCountPerUser__b__) ____result.maxCountPerUser = __maxCountPerUser__;
             if(__maxCount__b__) ____result.maxCount = __maxCount__;
+            if(__boothName__b__) ____result.boothName = __boothName__;
             if(__region__b__) ____result.region = __region__;
             if(__language__b__) ____result.language = __language__;
 
@@ -3021,22 +2906,30 @@ namespace Utf8Json.Formatters.AccelByte.Models
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ItemType"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("CategoryPath"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ItemStatus"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("Page"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("Size"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("SortBy"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemType"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appType"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("categoryPath"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("baseAppId"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("offset"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("limit"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sortBy"), 9},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("ItemType"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("CategoryPath"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("ItemStatus"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("Page"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("Size"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("SortBy"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("itemType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("categoryPath"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("baseAppId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tags"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("offset"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("limit"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sortBy"),
                 
             };
         }
@@ -3051,17 +2944,25 @@ namespace Utf8Json.Formatters.AccelByte.Models
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.ItemType, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.itemType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.CategoryPath);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Serialize(ref writer, value.appType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Serialize(ref writer, value.ItemStatus, formatterResolver);
+            writer.WriteString(value.region);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.Page, formatterResolver);
+            writer.WriteString(value.language);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.Size, formatterResolver);
+            writer.WriteString(value.categoryPath);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.SortBy);
+            writer.WriteString(value.baseAppId);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.tags, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.offset, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.limit, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.sortBy);
             
             writer.WriteEndObject();
         }
@@ -3076,14 +2977,22 @@ namespace Utf8Json.Formatters.AccelByte.Models
 
             var __ItemType__ = default(global::AccelByte.Models.ItemType);
             var __ItemType__b__ = false;
+            var __AppType__ = default(global::AccelByte.Models.EntitlementAppType);
+            var __AppType__b__ = false;
+            var __Region__ = default(string);
+            var __Region__b__ = false;
+            var __Language__ = default(string);
+            var __Language__b__ = false;
             var __CategoryPath__ = default(string);
             var __CategoryPath__b__ = false;
-            var __ItemStatus__ = default(global::AccelByte.Models.ItemStatus);
-            var __ItemStatus__b__ = false;
-            var __Page__ = default(int?);
-            var __Page__b__ = false;
-            var __Size__ = default(int?);
-            var __Size__b__ = false;
+            var __BaseAppId__ = default(string);
+            var __BaseAppId__b__ = false;
+            var __Tags__ = default(string[]);
+            var __Tags__b__ = false;
+            var __Offset__ = default(int?);
+            var __Offset__b__ = false;
+            var __Limit__ = default(int?);
+            var __Limit__b__ = false;
             var __SortBy__ = default(string);
             var __SortBy__b__ = false;
 
@@ -3106,22 +3015,38 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __ItemType__b__ = true;
                         break;
                     case 1:
+                        __AppType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Deserialize(ref reader, formatterResolver);
+                        __AppType__b__ = true;
+                        break;
+                    case 2:
+                        __Region__ = reader.ReadString();
+                        __Region__b__ = true;
+                        break;
+                    case 3:
+                        __Language__ = reader.ReadString();
+                        __Language__b__ = true;
+                        break;
+                    case 4:
                         __CategoryPath__ = reader.ReadString();
                         __CategoryPath__b__ = true;
                         break;
-                    case 2:
-                        __ItemStatus__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Deserialize(ref reader, formatterResolver);
-                        __ItemStatus__b__ = true;
-                        break;
-                    case 3:
-                        __Page__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        __Page__b__ = true;
-                        break;
-                    case 4:
-                        __Size__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        __Size__b__ = true;
-                        break;
                     case 5:
+                        __BaseAppId__ = reader.ReadString();
+                        __BaseAppId__b__ = true;
+                        break;
+                    case 6:
+                        __Tags__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
+                        __Tags__b__ = true;
+                        break;
+                    case 7:
+                        __Offset__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __Offset__b__ = true;
+                        break;
+                    case 8:
+                        __Limit__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __Limit__b__ = true;
+                        break;
+                    case 9:
                         __SortBy__ = reader.ReadString();
                         __SortBy__b__ = true;
                         break;
@@ -3135,49 +3060,201 @@ namespace Utf8Json.Formatters.AccelByte.Models
             }
 
             var ____result = new global::AccelByte.Models.ItemCriteria();
-            if(__ItemType__b__) ____result.ItemType = __ItemType__;
-            if(__CategoryPath__b__) ____result.CategoryPath = __CategoryPath__;
-            if(__ItemStatus__b__) ____result.ItemStatus = __ItemStatus__;
-            if(__Page__b__) ____result.Page = __Page__;
-            if(__Size__b__) ____result.Size = __Size__;
-            if(__SortBy__b__) ____result.SortBy = __SortBy__;
+            if(__ItemType__b__) ____result.itemType = __ItemType__;
+            if(__AppType__b__) ____result.appType = __AppType__;
+            if(__Region__b__) ____result.region = __Region__;
+            if(__Language__b__) ____result.language = __Language__;
+            if(__CategoryPath__b__) ____result.categoryPath = __CategoryPath__;
+            if(__BaseAppId__b__) ____result.baseAppId = __BaseAppId__;
+            if(__Tags__b__) ____result.tags = __Tags__;
+            if(__Offset__b__) ____result.offset = __Offset__;
+            if(__Limit__b__) ____result.limit = __Limit__;
+            if(__SortBy__b__) ____result.sortBy = __SortBy__;
 
             return ____result;
         }
     }
 
 
-    public sealed class ItemFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.Item>
+    public sealed class ImageFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.Image>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public ItemFormatter()
+        public ImageFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("as"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("caption"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("height"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("width"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("imageUrl"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("smallImageUrl"), 5},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("as"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("caption"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("height"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("width"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("imageUrl"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("smallImageUrl"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.Image value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.As);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.caption);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteInt32(value.height);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteInt32(value.width);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.imageUrl);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.smallImageUrl);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.Image Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __As__ = default(string);
+            var __As__b__ = false;
+            var __caption__ = default(string);
+            var __caption__b__ = false;
+            var __height__ = default(int);
+            var __height__b__ = false;
+            var __width__ = default(int);
+            var __width__b__ = false;
+            var __imageUrl__ = default(string);
+            var __imageUrl__b__ = false;
+            var __smallImageUrl__ = default(string);
+            var __smallImageUrl__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __As__ = reader.ReadString();
+                        __As__b__ = true;
+                        break;
+                    case 1:
+                        __caption__ = reader.ReadString();
+                        __caption__b__ = true;
+                        break;
+                    case 2:
+                        __height__ = reader.ReadInt32();
+                        __height__b__ = true;
+                        break;
+                    case 3:
+                        __width__ = reader.ReadInt32();
+                        __width__b__ = true;
+                        break;
+                    case 4:
+                        __imageUrl__ = reader.ReadString();
+                        __imageUrl__b__ = true;
+                        break;
+                    case 5:
+                        __smallImageUrl__ = reader.ReadString();
+                        __smallImageUrl__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.Image();
+            if(__As__b__) ____result.As = __As__;
+            if(__caption__b__) ____result.caption = __caption__;
+            if(__height__b__) ____result.height = __height__;
+            if(__width__b__) ____result.width = __width__;
+            if(__imageUrl__b__) ____result.imageUrl = __imageUrl__;
+            if(__smallImageUrl__b__) ____result.smallImageUrl = __smallImageUrl__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ItemInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.ItemInfo>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ItemInfoFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("title"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("description"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("longDescription"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("images"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("thumbnailImage"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appId"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appType"), 7},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sku"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementName"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementType"), 11},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appId"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appType"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("baseAppId"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sku"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementType"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("stackable"), 12},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("categoryPath"), 13},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("status"), 14},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemType"), 15},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 16},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 17},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetCurrencyCode"), 18},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("regionData"), 19},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemIds"), 20},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetCurrencyCode"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetItemId"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("images"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("thumbnailUrl"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("regionData"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemIds"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCountPerUser"), 24},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCount"), 25},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("clazz"), 26},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("boothName"), 27},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("displayOrder"), 28},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ext"), 29},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 30},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 31},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 32},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 33},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("localExt"), 34},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -3185,30 +3262,43 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("title"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("description"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("longDescription"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("images"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("thumbnailImage"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("baseAppId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sku"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("entitlementName"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("entitlementType"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("useCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("stackable"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("categoryPath"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("status"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemType"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetNamespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetCurrencyCode"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetItemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("images"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("thumbnailUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("regionData"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemIds"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tags"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCountPerUser"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("clazz"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("boothName"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("displayOrder"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("ext"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("localExt"),
                 
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.Item value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.ItemInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -3224,48 +3314,74 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.longDescription);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Serialize(ref writer, value.images, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image>().Serialize(ref writer, value.thumbnailImage, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[5]);
             writer.WriteString(value.itemId);
-            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.appId);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Serialize(ref writer, value.appType, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.baseAppId);
             writer.WriteRaw(this.____stringByteKeys[7]);
-            writer.WriteString(value.appType);
-            writer.WriteRaw(this.____stringByteKeys[8]);
             writer.WriteString(value.sku);
-            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteRaw(this.____stringByteKeys[8]);
             writer.WriteString(value.Namespace);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.name);
             writer.WriteRaw(this.____stringByteKeys[10]);
-            writer.WriteString(value.entitlementName);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Serialize(ref writer, value.entitlementType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[11]);
-            writer.WriteString(value.entitlementType);
-            writer.WriteRaw(this.____stringByteKeys[12]);
             writer.WriteInt32(value.useCount);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteBoolean(value.stackable);
             writer.WriteRaw(this.____stringByteKeys[13]);
             writer.WriteString(value.categoryPath);
             writer.WriteRaw(this.____stringByteKeys[14]);
-            writer.WriteString(value.status);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Serialize(ref writer, value.status, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[15]);
-            writer.WriteString(value.itemType);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.itemType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[16]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteString(value.targetNamespace);
             writer.WriteRaw(this.____stringByteKeys[17]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[18]);
             writer.WriteString(value.targetCurrencyCode);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteString(value.targetItemId);
             writer.WriteRaw(this.____stringByteKeys[19]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionData[]>().Serialize(ref writer, value.regionData, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Serialize(ref writer, value.images, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[20]);
-            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.itemIds, formatterResolver);
+            writer.WriteString(value.thumbnailUrl);
             writer.WriteRaw(this.____stringByteKeys[21]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem[]>().Serialize(ref writer, value.regionData, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[22]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.itemIds, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[23]);
             formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.tags, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[24]);
+            writer.WriteInt32(value.maxCountPerUser);
+            writer.WriteRaw(this.____stringByteKeys[25]);
+            writer.WriteInt32(value.maxCount);
+            writer.WriteRaw(this.____stringByteKeys[26]);
+            writer.WriteString(value.clazz);
+            writer.WriteRaw(this.____stringByteKeys[27]);
+            writer.WriteString(value.boothName);
+            writer.WriteRaw(this.____stringByteKeys[28]);
+            writer.WriteInt32(value.displayOrder);
+            writer.WriteRaw(this.____stringByteKeys[29]);
+            writer.WriteString(value.ext);
+            writer.WriteRaw(this.____stringByteKeys[30]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[31]);
+            writer.WriteString(value.language);
+            writer.WriteRaw(this.____stringByteKeys[32]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[33]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[34]);
+            writer.WriteString(value.localExt);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.Item Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.ItemInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -3279,44 +3395,70 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __description__b__ = false;
             var __longDescription__ = default(string);
             var __longDescription__b__ = false;
-            var __images__ = default(global::AccelByte.Models.Image[]);
-            var __images__b__ = false;
-            var __thumbnailImage__ = default(global::AccelByte.Models.Image);
-            var __thumbnailImage__b__ = false;
             var __itemId__ = default(string);
             var __itemId__b__ = false;
             var __appId__ = default(string);
             var __appId__b__ = false;
-            var __appType__ = default(string);
+            var __appType__ = default(global::AccelByte.Models.EntitlementAppType);
             var __appType__b__ = false;
+            var __baseAppId__ = default(string);
+            var __baseAppId__b__ = false;
             var __sku__ = default(string);
             var __sku__b__ = false;
             var __Namespace__ = default(string);
             var __Namespace__b__ = false;
-            var __entitlementName__ = default(string);
-            var __entitlementName__b__ = false;
-            var __entitlementType__ = default(string);
+            var __name__ = default(string);
+            var __name__b__ = false;
+            var __entitlementType__ = default(global::AccelByte.Models.EntitlementType);
             var __entitlementType__b__ = false;
             var __useCount__ = default(int);
             var __useCount__b__ = false;
+            var __stackable__ = default(bool);
+            var __stackable__b__ = false;
             var __categoryPath__ = default(string);
             var __categoryPath__b__ = false;
-            var __status__ = default(string);
+            var __status__ = default(global::AccelByte.Models.ItemStatus);
             var __status__b__ = false;
-            var __itemType__ = default(string);
+            var __itemType__ = default(global::AccelByte.Models.ItemType);
             var __itemType__b__ = false;
-            var __createdAt__ = default(global::System.DateTime);
-            var __createdAt__b__ = false;
-            var __updatedAt__ = default(global::System.DateTime);
-            var __updatedAt__b__ = false;
+            var __targetNamespace__ = default(string);
+            var __targetNamespace__b__ = false;
             var __targetCurrencyCode__ = default(string);
             var __targetCurrencyCode__b__ = false;
-            var __regionData__ = default(global::AccelByte.Models.RegionData[]);
+            var __targetItemId__ = default(string);
+            var __targetItemId__b__ = false;
+            var __images__ = default(global::AccelByte.Models.Image[]);
+            var __images__b__ = false;
+            var __thumbnailUrl__ = default(string);
+            var __thumbnailUrl__b__ = false;
+            var __regionData__ = default(global::AccelByte.Models.RegionDataItem[]);
             var __regionData__b__ = false;
             var __itemIds__ = default(string[]);
             var __itemIds__b__ = false;
             var __tags__ = default(string[]);
             var __tags__b__ = false;
+            var __maxCountPerUser__ = default(int);
+            var __maxCountPerUser__b__ = false;
+            var __maxCount__ = default(int);
+            var __maxCount__b__ = false;
+            var __clazz__ = default(string);
+            var __clazz__b__ = false;
+            var __boothName__ = default(string);
+            var __boothName__b__ = false;
+            var __displayOrder__ = default(int);
+            var __displayOrder__b__ = false;
+            var __ext__ = default(string);
+            var __ext__b__ = false;
+            var __region__ = default(string);
+            var __region__b__ = false;
+            var __language__ = default(string);
+            var __language__b__ = false;
+            var __createdAt__ = default(global::System.DateTime);
+            var __createdAt__b__ = false;
+            var __updatedAt__ = default(global::System.DateTime);
+            var __updatedAt__b__ = false;
+            var __localExt__ = default(string);
+            var __localExt__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -3345,80 +3487,132 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __longDescription__b__ = true;
                         break;
                     case 3:
-                        __images__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Deserialize(ref reader, formatterResolver);
-                        __images__b__ = true;
-                        break;
-                    case 4:
-                        __thumbnailImage__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image>().Deserialize(ref reader, formatterResolver);
-                        __thumbnailImage__b__ = true;
-                        break;
-                    case 5:
                         __itemId__ = reader.ReadString();
                         __itemId__b__ = true;
                         break;
-                    case 6:
+                    case 4:
                         __appId__ = reader.ReadString();
                         __appId__b__ = true;
                         break;
-                    case 7:
-                        __appType__ = reader.ReadString();
+                    case 5:
+                        __appType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Deserialize(ref reader, formatterResolver);
                         __appType__b__ = true;
                         break;
-                    case 8:
+                    case 6:
+                        __baseAppId__ = reader.ReadString();
+                        __baseAppId__b__ = true;
+                        break;
+                    case 7:
                         __sku__ = reader.ReadString();
                         __sku__b__ = true;
                         break;
-                    case 9:
+                    case 8:
                         __Namespace__ = reader.ReadString();
                         __Namespace__b__ = true;
                         break;
-                    case 10:
-                        __entitlementName__ = reader.ReadString();
-                        __entitlementName__b__ = true;
+                    case 9:
+                        __name__ = reader.ReadString();
+                        __name__b__ = true;
                         break;
-                    case 11:
-                        __entitlementType__ = reader.ReadString();
+                    case 10:
+                        __entitlementType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Deserialize(ref reader, formatterResolver);
                         __entitlementType__b__ = true;
                         break;
-                    case 12:
+                    case 11:
                         __useCount__ = reader.ReadInt32();
                         __useCount__b__ = true;
+                        break;
+                    case 12:
+                        __stackable__ = reader.ReadBoolean();
+                        __stackable__b__ = true;
                         break;
                     case 13:
                         __categoryPath__ = reader.ReadString();
                         __categoryPath__b__ = true;
                         break;
                     case 14:
-                        __status__ = reader.ReadString();
+                        __status__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Deserialize(ref reader, formatterResolver);
                         __status__b__ = true;
                         break;
                     case 15:
-                        __itemType__ = reader.ReadString();
+                        __itemType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Deserialize(ref reader, formatterResolver);
                         __itemType__b__ = true;
                         break;
                     case 16:
-                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __createdAt__b__ = true;
+                        __targetNamespace__ = reader.ReadString();
+                        __targetNamespace__b__ = true;
                         break;
                     case 17:
-                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __updatedAt__b__ = true;
-                        break;
-                    case 18:
                         __targetCurrencyCode__ = reader.ReadString();
                         __targetCurrencyCode__b__ = true;
                         break;
+                    case 18:
+                        __targetItemId__ = reader.ReadString();
+                        __targetItemId__b__ = true;
+                        break;
                     case 19:
-                        __regionData__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionData[]>().Deserialize(ref reader, formatterResolver);
-                        __regionData__b__ = true;
+                        __images__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Deserialize(ref reader, formatterResolver);
+                        __images__b__ = true;
                         break;
                     case 20:
+                        __thumbnailUrl__ = reader.ReadString();
+                        __thumbnailUrl__b__ = true;
+                        break;
+                    case 21:
+                        __regionData__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem[]>().Deserialize(ref reader, formatterResolver);
+                        __regionData__b__ = true;
+                        break;
+                    case 22:
                         __itemIds__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
                         __itemIds__b__ = true;
                         break;
-                    case 21:
+                    case 23:
                         __tags__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
                         __tags__b__ = true;
+                        break;
+                    case 24:
+                        __maxCountPerUser__ = reader.ReadInt32();
+                        __maxCountPerUser__b__ = true;
+                        break;
+                    case 25:
+                        __maxCount__ = reader.ReadInt32();
+                        __maxCount__b__ = true;
+                        break;
+                    case 26:
+                        __clazz__ = reader.ReadString();
+                        __clazz__b__ = true;
+                        break;
+                    case 27:
+                        __boothName__ = reader.ReadString();
+                        __boothName__b__ = true;
+                        break;
+                    case 28:
+                        __displayOrder__ = reader.ReadInt32();
+                        __displayOrder__b__ = true;
+                        break;
+                    case 29:
+                        __ext__ = reader.ReadString();
+                        __ext__b__ = true;
+                        break;
+                    case 30:
+                        __region__ = reader.ReadString();
+                        __region__b__ = true;
+                        break;
+                    case 31:
+                        __language__ = reader.ReadString();
+                        __language__b__ = true;
+                        break;
+                    case 32:
+                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __createdAt__b__ = true;
+                        break;
+                    case 33:
+                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __updatedAt__b__ = true;
+                        break;
+                    case 34:
+                        __localExt__ = reader.ReadString();
+                        __localExt__b__ = true;
                         break;
                     default:
                         reader.ReadNextBlock();
@@ -3429,41 +3623,519 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.Item();
+            var ____result = new global::AccelByte.Models.ItemInfo();
             if(__title__b__) ____result.title = __title__;
             if(__description__b__) ____result.description = __description__;
             if(__longDescription__b__) ____result.longDescription = __longDescription__;
-            if(__images__b__) ____result.images = __images__;
-            if(__thumbnailImage__b__) ____result.thumbnailImage = __thumbnailImage__;
             if(__itemId__b__) ____result.itemId = __itemId__;
             if(__appId__b__) ____result.appId = __appId__;
             if(__appType__b__) ____result.appType = __appType__;
+            if(__baseAppId__b__) ____result.baseAppId = __baseAppId__;
             if(__sku__b__) ____result.sku = __sku__;
             if(__Namespace__b__) ____result.Namespace = __Namespace__;
-            if(__entitlementName__b__) ____result.entitlementName = __entitlementName__;
+            if(__name__b__) ____result.name = __name__;
             if(__entitlementType__b__) ____result.entitlementType = __entitlementType__;
             if(__useCount__b__) ____result.useCount = __useCount__;
+            if(__stackable__b__) ____result.stackable = __stackable__;
             if(__categoryPath__b__) ____result.categoryPath = __categoryPath__;
             if(__status__b__) ____result.status = __status__;
             if(__itemType__b__) ____result.itemType = __itemType__;
-            if(__createdAt__b__) ____result.createdAt = __createdAt__;
-            if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+            if(__targetNamespace__b__) ____result.targetNamespace = __targetNamespace__;
             if(__targetCurrencyCode__b__) ____result.targetCurrencyCode = __targetCurrencyCode__;
+            if(__targetItemId__b__) ____result.targetItemId = __targetItemId__;
+            if(__images__b__) ____result.images = __images__;
+            if(__thumbnailUrl__b__) ____result.thumbnailUrl = __thumbnailUrl__;
             if(__regionData__b__) ____result.regionData = __regionData__;
             if(__itemIds__b__) ____result.itemIds = __itemIds__;
             if(__tags__b__) ____result.tags = __tags__;
+            if(__maxCountPerUser__b__) ____result.maxCountPerUser = __maxCountPerUser__;
+            if(__maxCount__b__) ____result.maxCount = __maxCount__;
+            if(__clazz__b__) ____result.clazz = __clazz__;
+            if(__boothName__b__) ____result.boothName = __boothName__;
+            if(__displayOrder__b__) ____result.displayOrder = __displayOrder__;
+            if(__ext__b__) ____result.ext = __ext__;
+            if(__region__b__) ____result.region = __region__;
+            if(__language__b__) ____result.language = __language__;
+            if(__createdAt__b__) ____result.createdAt = __createdAt__;
+            if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+            if(__localExt__b__) ____result.localExt = __localExt__;
 
             return ____result;
         }
     }
 
 
-    public sealed class PagedItemsFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.PagedItems>
+    public sealed class PopulatedItemInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.PopulatedItemInfo>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public PagedItemsFormatter()
+        public PopulatedItemInfoFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("title"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("description"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("longDescription"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appId"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("appType"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("baseAppId"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sku"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementType"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("stackable"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("categoryPath"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("status"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemType"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetCurrencyCode"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetItemId"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("images"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("thumbnailUrl"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("regionData"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemIds"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCountPerUser"), 24},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxCount"), 25},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("clazz"), 26},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("boothName"), 27},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("displayOrder"), 28},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ext"), 29},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 30},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 31},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 32},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 33},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("items"), 34},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("localExt"), 35},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("title"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("description"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("longDescription"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("appType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("baseAppId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sku"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("entitlementType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("useCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("stackable"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("categoryPath"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("status"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemType"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetNamespace"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetCurrencyCode"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetItemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("images"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("thumbnailUrl"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("regionData"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemIds"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tags"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCountPerUser"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxCount"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("clazz"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("boothName"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("displayOrder"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("ext"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("items"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("localExt"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.PopulatedItemInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.title);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.description);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.longDescription);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.itemId);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.appId);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Serialize(ref writer, value.appType, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.baseAppId);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteString(value.sku);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteString(value.Namespace);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.name);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Serialize(ref writer, value.entitlementType, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteInt32(value.useCount);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteBoolean(value.stackable);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteString(value.categoryPath);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Serialize(ref writer, value.status, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Serialize(ref writer, value.itemType, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            writer.WriteString(value.targetNamespace);
+            writer.WriteRaw(this.____stringByteKeys[17]);
+            writer.WriteString(value.targetCurrencyCode);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteString(value.targetItemId);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Serialize(ref writer, value.images, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[20]);
+            writer.WriteString(value.thumbnailUrl);
+            writer.WriteRaw(this.____stringByteKeys[21]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem[]>().Serialize(ref writer, value.regionData, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[22]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.itemIds, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[23]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.tags, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[24]);
+            writer.WriteInt32(value.maxCountPerUser);
+            writer.WriteRaw(this.____stringByteKeys[25]);
+            writer.WriteInt32(value.maxCount);
+            writer.WriteRaw(this.____stringByteKeys[26]);
+            writer.WriteString(value.clazz);
+            writer.WriteRaw(this.____stringByteKeys[27]);
+            writer.WriteString(value.boothName);
+            writer.WriteRaw(this.____stringByteKeys[28]);
+            writer.WriteInt32(value.displayOrder);
+            writer.WriteRaw(this.____stringByteKeys[29]);
+            writer.WriteString(value.ext);
+            writer.WriteRaw(this.____stringByteKeys[30]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[31]);
+            writer.WriteString(value.language);
+            writer.WriteRaw(this.____stringByteKeys[32]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[33]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[34]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo[]>().Serialize(ref writer, value.items, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[35]);
+            writer.WriteString(value.localExt);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.PopulatedItemInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __title__ = default(string);
+            var __title__b__ = false;
+            var __description__ = default(string);
+            var __description__b__ = false;
+            var __longDescription__ = default(string);
+            var __longDescription__b__ = false;
+            var __itemId__ = default(string);
+            var __itemId__b__ = false;
+            var __appId__ = default(string);
+            var __appId__b__ = false;
+            var __appType__ = default(global::AccelByte.Models.EntitlementAppType);
+            var __appType__b__ = false;
+            var __baseAppId__ = default(string);
+            var __baseAppId__b__ = false;
+            var __sku__ = default(string);
+            var __sku__b__ = false;
+            var __Namespace__ = default(string);
+            var __Namespace__b__ = false;
+            var __name__ = default(string);
+            var __name__b__ = false;
+            var __entitlementType__ = default(global::AccelByte.Models.EntitlementType);
+            var __entitlementType__b__ = false;
+            var __useCount__ = default(int);
+            var __useCount__b__ = false;
+            var __stackable__ = default(bool);
+            var __stackable__b__ = false;
+            var __categoryPath__ = default(string);
+            var __categoryPath__b__ = false;
+            var __status__ = default(global::AccelByte.Models.ItemStatus);
+            var __status__b__ = false;
+            var __itemType__ = default(global::AccelByte.Models.ItemType);
+            var __itemType__b__ = false;
+            var __targetNamespace__ = default(string);
+            var __targetNamespace__b__ = false;
+            var __targetCurrencyCode__ = default(string);
+            var __targetCurrencyCode__b__ = false;
+            var __targetItemId__ = default(string);
+            var __targetItemId__b__ = false;
+            var __images__ = default(global::AccelByte.Models.Image[]);
+            var __images__b__ = false;
+            var __thumbnailUrl__ = default(string);
+            var __thumbnailUrl__b__ = false;
+            var __regionData__ = default(global::AccelByte.Models.RegionDataItem[]);
+            var __regionData__b__ = false;
+            var __itemIds__ = default(string[]);
+            var __itemIds__b__ = false;
+            var __tags__ = default(string[]);
+            var __tags__b__ = false;
+            var __maxCountPerUser__ = default(int);
+            var __maxCountPerUser__b__ = false;
+            var __maxCount__ = default(int);
+            var __maxCount__b__ = false;
+            var __clazz__ = default(string);
+            var __clazz__b__ = false;
+            var __boothName__ = default(string);
+            var __boothName__b__ = false;
+            var __displayOrder__ = default(int);
+            var __displayOrder__b__ = false;
+            var __ext__ = default(string);
+            var __ext__b__ = false;
+            var __region__ = default(string);
+            var __region__b__ = false;
+            var __language__ = default(string);
+            var __language__b__ = false;
+            var __createdAt__ = default(global::System.DateTime);
+            var __createdAt__b__ = false;
+            var __updatedAt__ = default(global::System.DateTime);
+            var __updatedAt__b__ = false;
+            var __items__ = default(global::AccelByte.Models.ItemInfo[]);
+            var __items__b__ = false;
+            var __localExt__ = default(string);
+            var __localExt__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __title__ = reader.ReadString();
+                        __title__b__ = true;
+                        break;
+                    case 1:
+                        __description__ = reader.ReadString();
+                        __description__b__ = true;
+                        break;
+                    case 2:
+                        __longDescription__ = reader.ReadString();
+                        __longDescription__b__ = true;
+                        break;
+                    case 3:
+                        __itemId__ = reader.ReadString();
+                        __itemId__b__ = true;
+                        break;
+                    case 4:
+                        __appId__ = reader.ReadString();
+                        __appId__b__ = true;
+                        break;
+                    case 5:
+                        __appType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Deserialize(ref reader, formatterResolver);
+                        __appType__b__ = true;
+                        break;
+                    case 6:
+                        __baseAppId__ = reader.ReadString();
+                        __baseAppId__b__ = true;
+                        break;
+                    case 7:
+                        __sku__ = reader.ReadString();
+                        __sku__b__ = true;
+                        break;
+                    case 8:
+                        __Namespace__ = reader.ReadString();
+                        __Namespace__b__ = true;
+                        break;
+                    case 9:
+                        __name__ = reader.ReadString();
+                        __name__b__ = true;
+                        break;
+                    case 10:
+                        __entitlementType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Deserialize(ref reader, formatterResolver);
+                        __entitlementType__b__ = true;
+                        break;
+                    case 11:
+                        __useCount__ = reader.ReadInt32();
+                        __useCount__b__ = true;
+                        break;
+                    case 12:
+                        __stackable__ = reader.ReadBoolean();
+                        __stackable__b__ = true;
+                        break;
+                    case 13:
+                        __categoryPath__ = reader.ReadString();
+                        __categoryPath__b__ = true;
+                        break;
+                    case 14:
+                        __status__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemStatus>().Deserialize(ref reader, formatterResolver);
+                        __status__b__ = true;
+                        break;
+                    case 15:
+                        __itemType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemType>().Deserialize(ref reader, formatterResolver);
+                        __itemType__b__ = true;
+                        break;
+                    case 16:
+                        __targetNamespace__ = reader.ReadString();
+                        __targetNamespace__b__ = true;
+                        break;
+                    case 17:
+                        __targetCurrencyCode__ = reader.ReadString();
+                        __targetCurrencyCode__b__ = true;
+                        break;
+                    case 18:
+                        __targetItemId__ = reader.ReadString();
+                        __targetItemId__b__ = true;
+                        break;
+                    case 19:
+                        __images__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Image[]>().Deserialize(ref reader, formatterResolver);
+                        __images__b__ = true;
+                        break;
+                    case 20:
+                        __thumbnailUrl__ = reader.ReadString();
+                        __thumbnailUrl__b__ = true;
+                        break;
+                    case 21:
+                        __regionData__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.RegionDataItem[]>().Deserialize(ref reader, formatterResolver);
+                        __regionData__b__ = true;
+                        break;
+                    case 22:
+                        __itemIds__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
+                        __itemIds__b__ = true;
+                        break;
+                    case 23:
+                        __tags__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
+                        __tags__b__ = true;
+                        break;
+                    case 24:
+                        __maxCountPerUser__ = reader.ReadInt32();
+                        __maxCountPerUser__b__ = true;
+                        break;
+                    case 25:
+                        __maxCount__ = reader.ReadInt32();
+                        __maxCount__b__ = true;
+                        break;
+                    case 26:
+                        __clazz__ = reader.ReadString();
+                        __clazz__b__ = true;
+                        break;
+                    case 27:
+                        __boothName__ = reader.ReadString();
+                        __boothName__b__ = true;
+                        break;
+                    case 28:
+                        __displayOrder__ = reader.ReadInt32();
+                        __displayOrder__b__ = true;
+                        break;
+                    case 29:
+                        __ext__ = reader.ReadString();
+                        __ext__b__ = true;
+                        break;
+                    case 30:
+                        __region__ = reader.ReadString();
+                        __region__b__ = true;
+                        break;
+                    case 31:
+                        __language__ = reader.ReadString();
+                        __language__b__ = true;
+                        break;
+                    case 32:
+                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __createdAt__b__ = true;
+                        break;
+                    case 33:
+                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __updatedAt__b__ = true;
+                        break;
+                    case 34:
+                        __items__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo[]>().Deserialize(ref reader, formatterResolver);
+                        __items__b__ = true;
+                        break;
+                    case 35:
+                        __localExt__ = reader.ReadString();
+                        __localExt__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.PopulatedItemInfo();
+            if(__title__b__) ____result.title = __title__;
+            if(__description__b__) ____result.description = __description__;
+            if(__longDescription__b__) ____result.longDescription = __longDescription__;
+            if(__itemId__b__) ____result.itemId = __itemId__;
+            if(__appId__b__) ____result.appId = __appId__;
+            if(__appType__b__) ____result.appType = __appType__;
+            if(__baseAppId__b__) ____result.baseAppId = __baseAppId__;
+            if(__sku__b__) ____result.sku = __sku__;
+            if(__Namespace__b__) ____result.Namespace = __Namespace__;
+            if(__name__b__) ____result.name = __name__;
+            if(__entitlementType__b__) ____result.entitlementType = __entitlementType__;
+            if(__useCount__b__) ____result.useCount = __useCount__;
+            if(__stackable__b__) ____result.stackable = __stackable__;
+            if(__categoryPath__b__) ____result.categoryPath = __categoryPath__;
+            if(__status__b__) ____result.status = __status__;
+            if(__itemType__b__) ____result.itemType = __itemType__;
+            if(__targetNamespace__b__) ____result.targetNamespace = __targetNamespace__;
+            if(__targetCurrencyCode__b__) ____result.targetCurrencyCode = __targetCurrencyCode__;
+            if(__targetItemId__b__) ____result.targetItemId = __targetItemId__;
+            if(__images__b__) ____result.images = __images__;
+            if(__thumbnailUrl__b__) ____result.thumbnailUrl = __thumbnailUrl__;
+            if(__regionData__b__) ____result.regionData = __regionData__;
+            if(__itemIds__b__) ____result.itemIds = __itemIds__;
+            if(__tags__b__) ____result.tags = __tags__;
+            if(__maxCountPerUser__b__) ____result.maxCountPerUser = __maxCountPerUser__;
+            if(__maxCount__b__) ____result.maxCount = __maxCount__;
+            if(__clazz__b__) ____result.clazz = __clazz__;
+            if(__boothName__b__) ____result.boothName = __boothName__;
+            if(__displayOrder__b__) ____result.displayOrder = __displayOrder__;
+            if(__ext__b__) ____result.ext = __ext__;
+            if(__region__b__) ____result.region = __region__;
+            if(__language__b__) ____result.language = __language__;
+            if(__createdAt__b__) ____result.createdAt = __createdAt__;
+            if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+            if(__items__b__) ____result.items = __items__;
+            if(__localExt__b__) ____result.localExt = __localExt__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ItemPagingSlicedResultFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.ItemPagingSlicedResult>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ItemPagingSlicedResultFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -3479,7 +4151,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.PagedItems value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.ItemPagingSlicedResult value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -3489,14 +4161,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Item[]>().Serialize(ref writer, value.data, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo[]>().Serialize(ref writer, value.data, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Serialize(ref writer, value.paging, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.PagedItems Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.ItemPagingSlicedResult Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -3504,7 +4176,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             }
             
 
-            var __data__ = default(global::AccelByte.Models.Item[]);
+            var __data__ = default(global::AccelByte.Models.ItemInfo[]);
             var __data__b__ = false;
             var __paging__ = default(global::AccelByte.Models.Paging);
             var __paging__b__ = false;
@@ -3524,7 +4196,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 switch (key)
                 {
                     case 0:
-                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Item[]>().Deserialize(ref reader, formatterResolver);
+                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo[]>().Deserialize(ref reader, formatterResolver);
                         __data__b__ = true;
                         break;
                     case 1:
@@ -3540,7 +4212,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.PagedItems();
+            var ____result = new global::AccelByte.Models.ItemPagingSlicedResult();
             if(__data__b__) ____result.data = __data__;
             if(__paging__b__) ____result.paging = __paging__;
 
@@ -3799,9 +4471,10 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("operator"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("action"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("reason"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("userId"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("userId"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 7},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -3810,6 +4483,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("operator"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("action"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("reason"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("userId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
@@ -3835,10 +4509,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[3]);
             writer.WriteString(value.reason);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.userId);
+            writer.WriteString(value.Namespace);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteString(value.userId);
             writer.WriteRaw(this.____stringByteKeys[6]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[7]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
             
             writer.WriteEndObject();
@@ -3860,6 +4536,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __action__b__ = false;
             var __reason__ = default(string);
             var __reason__b__ = false;
+            var __Namespace__ = default(string);
+            var __Namespace__b__ = false;
             var __userId__ = default(string);
             var __userId__b__ = false;
             var __createdAt__ = default(global::System.DateTime);
@@ -3898,14 +4576,18 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __reason__b__ = true;
                         break;
                     case 4:
+                        __Namespace__ = reader.ReadString();
+                        __Namespace__b__ = true;
+                        break;
+                    case 5:
                         __userId__ = reader.ReadString();
                         __userId__b__ = true;
                         break;
-                    case 5:
+                    case 6:
                         __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __createdAt__b__ = true;
                         break;
-                    case 6:
+                    case 7:
                         __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __updatedAt__b__ = true;
                         break;
@@ -3923,9 +4605,646 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__Operator__b__) ____result.Operator = __Operator__;
             if(__action__b__) ____result.action = __action__;
             if(__reason__b__) ____result.reason = __reason__;
+            if(__Namespace__b__) ____result.Namespace = __Namespace__;
             if(__userId__b__) ____result.userId = __userId__;
             if(__createdAt__b__) ____result.createdAt = __createdAt__;
             if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class OrderInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.OrderInfo>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public OrderInfoFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("orderNo"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentOrderNo"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("userId"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sandbox"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("quantity"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("price"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountedPrice"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentProvider"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vat"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("salesTax"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentProviderFee"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentMethodFee"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currency"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentStationUrl"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemSnapshot"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("status"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("statusReason"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdTime"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chargedTime"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("fulfilledTime"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("refundedTime"), 24},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chargebackTime"), 25},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chargebackReversedTime"), 26},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 27},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 28},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("orderNo"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentOrderNo"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("userId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sandbox"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("quantity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("price"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountedPrice"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentProvider"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vat"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("salesTax"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentProviderFee"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentMethodFee"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currency"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentStationUrl"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemSnapshot"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("status"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("statusReason"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chargedTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("fulfilledTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("refundedTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chargebackTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chargebackReversedTime"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdAt"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.OrderInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.orderNo);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.paymentOrderNo);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.Namespace);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.userId);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.itemId);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteBoolean(value.sandbox);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteInt32(value.quantity);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteInt32(value.price);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteInt32(value.discountedPrice);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.paymentProvider);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            writer.WriteInt32(value.vat);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteInt32(value.salesTax);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteInt32(value.paymentProviderFee);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteInt32(value.paymentMethodFee);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.CurrencySummary>().Serialize(ref writer, value.currency, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            writer.WriteString(value.paymentStationUrl);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemSnapshot>().Serialize(ref writer, value.itemSnapshot, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[17]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteString(value.language);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderStatus>().Serialize(ref writer, value.status, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[20]);
+            writer.WriteString(value.statusReason);
+            writer.WriteRaw(this.____stringByteKeys[21]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[22]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.chargedTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[23]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.fulfilledTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[24]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.refundedTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[25]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.chargebackTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[26]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.chargebackReversedTime, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[27]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[28]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.OrderInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __orderNo__ = default(string);
+            var __orderNo__b__ = false;
+            var __paymentOrderNo__ = default(string);
+            var __paymentOrderNo__b__ = false;
+            var __Namespace__ = default(string);
+            var __Namespace__b__ = false;
+            var __userId__ = default(string);
+            var __userId__b__ = false;
+            var __itemId__ = default(string);
+            var __itemId__b__ = false;
+            var __sandbox__ = default(bool);
+            var __sandbox__b__ = false;
+            var __quantity__ = default(int);
+            var __quantity__b__ = false;
+            var __price__ = default(int);
+            var __price__b__ = false;
+            var __discountedPrice__ = default(int);
+            var __discountedPrice__b__ = false;
+            var __paymentProvider__ = default(string);
+            var __paymentProvider__b__ = false;
+            var __vat__ = default(int);
+            var __vat__b__ = false;
+            var __salesTax__ = default(int);
+            var __salesTax__b__ = false;
+            var __paymentProviderFee__ = default(int);
+            var __paymentProviderFee__b__ = false;
+            var __paymentMethodFee__ = default(int);
+            var __paymentMethodFee__b__ = false;
+            var __currency__ = default(global::AccelByte.Models.CurrencySummary);
+            var __currency__b__ = false;
+            var __paymentStationUrl__ = default(string);
+            var __paymentStationUrl__b__ = false;
+            var __itemSnapshot__ = default(global::AccelByte.Models.ItemSnapshot);
+            var __itemSnapshot__b__ = false;
+            var __region__ = default(string);
+            var __region__b__ = false;
+            var __language__ = default(string);
+            var __language__b__ = false;
+            var __status__ = default(global::AccelByte.Models.OrderStatus);
+            var __status__b__ = false;
+            var __statusReason__ = default(string);
+            var __statusReason__b__ = false;
+            var __createdTime__ = default(global::System.DateTime);
+            var __createdTime__b__ = false;
+            var __chargedTime__ = default(global::System.DateTime);
+            var __chargedTime__b__ = false;
+            var __fulfilledTime__ = default(global::System.DateTime);
+            var __fulfilledTime__b__ = false;
+            var __refundedTime__ = default(global::System.DateTime);
+            var __refundedTime__b__ = false;
+            var __chargebackTime__ = default(global::System.DateTime);
+            var __chargebackTime__b__ = false;
+            var __chargebackReversedTime__ = default(global::System.DateTime);
+            var __chargebackReversedTime__b__ = false;
+            var __createdAt__ = default(global::System.DateTime);
+            var __createdAt__b__ = false;
+            var __updatedAt__ = default(global::System.DateTime);
+            var __updatedAt__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __orderNo__ = reader.ReadString();
+                        __orderNo__b__ = true;
+                        break;
+                    case 1:
+                        __paymentOrderNo__ = reader.ReadString();
+                        __paymentOrderNo__b__ = true;
+                        break;
+                    case 2:
+                        __Namespace__ = reader.ReadString();
+                        __Namespace__b__ = true;
+                        break;
+                    case 3:
+                        __userId__ = reader.ReadString();
+                        __userId__b__ = true;
+                        break;
+                    case 4:
+                        __itemId__ = reader.ReadString();
+                        __itemId__b__ = true;
+                        break;
+                    case 5:
+                        __sandbox__ = reader.ReadBoolean();
+                        __sandbox__b__ = true;
+                        break;
+                    case 6:
+                        __quantity__ = reader.ReadInt32();
+                        __quantity__b__ = true;
+                        break;
+                    case 7:
+                        __price__ = reader.ReadInt32();
+                        __price__b__ = true;
+                        break;
+                    case 8:
+                        __discountedPrice__ = reader.ReadInt32();
+                        __discountedPrice__b__ = true;
+                        break;
+                    case 9:
+                        __paymentProvider__ = reader.ReadString();
+                        __paymentProvider__b__ = true;
+                        break;
+                    case 10:
+                        __vat__ = reader.ReadInt32();
+                        __vat__b__ = true;
+                        break;
+                    case 11:
+                        __salesTax__ = reader.ReadInt32();
+                        __salesTax__b__ = true;
+                        break;
+                    case 12:
+                        __paymentProviderFee__ = reader.ReadInt32();
+                        __paymentProviderFee__b__ = true;
+                        break;
+                    case 13:
+                        __paymentMethodFee__ = reader.ReadInt32();
+                        __paymentMethodFee__b__ = true;
+                        break;
+                    case 14:
+                        __currency__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.CurrencySummary>().Deserialize(ref reader, formatterResolver);
+                        __currency__b__ = true;
+                        break;
+                    case 15:
+                        __paymentStationUrl__ = reader.ReadString();
+                        __paymentStationUrl__b__ = true;
+                        break;
+                    case 16:
+                        __itemSnapshot__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemSnapshot>().Deserialize(ref reader, formatterResolver);
+                        __itemSnapshot__b__ = true;
+                        break;
+                    case 17:
+                        __region__ = reader.ReadString();
+                        __region__b__ = true;
+                        break;
+                    case 18:
+                        __language__ = reader.ReadString();
+                        __language__b__ = true;
+                        break;
+                    case 19:
+                        __status__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderStatus>().Deserialize(ref reader, formatterResolver);
+                        __status__b__ = true;
+                        break;
+                    case 20:
+                        __statusReason__ = reader.ReadString();
+                        __statusReason__b__ = true;
+                        break;
+                    case 21:
+                        __createdTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __createdTime__b__ = true;
+                        break;
+                    case 22:
+                        __chargedTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __chargedTime__b__ = true;
+                        break;
+                    case 23:
+                        __fulfilledTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __fulfilledTime__b__ = true;
+                        break;
+                    case 24:
+                        __refundedTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __refundedTime__b__ = true;
+                        break;
+                    case 25:
+                        __chargebackTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __chargebackTime__b__ = true;
+                        break;
+                    case 26:
+                        __chargebackReversedTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __chargebackReversedTime__b__ = true;
+                        break;
+                    case 27:
+                        __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __createdAt__b__ = true;
+                        break;
+                    case 28:
+                        __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __updatedAt__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.OrderInfo();
+            if(__orderNo__b__) ____result.orderNo = __orderNo__;
+            if(__paymentOrderNo__b__) ____result.paymentOrderNo = __paymentOrderNo__;
+            if(__Namespace__b__) ____result.Namespace = __Namespace__;
+            if(__userId__b__) ____result.userId = __userId__;
+            if(__itemId__b__) ____result.itemId = __itemId__;
+            if(__sandbox__b__) ____result.sandbox = __sandbox__;
+            if(__quantity__b__) ____result.quantity = __quantity__;
+            if(__price__b__) ____result.price = __price__;
+            if(__discountedPrice__b__) ____result.discountedPrice = __discountedPrice__;
+            if(__paymentProvider__b__) ____result.paymentProvider = __paymentProvider__;
+            if(__vat__b__) ____result.vat = __vat__;
+            if(__salesTax__b__) ____result.salesTax = __salesTax__;
+            if(__paymentProviderFee__b__) ____result.paymentProviderFee = __paymentProviderFee__;
+            if(__paymentMethodFee__b__) ____result.paymentMethodFee = __paymentMethodFee__;
+            if(__currency__b__) ____result.currency = __currency__;
+            if(__paymentStationUrl__b__) ____result.paymentStationUrl = __paymentStationUrl__;
+            if(__itemSnapshot__b__) ____result.itemSnapshot = __itemSnapshot__;
+            if(__region__b__) ____result.region = __region__;
+            if(__language__b__) ____result.language = __language__;
+            if(__status__b__) ____result.status = __status__;
+            if(__statusReason__b__) ____result.statusReason = __statusReason__;
+            if(__createdTime__b__) ____result.createdTime = __createdTime__;
+            if(__chargedTime__b__) ____result.chargedTime = __chargedTime__;
+            if(__fulfilledTime__b__) ____result.fulfilledTime = __fulfilledTime__;
+            if(__refundedTime__b__) ____result.refundedTime = __refundedTime__;
+            if(__chargebackTime__b__) ____result.chargebackTime = __chargebackTime__;
+            if(__chargebackReversedTime__b__) ____result.chargebackReversedTime = __chargebackReversedTime__;
+            if(__createdAt__b__) ____result.createdAt = __createdAt__;
+            if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class OrderPagingSlicedResultFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.OrderPagingSlicedResult>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public OrderPagingSlicedResultFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("data"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paging"), 1},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("data"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paging"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.OrderPagingSlicedResult value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderInfo[]>().Serialize(ref writer, value.data, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Serialize(ref writer, value.paging, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.OrderPagingSlicedResult Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __data__ = default(global::AccelByte.Models.OrderInfo[]);
+            var __data__b__ = false;
+            var __paging__ = default(global::AccelByte.Models.Paging);
+            var __paging__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderInfo[]>().Deserialize(ref reader, formatterResolver);
+                        __data__b__ = true;
+                        break;
+                    case 1:
+                        __paging__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Deserialize(ref reader, formatterResolver);
+                        __paging__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.OrderPagingSlicedResult();
+            if(__data__b__) ____result.data = __data__;
+            if(__paging__b__) ____result.paging = __paging__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class OrderRequestFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.OrderRequest>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public OrderRequestFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("quantity"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("price"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountedPrice"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currencyCode"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("language"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("returnUrl"), 7},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("itemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("quantity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("price"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountedPrice"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currencyCode"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("language"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("returnUrl"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.OrderRequest value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.itemId);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteInt32(value.quantity);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteInt32(value.price);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteInt32(value.discountedPrice);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.currencyCode);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.language);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteString(value.returnUrl);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.OrderRequest Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __itemId__ = default(string);
+            var __itemId__b__ = false;
+            var __quantity__ = default(int);
+            var __quantity__b__ = false;
+            var __price__ = default(int);
+            var __price__b__ = false;
+            var __discountedPrice__ = default(int);
+            var __discountedPrice__b__ = false;
+            var __currencyCode__ = default(string);
+            var __currencyCode__b__ = false;
+            var __region__ = default(string);
+            var __region__b__ = false;
+            var __language__ = default(string);
+            var __language__b__ = false;
+            var __returnUrl__ = default(string);
+            var __returnUrl__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __itemId__ = reader.ReadString();
+                        __itemId__b__ = true;
+                        break;
+                    case 1:
+                        __quantity__ = reader.ReadInt32();
+                        __quantity__b__ = true;
+                        break;
+                    case 2:
+                        __price__ = reader.ReadInt32();
+                        __price__b__ = true;
+                        break;
+                    case 3:
+                        __discountedPrice__ = reader.ReadInt32();
+                        __discountedPrice__b__ = true;
+                        break;
+                    case 4:
+                        __currencyCode__ = reader.ReadString();
+                        __currencyCode__b__ = true;
+                        break;
+                    case 5:
+                        __region__ = reader.ReadString();
+                        __region__b__ = true;
+                        break;
+                    case 6:
+                        __language__ = reader.ReadString();
+                        __language__b__ = true;
+                        break;
+                    case 7:
+                        __returnUrl__ = reader.ReadString();
+                        __returnUrl__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.OrderRequest();
+            if(__itemId__b__) ____result.itemId = __itemId__;
+            if(__quantity__b__) ____result.quantity = __quantity__;
+            if(__price__b__) ____result.price = __price__;
+            if(__discountedPrice__b__) ____result.discountedPrice = __discountedPrice__;
+            if(__currencyCode__b__) ____result.currencyCode = __currencyCode__;
+            if(__region__b__) ____result.region = __region__;
+            if(__language__b__) ____result.language = __language__;
+            if(__returnUrl__b__) ____result.returnUrl = __returnUrl__;
 
             return ____result;
         }
@@ -4188,571 +5507,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class OrderInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.OrderInfo>
+    public sealed class EntitlementInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.EntitlementInfo>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public OrderInfoFormatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("orderNo"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("userId"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sandbox"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("quantity"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("price"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountedPrice"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vat"), 7},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("salesTax"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentProviderFee"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentMethodFee"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currency"), 11},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentUrl"), 12},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paymentStationUrl"), 13},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("transactions"), 14},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("entitlementIds"), 15},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("status"), 16},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("statusReason"), 17},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("namespace"), 18},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdTime"), 19},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chargedTime"), 20},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("fulfilledTime"), 21},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("refundedTime"), 22},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("orderNo"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("userId"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemId"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sandbox"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("quantity"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("price"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountedPrice"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vat"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("salesTax"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentProviderFee"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentMethodFee"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currency"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentUrl"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paymentStationUrl"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("transactions"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("entitlementIds"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("status"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("statusReason"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("namespace"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("createdTime"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chargedTime"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("fulfilledTime"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("refundedTime"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.OrderInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.orderNo);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.userId);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteString(value.itemId);
-            writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteBoolean(value.sandbox);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteInt32(value.quantity);
-            writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteInt32(value.price);
-            writer.WriteRaw(this.____stringByteKeys[6]);
-            writer.WriteInt32(value.discountedPrice);
-            writer.WriteRaw(this.____stringByteKeys[7]);
-            writer.WriteInt32(value.vat);
-            writer.WriteRaw(this.____stringByteKeys[8]);
-            writer.WriteInt32(value.salesTax);
-            writer.WriteRaw(this.____stringByteKeys[9]);
-            writer.WriteInt32(value.paymentProviderFee);
-            writer.WriteRaw(this.____stringByteKeys[10]);
-            writer.WriteInt32(value.paymentMethodFee);
-            writer.WriteRaw(this.____stringByteKeys[11]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.CurrencySummary>().Serialize(ref writer, value.currency, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[12]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.PaymentUrl>().Serialize(ref writer, value.paymentUrl, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[13]);
-            writer.WriteString(value.paymentStationUrl);
-            writer.WriteRaw(this.____stringByteKeys[14]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderTransaction[]>().Serialize(ref writer, value.transactions, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[15]);
-            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.entitlementIds, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[16]);
-            writer.WriteString(value.status);
-            writer.WriteRaw(this.____stringByteKeys[17]);
-            writer.WriteString(value.statusReason);
-            writer.WriteRaw(this.____stringByteKeys[18]);
-            writer.WriteString(value.Namespace);
-            writer.WriteRaw(this.____stringByteKeys[19]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdTime, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[20]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.chargedTime, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[21]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.fulfilledTime, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[22]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.refundedTime, formatterResolver);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::AccelByte.Models.OrderInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var __orderNo__ = default(string);
-            var __orderNo__b__ = false;
-            var __userId__ = default(string);
-            var __userId__b__ = false;
-            var __itemId__ = default(string);
-            var __itemId__b__ = false;
-            var __sandbox__ = default(bool);
-            var __sandbox__b__ = false;
-            var __quantity__ = default(int);
-            var __quantity__b__ = false;
-            var __price__ = default(int);
-            var __price__b__ = false;
-            var __discountedPrice__ = default(int);
-            var __discountedPrice__b__ = false;
-            var __vat__ = default(int);
-            var __vat__b__ = false;
-            var __salesTax__ = default(int);
-            var __salesTax__b__ = false;
-            var __paymentProviderFee__ = default(int);
-            var __paymentProviderFee__b__ = false;
-            var __paymentMethodFee__ = default(int);
-            var __paymentMethodFee__b__ = false;
-            var __currency__ = default(global::AccelByte.Models.CurrencySummary);
-            var __currency__b__ = false;
-            var __paymentUrl__ = default(global::AccelByte.Models.PaymentUrl);
-            var __paymentUrl__b__ = false;
-            var __paymentStationUrl__ = default(string);
-            var __paymentStationUrl__b__ = false;
-            var __transactions__ = default(global::AccelByte.Models.OrderTransaction[]);
-            var __transactions__b__ = false;
-            var __entitlementIds__ = default(string[]);
-            var __entitlementIds__b__ = false;
-            var __status__ = default(string);
-            var __status__b__ = false;
-            var __statusReason__ = default(string);
-            var __statusReason__b__ = false;
-            var __Namespace__ = default(string);
-            var __Namespace__b__ = false;
-            var __createdTime__ = default(global::System.DateTime);
-            var __createdTime__b__ = false;
-            var __chargedTime__ = default(global::System.DateTime);
-            var __chargedTime__b__ = false;
-            var __fulfilledTime__ = default(global::System.DateTime);
-            var __fulfilledTime__b__ = false;
-            var __refundedTime__ = default(global::System.DateTime);
-            var __refundedTime__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        __orderNo__ = reader.ReadString();
-                        __orderNo__b__ = true;
-                        break;
-                    case 1:
-                        __userId__ = reader.ReadString();
-                        __userId__b__ = true;
-                        break;
-                    case 2:
-                        __itemId__ = reader.ReadString();
-                        __itemId__b__ = true;
-                        break;
-                    case 3:
-                        __sandbox__ = reader.ReadBoolean();
-                        __sandbox__b__ = true;
-                        break;
-                    case 4:
-                        __quantity__ = reader.ReadInt32();
-                        __quantity__b__ = true;
-                        break;
-                    case 5:
-                        __price__ = reader.ReadInt32();
-                        __price__b__ = true;
-                        break;
-                    case 6:
-                        __discountedPrice__ = reader.ReadInt32();
-                        __discountedPrice__b__ = true;
-                        break;
-                    case 7:
-                        __vat__ = reader.ReadInt32();
-                        __vat__b__ = true;
-                        break;
-                    case 8:
-                        __salesTax__ = reader.ReadInt32();
-                        __salesTax__b__ = true;
-                        break;
-                    case 9:
-                        __paymentProviderFee__ = reader.ReadInt32();
-                        __paymentProviderFee__b__ = true;
-                        break;
-                    case 10:
-                        __paymentMethodFee__ = reader.ReadInt32();
-                        __paymentMethodFee__b__ = true;
-                        break;
-                    case 11:
-                        __currency__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.CurrencySummary>().Deserialize(ref reader, formatterResolver);
-                        __currency__b__ = true;
-                        break;
-                    case 12:
-                        __paymentUrl__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.PaymentUrl>().Deserialize(ref reader, formatterResolver);
-                        __paymentUrl__b__ = true;
-                        break;
-                    case 13:
-                        __paymentStationUrl__ = reader.ReadString();
-                        __paymentStationUrl__b__ = true;
-                        break;
-                    case 14:
-                        __transactions__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderTransaction[]>().Deserialize(ref reader, formatterResolver);
-                        __transactions__b__ = true;
-                        break;
-                    case 15:
-                        __entitlementIds__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
-                        __entitlementIds__b__ = true;
-                        break;
-                    case 16:
-                        __status__ = reader.ReadString();
-                        __status__b__ = true;
-                        break;
-                    case 17:
-                        __statusReason__ = reader.ReadString();
-                        __statusReason__b__ = true;
-                        break;
-                    case 18:
-                        __Namespace__ = reader.ReadString();
-                        __Namespace__b__ = true;
-                        break;
-                    case 19:
-                        __createdTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __createdTime__b__ = true;
-                        break;
-                    case 20:
-                        __chargedTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __chargedTime__b__ = true;
-                        break;
-                    case 21:
-                        __fulfilledTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __fulfilledTime__b__ = true;
-                        break;
-                    case 22:
-                        __refundedTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
-                        __refundedTime__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::AccelByte.Models.OrderInfo();
-            if(__orderNo__b__) ____result.orderNo = __orderNo__;
-            if(__userId__b__) ____result.userId = __userId__;
-            if(__itemId__b__) ____result.itemId = __itemId__;
-            if(__sandbox__b__) ____result.sandbox = __sandbox__;
-            if(__quantity__b__) ____result.quantity = __quantity__;
-            if(__price__b__) ____result.price = __price__;
-            if(__discountedPrice__b__) ____result.discountedPrice = __discountedPrice__;
-            if(__vat__b__) ____result.vat = __vat__;
-            if(__salesTax__b__) ____result.salesTax = __salesTax__;
-            if(__paymentProviderFee__b__) ____result.paymentProviderFee = __paymentProviderFee__;
-            if(__paymentMethodFee__b__) ____result.paymentMethodFee = __paymentMethodFee__;
-            if(__currency__b__) ____result.currency = __currency__;
-            if(__paymentUrl__b__) ____result.paymentUrl = __paymentUrl__;
-            if(__paymentStationUrl__b__) ____result.paymentStationUrl = __paymentStationUrl__;
-            if(__transactions__b__) ____result.transactions = __transactions__;
-            if(__entitlementIds__b__) ____result.entitlementIds = __entitlementIds__;
-            if(__status__b__) ____result.status = __status__;
-            if(__statusReason__b__) ____result.statusReason = __statusReason__;
-            if(__Namespace__b__) ____result.Namespace = __Namespace__;
-            if(__createdTime__b__) ____result.createdTime = __createdTime__;
-            if(__chargedTime__b__) ____result.chargedTime = __chargedTime__;
-            if(__fulfilledTime__b__) ____result.fulfilledTime = __fulfilledTime__;
-            if(__refundedTime__b__) ____result.refundedTime = __refundedTime__;
-
-            return ____result;
-        }
-    }
-
-
-    public sealed class PagedOrderInfoFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.PagedOrderInfo>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public PagedOrderInfoFormatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("data"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("paging"), 1},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("data"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("paging"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.PagedOrderInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderInfo[]>().Serialize(ref writer, value.data, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Serialize(ref writer, value.paging, formatterResolver);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::AccelByte.Models.PagedOrderInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var __data__ = default(global::AccelByte.Models.OrderInfo[]);
-            var __data__b__ = false;
-            var __paging__ = default(global::AccelByte.Models.Paging);
-            var __paging__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.OrderInfo[]>().Deserialize(ref reader, formatterResolver);
-                        __data__b__ = true;
-                        break;
-                    case 1:
-                        __paging__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Deserialize(ref reader, formatterResolver);
-                        __paging__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::AccelByte.Models.PagedOrderInfo();
-            if(__data__b__) ____result.data = __data__;
-            if(__paging__b__) ____result.paging = __paging__;
-
-            return ____result;
-        }
-    }
-
-
-    public sealed class OrderRequestFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.OrderRequest>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public OrderRequestFormatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemId"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("quantity"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("price"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("discountedPrice"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("currencyCode"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("returnUrl"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 6},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("itemId"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("quantity"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("price"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("discountedPrice"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("currencyCode"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("returnUrl"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.OrderRequest value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.itemId);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteInt32(value.quantity);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteInt32(value.price);
-            writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteInt32(value.discountedPrice);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.currencyCode);
-            writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.returnUrl);
-            writer.WriteRaw(this.____stringByteKeys[6]);
-            writer.WriteString(value.region);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::AccelByte.Models.OrderRequest Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var __itemId__ = default(string);
-            var __itemId__b__ = false;
-            var __quantity__ = default(int);
-            var __quantity__b__ = false;
-            var __price__ = default(int);
-            var __price__b__ = false;
-            var __discountedPrice__ = default(int);
-            var __discountedPrice__b__ = false;
-            var __currencyCode__ = default(string);
-            var __currencyCode__b__ = false;
-            var __returnUrl__ = default(string);
-            var __returnUrl__b__ = false;
-            var __region__ = default(string);
-            var __region__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        __itemId__ = reader.ReadString();
-                        __itemId__b__ = true;
-                        break;
-                    case 1:
-                        __quantity__ = reader.ReadInt32();
-                        __quantity__b__ = true;
-                        break;
-                    case 2:
-                        __price__ = reader.ReadInt32();
-                        __price__b__ = true;
-                        break;
-                    case 3:
-                        __discountedPrice__ = reader.ReadInt32();
-                        __discountedPrice__b__ = true;
-                        break;
-                    case 4:
-                        __currencyCode__ = reader.ReadString();
-                        __currencyCode__b__ = true;
-                        break;
-                    case 5:
-                        __returnUrl__ = reader.ReadString();
-                        __returnUrl__b__ = true;
-                        break;
-                    case 6:
-                        __region__ = reader.ReadString();
-                        __region__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::AccelByte.Models.OrderRequest();
-            if(__itemId__b__) ____result.itemId = __itemId__;
-            if(__quantity__b__) ____result.quantity = __quantity__;
-            if(__price__b__) ____result.price = __price__;
-            if(__discountedPrice__b__) ____result.discountedPrice = __discountedPrice__;
-            if(__currencyCode__b__) ____result.currencyCode = __currencyCode__;
-            if(__returnUrl__b__) ____result.returnUrl = __returnUrl__;
-            if(__region__b__) ____result.region = __region__;
-
-            return ____result;
-        }
-    }
-
-
-    public sealed class EntitlementFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.Entitlement>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public EntitlementFormatter()
+        public EntitlementInfoFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -4772,14 +5532,15 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 13},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("useCount"), 14},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("quantity"), 15},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("distributedQuantity"), 16},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 17},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemSnapshot"), 18},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("startDate"), 19},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("endDate"), 20},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("grantedAt"), 21},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 22},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("source"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("distributedQuantity"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("targetNamespace"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("itemSnapshot"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("startDate"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("endDate"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("grantedAt"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("createdAt"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 24},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -4800,6 +5561,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("useCount"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("quantity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("source"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("distributedQuantity"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("targetNamespace"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("itemSnapshot"),
@@ -4812,7 +5574,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.Entitlement value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.EntitlementInfo value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -4826,15 +5588,15 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.Namespace);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteString(value.clazz);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementClazz>().Serialize(ref writer, value.clazz, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.type);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Serialize(ref writer, value.type, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.status);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementStatus>().Serialize(ref writer, value.status, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[5]);
             writer.WriteString(value.appId);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            writer.WriteString(value.appType);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Serialize(ref writer, value.appType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteString(value.sku);
             writer.WriteRaw(this.____stringByteKeys[8]);
@@ -4854,26 +5616,28 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[15]);
             writer.WriteInt32(value.quantity);
             writer.WriteRaw(this.____stringByteKeys[16]);
-            writer.WriteInt32(value.distributedQuantity);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementSource>().Serialize(ref writer, value.source, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[17]);
-            writer.WriteString(value.targetNamespace);
+            writer.WriteInt32(value.distributedQuantity);
             writer.WriteRaw(this.____stringByteKeys[18]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemSnapshot>().Serialize(ref writer, value.itemSnapshot, formatterResolver);
+            writer.WriteString(value.targetNamespace);
             writer.WriteRaw(this.____stringByteKeys[19]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.startDate, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemSnapshot>().Serialize(ref writer, value.itemSnapshot, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[20]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.endDate, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.startDate, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[21]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.grantedAt, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.endDate, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[22]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.grantedAt, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[23]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.createdAt, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[24]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.updatedAt, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.Entitlement Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.EntitlementInfo Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -4885,15 +5649,15 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __id__b__ = false;
             var __Namespace__ = default(string);
             var __Namespace__b__ = false;
-            var __clazz__ = default(string);
+            var __clazz__ = default(global::AccelByte.Models.EntitlementClazz);
             var __clazz__b__ = false;
-            var __type__ = default(string);
+            var __type__ = default(global::AccelByte.Models.EntitlementType);
             var __type__b__ = false;
-            var __status__ = default(string);
+            var __status__ = default(global::AccelByte.Models.EntitlementStatus);
             var __status__b__ = false;
             var __appId__ = default(string);
             var __appId__b__ = false;
-            var __appType__ = default(string);
+            var __appType__ = default(global::AccelByte.Models.EntitlementAppType);
             var __appType__b__ = false;
             var __sku__ = default(string);
             var __sku__b__ = false;
@@ -4913,6 +5677,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __useCount__b__ = false;
             var __quantity__ = default(int);
             var __quantity__b__ = false;
+            var __source__ = default(global::AccelByte.Models.EntitlementSource);
+            var __source__b__ = false;
             var __distributedQuantity__ = default(int);
             var __distributedQuantity__b__ = false;
             var __targetNamespace__ = default(string);
@@ -4953,15 +5719,15 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __Namespace__b__ = true;
                         break;
                     case 2:
-                        __clazz__ = reader.ReadString();
+                        __clazz__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementClazz>().Deserialize(ref reader, formatterResolver);
                         __clazz__b__ = true;
                         break;
                     case 3:
-                        __type__ = reader.ReadString();
+                        __type__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementType>().Deserialize(ref reader, formatterResolver);
                         __type__b__ = true;
                         break;
                     case 4:
-                        __status__ = reader.ReadString();
+                        __status__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementStatus>().Deserialize(ref reader, formatterResolver);
                         __status__b__ = true;
                         break;
                     case 5:
@@ -4969,7 +5735,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __appId__b__ = true;
                         break;
                     case 6:
-                        __appType__ = reader.ReadString();
+                        __appType__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementAppType>().Deserialize(ref reader, formatterResolver);
                         __appType__b__ = true;
                         break;
                     case 7:
@@ -5009,34 +5775,38 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __quantity__b__ = true;
                         break;
                     case 16:
+                        __source__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementSource>().Deserialize(ref reader, formatterResolver);
+                        __source__b__ = true;
+                        break;
+                    case 17:
                         __distributedQuantity__ = reader.ReadInt32();
                         __distributedQuantity__b__ = true;
                         break;
-                    case 17:
+                    case 18:
                         __targetNamespace__ = reader.ReadString();
                         __targetNamespace__b__ = true;
                         break;
-                    case 18:
+                    case 19:
                         __itemSnapshot__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemSnapshot>().Deserialize(ref reader, formatterResolver);
                         __itemSnapshot__b__ = true;
                         break;
-                    case 19:
+                    case 20:
                         __startDate__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __startDate__b__ = true;
                         break;
-                    case 20:
+                    case 21:
                         __endDate__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __endDate__b__ = true;
                         break;
-                    case 21:
+                    case 22:
                         __grantedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __grantedAt__b__ = true;
                         break;
-                    case 22:
+                    case 23:
                         __createdAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __createdAt__b__ = true;
                         break;
-                    case 23:
+                    case 24:
                         __updatedAt__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __updatedAt__b__ = true;
                         break;
@@ -5049,7 +5819,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.Entitlement();
+            var ____result = new global::AccelByte.Models.EntitlementInfo();
             if(__id__b__) ____result.id = __id__;
             if(__Namespace__b__) ____result.Namespace = __Namespace__;
             if(__clazz__b__) ____result.clazz = __clazz__;
@@ -5066,6 +5836,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__name__b__) ____result.name = __name__;
             if(__useCount__b__) ____result.useCount = __useCount__;
             if(__quantity__b__) ____result.quantity = __quantity__;
+            if(__source__b__) ____result.source = __source__;
             if(__distributedQuantity__b__) ____result.distributedQuantity = __distributedQuantity__;
             if(__targetNamespace__b__) ____result.targetNamespace = __targetNamespace__;
             if(__itemSnapshot__b__) ____result.itemSnapshot = __itemSnapshot__;
@@ -5080,12 +5851,12 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class PagedEntitlementsFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.PagedEntitlements>
+    public sealed class EntitlementPagingSlicedResultFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.EntitlementPagingSlicedResult>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
 
-        public PagedEntitlementsFormatter()
+        public EntitlementPagingSlicedResultFormatter()
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
@@ -5101,7 +5872,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.PagedEntitlements value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.EntitlementPagingSlicedResult value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -5111,14 +5882,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Entitlement[]>().Serialize(ref writer, value.data, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementInfo[]>().Serialize(ref writer, value.data, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Paging>().Serialize(ref writer, value.paging, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.PagedEntitlements Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.EntitlementPagingSlicedResult Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -5126,7 +5897,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             }
             
 
-            var __data__ = default(global::AccelByte.Models.Entitlement[]);
+            var __data__ = default(global::AccelByte.Models.EntitlementInfo[]);
             var __data__b__ = false;
             var __paging__ = default(global::AccelByte.Models.Paging);
             var __paging__b__ = false;
@@ -5146,7 +5917,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 switch (key)
                 {
                     case 0:
-                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.Entitlement[]>().Deserialize(ref reader, formatterResolver);
+                        __data__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.EntitlementInfo[]>().Deserialize(ref reader, formatterResolver);
                         __data__b__ = true;
                         break;
                     case 1:
@@ -5162,7 +5933,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.PagedEntitlements();
+            var ____result = new global::AccelByte.Models.EntitlementPagingSlicedResult();
             if(__data__b__) ____result.data = __data__;
             if(__paging__b__) ____result.paging = __paging__;
 
@@ -8843,8 +9614,9 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("profileId"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("statCode"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("statName"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("value"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("updatedAt"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("value"), 7},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -8854,6 +9626,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("profileId"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("statCode"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("statName"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tags"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("updatedAt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("value"),
                 
@@ -8874,14 +9647,16 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.Namespace);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteString(value.profileId);
+            writer.WriteString(value.userId);
             writer.WriteRaw(this.____stringByteKeys[3]);
             writer.WriteString(value.statCode);
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.statName);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.updatedAt);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.tags, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.updatedAt);
+            writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteSingle(value.value);
             
             writer.WriteEndObject();
@@ -8899,12 +9674,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __createdAt__b__ = false;
             var __Namespace__ = default(string);
             var __Namespace__b__ = false;
-            var __profileId__ = default(string);
-            var __profileId__b__ = false;
+            var __userId__ = default(string);
+            var __userId__b__ = false;
             var __statCode__ = default(string);
             var __statCode__b__ = false;
             var __statName__ = default(string);
             var __statName__b__ = false;
+            var __tags__ = default(string[]);
+            var __tags__b__ = false;
             var __updatedAt__ = default(string);
             var __updatedAt__b__ = false;
             var __value__ = default(float);
@@ -8933,8 +9710,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __Namespace__b__ = true;
                         break;
                     case 2:
-                        __profileId__ = reader.ReadString();
-                        __profileId__b__ = true;
+                        __userId__ = reader.ReadString();
+                        __userId__b__ = true;
                         break;
                     case 3:
                         __statCode__ = reader.ReadString();
@@ -8945,10 +9722,14 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __statName__b__ = true;
                         break;
                     case 5:
+                        __tags__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
+                        __tags__b__ = true;
+                        break;
+                    case 6:
                         __updatedAt__ = reader.ReadString();
                         __updatedAt__b__ = true;
                         break;
-                    case 6:
+                    case 7:
                         __value__ = reader.ReadSingle();
                         __value__b__ = true;
                         break;
@@ -8964,9 +9745,10 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var ____result = new global::AccelByte.Models.StatItemInfo();
             if(__createdAt__b__) ____result.createdAt = __createdAt__;
             if(__Namespace__b__) ____result.Namespace = __Namespace__;
-            if(__profileId__b__) ____result.profileId = __profileId__;
+            if(__userId__b__) ____result.userId = __userId__;
             if(__statCode__b__) ____result.statCode = __statCode__;
             if(__statName__b__) ____result.statName = __statName__;
+            if(__tags__b__) ____result.tags = __tags__;
             if(__updatedAt__b__) ____result.updatedAt = __updatedAt__;
             if(__value__b__) ____result.value = __value__;
 
@@ -9181,7 +9963,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteSingle(value.inc);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.profileId);
+            writer.WriteString(value.userId);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.statCode);
             
@@ -9198,8 +9980,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
 
             var __inc__ = default(float);
             var __inc__b__ = false;
-            var __profileId__ = default(string);
-            var __profileId__b__ = false;
+            var __userId__ = default(string);
+            var __userId__b__ = false;
             var __statCode__ = default(string);
             var __statCode__b__ = false;
 
@@ -9222,8 +10004,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __inc__b__ = true;
                         break;
                     case 1:
-                        __profileId__ = reader.ReadString();
-                        __profileId__b__ = true;
+                        __userId__ = reader.ReadString();
+                        __userId__b__ = true;
                         break;
                     case 2:
                         __statCode__ = reader.ReadString();
@@ -9240,7 +10022,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
 
             var ____result = new global::AccelByte.Models.BulkUserStatItemInc();
             if(__inc__b__) ____result.inc = __inc__;
-            if(__profileId__b__) ____result.profileId = __profileId__;
+            if(__userId__b__) ____result.userId = __userId__;
             if(__statCode__b__) ____result.statCode = __statCode__;
 
             return ____result;

@@ -41,9 +41,10 @@ namespace AccelByte.Models
     {
         [DataMember] public string createdAt { get; set; }
         [DataMember(Name = "namespace")] public string Namespace { get; set; }
-        [DataMember] public string profileId { get; set; }
+        [DataMember] public string userId { get; set; }
         [DataMember] public string statCode { get; set; }
         [DataMember] public string statName { get; set; }
+        [DataMember] public string[] tags { get; set; }
         [DataMember] public string updatedAt { get; set; }
         [DataMember] public float value { get; set; }
     }
@@ -65,7 +66,7 @@ namespace AccelByte.Models
     public class BulkUserStatItemInc
     {
         [DataMember] public float inc { get; set; }
-        [DataMember] public string profileId { get; set; }
+        [DataMember] public string userId { get; set; }
         [DataMember] public string statCode { get; set; }
     }
 

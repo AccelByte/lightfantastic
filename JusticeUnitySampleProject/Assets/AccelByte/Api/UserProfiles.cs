@@ -34,6 +34,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed.</param>
         public void GetUserProfile(ResultCallback<UserProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -51,6 +52,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed</param>
         public void CreateUserProfile(CreateUserProfileRequest createRequest, ResultCallback<UserProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -72,6 +74,7 @@ namespace AccelByte.Api
         /// <param name="callback">Returns a Result that contains UserProfile via callback when completed</param>
         public void UpdateUserProfile(UpdateUserProfileRequest updateRequest, ResultCallback<UserProfile> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);

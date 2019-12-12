@@ -26,80 +26,104 @@ namespace AccelByte.Api
         }
 
         public IEnumerator GetItem(string @namespace, string accessToken, string itemId, string region, string language,
-            ResultCallback<Item> callback)
+            ResultCallback<PopulatedItemInfo> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get item! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get item! AccessToken parameter is null!");
             Assert.IsNotNull(itemId, "Can't get item! ItemId parameter is null!");
-            Assert.IsNotNull(region, "Can't get item! Region parameter is null!");
-            Assert.IsNotNull(language, "Can't get item! Language parameter is null!");
 
-            var request = HttpRequestBuilder
+            var builder = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/{itemId}/locale")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("itemId", itemId)
-                .WithQueryParam("region", region)
-                .WithQueryParam("language", language)
                 .WithBearerAuth(accessToken)
-                .Accepts(MediaType.ApplicationJson)
-                .GetResult();
+                .Accepts(MediaType.ApplicationJson);
+
+            if(region != null)
+            {
+                builder.WithQueryParam("region", region);
+            }
+
+            if(language != null)
+            {
+                builder.WithQueryParam("language", language);
+            }
+
+            var request = builder.GetResult();
 
             IHttpResponse response = null;
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<Item>();
+            var result = response.TryParseJson<PopulatedItemInfo>();
 
             callback.Try(result);
         }
 
-        public IEnumerator GetItemsByCriteria(string @namespace, string accessToken, string region, string language,
-            ItemCriteria criteria, ResultCallback<PagedItems> callback)
+        public IEnumerator GetItemsByCriteria(string @namespace, string accessToken,
+            ItemCriteria criteria, ResultCallback<ItemPagingSlicedResult> callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't get items by criteria! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get items by criteria! AccessToken parameter is null!");
-            Assert.IsNotNull(language, "Can't get items by criteria! Language parameter is null!");
             Assert.IsNotNull(criteria, "Can't get items by criteria! Criteria parameter is null!");
-            Assert.IsNotNull(language, "Can't get items by criteria! Language parameter is null!");
 
             var queries = new Dictionary<string, string>();
 
             if (criteria != null)
             {
-                if (criteria.CategoryPath != null)
+                if (criteria.categoryPath != null)
                 {
-                    queries.Add("categoryPath", criteria.CategoryPath);
+                    queries.Add("categoryPath", criteria.categoryPath);
                 }
 
-                if (criteria.ItemType != null)
+                if (criteria.itemType != ItemType.NONE)
                 {
-                    queries.Add("itemType", criteria.ItemType.ToString());
+                    queries.Add("itemType", criteria.itemType.ToString());
                 }
 
-                if (criteria.ItemStatus != null)
+                if (criteria.appType != EntitlementAppType.NONE)
                 {
-                    queries.Add("status", criteria.ItemStatus.ToString());
+                    queries.Add("appType", criteria.appType.ToString());
                 }
 
-                if (criteria.Page != null)
+                if(criteria.region != null)
                 {
-                    queries.Add("page", Convert.ToString(criteria.Page));
+                    queries.Add("region", criteria.region);
                 }
 
-                if (criteria.Size != null)
+                if(criteria.language != null)
                 {
-                    queries.Add("size", Convert.ToString(criteria.Size));
+                    queries.Add("language", criteria.language);
                 }
-                if(criteria.SortBy != null)
+
+                if(criteria.tags != null)
                 {
-                    queries.Add("sortBy", criteria.SortBy);
+                    string tags = "";
+                    for(int i=0;i<criteria.tags.Length;i++){
+                        tags += (i < criteria.tags.Length - 1 ? criteria.tags[i] + "," : criteria.tags[i]);
+                    }
+                    queries.Add("tags", tags);
+                }
+
+                if (criteria.offset != null)
+                {
+                    queries.Add("offset", Convert.ToString(criteria.offset));
+                }
+
+                if (criteria.limit != null)
+                {
+                    queries.Add("limit", Convert.ToString(criteria.limit));
+                }
+                if(criteria.sortBy != null)
+                {
+                    queries.Add("sortBy", criteria.sortBy);
                 }
             }
 
             var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/namespaces/{namespace}/items/byCriteria")
                 .WithPathParam("namespace", @namespace)
-                .WithQueryParam("region", region)
-                .WithQueryParam("language", language)
                 .WithQueries(queries)
                 .WithBearerAuth(accessToken)
                 .Accepts(MediaType.ApplicationJson)
@@ -109,7 +133,7 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<PagedItems>();
+            var result = response.TryParseJson<ItemPagingSlicedResult>();
 
             callback.Try(result);
         }

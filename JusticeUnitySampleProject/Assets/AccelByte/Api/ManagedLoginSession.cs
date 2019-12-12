@@ -68,6 +68,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithUsername(string username, string password, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(username, "Username parameter is null.");
             Assert.IsNotNull(password, "Password parameter is null.");
 
@@ -90,6 +91,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithDeviceId(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             DeviceProvider deviceProvider = DeviceProvider.GetFromSystemInfo();
 
             IHttpRequest request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v1/login/platforms/{platformId}")
@@ -111,6 +113,7 @@ namespace AccelByte.Api
         public IEnumerator LoginWithOtherPlatform(PlatformType platformType, string platformToken,
             ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(platformToken, "PlatformToken parameter is null.");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v1/login/platforms/{platformId}")
@@ -131,6 +134,7 @@ namespace AccelByte.Api
 
         public IEnumerator LoginWithAuthorizationCode(string code, ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(code, "Code parameter is null.");
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v1/login/code")
@@ -151,6 +155,7 @@ namespace AccelByte.Api
 
         public IEnumerator Logout(ResultCallback callback)
         {
+            Report.GetFunctionLog(this.GetType().Name);
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v1/logout")
                 .WithBearerAuth(this.AuthorizationToken)
                 .WithContentType(MediaType.ApplicationForm)
