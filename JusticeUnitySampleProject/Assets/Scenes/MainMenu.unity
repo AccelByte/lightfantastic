@@ -22752,6 +22752,8 @@ GameObject:
   - component: {fileID: 2006644170}
   - component: {fileID: 2006644171}
   - component: {fileID: 2006644174}
+  - component: {fileID: 2006644176}
+  - component: {fileID: 2006644177}
   - component: {fileID: 2006644169}
   - component: {fileID: 2006644172}
   - component: {fileID: 2006644173}
@@ -22788,6 +22790,7 @@ MonoBehaviour:
   displayName: {fileID: 179234588}
   userId: {fileID: 2002304438}
   sessionId: {fileID: 1568697294}
+  steamAuth: {fileID: 2006644177}
 --- !u!4 &2006644170
 Transform:
   m_ObjectHideFlags: 0
@@ -22915,6 +22918,30 @@ MonoBehaviour:
   useInlineChat: 0
   getLocalNetworkConnections: 0
   useTCP: 0
+--- !u!114 &2006644176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c11f52a0abc1748a7725a89eaa3693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8a3cea733f88847a6ed5e1925d5be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2007832331
 GameObject:
   m_ObjectHideFlags: 0

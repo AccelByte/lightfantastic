@@ -7,6 +7,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+using Steamworks;
 
 namespace ABRuntimeLogic
 {
@@ -53,6 +54,9 @@ namespace ABRuntimeLogic
         private Text sessionId;
         #endregion
 
+        [SerializeField]
+        private SteamAuth steamAuth;
+
         private AccelByteLobbyLogic abLobbyLogic;
         private UIElementHandler uiHandler;
 
@@ -63,6 +67,11 @@ namespace ABRuntimeLogic
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
+        }
+
+        private void Start()
+        {
+            abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
         }
 
         #region AccelByte Authentication Functions
