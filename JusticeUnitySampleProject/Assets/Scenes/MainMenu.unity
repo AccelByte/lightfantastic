@@ -1593,7 +1593,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &161812910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22750,6 +22750,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2006644170}
+  - component: {fileID: 2006644178}
   - component: {fileID: 2006644171}
   - component: {fileID: 2006644174}
   - component: {fileID: 2006644176}
@@ -22791,6 +22792,9 @@ MonoBehaviour:
   userId: {fileID: 2002304438}
   sessionId: {fileID: 1568697294}
   steamAuth: {fileID: 2006644177}
+  useSteam: 0
+  cmdLine: {fileID: 2006644178}
+  loginPanel: {fileID: 2075930364}
 --- !u!4 &2006644170
 Transform:
   m_ObjectHideFlags: 0
@@ -22940,6 +22944,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a8a3cea733f88847a6ed5e1925d5be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01232684c3e43f741b9a3bd863daa514, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2007832331
@@ -23289,7 +23305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2075930365
 RectTransform:
   m_ObjectHideFlags: 0

@@ -56,8 +56,13 @@ namespace ABRuntimeLogic
 
         [SerializeField]
         private SteamAuth steamAuth;
+        public bool useSteam;
+        [SerializeField]
+        private CommandLineArgs cmdLine;
 
         private AccelByteLobbyLogic abLobbyLogic;
+        [SerializeField]
+        private GameObject loginPanel;
         private UIElementHandler uiHandler;
 
 
@@ -67,11 +72,24 @@ namespace ABRuntimeLogic
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
+
+            useSteam = cmdLine.ParseCommandLine();
         }
 
-        private void Start()
+        public void Start()
         {
-            abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
+            if (useSteam)
+            {
+                loginPanel.gameObject.SetActive(false);
+                abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
+                Debug.Log("USE STEAM");
+            }
+            else 
+            {
+                loginPanel.gameObject.SetActive(true);
+
+                Debug.Log("Don't USE STEAM");
+            }
         }
 
         #region AccelByte Authentication Functions
@@ -209,7 +227,7 @@ namespace ABRuntimeLogic
                 userId.text = "UserId: " + abUserData.userId;
                 sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.emailVerified)
+                if (!abUserData.emailVerified && !useSteam)
                 {
                     uiHandler.FadeVerify();
                 }
