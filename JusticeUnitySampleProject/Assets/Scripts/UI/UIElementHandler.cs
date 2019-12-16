@@ -26,6 +26,8 @@ namespace UITools
         private CanvasGroup matchmakingPanel;
         [SerializeField]
         private CanvasGroup multiplayerOptionPanel;
+        [SerializeField]
+        private CanvasGroup loadingPanel;
 
         private CanvasGroup currentPanel;
 
@@ -153,6 +155,19 @@ namespace UITools
                 StartCoroutine(FadeIn(multiplayerOptionPanel));
                 //multiplayerOptionPanel.alpha = MAX_ALPHA;
                 //multiplayerOptionPanel.gameObject.SetActive(true);
+            }
+        }
+
+        public void FadeLoading()
+        {
+            if (loadingPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(loadingPanel));
+                currentPanel = menuPanel;
+            }
+            else
+            {
+                StartCoroutine(FadeIn(loadingPanel));
             }
         }
 
