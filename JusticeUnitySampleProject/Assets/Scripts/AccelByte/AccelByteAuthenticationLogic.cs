@@ -7,6 +7,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+using System;
 
 namespace ABRuntimeLogic
 {
@@ -56,6 +57,7 @@ namespace ABRuntimeLogic
         private AccelByteLobbyLogic abLobbyLogic;
         private UIElementHandler uiHandler;
 
+        private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
         void Awake()
         {
@@ -68,7 +70,7 @@ namespace ABRuntimeLogic
         void Start()
         {
             // Try to login with launcher
-            //LoginWithLauncher();
+            LoginWithLauncher();
         }
 
         #region AccelByte Authentication Functions
@@ -106,9 +108,18 @@ namespace ABRuntimeLogic
         //Attempts to login with launcher
         public void LoginWithLauncher()
         {
-            abUser.LoginWithLauncher(OnLogin);
+            // Check if auth code is available from launcher
+            string authCode = Environment.GetEnvironmentVariable(AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE);
 
-            uiHandler.FadeLoading();
+            if (authCode != null)
+            {
+                abUser.LoginWithLauncher(OnLogin);
+                uiHandler.FadeLoading();
+            }
+            else
+            {
+                Debug.Log("LoginWithLauncher authCode is null");
+            }
         }
 
         //Gets the user's top level account details
@@ -203,24 +214,6 @@ namespace ABRuntimeLogic
                 GetUserDetails();
             }
         }
-
-        ////Handles User Login with launcher, on Success it will get the User's account details
-        //private void OnLoginWithLauncher(Result result)
-        //{
-        //    if (result.IsError)
-        //    {
-        //        Debug.Log("OnLoginWithLauncher failed:" + result.Error.Message);
-        //        Debug.Log("OnLoginWithLauncher Response Code: " + result.Error.Code);
-        //        //Show Error Message
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("OnLoginWithLauncher successful. Getting User Data");
-        //        //Show Login Successful
-        //        //Show "Getting User Details"
-        //        GetUserDetails();
-        //    }
-        //}
 
         //Handles Getting the user's data. On Success it prints the information to the console.
         //Also Checks if the user has verified their email address, if not, sends user to verification, else sends to main menu.
