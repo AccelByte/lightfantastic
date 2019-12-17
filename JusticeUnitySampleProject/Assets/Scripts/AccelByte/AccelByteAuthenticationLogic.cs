@@ -7,6 +7,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+using System;
 
 namespace ABRuntimeLogic
 {
@@ -56,6 +57,7 @@ namespace ABRuntimeLogic
         private AccelByteLobbyLogic abLobbyLogic;
         private UIElementHandler uiHandler;
 
+        private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
         void Awake()
         {
@@ -63,6 +65,12 @@ namespace ABRuntimeLogic
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
+        }
+
+        void Start()
+        {
+            // Try to login with launcher
+            LoginWithLauncher();
         }
 
         #region AccelByte Authentication Functions
@@ -93,6 +101,25 @@ namespace ABRuntimeLogic
         public void Login()
         {
             abUser.LoginWithUsername(loginEmail.text, loginPassword.text, OnLogin);
+
+            uiHandler.FadeLoading();
+        }
+
+        //Attempts to login with launcher
+        public void LoginWithLauncher()
+        {
+            // Check if auth code is available from launcher
+            string authCode = Environment.GetEnvironmentVariable(AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE);
+
+            if (authCode != null)
+            {
+                abUser.LoginWithLauncher(OnLogin);
+                uiHandler.FadeLoading();
+            }
+            else
+            {
+                Debug.Log("LoginWithLauncher authCode is null");
+            }
         }
 
         //Gets the user's top level account details
@@ -156,6 +183,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                uiHandler.FadeLoading();
+
                 Debug.Log("Resend Verification failed:" + result.Error.Message);
                 Debug.Log("Resend Verification Response Code: " + result.Error.Code);
                 //Show Error Message
@@ -171,6 +200,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                uiHandler.FadeLoading();
+
                 Debug.Log("Login failed:" + result.Error.Message);
                 Debug.Log("Login Response Code: " + result.Error.Code);
                 //Show Error Message
@@ -207,6 +238,7 @@ namespace ABRuntimeLogic
                 else
                 {
                     //Progress to Main Menu
+                    uiHandler.FadeLoading();
                     uiHandler.FadeLogin();
                     uiHandler.FadePersistentFriends();
                     uiHandler.FadeMenu();
