@@ -10,9 +10,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
-//using AccelByte.Server;
-//using AccelByte.Core;
-//using AccelByte.Models;
+#if UNITY_SERVER
+using AccelByte.Server;
+using AccelByte.Core;
+using AccelByte.Models;
+#endif // UNITY_SERVER
 
 public class MultiplayerMenu : MonoBehaviour
 {
@@ -43,8 +45,10 @@ public class MultiplayerMenu : MonoBehaviour
     private string IPAddress;
     private string PortNumber;
 
-    //private Server abServer;
-    //private ServerCredentials abServerCredentials;
+#if UNITY_SERVER
+    private Server abServer;
+    private ServerCredentials abServerCredentials;
+#endif	// UNITY_SERVER
 
     private void Start()
     {
@@ -79,7 +83,7 @@ public class MultiplayerMenu : MonoBehaviour
         // TODO: call this to login and get access token
         abServerCredentials = AccelbyteServerPlugin.GetServerCredentials();
         abServerCredentials.GetAccessToken(OnGetAccessToken);
-#endif
+#endif // UNITY_SERVER
     }
 
 #if UNITY_SERVER
