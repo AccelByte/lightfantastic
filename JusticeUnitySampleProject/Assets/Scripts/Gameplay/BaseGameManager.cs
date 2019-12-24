@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking;
 
 namespace Game
 {
@@ -20,8 +21,7 @@ namespace Game
 
         [SerializeField]
         private BasePlayerStart[] playerStarts;
-
-        private readonly Dictionary<uint, MovePlayerPawnBehavior> playerObjects = new Dictionary<uint, MovePlayerPawnBehavior>();        
+        private readonly Dictionary<uint, MovePlayerPawnBehavior> playerObjects = new Dictionary<uint, MovePlayerPawnBehavior>();
         private bool isNetworkReady;
 
         private void Awake()
@@ -34,7 +34,7 @@ namespace Game
             {
                 Destroy(gameObject);
             }
-            
+
             DontDestroyOnLoad(instance);
         }
 
@@ -45,16 +45,20 @@ namespace Game
             if (NetworkManager.Instance.IsServer)
             {
                 NetworkManager.Instance.Networker.playerAccepted += (player, sender) =>
-                  {
-                      MainThreadManager.Run(() =>
-                      {
-                          int randomPlayerStart = Random.Range(0, playerStarts.Length);
-                          MovePlayerPawnBehavior p = NetworkManager.Instance.InstantiateMovePlayerPawn(0,playerStarts[randomPlayerStart].transform.position, playerStarts[randomPlayerStart].transform.rotation);
-                          p.networkObject.OwnerNetId = player.NetworkId;
-                          playerObjects.Add(player.NetworkId, p);
-                          Debug.Log("Player " + player.NetworkId + " connected.");
-                      });
-                  };
+                {
+                    MainThreadManager.Run(() =>
+                    {
+                        int playerIdx = Random.Range(0, playerStarts.Length);
+                        MovePlayerPawnBehavior p = NetworkManager.Instance.InstantiateMovePlayerPawn(0, playerStarts[playerIdx].transform.position, playerStarts[playerIdx].transform.rotation);
+                        p.networkObject.OwnerNetId = player.NetworkId;
+                        p.networkObject.MaxSpeed = ((BasePlayerPawn)p).MaxSpeed;
+                        p.networkObject.SetInitialPos(playerStarts[playerIdx].transform.position);
+                        p.networkObject.AssignOwnership(player);
+                        p.networkObject.SendRpc(player, MovePlayerPawnBehavior.RPC_START_ASSIGN_PLAYER_NUM, (uint)playerIdx + 1);
+                        playerObjects.Add(player.NetworkId, p);
+                        Debug.Log("Player " + player.NetworkId + " connected.");
+                    });
+                };
 
                 NetworkManager.Instance.Networker.playerDisconnected += (player, sender) =>
                 {
@@ -72,14 +76,6 @@ namespace Game
             }
 
             isNetworkReady = true;
-        }
-
-        private void FixedUpdate()
-        {
-            if (!isNetworkReady && networkObject != null)
-            {
-                NetworkStart();
-            }
         }
     }
 }
