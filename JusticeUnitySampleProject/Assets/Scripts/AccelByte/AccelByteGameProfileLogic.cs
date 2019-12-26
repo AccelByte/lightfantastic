@@ -18,6 +18,7 @@ public class AccelByteGameProfileLogic : MonoBehaviour
     private List<GameProfile> LocalGameProfiles;
     private List<UserGameProfiles> PartyMemberGameProfiles;
 
+    private UserData localPlayerUserData;
     private GameProfile CurrentGameProfile;
 
     private const string PLAYER_LEVEL = "playerlevel";
@@ -36,6 +37,8 @@ public class AccelByteGameProfileLogic : MonoBehaviour
 
     public void SetupGameProfile()
     {
+        localPlayerUserData = AccelByteManager.Instance.AuthLogic.GetUserData();
+
         // get all game profiles
         GetAllGameProfiles(OnGetAllGameProfiles);
     }
@@ -219,12 +222,10 @@ public class AccelByteGameProfileLogic : MonoBehaviour
 
     private GameProfileRequest GetGameProfileRequest()
     {
-        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-
         GameProfileRequest gameProfileRequest = new GameProfileRequest();
 
         gameProfileRequest.label = "LF_GameProfile";
-        gameProfileRequest.profileName = data.displayName + "_LightFan";
+        gameProfileRequest.profileName = localPlayerUserData.displayName + "_LightFan";
         gameProfileRequest.tags = new string[] {"player", "lightfantastic"};
         gameProfileRequest.attributes = new Dictionary<string, string>()
         {
