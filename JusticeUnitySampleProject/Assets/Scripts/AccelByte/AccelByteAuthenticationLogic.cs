@@ -55,6 +55,7 @@ namespace ABRuntimeLogic
         #endregion
 
         private AccelByteLobbyLogic abLobbyLogic;
+        private AccelByteGameProfileLogic abGameProfileLogic;
         private UIElementHandler uiHandler;
 
         private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
@@ -62,6 +63,8 @@ namespace ABRuntimeLogic
         void Awake()
         {
             abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
+            abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
+
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();

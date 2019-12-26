@@ -131,6 +131,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             SetupFriendCallbacks();
             SetupMatchmakingCallbacks();
             SetupChatCallbacks();
+
+            AccelByteManager.Instance.GameProfileLogic.SetupGameProfile();
         }
         else
         {
@@ -356,6 +358,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
             popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
         }
+    }
+
+    public List<PartyData> GetMemberPartyData()
+    {
+        List<PartyData> partyMemberData = new List<PartyData>();
+
+        if (partyMemberList.Count > 0)
+        {
+            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
+            {
+                partyMemberData.Add(member.Value);
+            }
+        }
+
+        return partyMemberData;
     }
 
     public void OnLeavePartyButtonClicked()
