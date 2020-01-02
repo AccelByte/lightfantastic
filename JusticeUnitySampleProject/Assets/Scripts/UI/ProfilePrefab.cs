@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class ProfilePrefab : MonoBehaviour
 {
+    [SerializeField]
     private Transform playerProfileName;
-
+    [SerializeField]
     private Transform playerLevel;
 
     private Transform playerAvatar;
@@ -24,9 +25,9 @@ public class ProfilePrefab : MonoBehaviour
         
     }
 
-    public void SetupProfileUI(string playerProfileName, string playerLevel)
+    public void SetupProfileUI(string profileName, string level)
     {
-        this.playerProfileName.GetComponent<Text>().text = playerProfileName;
-        this.playerLevel.GetComponent<Text>().text = playerLevel;
+        this.playerProfileName.GetComponent<Text>().text = profileName;
+        this.playerLevel.GetComponent<Text>().text = "lvl " + level;
     }
 }

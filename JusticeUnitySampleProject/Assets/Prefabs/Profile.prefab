@@ -676,6 +676,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6866841834855775962}
+  - component: {fileID: 2814103096509794424}
   m_Layer: 5
   m_Name: Profile
   m_TagString: Untagged
@@ -710,6 +711,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2814103096509794424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5240390502254238159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 272903bfd9bff8545b8222d1bb11c46c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerProfileName: {fileID: 4719732423982245513}
+  playerLevel: {fileID: 584448954434044298}
 --- !u!1 &6699700262774847201
 GameObject:
   m_ObjectHideFlags: 0

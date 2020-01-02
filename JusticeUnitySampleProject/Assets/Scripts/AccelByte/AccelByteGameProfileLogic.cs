@@ -6,11 +6,6 @@ using AccelByte.Api;
 using AccelByte.Models;
 using AccelByte.Core;
 
-public struct LightFantasticAttibute
-{
-    string playerlevel;
-}
-
 public class AccelByteGameProfileLogic : MonoBehaviour
 {
     private GameProfiles abGameProfiles;
@@ -20,15 +15,37 @@ public class AccelByteGameProfileLogic : MonoBehaviour
 
     private UserData localPlayerUserData;
     private GameProfile CurrentGameProfile;
+    private List<GameProfileAttribute> CurrentGameProfileAttributes;
+
+    // TODO: create struct of player status
+    private string playerLevel;
+    private string playerHighestScore;
 
     private const string PLAYER_LEVEL = "playerlevel";
     private const string PLAYER_HIGHEST_SCORE = "playerhigestscore";
+
+    [SerializeField]
+    private Transform playerProfilePanel;
+    private Transform profileUIPrefab;
+    private Transform profileListPanel;
+    private Transform profileItemScrollView;
 
     void Awake()
     {
         PartyMemberGameProfiles = new List<UserGameProfiles>();
         LocalGameProfiles = new List<GameProfile>();
+        CurrentGameProfileAttributes = new List<GameProfileAttribute>();
+
+        SetupUI();
     }
+
+    void SetupUI()
+    {
+        profileUIPrefab = playerProfilePanel.Find("Profile");
+        profileListPanel = playerProfilePanel.Find("ProfileListPanel");
+        profileItemScrollView = playerProfilePanel.Find("ItemScrollView");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +58,14 @@ public class AccelByteGameProfileLogic : MonoBehaviour
 
         // get all game profiles
         GetAllGameProfiles(OnGetAllGameProfiles);
+    }
+
+    public void DeleteLocalPlayerGameProfile()
+    {
+        if (CurrentGameProfile != null)
+        {
+            DeleteGameProfile(CurrentGameProfile.profileId, OnDeleteGameProfile);
+        }
     }
 
     public void GetAllPartyMemberGameProfile()
@@ -91,6 +116,16 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         abGameProfiles.DeleteGameProfile(profileId, callback);
     }
 
+    public void GetGameProfileAttribute_Level()
+    {
+        abGameProfiles.GetGameProfileAttribute(CurrentGameProfile.profileId, PLAYER_LEVEL, OnGetGameProfileAttribute);
+    }
+
+    public void GetGameProfileAttribute_Score()
+    {
+        abGameProfiles.GetGameProfileAttribute(CurrentGameProfile.profileId, PLAYER_HIGHEST_SCORE, OnGetGameProfileAttribute);
+    }
+
     public void UpdateGameProfile_PlayerLevel(string profileId, int playerLevel)
     {
         GameProfileAttribute attribute = new GameProfileAttribute();
@@ -105,6 +140,15 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         attribute.name = PLAYER_HIGHEST_SCORE;
         attribute.value = playerHighestScore.ToString();
         abGameProfiles.UpdateGameProfileAttribute(profileId, attribute, OnUpdateGameProfile);
+    }
+
+    public void SetupProfileUIContent()
+    {
+        if (LocalGameProfiles.Count > 0)
+        {
+            // setup the profile prefab here
+            profileUIPrefab.GetComponent<ProfilePrefab>().SetupProfileUI(LocalGameProfiles[0].profileName, playerLevel);
+        }
     }
 
     private void OnBatchGetGameProfiles(Result<UserGameProfiles[]> result)
@@ -154,6 +198,10 @@ public class AccelByteGameProfileLogic : MonoBehaviour
                 if (LocalGameProfiles.Count > 0)
                 {
                     CurrentGameProfile = LocalGameProfiles[0];
+
+                    // fetching game profile attributes
+                    GetGameProfileAttribute_Level();
+                    GetGameProfileAttribute_Score();
                 }
             }
             else
@@ -189,6 +237,8 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         {
             Debug.Log("OnCreateGameProfile success!");
             Debug.Log("OnCreateGameProfile Gameprofile found profile ID: " + result.Value.profileId);
+
+            GetAllGameProfiles(OnGetAllGameProfiles);
         }
     }
 
@@ -220,17 +270,53 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         }
     }
 
+    private void OnGetGameProfileAttribute(Result<GameProfileAttribute> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetGameProfileAttribute failed:" + result.Error.Message);
+            Debug.Log("OnGetGameProfileAttribute Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetGameProfileAttribute : " + result.Value.name + " success!");
+            if (CurrentGameProfileAttributes.Contains(result.Value))
+            {
+                Debug.Log("OnGetGameProfileAttribute Game profile atribute duplication");
+            }
+            else
+            {
+                CurrentGameProfileAttributes.Add(result.Value);
+                switch (result.Value.name)
+                {
+                    case PLAYER_LEVEL:
+                        playerLevel = result.Value.value;
+                        break;
+                    case PLAYER_HIGHEST_SCORE:
+                        playerHighestScore = result.Value.value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // update UI
+            SetupProfileUIContent();
+        }
+    }
+
     private GameProfileRequest GetGameProfileRequest()
     {
-        GameProfileRequest gameProfileRequest = new GameProfileRequest();
-
-        gameProfileRequest.label = "LF_GameProfile";
-        gameProfileRequest.profileName = localPlayerUserData.displayName + "_LightFan";
-        gameProfileRequest.tags = new string[] {"player", "lightfantastic"};
-        gameProfileRequest.attributes = new Dictionary<string, string>()
+        GameProfileRequest gameProfileRequest = new GameProfileRequest
         {
-            {PLAYER_LEVEL,"1"},
-            {PLAYER_HIGHEST_SCORE,"0"}
+            label = "LF_GameProfile",
+            profileName = localPlayerUserData.displayName + "_LightFan",
+            tags = new string[] { "player", "lightfantastic" },
+            attributes = new Dictionary<string, string>()
+            {
+                {PLAYER_LEVEL,"1"},
+                {PLAYER_HIGHEST_SCORE,"0"}
+            }
         };
 
         return gameProfileRequest;
