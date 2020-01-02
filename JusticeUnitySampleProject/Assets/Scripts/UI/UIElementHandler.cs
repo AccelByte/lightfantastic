@@ -28,6 +28,8 @@ namespace UITools
         private CanvasGroup multiplayerOptionPanel;
         [SerializeField]
         private CanvasGroup loadingPanel;
+        [SerializeField]
+        private CanvasGroup playerProfilePanel;
 
         private CanvasGroup currentPanel;
 
@@ -117,6 +119,7 @@ namespace UITools
                 StartCoroutine(FadeIn(friendPanel));
             }
         }
+
         public void FadeSearchFriends()
         {
             if (searchFriendPanel.alpha == MAX_ALPHA)
@@ -146,15 +149,11 @@ namespace UITools
             if (multiplayerOptionPanel.alpha == MAX_ALPHA)
             {
                 StartCoroutine(FadeOut(multiplayerOptionPanel));
-                //multiplayerOptionPanel.alpha = MIN_ALPHA;
-                //multiplayerOptionPanel.gameObject.SetActive(false);
                 currentPanel = menuPanel;
             }
             else
             {
                 StartCoroutine(FadeIn(multiplayerOptionPanel));
-                //multiplayerOptionPanel.alpha = MAX_ALPHA;
-                //multiplayerOptionPanel.gameObject.SetActive(true);
             }
         }
 
@@ -168,6 +167,18 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(loadingPanel));
+            }
+        }
+
+        public void FadePlayerProfile()
+        {
+            if (playerProfilePanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(playerProfilePanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(playerProfilePanel));
             }
         }
 
