@@ -470,7 +470,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
-        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
@@ -500,7 +499,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
     {
-        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
@@ -944,7 +942,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     }
     #endregion
 
-    private void ClearFriendsUIPrefabs()
+    public void ClearFriendsUIPrefabs()
     {
         for (int i = 0; i < friendScrollContent.childCount; i++)
         {
