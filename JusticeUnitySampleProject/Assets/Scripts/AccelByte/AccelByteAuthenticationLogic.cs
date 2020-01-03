@@ -262,6 +262,7 @@ namespace ABRuntimeLogic
             {
                 uiHandler.FadeCurrent();
                 uiHandler.FadeLogin();
+                uiHandler.FadePersistentFriends();
                 loginEmail.text = string.Empty;
                 loginPassword.text = string.Empty;
             }
