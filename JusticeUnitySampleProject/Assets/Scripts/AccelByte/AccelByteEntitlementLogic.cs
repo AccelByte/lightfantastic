@@ -70,26 +70,8 @@ namespace ABRuntimeLogic
             }
             else
             {
-                int entitlemenCount = result.Value.data.Length;
-                int existingPrefab = scrollViewContentContainer.gameObject.transform.childCount;
-                int requiredPrefab = 0;
-                
-                if (existingPrefab <= entitlemenCount)
-                {
-                    requiredPrefab = entitlemenCount - existingPrefab;
-                }
-                else //need to delete exisiting item
-                {
-                    while(existingPrefab > entitlemenCount)
-                    {
-                        DestroyImmediate(scrollViewContentContainer.gameObject.transform.GetChild(0).gameObject);
-                    }
-                }
-                
-                VerticalScrollViewPopulation<ItemInventoryPrefab>.
-                    Populate(requiredPrefab, samplePrefab, scrollViewContentContainer);
-
-                var populatedEntries = scrollViewContentContainer.GetComponentsInChildren<ItemInventoryPrefab>();
+                var populatedEntries = VerticalScrollViewPopulation<ItemInventoryPrefab>.
+                    Populate(result.Value.data.Length, samplePrefab, scrollViewContentContainer);
 
                 for (int i = 0 ; i < populatedEntries.Length ; i++)
                 {
@@ -109,10 +91,6 @@ namespace ABRuntimeLogic
                                 }
                             }
                         }
-                    }
-
-                    if (index == populatedEntries.Length - 1)
-                    {
                     }
                 }
             }
