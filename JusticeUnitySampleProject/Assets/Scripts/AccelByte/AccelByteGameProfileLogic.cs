@@ -22,19 +22,26 @@ public class AccelByteGameProfileLogic : MonoBehaviour
     private string playerHighestScore;
 
     private const string PLAYER_LEVEL = "playerlevel";
-    private const string PLAYER_HIGHEST_SCORE = "playerhigestscore";
+    private const string PLAYER_HIGHEST_SCORE = "playerhighestscore";
 
     [SerializeField]
     private Transform playerProfilePanel;
     private Transform profileUIPrefab;
     private Transform profileListPanel;
     private Transform profileItemScrollView;
+    [SerializeField]
+    private Transform profileScrollContent;
+    [SerializeField]
+    private GameObject profileAttributePrefab;
+    
+    private List<GameObject> profileAttributes;
 
     void Awake()
     {
         PartyMemberGameProfiles = new List<UserGameProfiles>();
         LocalGameProfiles = new List<GameProfile>();
         CurrentGameProfileAttributes = new List<GameProfileAttribute>();
+        profileAttributes = new List<GameObject>();
 
         SetupUI();
     }
@@ -44,6 +51,47 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         profileUIPrefab = playerProfilePanel.Find("Profile");
         profileListPanel = playerProfilePanel.Find("ProfileListPanel");
         profileItemScrollView = playerProfilePanel.Find("ItemScrollView");
+    }
+
+    void InitGameProfileAttributeUI()
+    {
+        if (profileScrollContent.childCount > 0)
+        {
+            ClearGameProfileAttributeUI();
+        }
+
+        if (CurrentGameProfileAttributes.Count > 0)
+        {
+            for (int i = 0; i < CurrentGameProfileAttributes.Count; i++)
+            {
+                GameObject attribute = Instantiate(this.profileAttributePrefab, Vector3.zero, Quaternion.identity);
+                ProfileAttributePrefab attributePrefab = attribute.GetComponent<ProfileAttributePrefab>();
+
+                attributePrefab.SetupProfileAttributeUI(CurrentGameProfileAttributes[i].name, CurrentGameProfileAttributes[i].value);
+
+                attribute.transform.SetParent(profileScrollContent, false);
+                profileAttributes.Add(attribute);
+            }
+        }
+    }
+
+    private void ClearGameProfileAttributeUI()
+    {
+        if (profileAttributes.Count > 0)
+        {
+            // Clear the party slot buttons
+            for (int i = 0; i < profileAttributes.Count; i++)
+            {
+                profileAttributes[i].GetComponent<ProfileAttributePrefab>().OnClearProfileButton();
+            }
+
+            profileAttributes.Clear();
+
+            for (int i = 0; i < profileScrollContent.childCount; i++)
+            {
+                Destroy(profileScrollContent.GetChild(i).gameObject);
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -149,6 +197,8 @@ public class AccelByteGameProfileLogic : MonoBehaviour
             // setup the profile prefab here
             profileUIPrefab.GetComponent<ProfilePrefab>().SetupProfileUI(LocalGameProfiles[0].profileName, playerLevel);
         }
+
+        InitGameProfileAttributeUI();
     }
 
     private void OnBatchGetGameProfiles(Result<UserGameProfiles[]> result)
@@ -206,7 +256,7 @@ public class AccelByteGameProfileLogic : MonoBehaviour
             }
             else
             {
-                // if there is no game profiel then make onw
+                // if there is no game profile then make it
                 CreateGameProfile(GetGameProfileRequest(), OnCreateGameProfile);
             }
         }
@@ -279,7 +329,7 @@ public class AccelByteGameProfileLogic : MonoBehaviour
         }
         else
         {
-            Debug.Log("OnGetGameProfileAttribute : " + result.Value.name + " success!");
+            Debug.Log("OnGetGameProfileAttribute : " + result.Value.name + " success! Value : " + result.Value.value +"!");
             if (CurrentGameProfileAttributes.Contains(result.Value))
             {
                 Debug.Log("OnGetGameProfileAttribute Game profile atribute duplication");
