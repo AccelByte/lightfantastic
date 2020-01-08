@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\", \"uint\"][\"Vector3\"][\"uint\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"ownerNetId\", \"playerNum\"][\"newPos\"][\"newPlayerNum\"][]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\"][]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\"][]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
-		public const byte RPC_START_INITIALIZATION = 0 + 5;
-		public const byte RPC_UPDATE_POSITION = 1 + 5;
-		public const byte RPC_START_ASSIGN_PLAYER_NUM = 2 + 5;
-		public const byte RPC_BAN = 3 + 5;
+		public const byte RPC_UPDATE_POSITION = 0 + 5;
+		public const byte RPC_START_ASSIGN_PLAYER_NUM = 1 + 5;
+		public const byte RPC_BAN = 2 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -25,7 +24,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("StartInitialization", StartInitialization, typeof(uint), typeof(uint));
 			networkObject.RegisterRpc("UpdatePosition", UpdatePosition, typeof(Vector3));
 			networkObject.RegisterRpc("StartAssignPlayerNum", StartAssignPlayerNum, typeof(uint));
 			networkObject.RegisterRpc("Ban", Ban);
@@ -105,12 +103,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.SnapInterpolations();
 		}
 
-		/// <summary>
-		/// Arguments:
-		/// uint ownerNetId
-		/// uint playerNum
-		/// </summary>
-		public abstract void StartInitialization(RpcArgs args);
 		/// <summary>
 		/// Arguments:
 		/// Vector3 newPos

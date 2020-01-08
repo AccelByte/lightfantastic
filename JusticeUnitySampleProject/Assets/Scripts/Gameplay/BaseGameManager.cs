@@ -20,7 +20,7 @@ namespace Game
         }
 
         [SerializeField]
-        private BasePlayerStart[] playerStarts;
+        private BasePlayerStart[] playerStarts = null;
         private readonly Dictionary<uint, MovePlayerPawnBehavior> playerObjects = new Dictionary<uint, MovePlayerPawnBehavior>();
         private bool isNetworkReady;
 
@@ -74,7 +74,6 @@ namespace Game
                 //if client then ready the controller
                 NetworkManager.Instance.InstantiateInputListener();
             }
-
             isNetworkReady = true;
         }
     }

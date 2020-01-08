@@ -22,11 +22,11 @@ namespace Game
         private bool isPlayerNumAssigned;
         private BaseHoveringText hoveringText;
         [SerializeField]
-        private float speedDecayConst;
+        private float speedDecayConst = 0.1f;
         [SerializeField]
-        private float speedIncreaseConst;
+        private float speedIncreaseConst = 0.1f;
         [SerializeField]
-        private float maxSpeed_;
+        private float maxSpeed_ = 0.1f;
         private float currSpeed;
         public float MaxSpeed { get { return maxSpeed_; } }
 
@@ -67,10 +67,6 @@ namespace Game
             ReceiveInput(Time.deltaTime);
         }
 
-        public override void StartInitialization(RpcArgs args)
-        {
-        }
-
         public override void StartAssignPlayerNum(RpcArgs args)
         {
             MainThreadManager.Run(() =>
@@ -81,13 +77,16 @@ namespace Game
 
         public override void Ban(RpcArgs args)
         {
-            Debug.Log("Player Got BanHammered");
-            MainThreadManager.Run(() => { networkObject.Banned = true; });
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("Player Got BanHammered");
+                networkObject.Banned = true;
+            });
         }
 
         public override void UpdatePosition(RpcArgs args)
         {
-            MainThreadManager.Run(() => { transform.position = networkObject.Position; });
+            //Leave this empty since this is only used to check for cheating
         }
 
         public void ReceiveInput(float dt)
@@ -128,6 +127,7 @@ namespace Game
             }
             return inVal;
         }
+
         IEnumerator PlayerInitialization()
         {
             while (!isInitialized || !isPlayerNumAssigned)

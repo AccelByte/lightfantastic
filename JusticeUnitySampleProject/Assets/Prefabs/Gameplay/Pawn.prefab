@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedDecayConst: 0.01
   speedIncreaseConst: 0.001
-  maxSpeed_: 0.001
+  maxSpeed_: 0.01
 --- !u!114 &8889496837549421022
 MonoBehaviour:
   m_ObjectHideFlags: 0

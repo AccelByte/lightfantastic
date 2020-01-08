@@ -43,7 +43,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
                         Vector3 posDelta = currentPos - previousPos;
                         ulong txDeltaT = args.Info.TimeStep - prevTimeStep;
                         float speed = posDelta.magnitude / txDeltaT;
-                        Debug.Log("Speed: " + speed + "/" + maxSpeed_);
                         if (speed < maxSpeed_)
                         {
                             previousPos = currentPos;

@@ -25,7 +25,7 @@ public class AccelByteGameProfileLogic : MonoBehaviour
     private const string PLAYER_HIGHEST_SCORE = "playerhigestscore";
 
     [SerializeField]
-    private Transform playerProfilePanel;
+    private Transform playerProfilePanel = null;
     private Transform profileUIPrefab;
     private Transform profileListPanel;
     private Transform profileItemScrollView;
