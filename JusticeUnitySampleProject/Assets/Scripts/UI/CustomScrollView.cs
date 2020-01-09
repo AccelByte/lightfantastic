@@ -14,11 +14,6 @@ public class CustomScrollView : MonoBehaviour
     
     private bool needScrollBar = false;
     
-    private void OnMouseOver()
-    {
-        Debug.Log("MOUSE OVER");
-    }
-    
     private void SetImageVisible(bool visble, Image image)
     {
         int alphaChannelShow = visble ? 255 : 0;

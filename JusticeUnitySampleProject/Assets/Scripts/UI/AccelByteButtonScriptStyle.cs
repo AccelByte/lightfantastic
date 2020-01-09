@@ -14,6 +14,10 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
     [SerializeField]
     private Color TINT_HOVER_TEXT;
     [SerializeField]
+    private Color TINT_DISABLED_IMAGE;
+    [SerializeField]
+    private Color TINT_DISABLED_TEXT;
+    [SerializeField]
     private Image buttonImage;
     [SerializeField]
     private Text buttonText;
@@ -35,6 +39,12 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
         buttonText.color = TINT_NORMAL_TEXT; 
     }
 
+    private void SetDisableColor()
+    {
+        buttonImage.color = TINT_DISABLED_IMAGE;
+        buttonText.color = TINT_DISABLED_TEXT; 
+    }
+
     private void SetText(string text)
     {
         buttonText.text = text;
@@ -42,12 +52,24 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
 
     private void Start()
     {
-        if (mouseHoverComponent != null)
+        SetEnable(true);
+        SetText(text);
+    }
+
+    public void SetEnable(bool enable)
+    {
+        gameObject.GetComponent<Button>().interactable = enable;
+        if (enable)
         {
+            SetNormalColor();
             mouseHoverComponent.OnMouseHoverAction = SetHoverColor;
             mouseHoverComponent.OnMouseExitAction = SetNormalColor;
         }
-        SetNormalColor();
-        SetText(text);
+        else
+        {
+            SetDisableColor();
+            mouseHoverComponent.OnMouseHoverAction = null;
+            mouseHoverComponent.OnMouseExitAction = null;
+        }
     }
 }
