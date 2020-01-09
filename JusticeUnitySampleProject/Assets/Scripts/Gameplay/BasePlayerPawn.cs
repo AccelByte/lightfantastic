@@ -19,16 +19,17 @@ namespace Game
         private Rigidbody2D rb2d;
         private bool isNetworkReady;
         private bool isInitialized;
-        private bool isPlayerNumAssigned;
         private BaseHoveringText hoveringText;
         [SerializeField]
-        private float speedDecayConst;
+        private float speedDecayConst = 0.1f;
         [SerializeField]
-        private float speedIncreaseConst;
+        private float speedIncreaseConst = 0.1f;
         [SerializeField]
-        private float maxSpeed_;
+        private float maxSpeed_ = 0.1f;
         private float currSpeed;
         public float MaxSpeed { get { return maxSpeed_; } }
+
+        private BaseGameManager gameMgr = null;
 
         private void Awake()
         {
@@ -37,20 +38,33 @@ namespace Game
             currSpeed = 0.0f;
         }
 
+        private void Start()
+        {
+            gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
+        }
+
         protected override void NetworkStart()
         {
             base.NetworkStart();
+
+            if (networkObject.IsOwner)
+            {
+                networkObject.onDestroy += OnNetworkObjectDestroy;
+            }
+            networkObject.playerNumChanged += OnPlayerNumChanged;
+            networkObject.OwnerNetIdChanged += OnOwnerNetIdChanged;
+
+            Initialize();
             isNetworkReady = true;
-            StartCoroutine("PlayerInitialization");
         }
 
-        private bool Initialize()
+        private void Initialize()
         {
-            Debug.Log("Start Initialization");
-            networkObject.OwnerNetId = networkObject.MyPlayerId;
             networkObject.MaxSpeed = maxSpeed_;
+            hoveringText.ChangeTextLabel("Player " + networkObject.playerNum);
+            networkObject.Banable = true;
             isInitialized = true;
-            return isInitialized;
+            Debug.Log("Player Initialized");
         }
 
         void Update()
@@ -65,29 +79,6 @@ namespace Game
                 return;
             }
             ReceiveInput(Time.deltaTime);
-        }
-
-        public override void StartInitialization(RpcArgs args)
-        {
-        }
-
-        public override void StartAssignPlayerNum(RpcArgs args)
-        {
-            MainThreadManager.Run(() =>
-            {
-                AssignPlayerNum(args.GetAt<uint>(0));
-            });
-        }
-
-        public override void Ban(RpcArgs args)
-        {
-            Debug.Log("Player Got BanHammered");
-            MainThreadManager.Run(() => { networkObject.Banned = true; });
-        }
-
-        public override void UpdatePosition(RpcArgs args)
-        {
-            MainThreadManager.Run(() => { transform.position = networkObject.Position; });
         }
 
         public void ReceiveInput(float dt)
@@ -109,16 +100,6 @@ namespace Game
             }
         }
 
-        private void AssignPlayerNum(uint newPlayerNum)
-        {
-            if (networkObject.IsOwner)
-            {
-                networkObject.playerNum = newPlayerNum;
-            }
-            hoveringText.ChangeTextLabel("Player " + newPlayerNum);
-            isPlayerNumAssigned = true;
-        }
-
         public float LinearDecay(float inVal, float dt)
         {
             inVal -= speedDecayConst * dt;
@@ -128,22 +109,73 @@ namespace Game
             }
             return inVal;
         }
-        IEnumerator PlayerInitialization()
+
+        #region RPCs
+        public override void UpdatePosition(RpcArgs args)
         {
-            while (!isInitialized || !isPlayerNumAssigned)
-            {
-                if (!isInitialized)
-                {
-                    Initialize();
-                }
-                if (!networkObject.IsOwner && networkObject.playerNum != 0 && !isPlayerNumAssigned)
-                {
-                    AssignPlayerNum(networkObject.playerNum);
-                }
-                yield return null;
-            }
-            networkObject.Banable = true;
-            Debug.Log("Player Initialization Complete");
+            //Leave this empty since this is only used to check for cheating
         }
+
+        public override void Ban(RpcArgs args)
+        {
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("Player Got BanHammered");
+                networkObject.Banned = true;
+            });
+        }
+
+        public override void AssignPlayerNum(RpcArgs args)
+        {
+            if (networkObject.IsOwner)
+            {
+                uint newPlayerNum = args.GetAt<uint>(0);
+                Debug.Log("AssignPlayerNum: " + newPlayerNum);
+                networkObject.playerNum = newPlayerNum;
+                MainThreadManager.Run(() => { hoveringText.ChangeTextLabel("Player " + newPlayerNum); });
+            }
+        }
+
+        public override void AssignOwnerId(RpcArgs args)
+        {
+
+            if (networkObject.IsOwner)
+            {
+                uint newOwnerNetId = args.GetAt<uint>(0);
+                Debug.Log("AssignOwnerId: " + newOwnerNetId);
+                networkObject.OwnerNetId = newOwnerNetId;
+                MainThreadManager.Run(() => { gameMgr.RegisterCharacter(newOwnerNetId, this); });
+            }
+        }
+        #endregion //RPCs
+
+        #region Events
+        private void OnNetworkObjectDestroy(NetWorker sender)
+        {
+            Debug.Log("Player Network object is being destroyed");
+            //gameMgr.RemoveFromCharacterList(networkObject.OwnerNetId);
+        }
+
+        private void OnPlayerNumChanged(uint newPlayerNum, ulong timestep)
+        {
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("OnPlayerNumChanged -> " + newPlayerNum);
+                hoveringText.ChangeTextLabel("Player " + newPlayerNum);
+            });
+        }
+        private void OnOwnerNetIdChanged(uint newOwnerNetId, ulong timestep)
+        {
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("OnOwnerNetIdChanged -> " + newOwnerNetId);
+                if (networkObject.IsOwner)
+                {
+                    gameMgr.RegisterCharacter(newOwnerNetId, this);
+                }
+            });
+        }
+        #endregion //Events
+
     }
 }

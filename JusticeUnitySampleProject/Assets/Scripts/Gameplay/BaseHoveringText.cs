@@ -7,16 +7,16 @@ public class BaseHoveringText : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("The prefab of hovertext.")]
-    private GameObject hoveringText;
+    private GameObject hoveringText = null;
     [SerializeField]
     [Tooltip("The text to display.")]
-    private string textInput;
+    private string textInput = "";
     [SerializeField]
     private Vector3 offsetPosition = Vector3.up;
     [SerializeField]
     private bool isUsingMainCamera = true;
     [SerializeField]
-    private Camera alternativeCamera;
+    private Camera alternativeCamera = null;
 
     private Camera currentCamera;
     private GameObject currentText;

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\", \"uint\"][\"Vector3\"][\"uint\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"ownerNetId\", \"playerNum\"][\"newPos\"][\"newPlayerNum\"][]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\"][][\"uint\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\"][][\"newOwnerId\"]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
-		public const byte RPC_START_INITIALIZATION = 0 + 5;
-		public const byte RPC_UPDATE_POSITION = 1 + 5;
-		public const byte RPC_START_ASSIGN_PLAYER_NUM = 2 + 5;
-		public const byte RPC_BAN = 3 + 5;
+		public const byte RPC_UPDATE_POSITION = 0 + 5;
+		public const byte RPC_ASSIGN_PLAYER_NUM = 1 + 5;
+		public const byte RPC_BAN = 2 + 5;
+		public const byte RPC_ASSIGN_OWNER_ID = 3 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -25,10 +25,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("StartInitialization", StartInitialization, typeof(uint), typeof(uint));
 			networkObject.RegisterRpc("UpdatePosition", UpdatePosition, typeof(Vector3));
-			networkObject.RegisterRpc("StartAssignPlayerNum", StartAssignPlayerNum, typeof(uint));
+			networkObject.RegisterRpc("AssignPlayerNum", AssignPlayerNum, typeof(uint));
 			networkObject.RegisterRpc("Ban", Ban);
+			networkObject.RegisterRpc("AssignOwnerId", AssignOwnerId, typeof(uint));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -107,12 +107,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		/// <summary>
 		/// Arguments:
-		/// uint ownerNetId
-		/// uint playerNum
-		/// </summary>
-		public abstract void StartInitialization(RpcArgs args);
-		/// <summary>
-		/// Arguments:
 		/// Vector3 newPos
 		/// </summary>
 		public abstract void UpdatePosition(RpcArgs args);
@@ -120,11 +114,15 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// uint newPlayerNum
 		/// </summary>
-		public abstract void StartAssignPlayerNum(RpcArgs args);
+		public abstract void AssignPlayerNum(RpcArgs args);
 		/// <summary>
 		/// Arguments:
 		/// </summary>
 		public abstract void Ban(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void AssignOwnerId(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

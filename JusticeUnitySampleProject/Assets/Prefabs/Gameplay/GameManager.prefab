@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8553695856442356697}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,3 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerStarts:
   - {fileID: 0}
+  - {fileID: 0}
+  vCam: {fileID: 4054384918095080185, guid: b49a197ccb900de458889430d5a113a0, type: 3}
