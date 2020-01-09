@@ -27,6 +27,8 @@ namespace UITools
         [SerializeField]
         private CanvasGroup multiplayerOptionPanel;
         [SerializeField]
+        private CanvasGroup inventoryPanel;
+        [SerializeField]
         private CanvasGroup loadingPanel;
         [SerializeField]
         private CanvasGroup playerProfilePanel;
@@ -154,6 +156,18 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(multiplayerOptionPanel));
+            }
+        }
+
+        public void FadeInventory()
+        {
+            if (inventoryPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(inventoryPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(inventoryPanel));
             }
         }
 
