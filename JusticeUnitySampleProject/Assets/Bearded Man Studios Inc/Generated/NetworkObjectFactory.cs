@@ -63,6 +63,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new TestNetworkObject(networker, id, frame);
 						break;
+					case FinishLineNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new FinishLineNetworkObject(networker, id, frame);
+						break;
 				}
 
 				if (!availableCallback)
