@@ -8,7 +8,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 	[GeneratedInterpol("{\"inter\":[0.15,0.15,0,0]")]
 	public partial class MovePlayerPawnNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 10;
+		public const int IDENTITY = 11;
 
 		private byte[] _dirtyFields = new byte[1];
 
@@ -109,35 +109,35 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (fieldAltered != null) fieldAltered("OwnerNetId", _OwnerNetId, timestep);
 		}
 		[ForgeGeneratedField]
-		private uint _Frame;
-		public event FieldEvent<uint> FrameChanged;
-		public Interpolated<uint> FrameInterpolation = new Interpolated<uint>() { LerpT = 0f, Enabled = false };
-		public uint Frame
+		private uint _playerNum;
+		public event FieldEvent<uint> playerNumChanged;
+		public Interpolated<uint> playerNumInterpolation = new Interpolated<uint>() { LerpT = 0f, Enabled = false };
+		public uint playerNum
 		{
-			get { return _Frame; }
+			get { return _playerNum; }
 			set
 			{
 				// Don't do anything if the value is the same
-				if (_Frame == value)
+				if (_playerNum == value)
 					return;
 
 				// Mark the field as dirty for the network to transmit
 				_dirtyFields[0] |= 0x8;
-				_Frame = value;
+				_playerNum = value;
 				hasDirtyFields = true;
 			}
 		}
 
-		public void SetFrameDirty()
+		public void SetplayerNumDirty()
 		{
 			_dirtyFields[0] |= 0x8;
 			hasDirtyFields = true;
 		}
 
-		private void RunChange_Frame(ulong timestep)
+		private void RunChange_playerNum(ulong timestep)
 		{
-			if (FrameChanged != null) FrameChanged(_Frame, timestep);
-			if (fieldAltered != null) fieldAltered("Frame", _Frame, timestep);
+			if (playerNumChanged != null) playerNumChanged(_playerNum, timestep);
+			if (fieldAltered != null) fieldAltered("playerNum", _playerNum, timestep);
 		}
 
 		protected override void OwnershipChanged()
@@ -151,7 +151,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			PositionInterpolation.current = PositionInterpolation.target;
 			RotationInterpolation.current = RotationInterpolation.target;
 			OwnerNetIdInterpolation.current = OwnerNetIdInterpolation.target;
-			FrameInterpolation.current = FrameInterpolation.target;
+			playerNumInterpolation.current = playerNumInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
@@ -161,7 +161,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			UnityObjectMapper.Instance.MapBytes(data, _Position);
 			UnityObjectMapper.Instance.MapBytes(data, _Rotation);
 			UnityObjectMapper.Instance.MapBytes(data, _OwnerNetId);
-			UnityObjectMapper.Instance.MapBytes(data, _Frame);
+			UnityObjectMapper.Instance.MapBytes(data, _playerNum);
 
 			return data;
 		}
@@ -180,10 +180,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			OwnerNetIdInterpolation.current = _OwnerNetId;
 			OwnerNetIdInterpolation.target = _OwnerNetId;
 			RunChange_OwnerNetId(timestep);
-			_Frame = UnityObjectMapper.Instance.Map<uint>(payload);
-			FrameInterpolation.current = _Frame;
-			FrameInterpolation.target = _Frame;
-			RunChange_Frame(timestep);
+			_playerNum = UnityObjectMapper.Instance.Map<uint>(payload);
+			playerNumInterpolation.current = _playerNum;
+			playerNumInterpolation.target = _playerNum;
+			RunChange_playerNum(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -198,7 +198,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if ((0x4 & _dirtyFields[0]) != 0)
 				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _OwnerNetId);
 			if ((0x8 & _dirtyFields[0]) != 0)
-				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _Frame);
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _playerNum);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -256,15 +256,15 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			}
 			if ((0x8 & readDirtyFlags[0]) != 0)
 			{
-				if (FrameInterpolation.Enabled)
+				if (playerNumInterpolation.Enabled)
 				{
-					FrameInterpolation.target = UnityObjectMapper.Instance.Map<uint>(data);
-					FrameInterpolation.Timestep = timestep;
+					playerNumInterpolation.target = UnityObjectMapper.Instance.Map<uint>(data);
+					playerNumInterpolation.Timestep = timestep;
 				}
 				else
 				{
-					_Frame = UnityObjectMapper.Instance.Map<uint>(data);
-					RunChange_Frame(timestep);
+					_playerNum = UnityObjectMapper.Instance.Map<uint>(data);
+					RunChange_playerNum(timestep);
 				}
 			}
 		}
@@ -289,10 +289,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 				_OwnerNetId = (uint)OwnerNetIdInterpolation.Interpolate();
 				//RunChange_OwnerNetId(OwnerNetIdInterpolation.Timestep);
 			}
-			if (FrameInterpolation.Enabled && !FrameInterpolation.current.UnityNear(FrameInterpolation.target, 0.0015f))
+			if (playerNumInterpolation.Enabled && !playerNumInterpolation.current.UnityNear(playerNumInterpolation.target, 0.0015f))
 			{
-				_Frame = (uint)FrameInterpolation.Interpolate();
-				//RunChange_Frame(FrameInterpolation.Timestep);
+				_playerNum = (uint)playerNumInterpolation.Interpolate();
+				//RunChange_playerNum(playerNumInterpolation.Timestep);
 			}
 		}
 

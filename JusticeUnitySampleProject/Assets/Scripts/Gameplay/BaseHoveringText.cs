@@ -32,7 +32,7 @@ public class BaseHoveringText : MonoBehaviour
         {
             currentCamera = alternativeCamera;
         }
-
+ 
         currentText = Instantiate(hoveringText, transform);        
         currentText.transform.SetParent(GameObject.Find("HoverTextPanel").transform, false);
         currentText.GetComponent<Text>().text = textInput;
@@ -56,5 +56,4 @@ public class BaseHoveringText : MonoBehaviour
     {
         currentText.GetComponent<Text>().text = text;
     }
-
 }

@@ -53,9 +53,10 @@ MonoBehaviour:
   InputListenerNetworkObject:
   - {fileID: 4732720514674440848, guid: a1641ddf44fb253478220a57727f2c0f, type: 3}
   MovePlayerPawnNetworkObject:
-  - {fileID: 5401818434824041084, guid: 7b52631758d50d147b33578806a06465, type: 3}
+  - {fileID: 8889496837549421023, guid: 7b52631758d50d147b33578806a06465, type: 3}
   NetworkCameraNetworkObject:
   - {fileID: 139536, guid: 661f29f0c0c86fa47b6015bd602d0ac6, type: 3}
   RotatePlayerPawnNetworkObject: []
   TestNetworkObject: []
+  BasePlayerStartNetworkObject: []
   automaticScenes: 1
