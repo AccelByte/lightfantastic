@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\"][][\"uint\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\"][][\"newOwnerId\"]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
 		public const byte RPC_UPDATE_POSITION = 0 + 5;
-		public const byte RPC_ASSIGN_PLAYER_NUM = 1 + 5;
+		public const byte RPC_SETUP = 1 + 5;
 		public const byte RPC_BAN = 2 + 5;
-		public const byte RPC_ASSIGN_OWNER_ID = 3 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -26,9 +25,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("UpdatePosition", UpdatePosition, typeof(Vector3));
-			networkObject.RegisterRpc("AssignPlayerNum", AssignPlayerNum, typeof(uint));
+			networkObject.RegisterRpc("RPCSetup", RPCSetup, typeof(uint), typeof(uint), typeof(Vector3));
 			networkObject.RegisterRpc("Ban", Ban);
-			networkObject.RegisterRpc("AssignOwnerId", AssignOwnerId, typeof(uint));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -113,16 +111,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// <summary>
 		/// Arguments:
 		/// uint newPlayerNum
+		/// uint newOwnerId
+		/// Vector3 initialPos
 		/// </summary>
-		public abstract void AssignPlayerNum(RpcArgs args);
+		public abstract void RPCSetup(RpcArgs args);
 		/// <summary>
 		/// Arguments:
 		/// </summary>
 		public abstract void Ban(RpcArgs args);
-		/// <summary>
-		/// Arguments:
-		/// </summary>
-		public abstract void AssignOwnerId(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}
