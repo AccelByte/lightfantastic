@@ -7,16 +7,16 @@ public class BaseHoveringText : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("The prefab of hovertext.")]
-    private GameObject hoveringText;
+    private GameObject hoveringText = null;
     [SerializeField]
     [Tooltip("The text to display.")]
-    private string textInput;
+    private string textInput = "";
     [SerializeField]
     private Vector3 offsetPosition = Vector3.up;
     [SerializeField]
     private bool isUsingMainCamera = true;
     [SerializeField]
-    private Camera alternativeCamera;
+    private Camera alternativeCamera = null;
 
     private Camera currentCamera;
     private GameObject currentText;
@@ -32,7 +32,7 @@ public class BaseHoveringText : MonoBehaviour
         {
             currentCamera = alternativeCamera;
         }
-
+ 
         currentText = Instantiate(hoveringText, transform);        
         currentText.transform.SetParent(GameObject.Find("HoverTextPanel").transform, false);
         currentText.GetComponent<Text>().text = textInput;
@@ -56,5 +56,4 @@ public class BaseHoveringText : MonoBehaviour
     {
         currentText.GetComponent<Text>().text = text;
     }
-
 }

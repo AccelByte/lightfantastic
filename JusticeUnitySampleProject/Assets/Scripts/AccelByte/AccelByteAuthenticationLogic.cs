@@ -8,6 +8,7 @@ using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
 using Steamworks;
+using System;
 
 namespace ABRuntimeLogic
 {
@@ -63,12 +64,16 @@ namespace ABRuntimeLogic
         private AccelByteLobbyLogic abLobbyLogic;
         [SerializeField]
         private GameObject loginPanel;
+        private AccelByteGameProfileLogic abGameProfileLogic;
         private UIElementHandler uiHandler;
 
+        private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
         void Awake()
         {
             abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
+            abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
+
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -89,6 +94,8 @@ namespace ABRuntimeLogic
                 loginPanel.gameObject.SetActive(true);
 
                 Debug.Log("Don't USE STEAM");
+                // Try to login with launcher
+                LoginWithLauncher();
             }
         }
 
@@ -120,6 +127,25 @@ namespace ABRuntimeLogic
         public void Login()
         {
             abUser.LoginWithUsername(loginEmail.text, loginPassword.text, OnLogin);
+
+            uiHandler.FadeLoading();
+        }
+
+        //Attempts to login with launcher
+        public void LoginWithLauncher()
+        {
+            // Check if auth code is available from launcher
+            string authCode = Environment.GetEnvironmentVariable(AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE);
+
+            if (authCode != null)
+            {
+                abUser.LoginWithLauncher(OnLogin);
+                uiHandler.FadeLoading();
+            }
+            else
+            {
+                Debug.Log("LoginWithLauncher authCode is null");
+            }
         }
 
         //Gets the user's top level account details
@@ -183,6 +209,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                uiHandler.FadeLoading();
+
                 Debug.Log("Resend Verification failed:" + result.Error.Message);
                 Debug.Log("Resend Verification Response Code: " + result.Error.Code);
                 //Show Error Message
@@ -198,6 +226,11 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                if (!useSteam)
+                {
+                    uiHandler.FadeLoading();
+                }
+
                 Debug.Log("Login failed:" + result.Error.Message);
                 Debug.Log("Login Response Code: " + result.Error.Code);
                 //Show Error Message
@@ -234,6 +267,10 @@ namespace ABRuntimeLogic
                 else
                 {
                     //Progress to Main Menu
+                    if (!useSteam)
+                    {
+                        uiHandler.FadeLoading();
+                    }
                     uiHandler.FadeLogin();
                     uiHandler.FadePersistentFriends();
                     uiHandler.FadeMenu();
@@ -254,6 +291,7 @@ namespace ABRuntimeLogic
             {
                 uiHandler.FadeCurrent();
                 uiHandler.FadeLogin();
+                uiHandler.FadePersistentFriends();
                 loginEmail.text = string.Empty;
                 loginPassword.text = string.Empty;
             }

@@ -131,6 +131,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             SetupFriendCallbacks();
             SetupMatchmakingCallbacks();
             SetupChatCallbacks();
+
+            AccelByteManager.Instance.GameProfileLogic.SetupGameProfile();
         }
         else
         {
@@ -358,6 +360,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    public List<PartyData> GetMemberPartyData()
+    {
+        List<PartyData> partyMemberData = new List<PartyData>();
+
+        if (partyMemberList.Count > 0)
+        {
+            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
+            {
+                partyMemberData.Add(member.Value);
+            }
+        }
+
+        return partyMemberData;
+    }
+
     public void OnLeavePartyButtonClicked()
     {
         popupPartyControl.gameObject.SetActive(false);
@@ -453,7 +470,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
-        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
@@ -483,7 +499,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
     {
-        ClearFriendsUIPrefabs();
         if (result.IsError)
         {
             Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
@@ -927,7 +942,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     }
     #endregion
 
-    private void ClearFriendsUIPrefabs()
+    public void ClearFriendsUIPrefabs()
     {
         for (int i = 0; i < friendScrollContent.childCount; i++)
         {

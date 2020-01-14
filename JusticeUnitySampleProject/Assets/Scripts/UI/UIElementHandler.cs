@@ -26,6 +26,12 @@ namespace UITools
         private CanvasGroup matchmakingPanel;
         [SerializeField]
         private CanvasGroup multiplayerOptionPanel;
+        [SerializeField]
+        private CanvasGroup inventoryPanel;
+        [SerializeField]
+        private CanvasGroup loadingPanel;
+        [SerializeField]
+        private CanvasGroup playerProfilePanel;
 
         private CanvasGroup currentPanel;
 
@@ -115,6 +121,7 @@ namespace UITools
                 StartCoroutine(FadeIn(friendPanel));
             }
         }
+
         public void FadeSearchFriends()
         {
             if (searchFriendPanel.alpha == MAX_ALPHA)
@@ -144,15 +151,48 @@ namespace UITools
             if (multiplayerOptionPanel.alpha == MAX_ALPHA)
             {
                 StartCoroutine(FadeOut(multiplayerOptionPanel));
-                //multiplayerOptionPanel.alpha = MIN_ALPHA;
-                //multiplayerOptionPanel.gameObject.SetActive(false);
                 currentPanel = menuPanel;
             }
             else
             {
                 StartCoroutine(FadeIn(multiplayerOptionPanel));
-                //multiplayerOptionPanel.alpha = MAX_ALPHA;
-                //multiplayerOptionPanel.gameObject.SetActive(true);
+            }
+        }
+
+        public void FadeInventory()
+        {
+            if (inventoryPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(inventoryPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(inventoryPanel));
+            }
+        }
+
+        public void FadeLoading()
+        {
+            if (loadingPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(loadingPanel));
+                currentPanel = menuPanel;
+            }
+            else
+            {
+                StartCoroutine(FadeIn(loadingPanel));
+            }
+        }
+
+        public void FadePlayerProfile()
+        {
+            if (playerProfilePanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(playerProfilePanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(playerProfilePanel));
             }
         }
 

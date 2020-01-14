@@ -16,6 +16,9 @@ public class AccelByteManager : MonoBehaviour
     private AccelByteWalletLogic walletLogic;
     public AccelByteWalletLogic WalletLogic { get { return walletLogic; } }
 
+    private AccelByteGameProfileLogic gameprofileLogic;
+    public AccelByteGameProfileLogic GameProfileLogic { get { return gameprofileLogic; } }
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -30,5 +33,6 @@ public class AccelByteManager : MonoBehaviour
         authLogic = gameObject.GetComponent<AccelByteAuthenticationLogic>();
         lobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
         walletLogic = gameObject.GetComponent<AccelByteWalletLogic>();
+        gameprofileLogic = gameObject.GetComponent<AccelByteGameProfileLogic>();
     }
 }
