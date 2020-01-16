@@ -7,6 +7,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+using Steamworks;
 using System;
 
 namespace ABRuntimeLogic
@@ -54,7 +55,15 @@ namespace ABRuntimeLogic
         private Text sessionId;
         #endregion
 
+        [SerializeField]
+        private SteamAuth steamAuth;
+        public bool useSteam;
+        [SerializeField]
+        private CommandLineArgs cmdLine;
+
         private AccelByteLobbyLogic abLobbyLogic;
+        [SerializeField]
+        private GameObject loginPanel;
         private AccelByteGameProfileLogic abGameProfileLogic;
         private UIElementHandler uiHandler;
 
@@ -68,12 +77,26 @@ namespace ABRuntimeLogic
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
+
+            useSteam = cmdLine.ParseCommandLine();
         }
 
-        void Start()
+        public void Start()
         {
-            // Try to login with launcher
-            LoginWithLauncher();
+            if (useSteam)
+            {
+                loginPanel.gameObject.SetActive(false);
+                abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
+                Debug.Log("USE STEAM");
+            }
+            else 
+            {
+                loginPanel.gameObject.SetActive(true);
+
+                Debug.Log("Don't USE STEAM");
+                // Try to login with launcher
+                LoginWithLauncher();
+            }
         }
 
         #region AccelByte Authentication Functions
@@ -203,7 +226,10 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
-                uiHandler.FadeLoading();
+                if (!useSteam)
+                {
+                    uiHandler.FadeLoading();
+                }
 
                 Debug.Log("Login failed:" + result.Error.Message);
                 Debug.Log("Login Response Code: " + result.Error.Code);
@@ -234,14 +260,17 @@ namespace ABRuntimeLogic
                 userId.text = "UserId: " + abUserData.userId;
                 sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.emailVerified)
+                if (!abUserData.emailVerified && !useSteam)
                 {
                     uiHandler.FadeVerify();
                 }
                 else
                 {
                     //Progress to Main Menu
-                    uiHandler.FadeLoading();
+                    if (!useSteam)
+                    {
+                        uiHandler.FadeLoading();
+                    }
                     uiHandler.FadeLogin();
                     uiHandler.FadePersistentFriends();
                     uiHandler.FadeMenu();
