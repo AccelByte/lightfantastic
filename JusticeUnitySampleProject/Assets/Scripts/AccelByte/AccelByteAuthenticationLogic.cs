@@ -65,6 +65,7 @@ namespace ABRuntimeLogic
         [SerializeField]
         private GameObject loginPanel;
         private AccelByteGameProfileLogic abGameProfileLogic;
+        private AccelByteUserProfileLogic abUserProfileLogic;
         private UIElementHandler uiHandler;
 
         private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
@@ -73,6 +74,7 @@ namespace ABRuntimeLogic
         {
             abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
             abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
+            abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
 
             uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
@@ -274,6 +276,7 @@ namespace ABRuntimeLogic
                     uiHandler.FadeLogin();
                     uiHandler.FadePersistentFriends();
                     uiHandler.FadeMenu();
+                    abUserProfileLogic.Init();
                     abLobbyLogic.ConnectToLobby();
                 }
             }
