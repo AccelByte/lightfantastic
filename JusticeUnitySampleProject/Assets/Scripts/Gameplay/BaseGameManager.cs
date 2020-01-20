@@ -13,15 +13,32 @@ namespace Game
         private static BaseGameManager instance;
         public static BaseGameManager Instance { get { return instance; } }
 
+        [Header("Gameplay Data")]
         [SerializeField]
         private BasePlayerStart[] playerStarts = null;
         private readonly Dictionary<uint, MovePlayerPawnBehavior> playerObjects = new Dictionary<uint, MovePlayerPawnBehavior>();
         private bool isNetworkReady = false;
+        [SerializeField]
+        private string mainMenuSceneName_ = null;
+        public string MainMenuSceneName { get { return mainMenuSceneName_; } }
 
+        [Header("Virtual Cameras")]
         [SerializeField]
         private Cinemachine.CinemachineVirtualCamera vCam = null;
         private Cinemachine.CinemachineVirtualCamera vCam_ = null;
 
+        public NetWorker InstanceNetworker
+        {
+            get
+            {
+                if (isNetworkReady)
+                {
+                    return networkObject.Networker;
+                }
+                return null;
+            }
+        }
+        
         private void Awake()
         {
             if (instance == null)
@@ -47,7 +64,7 @@ namespace Game
         {
             Debug.Log("Registering New Character, Id: " + playerNetworkId);
             playerObjects.Add(playerNetworkId, character);
-            if(!networkObject.IsServer)
+            if (!networkObject.IsServer)
             {
                 GameObject tgt = character.gameObject;
                 vCam_.LookAt = tgt.transform;
