@@ -9,6 +9,7 @@ using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Experimental.U2D.Animation;
 using Utf8Json;
 
 static class Equipments
@@ -192,6 +193,7 @@ namespace EntitlementUiLogic
         [SerializeField] private AccelByteButtonScriptStyle buttonEffect;
         [SerializeField] private CanvasGroup promptPanel;
         [SerializeField] private AccelByteUserProfileLogic abUserProfileLogic;
+        [SerializeField] private SpriteResolver hatSpriteResolver;
 
         #endregion
 
@@ -280,6 +282,7 @@ namespace EntitlementUiLogic
                     if (listItemInfo != null && listItemInfo.itemId == prefab.GetItemInfo().itemId)
                     {
                         prefab.Select();
+                        UpdateAvatar(prefab.GetItemInfo().name);
                     }
                     else
                     {
@@ -391,10 +394,12 @@ namespace EntitlementUiLogic
             if (equipping)
             {
                 prefab.Select();
+                UpdateAvatar(prefab.GetItemInfo().name);
             }
             else
             {
                 prefab.Unselect();
+                UpdateAvatar("");
             }
         }
 
@@ -443,6 +448,11 @@ namespace EntitlementUiLogic
         public void ShowEffectInventories(bool show)
         {
             gridLayoutEffects.SetVisibility(show);
+        }
+
+        private void UpdateAvatar(string itemName)
+        {
+            hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
         }
     }
 }

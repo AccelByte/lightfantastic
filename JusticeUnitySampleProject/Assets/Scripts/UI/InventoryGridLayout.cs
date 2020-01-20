@@ -33,5 +33,6 @@ public class InventoryGridLayout : MonoBehaviour
     {
         canvasGroup.alpha = isVisible ? 1 : 0;
         canvasGroup.interactable = isVisible;
+        canvasGroup.blocksRaycasts = isVisible;
     }
 }
