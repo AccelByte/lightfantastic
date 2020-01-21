@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[ExecuteInEditMode]
 public class AccelByteButtonScriptStyle : MonoBehaviour
 {
     [SerializeField]
@@ -18,7 +19,7 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
     [SerializeField]
     private Color TINT_DISABLED_TEXT;
     [SerializeField]
-    private Image buttonImage;
+    private Button button;
     [SerializeField]
     private Text buttonText;
     [SerializeField]
@@ -29,19 +30,19 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
 
     private void SetHoverColor()
     {
-        buttonImage.color = TINT_HOVER_IMAGE;
+        button.image.color = TINT_HOVER_IMAGE;
         buttonText.color = TINT_HOVER_TEXT; 
     }
 
     private void SetNormalColor()
     {
-        buttonImage.color = TINT_NORMAL_IMAGE;
+        button.image.color = TINT_NORMAL_IMAGE;
         buttonText.color = TINT_NORMAL_TEXT; 
     }
 
     private void SetDisableColor()
     {
-        buttonImage.color = TINT_DISABLED_IMAGE;
+        button.image.color = TINT_DISABLED_IMAGE;
         buttonText.color = TINT_DISABLED_TEXT; 
     }
 
@@ -58,7 +59,7 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
 
     public void SetEnable(bool enable)
     {
-        gameObject.GetComponent<Button>().interactable = enable;
+        button.interactable = enable;
         if (enable)
         {
             SetNormalColor();
@@ -71,5 +72,15 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
             mouseHoverComponent.OnMouseHoverAction = null;
             mouseHoverComponent.OnMouseExitAction = null;
         }
+    }
+
+    public Button getButton()
+    {
+        return button;
+    }
+
+    private void Update()
+    {
+        buttonText.text = text;
     }
 }
