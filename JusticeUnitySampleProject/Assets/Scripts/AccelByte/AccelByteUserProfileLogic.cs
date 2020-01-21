@@ -10,7 +10,8 @@ public class AccelByteUserProfileLogic : MonoBehaviour
     private UserProfiles abUserProfiles;
     private UserProfile myProfile;
     private List<UserProfile> userProfilesCache = new List<UserProfile>();
-
+    [SerializeField]
+    private Transform PlayerProfilePrefab;
     void Start()
     {
         abUserProfiles = AccelBytePlugin.GetUserProfiles();
@@ -20,6 +21,9 @@ public class AccelByteUserProfileLogic : MonoBehaviour
     {
         var defaultUserProfile = new CreateUserProfileRequest{language = LightFantasticConfig.DEFAULT_LANGUAGE};
         abUserProfiles.CreateUserProfile(defaultUserProfile, OnCreateUserProfile);
+
+        // Update player profile info
+        PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
     }
     
     public void GetMine(ResultCallback<UserProfile> onGetProfile)
@@ -68,5 +72,10 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         {
             abUserProfiles.GetUserProfile(OnGetMyProfile);
         }
+    }
+
+    private void UpdatePlayerProfile()
+    {
+        //TODO: update player profile status
     }
 }

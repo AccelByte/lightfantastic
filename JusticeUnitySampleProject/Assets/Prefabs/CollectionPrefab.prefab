@@ -361,6 +361,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec2d4e01341df34a8c34f2dd235bd1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentItemCountText: {fileID: 6806251408023333595}
+  totalItemCountText: {fileID: 4948031071109218188}
+  itemCategoryText: {fileID: 8362074942584732203}
   currentItemCount: 2
   totalItemCount: 3
   itemCategory: Game

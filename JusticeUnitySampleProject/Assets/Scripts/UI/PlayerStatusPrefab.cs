@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using AccelByte.Models;
 
 public class PlayerStatusPrefab : MonoBehaviour
 {
@@ -43,11 +44,25 @@ public class PlayerStatusPrefab : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateInfo("Light Fan", "0001", "lightfan@accelbyte.net");
+        
     }
 
-    // Update Info
-    void UpdateInfo(string name, string id, string email)
+    public void UpdatePlayerProfile()
+    {
+        UserData localPlayerUserData = AccelByteManager.Instance.AuthLogic.GetUserData();
+        if (localPlayerUserData != null)
+        {
+            UpdatePlayerProfileStatus(localPlayerUserData.displayName, localPlayerUserData.userId,
+                localPlayerUserData.emailAddress);
+        }
+        else
+        {
+            Debug.Log("UpdatePlayerStatuses Failed to get UserData!");
+        }
+    }
+
+    // Update player Info
+    private void UpdatePlayerProfileStatus(string name, string id, string email)
     {
         playerName = name;
         playerId = id;

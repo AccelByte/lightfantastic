@@ -5,8 +5,11 @@ using TMPro;
 
 public class CollectionPrefab : MonoBehaviour
 {
+    [SerializeField]
     private Transform currentItemCountText;
+    [SerializeField]
     private Transform totalItemCountText;
+    [SerializeField]
     private Transform itemCategoryText;
     [SerializeField]
     private int currentItemCount = 1;
@@ -17,9 +20,9 @@ public class CollectionPrefab : MonoBehaviour
 
     void Awake()
     {
-        itemCategoryText = transform.Find("ItemCategory");
-        currentItemCountText = transform.Find("CurrentItems");
-        totalItemCountText = transform.Find("TotalItems");
+        //itemCategoryText = transform.Find("ItemCategory");
+        //currentItemCountText = transform.Find("CurrentItems");
+        //totalItemCountText = transform.Find("TotalItems");
     }
 
     // Start is called before the first frame update
