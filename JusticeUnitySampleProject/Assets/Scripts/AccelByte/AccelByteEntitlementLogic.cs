@@ -3,22 +3,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using AccelByte.Api;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Experimental.U2D.Animation;
+using Utf8Json;
 
 static class Equipments
 {
     public enum Type
     {
-        Glasses,
-        Mask,
-        Shirt,
-        Wristband,
-        Pants,
-        Shoes,
+        Hat,
+        Effect,
         None
     }
 
@@ -28,24 +27,73 @@ static class Equipments
         public string tag;
     }
 
-    public class List
+    [DataContract]
+    public struct CustomAttributes
     {
-        public ItemInfo glasses;
-        public ItemInfo mask;
-        public ItemInfo shirt;
-        public ItemInfo wristband;
-        public ItemInfo pants;
-        public ItemInfo shoes;
+        [DataMember] public string hatItemId;
+        [DataMember] public string effectItemId;
+    }
+    
+    public class EquipmentList : ICloneable
+    {
+        public ItemInfo hat;
+        public ItemInfo effect;
+
+        //TODO: proper serializer
+        public object ToCustomAttribute()
+        {
+            CustomAttributes customAttributes = new CustomAttributes();
+            customAttributes.hatItemId = hat == null ? null : hat.itemId ;
+            customAttributes.effectItemId = effect == null ? null : effect.itemId ;
+            return customAttributes;
+        }
+
+        public ref ItemInfo GetItemInfo(Type type)
+        {
+            switch (type)
+            {
+                case Type.Hat:
+                    return ref hat;
+                case Type.Effect:
+                    return ref effect;
+            }
+            throw Exception;
+        }
+        public Exception Exception { get; set; }
+        
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+    }
+    
+    public static EquipmentList ListFromCustomAttributes(string attribute, ItemInfo[] itemInformations)
+    {
+        CustomAttributes customAttributes;
+        try
+        {
+            customAttributes = JsonSerializer.Deserialize<CustomAttributes>(attribute);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+        
+        var result = new EquipmentList();
+        
+        foreach (var itemInformation in itemInformations)
+        {
+            if (itemInformation.itemId == customAttributes.hatItemId){ result.hat = itemInformation; }
+            if (itemInformation.itemId == customAttributes.effectItemId){ result.effect = itemInformation; }
+        }
+        
+        return result;
     }
 
     private static readonly StringEntry[] equipmentStringEntry =
     {
-        new StringEntry {type = Type.Glasses, tag = "glasses"},
-        new StringEntry {type = Type.Mask, tag = "mask"},
-        new StringEntry {type = Type.Shirt, tag = "shirt"},
-        new StringEntry {type = Type.Wristband, tag = "wristband"},
-        new StringEntry {type = Type.Pants, tag = "pants"},
-        new StringEntry {type = Type.Shoes, tag = "shoes"}
+        new StringEntry {type = Type.Hat, tag = LightFantasticConfig.ItemTags.hat},
+        new StringEntry {type = Type.Effect, tag = LightFantasticConfig.ItemTags.effect}
     };
 
     public static Type TypeFromString(string input)
@@ -75,27 +123,77 @@ static class Equipments
 
 namespace EntitlementUiLogic
 {
+    class PrefabsInfos
+    {
+        public Equipments.Type type;
+        public ItemInventoryPrefab[] prefabs;
+
+        public PrefabsInfos(Equipments.Type type_)
+        {
+            prefabs = new ItemInventoryPrefab[0];
+            type = type_;
+        }
+    }
+
+    class AllPrefabsCollection
+    {
+        public List<PrefabsInfos> prefabsInfos = new List<PrefabsInfos>(0);
+
+        public AllPrefabsCollection()
+        {
+            foreach (Equipments.Type type in Enum.GetValues(typeof(Equipments.Type)))
+            {
+                prefabsInfos.Add(new PrefabsInfos(type));
+            }
+        }
+
+        public ItemInventoryPrefab[] GetItemInventoryPrefabs(Equipments.Type type)
+        {
+            for (var index = 0; index < prefabsInfos.Count; index++)
+            {
+                if (prefabsInfos[index].type == type)
+                {
+                    return prefabsInfos[index].prefabs;
+                }
+            }
+
+            return null;
+        }
+
+        public void SetItemInventoryPrefabs(Equipments.Type type, ItemInventoryPrefab[] prefabs)
+        {
+            for (var index = 0; index < prefabsInfos.Count; index++)
+            {
+                if (prefabsInfos[index].type == type)
+                {
+                    prefabsInfos[index].prefabs = prefabs;
+                }
+            }
+        }
+    }
+    
     public class AccelByteEntitlementLogic : MonoBehaviour
     {
         private Entitlements abEntitlements;
         private Items abItems;
-        private const string ITEMINFO_IMAGE_AS = "product-cover";
-        private const string ITEMINFO_LANGUAGE = "en";
+        
         private readonly ItemCriteria ALL_ITEM_CRITERIA = new ItemCriteria();
         private readonly ItemPagingSlicedResult allItemInfo = new ItemPagingSlicedResult();
-        private ItemInventoryPrefab[] allItemPrefabs;
-        private readonly Equipments.List activeEquipment = new Equipments.List();
+        private Equipments.EquipmentList activeEquipmentList = new Equipments.EquipmentList();
+        private Equipments.EquipmentList originalEquipmentList = new Equipments.EquipmentList();
+        private AllPrefabsCollection allPrefabsCollection;
 
         #region Inventory Viewer Component 
 
         [SerializeField] private GameObject samplePrefab;
         [SerializeField] private UiUtilities uiUtilities;
-        [SerializeField] private CustomScrollView scrollViewGlasses;
-        [SerializeField] private CustomScrollView scrollViewMask;
-        [SerializeField] private CustomScrollView scrollViewShirt;
-        [SerializeField] private CustomScrollView scrollViewWristBand;
-        [SerializeField] private CustomScrollView scrollViewPants;
-        [SerializeField] private CustomScrollView scrollViewShoes;
+        [SerializeField] private InventoryGridLayout gridLayoutHats;
+        [SerializeField] private InventoryGridLayout gridLayoutEffects;
+        [SerializeField] private AccelByteButtonScriptStyle buttonHat;
+        [SerializeField] private AccelByteButtonScriptStyle buttonEffect;
+        [SerializeField] private CanvasGroup promptPanel;
+        [SerializeField] private AccelByteUserProfileLogic abUserProfileLogic;
+        [SerializeField] private SpriteResolver hatSpriteResolver;
 
         #endregion
 
@@ -104,7 +202,7 @@ namespace EntitlementUiLogic
             abEntitlements = AccelBytePlugin.GetEntitlements();
             abItems = AccelBytePlugin.GetItems();
             ALL_ITEM_CRITERIA.offset = 0;
-            ALL_ITEM_CRITERIA.language = ITEMINFO_LANGUAGE;
+            ALL_ITEM_CRITERIA.language = LightFantasticConfig.DEFAULT_LANGUAGE;
             ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
         }
 
@@ -112,6 +210,11 @@ namespace EntitlementUiLogic
         {
             //TODO: fix FadeLoadingIn
             //uiHandler.FadeLoading();
+            
+            activeEquipmentList = null;
+            originalEquipmentList = null;
+            HidePromptPanel();
+            
             if (allItemInfo.data == null)
             {
                 abItems.GetItemsByCriteria(ALL_ITEM_CRITERIA, result =>
@@ -139,12 +242,60 @@ namespace EntitlementUiLogic
             }
             else
             {
-                PopulateInventories(result.Value.data);
+                abUserProfileLogic.GetMine(profileResult =>
+                {
+                    if (!profileResult.IsError)
+                    {
+                        //originalEquipmentList = null;
+                        activeEquipmentList = new Equipments.EquipmentList();
+                        PopulateInventories(result.Value.data);
+        
+                        if (profileResult.Value.customAttributes != null)
+                        {
+                            originalEquipmentList = Equipments.ListFromCustomAttributes(
+                                profileResult.Value.customAttributes.ToJsonString(), allItemInfo.data);
+                            if (originalEquipmentList != null)
+                            {
+                                activeEquipmentList = (Equipments.EquipmentList) originalEquipmentList.Clone();
+                                EquipFromList(originalEquipmentList);
+                            }
+                        }
+                        
+                        buttonHat.SetEnable(false);
+                        ShowHatInventories(true);
+                        buttonEffect.SetEnable(true);
+                        ShowEffectInventories(false);
+                    }
+                }
+                );
+            }
+        }
+
+        private void EquipFromList(Equipments.EquipmentList list)
+        {
+            foreach (Equipments.Type type in Enum.GetValues(typeof(Equipments.Type)))
+            {
+                if (type == Equipments.Type.None){ break; }
+                var listItemInfo = list.GetItemInfo(type);
+                foreach (var prefab in allPrefabsCollection.GetItemInventoryPrefabs(type))
+                {
+                    if (listItemInfo != null && listItemInfo.itemId == prefab.GetItemInfo().itemId)
+                    {
+                        prefab.Select();
+                        UpdateAvatar(prefab.GetItemInfo().name);
+                    }
+                    else
+                    {
+                        prefab.Unselect();
+                    }
+                }
             }
         }
 
         private void PopulateInventories(EntitlementInfo[] results)
         {
+            allPrefabsCollection = new AllPrefabsCollection();
+            
             ItemInfo GetItemFromCache(string input)
             {
                 foreach (var entry in allItemInfo.data)
@@ -160,12 +311,8 @@ namespace EntitlementUiLogic
             //TODO: duplication tag handle
             var tag_entitlement_scrollview = new[]
             {
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Glasses, new List<EntitlementInfo>(), scrollViewGlasses),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Shoes, new List<EntitlementInfo>(), scrollViewShoes),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Mask, new List<EntitlementInfo>(), scrollViewMask),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Shirt, new List<EntitlementInfo>(), scrollViewShirt),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Wristband, new List<EntitlementInfo>(), scrollViewWristBand),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, CustomScrollView>(Equipments.Type.Pants, new List<EntitlementInfo>(), scrollViewPants)
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), gridLayoutHats),
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), gridLayoutEffects)
             };
             
             // Insert entitlement for each kind of tag / equipment type
@@ -186,6 +333,7 @@ namespace EntitlementUiLogic
             foreach (var row in tag_entitlement_scrollview)
             {
                 var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, samplePrefab);
+                allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
                 
                 for (var i = 0; i < prefabs.Length; i++)
                 {
@@ -198,7 +346,7 @@ namespace EntitlementUiLogic
 
                             foreach (var image in itemInfo.images)
                             {
-                                if (image.As == ITEMINFO_IMAGE_AS)
+                                if (image.As == LightFantasticConfig.IMAGE_AS)
                                 {
                                     uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
                                 }
@@ -211,23 +359,19 @@ namespace EntitlementUiLogic
 
         private UnityAction OnItemSelected(ItemInventoryPrefab selectedPrefab, ItemInventoryPrefab[] prefabsInCurrentRow)
         {
-            
             return () =>
             {
-
                 foreach (var prefab in prefabsInCurrentRow)
                 {
                     if (prefab == selectedPrefab)
                     {
                         if (prefab.IsSelected())
                         {
-                            EquipItem(false, selectedPrefab.GetItemInfo());
-                            prefab.Unselect();
+                            ClickItem(false, selectedPrefab, activeEquipmentList);
                         }
                         else
                         {
-                            EquipItem(true, selectedPrefab.GetItemInfo());
-                            prefab.Select();
+                            ClickItem(true, selectedPrefab, activeEquipmentList);
                         }
                     }
                     else if (prefab != selectedPrefab)
@@ -238,34 +382,77 @@ namespace EntitlementUiLogic
             };
         }
 
-        private void EquipItem(bool equipping, ItemInfo itemInfo)
+        private void ClickItem(bool equipping, ItemInventoryPrefab prefab, Equipments.EquipmentList updatedList)
         {
-            foreach (var tag in itemInfo.tags)
+            var itemInfo = prefab.GetItemInfo();
+            
+            foreach (var tag in prefab.GetItemInfo().tags)
             {
-                switch (Equipments.TypeFromString(tag))
-                {
-                    case Equipments.Type.Glasses:
-                        activeEquipment.glasses = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.Mask:
-                        activeEquipment.mask = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.Shirt:
-                        activeEquipment.shirt = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.Wristband:
-                        activeEquipment.wristband = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.Pants:
-                        activeEquipment.pants = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.Shoes:
-                        activeEquipment.shoes = equipping ? itemInfo : null;
-                        return;
-                    case Equipments.Type.None:
-                        return;
-                }
+                ref var tmp = ref updatedList.GetItemInfo(Equipments.TypeFromString(tag));
+                tmp = equipping ? itemInfo : null;
             }
+            if (equipping)
+            {
+                prefab.Select();
+                UpdateAvatar(prefab.GetItemInfo().name);
+            }
+            else
+            {
+                prefab.Unselect();
+                UpdateAvatar("");
+            }
+        }
+
+        public void RevertToOriginalEquipment()
+        {
+            activeEquipmentList = (Equipments.EquipmentList) originalEquipmentList.Clone();
+            EquipFromList(originalEquipmentList);
+        }
+
+        public void UploadEquipment()
+        {
+            UpdateUserProfileRequest savedEquipment = new UpdateUserProfileRequest();
+            savedEquipment.customAttributes = activeEquipmentList.ToCustomAttribute();
+            
+            abUserProfileLogic.UpdateMine(savedEquipment, result =>
+            {
+                //TODO: handle on error and success
+                if (result.IsError)
+                {
+                    Debug.Log("Failed to save current equipment!");
+                }
+                else
+                {
+                    Debug.Log("Current equipment saved!");
+                }
+            });
+        }
+
+        public void ShowPromptPanel()
+        {
+            promptPanel.alpha = 1;
+            promptPanel.gameObject.SetActive(true);
+        }
+
+        public void HidePromptPanel()
+        {
+            promptPanel.alpha = 0;
+            promptPanel.gameObject.SetActive(false);
+        }
+
+        public void ShowHatInventories(bool show)
+        {
+            gridLayoutHats.SetVisibility(show);
+        }
+        
+        public void ShowEffectInventories(bool show)
+        {
+            gridLayoutEffects.SetVisibility(show);
+        }
+
+        private void UpdateAvatar(string itemName)
+        {
+            hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
         }
     }
 }

@@ -346,6 +346,8 @@ MonoBehaviour:
   TINT_HOVER_IMAGE: {r: 0.8402707, g: 0.3160377, b: 1, a: 0.78431374}
   TINT_NORMAL_TEXT: {r: 0.5058824, g: 0.5058824, b: 0.5058824, a: 1}
   TINT_HOVER_TEXT: {r: 1, g: 1, b: 1, a: 1}
+  TINT_DISABLED_IMAGE: {r: 0, g: 0, b: 0, a: 0}
+  TINT_DISABLED_TEXT: {r: 1, g: 1, b: 1, a: 1}
   buttonImage: {fileID: 3433500936185675456}
   buttonText: {fileID: 5821867018650320854}
   mouseHoverComponent: {fileID: 1315419476700119437}

@@ -14,9 +14,11 @@ namespace Game
     ///     The networked compoenent of the player pawn, 
     ///     handles all communications over the network and updateing the entity's state
     /// </summary>
+    [RequireComponent(typeof(BoxCollider2D))]
     public class BasePlayerPawn : MovePlayerPawnBehavior
     {
         private Rigidbody2D rb2d;
+        private Collider2D col2d;
         private bool isNetworkReady;
         private bool isInitialized;
         private BaseHoveringText hoveringText;
@@ -34,26 +36,20 @@ namespace Game
         private void Awake()
         {
             rb2d = GetComponent<Rigidbody2D>();
+            col2d = GetComponent<Collider2D>();
             hoveringText = GetComponent<BaseHoveringText>();
             currSpeed = 0.0f;
-        }
-
-        private void Start()
-        {
+            networkStarted += OnNetworkStarted;
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
         }
 
         protected override void NetworkStart()
         {
             base.NetworkStart();
-
-            if (networkObject.IsOwner)
-            {
-                networkObject.onDestroy += OnNetworkObjectDestroy;
-            }
+            networkObject.onDestroy += OnNetworkObjectDestroy;
             networkObject.playerNumChanged += OnPlayerNumChanged;
             networkObject.OwnerNetIdChanged += OnOwnerNetIdChanged;
-
+            NetworkManager.Instance.Networker.disconnected += OnDisconnected;
             Initialize();
             isNetworkReady = true;
         }
@@ -62,9 +58,7 @@ namespace Game
         {
             networkObject.MaxSpeed = maxSpeed_;
             hoveringText.ChangeTextLabel("Player " + networkObject.playerNum);
-            networkObject.Banable = true;
             isInitialized = true;
-            Debug.Log("Player Initialized");
         }
 
         void Update()
@@ -100,6 +94,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Decay of the player speed
+        /// </summary>
+        /// <param name="playerNetworkId">The player network ID</param>
+        /// <param name="pawn">Behaviour class of the pawn</param>
         public float LinearDecay(float inVal, float dt)
         {
             inVal -= speedDecayConst * dt;
@@ -125,57 +124,78 @@ namespace Game
             });
         }
 
-        public override void AssignPlayerNum(RpcArgs args)
+        public override void RPCSetup(RpcArgs args)
         {
+            uint newPlayerNum = args.GetAt<uint>(0);
+            uint newOwnerNetId = args.GetAt<uint>(1);
+            Vector3 initialPos = args.GetAt<Vector3>(2);
             if (networkObject.IsOwner)
             {
-                uint newPlayerNum = args.GetAt<uint>(0);
-                Debug.Log("AssignPlayerNum: " + newPlayerNum);
                 networkObject.playerNum = newPlayerNum;
-                MainThreadManager.Run(() => { hoveringText.ChangeTextLabel("Player " + newPlayerNum); });
-            }
-        }
-
-        public override void AssignOwnerId(RpcArgs args)
-        {
-
-            if (networkObject.IsOwner)
-            {
-                uint newOwnerNetId = args.GetAt<uint>(0);
-                Debug.Log("AssignOwnerId: " + newOwnerNetId);
                 networkObject.OwnerNetId = newOwnerNetId;
-                MainThreadManager.Run(() => { gameMgr.RegisterCharacter(newOwnerNetId, this); });
+                networkObject.SetInitialPos(initialPos);
+                MainThreadManager.Run(() =>
+                {
+                    hoveringText.ChangeTextLabel("Player " + newPlayerNum);
+                    gameMgr.RegisterCharacter(newOwnerNetId, this);
+                    networkObject.Banable = true;
+                });
+            }
+            else
+            {
+                MainThreadManager.Run(() =>
+                {
+                    networkObject.SetInitialPos(initialPos);
+                    networkObject.Banable = true;
+                });
             }
         }
+
         #endregion //RPCs
 
         #region Events
+
+        private void OnDisconnected(NetWorker sender)
+        {
+            networkObject.Destroy();
+        }
+
         private void OnNetworkObjectDestroy(NetWorker sender)
         {
-            Debug.Log("Player Network object is being destroyed");
-            //gameMgr.RemoveFromCharacterList(networkObject.OwnerNetId);
+            networkObject.onDestroy -= OnNetworkObjectDestroy;
+            networkObject.playerNumChanged -= OnPlayerNumChanged;
+            networkObject.OwnerNetIdChanged -= OnOwnerNetIdChanged;
+        }
+
+        private void OnNetworkStarted(NetworkBehavior behavior)
+        {
+            networkStarted -= OnNetworkStarted;
+            if (!networkObject.IsOwner)
+            {
+                return;
+            }
+            networkObject.SendRpc(MovePlayerPawnBehavior.RPC_SETUP, Receivers.All
+                , new object[] { networkObject.playerNum, networkObject.OwnerNetId, transform.position });
         }
 
         private void OnPlayerNumChanged(uint newPlayerNum, ulong timestep)
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("OnPlayerNumChanged -> " + newPlayerNum);
                 hoveringText.ChangeTextLabel("Player " + newPlayerNum);
             });
         }
+
         private void OnOwnerNetIdChanged(uint newOwnerNetId, ulong timestep)
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("OnOwnerNetIdChanged -> " + newOwnerNetId);
-                if (networkObject.IsOwner)
+                if (networkObject.IsOwner || networkObject.IsServer)
                 {
                     gameMgr.RegisterCharacter(newOwnerNetId, this);
                 }
             });
         }
         #endregion //Events
-
     }
 }

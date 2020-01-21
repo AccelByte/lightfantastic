@@ -21,6 +21,7 @@ namespace AccelByte.Models
         [DataMember] public string language { get; set; }
         [DataMember] public string timeZone { get; set; }
         [DataMember] public string dateOfBirth { get; set; }
+        [DataMember] public object customAttributes { get; set; }
     }
 
     [DataContract]
@@ -45,6 +46,7 @@ namespace AccelByte.Models
         [DataMember] public string avatarLargeUrl { get; set; }
         [DataMember] public string timeZone { get; set; }
         [DataMember] public string dateOfBirth { get; set; }
+        [DataMember] public object customAttributes { get; set; }
     }
 
     [DataContract]

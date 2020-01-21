@@ -103,6 +103,7 @@ namespace AccelByte.Core
         NetworkError = 14005,
         IsNotLoggedIn = 14006,
         UserProfileIsNotCreated = 14007,
+        UserProfileConflict = 11441,
         GenerateTokenFailed = 14008,
         AccountIsNotUpgraded = 14009,
         VerificationCodeIsNotRequested = 14010,

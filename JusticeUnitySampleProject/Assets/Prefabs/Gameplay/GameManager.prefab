@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7013979902154725820}
   - component: {fileID: 8553695856442356697}
+  - component: {fileID: 1470834211}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -43,7 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c315ff6aa9f4284bbd7ea730a80696a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStarts:
-  - {fileID: 0}
-  - {fileID: 0}
+  mainMenuSceneIdx_: 0
   vCam: {fileID: 4054384918095080185, guid: b49a197ccb900de458889430d5a113a0, type: 3}
+--- !u!114 &1470834211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2368014717883738015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d3cad29b8ac97441bae73bc4d4f98a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStarts_:
+  - {fileID: 0}
+  - {fileID: 0}

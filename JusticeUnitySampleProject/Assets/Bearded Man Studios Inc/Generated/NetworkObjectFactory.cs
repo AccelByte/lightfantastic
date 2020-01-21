@@ -39,6 +39,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new ExampleProximityPlayerNetworkObject(networker, id, frame);
 						break;
+					case FinishLineNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new FinishLineNetworkObject(networker, id, frame);
+						break;
 					case GameManagerNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new GameManagerNetworkObject(networker, id, frame);
@@ -54,6 +58,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					case NetworkCameraNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new NetworkCameraNetworkObject(networker, id, frame);
+						break;
+					case PawnSpawnerNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new PawnSpawnerNetworkObject(networker, id, frame);
 						break;
 					case RotatePlayerPawnNetworkObject.IDENTITY:
 						availableCallback = true;

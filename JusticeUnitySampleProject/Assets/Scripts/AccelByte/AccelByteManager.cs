@@ -18,6 +18,8 @@ public class AccelByteManager : MonoBehaviour
 
     private AccelByteGameProfileLogic gameprofileLogic;
     public AccelByteGameProfileLogic GameProfileLogic { get { return gameprofileLogic; } }
+    private AccelByteGameProfileLogic userProfileLogic;
+    public AccelByteGameProfileLogic UserProfileLogic { get { return userProfileLogic; } }
 
     private void Awake()
     {
