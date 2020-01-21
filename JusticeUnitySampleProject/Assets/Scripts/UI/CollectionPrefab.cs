@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CollectionPrefab : MonoBehaviour
 {
@@ -28,14 +29,14 @@ public class CollectionPrefab : MonoBehaviour
     }
 
     // Update Info
-    void UpdateInfo(string category, int current, int total)
+    public void UpdateInfo(string category, int current, int total)
     {
         itemCategory = category;
         currentItemCount = current;
         totalItemCount = total;
 
-        itemCategoryText.GetComponent<TMPro.TextMeshProUGUI>().text = itemCategory;
-        currentItemCountText.GetComponent<TMPro.TextMeshProUGUI>().text = currentItemCount.ToString();
-        totalItemCountText.GetComponent<TMPro.TextMeshProUGUI>().text = totalItemCount.ToString();
+        itemCategoryText.GetComponent<TextMeshProUGUI>().text = itemCategory;
+        currentItemCountText.GetComponent<TextMeshProUGUI>().text = currentItemCount.ToString();
+        totalItemCountText.GetComponent<TextMeshProUGUI>().text = totalItemCount.ToString();
     }
 }

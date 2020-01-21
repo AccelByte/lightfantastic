@@ -131,8 +131,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             SetupFriendCallbacks();
             SetupMatchmakingCallbacks();
             SetupChatCallbacks();
-
-            AccelByteManager.Instance.GameProfileLogic.SetupGameProfile();
         }
         else
         {
