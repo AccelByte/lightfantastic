@@ -4,16 +4,23 @@ public abstract class BaseHUD : MonoBehaviour, IHUD
 {
     protected Vector3 originalPos;
     protected RectTransform rectTr_ = null;
+    protected Canvas canvas_;
     public abstract void OnShow();
     public abstract void OnHide();
     protected abstract void AddListeners();
     protected virtual void Awake()
     {
         rectTr_ = GetComponent<RectTransform>();
+        canvas_ = GetComponent<Canvas>();
         SaveOriginalPosition();
         Debug.Log("Base.Awake");
     }
 
+    protected virtual void Start()
+    {
+        AddListeners();
+    }
+    
     private void OnEnable()
     {
         OnShow();

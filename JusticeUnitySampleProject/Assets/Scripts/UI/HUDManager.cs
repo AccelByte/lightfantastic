@@ -14,11 +14,36 @@ public class HUDManager<EnumT> : MonoBehaviour where EnumT : System.Enum
     protected float distanceBetweenPanels = 0.1f;
     protected bool panelsPopulated_;
     List<BaseHUD> panelStack = null;
-
+    protected Canvas mainCanvas_;
     protected virtual void Awake()
     {
         panelStack = new List<BaseHUD>();
+        mainCanvas_ = GetComponent<Canvas>();
         PopulateHudDict();
+    }
+
+    protected virtual void Start()
+    {
+        Debug.Log("Base HUDManager start");
+        HideAllPanels();
+    }
+
+    private void HideAllPanels()
+    {
+        if (!panelsPopulated_)
+        {
+            Debug.LogError("Misconfiguration in HUDManager, cannot continue");
+            return;
+        }
+        foreach (var panel in panels)
+        {
+            Debug.Log("Attempt to hide panel: " + panel.Value.gameObject.name);
+            if (panel.Value.gameObject.activeInHierarchy)
+            {
+                Debug.Log("Hiding panel: " + panel.Value.gameObject.name);
+                panel.Value.gameObject.SetActive(false);
+            }
+        }
     }
 
     private void PopulateHudDict()

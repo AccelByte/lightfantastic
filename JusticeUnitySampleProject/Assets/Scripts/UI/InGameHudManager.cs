@@ -2,27 +2,67 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public enum PanelTypes
+namespace Game
 {
-    RaceOver,
-    RaceOver2,
-    RaceOver3,
-    MainHud
-}
-
-public class InGameHudManager : HUDManager<PanelTypes>
-{
-    private void Start()
+    public enum PanelTypes
     {
+        RaceOver,
+        Pause,
+        MainHud
     }
 
-    public void ShowRaceOverScreen()
+    public class InGameHudManager : HUDManager<PanelTypes>
     {
-        GameObject go = null;
-        ShowPanel(PanelTypes.RaceOver, new object[] { 3, go });
-    }
-    public void HideRaceOverScreen()
-    {
-        HideTopPanel();
+        private BaseGameManager gameMgr;
+
+        [SerializeField]
+        private PanelTypes initialPanel = PanelTypes.MainHud;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            mainCanvas_.sortingLayerName = "UI";
+            mainCanvas_.renderMode = RenderMode.ScreenSpaceCamera;
+            mainCanvas_.worldCamera = Camera.main;
+            gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
+            gameMgr.HudManager = this;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            ShowInitialPanel();
+        }
+
+        private void ShowInitialPanel()
+        {
+            Debug.Log("Showing Initial Panel");
+            ShowPanel(PanelTypes.MainHud, null);
+        }
+
+        public void ShowRaceOverScreen(string winnerText)
+        {
+            ShowPanel(PanelTypes.RaceOver, new object[] { winnerText });
+        }
+
+        public void HideRaceOverScreen()
+        {
+            HideTopPanel();
+        }
+
+        public void ShowPauseScreen()
+        {
+            ShowPanel(PanelTypes.Pause, null);
+        }
+
+        public void HidePauseScreen()
+        {
+            HideTopPanel();
+        }
+
+        public void DisconnectPlayer()
+        {
+            gameMgr.DisconnectPlayer();
+        }
     }
 }

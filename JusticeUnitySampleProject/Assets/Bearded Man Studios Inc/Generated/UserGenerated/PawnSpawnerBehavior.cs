@@ -4,13 +4,15 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"ownerNetId\"]]")]
-	public abstract partial class FinishLineBehavior : NetworkBehavior
+	[GeneratedRPC("{\"types\":[[\"uint\", \"int\"][][\"uint\", \"bool\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"ownerNetId\", \"spawnIdx\"][][\"idx\", \"isOccupied\"]]")]
+	public abstract partial class PawnSpawnerBehavior : NetworkBehavior
 	{
-		public const byte RPC_PLAYER_FINISHED = 0 + 5;
+		public const byte RPC_SPAWN_PAWN = 0 + 5;
+		public const byte RPC_ANNOUNCE_READY = 1 + 5;
+		public const byte RPC_UPDATE_START_POS = 2 + 5;
 		
-		public FinishLineNetworkObject networkObject = null;
+		public PawnSpawnerNetworkObject networkObject = null;
 
 		public override void Initialize(NetworkObject obj)
 		{
@@ -18,11 +20,13 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (networkObject != null && networkObject.AttachedBehavior != null)
 				return;
 			
-			networkObject = (FinishLineNetworkObject)obj;
+			networkObject = (PawnSpawnerNetworkObject)obj;
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("PlayerFinished", PlayerFinished, typeof(uint));
+			networkObject.RegisterRpc("RPCSpawnPawn", RPCSpawnPawn, typeof(uint), typeof(int));
+			networkObject.RegisterRpc("RPCAnnounceReady", RPCAnnounceReady);
+			networkObject.RegisterRpc("RPCUpdateStartPos", RPCUpdateStartPos, typeof(uint), typeof(bool));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -80,7 +84,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
 		{
-			Initialize(new FinishLineNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
+			Initialize(new PawnSpawnerNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
 		private void DestroyGameObject(NetWorker sender)
@@ -91,7 +95,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null)
 		{
-			return new FinishLineNetworkObject(networker, this, createCode, metadata);
+			return new PawnSpawnerNetworkObject(networker, this, createCode, metadata);
 		}
 
 		protected override void InitializedTransform()
@@ -102,8 +106,17 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// <summary>
 		/// Arguments:
 		/// uint ownerNetId
+		/// int spawnIdx
 		/// </summary>
-		public abstract void PlayerFinished(RpcArgs args);
+		public abstract void RPCSpawnPawn(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCAnnounceReady(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCUpdateStartPos(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

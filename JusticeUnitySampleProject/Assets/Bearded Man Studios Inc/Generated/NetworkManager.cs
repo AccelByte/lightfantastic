@@ -14,13 +14,14 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public GameObject[] ChatManagerNetworkObject = null;
 		public GameObject[] CubeForgeGameNetworkObject = null;
 		public GameObject[] ExampleProximityPlayerNetworkObject = null;
+		public GameObject[] FinishLineNetworkObject = null;
 		public GameObject[] GameManagerNetworkObject = null;
 		public GameObject[] InputListenerNetworkObject = null;
 		public GameObject[] MovePlayerPawnNetworkObject = null;
 		public GameObject[] NetworkCameraNetworkObject = null;
+		public GameObject[] PawnSpawnerNetworkObject = null;
 		public GameObject[] RotatePlayerPawnNetworkObject = null;
 		public GameObject[] TestNetworkObject = null;
-		public GameObject[] FinishLineNetworkObject = null;
 
 		protected virtual void SetupObjectCreatedEvent()
 		{
@@ -130,6 +131,29 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						objectInitialized(newObj, obj);
 				});
 			}
+			else if (obj is FinishLineNetworkObject)
+			{
+				MainThreadManager.Run(() =>
+				{
+					NetworkBehavior newObj = null;
+					if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+					{
+						if (FinishLineNetworkObject.Length > 0 && FinishLineNetworkObject[obj.CreateCode] != null)
+						{
+							var go = Instantiate(FinishLineNetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<FinishLineBehavior>();
+						}
+					}
+
+					if (newObj == null)
+						return;
+						
+					newObj.Initialize(obj);
+
+					if (objectInitialized != null)
+						objectInitialized(newObj, obj);
+				});
+			}
 			else if (obj is GameManagerNetworkObject)
 			{
 				MainThreadManager.Run(() =>
@@ -222,6 +246,29 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						objectInitialized(newObj, obj);
 				});
 			}
+			else if (obj is PawnSpawnerNetworkObject)
+			{
+				MainThreadManager.Run(() =>
+				{
+					NetworkBehavior newObj = null;
+					if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
+					{
+						if (PawnSpawnerNetworkObject.Length > 0 && PawnSpawnerNetworkObject[obj.CreateCode] != null)
+						{
+							var go = Instantiate(PawnSpawnerNetworkObject[obj.CreateCode]);
+							newObj = go.GetComponent<PawnSpawnerBehavior>();
+						}
+					}
+
+					if (newObj == null)
+						return;
+						
+					newObj.Initialize(obj);
+
+					if (objectInitialized != null)
+						objectInitialized(newObj, obj);
+				});
+			}
 			else if (obj is RotatePlayerPawnNetworkObject)
 			{
 				MainThreadManager.Run(() =>
@@ -256,29 +303,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 						{
 							var go = Instantiate(TestNetworkObject[obj.CreateCode]);
 							newObj = go.GetComponent<TestBehavior>();
-						}
-					}
-
-					if (newObj == null)
-						return;
-						
-					newObj.Initialize(obj);
-
-					if (objectInitialized != null)
-						objectInitialized(newObj, obj);
-				});
-			}
-			else if (obj is FinishLineNetworkObject)
-			{
-				MainThreadManager.Run(() =>
-				{
-					NetworkBehavior newObj = null;
-					if (!NetworkBehavior.skipAttachIds.TryGetValue(obj.NetworkId, out newObj))
-					{
-						if (FinishLineNetworkObject.Length > 0 && FinishLineNetworkObject[obj.CreateCode] != null)
-						{
-							var go = Instantiate(FinishLineNetworkObject[obj.CreateCode]);
-							newObj = go.GetComponent<FinishLineBehavior>();
 						}
 					}
 
@@ -349,6 +373,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		[Obsolete("Use InstantiateFinishLine instead, its shorter and easier to type out ;)")]
+		public FinishLineBehavior InstantiateFinishLineNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			var go = Instantiate(FinishLineNetworkObject[index]);
+			var netBehavior = go.GetComponent<FinishLineBehavior>();
+			var obj = netBehavior.CreateNetworkObject(Networker, index);
+			go.GetComponent<FinishLineBehavior>().networkObject = (FinishLineNetworkObject)obj;
+
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
 		[Obsolete("Use InstantiateGameManager instead, its shorter and easier to type out ;)")]
 		public GameManagerBehavior InstantiateGameManagerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
@@ -397,6 +433,18 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			
 			return netBehavior;
 		}
+		[Obsolete("Use InstantiatePawnSpawner instead, its shorter and easier to type out ;)")]
+		public PawnSpawnerBehavior InstantiatePawnSpawnerNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			var go = Instantiate(PawnSpawnerNetworkObject[index]);
+			var netBehavior = go.GetComponent<PawnSpawnerBehavior>();
+			var obj = netBehavior.CreateNetworkObject(Networker, index);
+			go.GetComponent<PawnSpawnerBehavior>().networkObject = (PawnSpawnerNetworkObject)obj;
+
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
 		[Obsolete("Use InstantiateRotatePlayerPawn instead, its shorter and easier to type out ;)")]
 		public RotatePlayerPawnBehavior InstantiateRotatePlayerPawnNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
 		{
@@ -416,18 +464,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			var netBehavior = go.GetComponent<TestBehavior>();
 			var obj = netBehavior.CreateNetworkObject(Networker, index);
 			go.GetComponent<TestBehavior>().networkObject = (TestNetworkObject)obj;
-
-			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
-			return netBehavior;
-		}
-		[Obsolete("Use InstantiateFinishLine instead, its shorter and easier to type out ;)")]
-		public FinishLineBehavior InstantiateFinishLineNetworkObject(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
-		{
-			var go = Instantiate(FinishLineNetworkObject[index]);
-			var netBehavior = go.GetComponent<FinishLineBehavior>();
-			var obj = netBehavior.CreateNetworkObject(Networker, index);
-			go.GetComponent<FinishLineBehavior>().networkObject = (FinishLineNetworkObject)obj;
 
 			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			
@@ -663,6 +699,63 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 		/// <summary>
+		/// Instantiate an instance of FinishLine
+		/// </summary>
+		/// <returns>
+		/// A local instance of FinishLineBehavior
+		/// </returns>
+		/// <param name="index">The index of the FinishLine prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
+		public FinishLineBehavior InstantiateFinishLine(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			if (FinishLineNetworkObject.Length <= index)
+			{
+				Debug.Log("Prefab(s) missing for: FinishLine. Add them at the NetworkManager prefab.");
+				return null;
+			}
+			
+			var go = Instantiate(FinishLineNetworkObject[index]);
+			var netBehavior = go.GetComponent<FinishLineBehavior>();
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
+			go.GetComponent<FinishLineBehavior>().networkObject = (FinishLineNetworkObject)obj;
+
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
+		/// <summary>
 		/// Instantiate an instance of GameManager
 		/// </summary>
 		/// <returns>
@@ -891,6 +984,63 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			return netBehavior;
 		}
 		/// <summary>
+		/// Instantiate an instance of PawnSpawner
+		/// </summary>
+		/// <returns>
+		/// A local instance of PawnSpawnerBehavior
+		/// </returns>
+		/// <param name="index">The index of the PawnSpawner prefab in the NetworkManager to Instantiate</param>
+		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
+		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
+		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
+		public PawnSpawnerBehavior InstantiatePawnSpawner(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
+		{
+			if (PawnSpawnerNetworkObject.Length <= index)
+			{
+				Debug.Log("Prefab(s) missing for: PawnSpawner. Add them at the NetworkManager prefab.");
+				return null;
+			}
+			
+			var go = Instantiate(PawnSpawnerNetworkObject[index]);
+			var netBehavior = go.GetComponent<PawnSpawnerBehavior>();
+
+			NetworkObject obj = null;
+			if (!sendTransform && position == null && rotation == null)
+				obj = netBehavior.CreateNetworkObject(Networker, index);
+			else
+			{
+				metadata.Clear();
+
+				if (position == null && rotation == null)
+				{
+					byte transformFlags = 0x1 | 0x2;
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
+				}
+				else
+				{
+					byte transformFlags = 0x0;
+					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
+					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
+					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
+
+					if (position != null)
+						ObjectMapper.Instance.MapBytes(metadata, position.Value);
+
+					if (rotation != null)
+						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
+				}
+
+				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
+			}
+
+			go.GetComponent<PawnSpawnerBehavior>().networkObject = (PawnSpawnerNetworkObject)obj;
+
+			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
+			
+			return netBehavior;
+		}
+		/// <summary>
 		/// Instantiate an instance of RotatePlayerPawn
 		/// </summary>
 		/// <returns>
@@ -999,63 +1149,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			}
 
 			go.GetComponent<TestBehavior>().networkObject = (TestNetworkObject)obj;
-
-			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
-			
-			return netBehavior;
-		}
-		/// <summary>
-		/// Instantiate an instance of FinishLine
-		/// </summary>
-		/// <returns>
-		/// A local instance of FinishLineBehavior
-		/// </returns>
-		/// <param name="index">The index of the FinishLine prefab in the NetworkManager to Instantiate</param>
-		/// <param name="position">Optional parameter which defines the position of the created GameObject</param>
-		/// <param name="rotation">Optional parameter which defines the rotation of the created GameObject</param>
-		/// <param name="sendTransform">Optional Parameter to send transform data to other connected clients on Instantiation</param>
-		public FinishLineBehavior InstantiateFinishLine(int index = 0, Vector3? position = null, Quaternion? rotation = null, bool sendTransform = true)
-		{
-			if (FinishLineNetworkObject.Length <= index)
-			{
-				Debug.Log("Prefab(s) missing for: FinishLine. Add them at the NetworkManager prefab.");
-				return null;
-			}
-			
-			var go = Instantiate(FinishLineNetworkObject[index]);
-			var netBehavior = go.GetComponent<FinishLineBehavior>();
-
-			NetworkObject obj = null;
-			if (!sendTransform && position == null && rotation == null)
-				obj = netBehavior.CreateNetworkObject(Networker, index);
-			else
-			{
-				metadata.Clear();
-
-				if (position == null && rotation == null)
-				{
-					byte transformFlags = 0x1 | 0x2;
-					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
-					ObjectMapper.Instance.MapBytes(metadata, go.transform.position, go.transform.rotation);
-				}
-				else
-				{
-					byte transformFlags = 0x0;
-					transformFlags |= (byte)(position != null ? 0x1 : 0x0);
-					transformFlags |= (byte)(rotation != null ? 0x2 : 0x0);
-					ObjectMapper.Instance.MapBytes(metadata, transformFlags);
-
-					if (position != null)
-						ObjectMapper.Instance.MapBytes(metadata, position.Value);
-
-					if (rotation != null)
-						ObjectMapper.Instance.MapBytes(metadata, rotation.Value);
-				}
-
-				obj = netBehavior.CreateNetworkObject(Networker, index, metadata.CompressBytes());
-			}
-
-			go.GetComponent<FinishLineBehavior>().networkObject = (FinishLineNetworkObject)obj;
 
 			FinalizeInitialization(go, netBehavior, obj, position, rotation, sendTransform);
 			

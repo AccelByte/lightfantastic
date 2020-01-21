@@ -1,26 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainHUD : BaseHUD
+public class PauseScreen : BaseHUD
 {
+    #region Fields and Properties
     [SerializeField]
-    private GameTimer timer_;
+    private Button backButton_;
     [SerializeField]
-    private Button pauseButton_;
-
-    private Game.InGameHudManager hudMgr;
+    private Button disconnectButton_;
+    private Game.InGameHudManager hudMgr_;
+    #endregion
 
     protected override void Awake()
     {
         base.Awake();
-        hudMgr = GetComponentInParent<Game.InGameHudManager>();
+        hudMgr_ = GetComponentInParent<Game.InGameHudManager>();
         canvas_.sortingLayerName = "UI";
     }
 
-    protected override void Start()
-    {
-        base.Start();
-    }
     public override void OnShow()
     {
     }
@@ -35,11 +32,11 @@ public class MainHUD : BaseHUD
 
     protected override void AddListeners()
     {
-        pauseButton_.onClick.AddListener(ShowPauseScreen);
+        disconnectButton_.onClick.AddListener(DisconnectPlayer);
     }
 
-    private void ShowPauseScreen()
+    private void DisconnectPlayer()
     {
-        hudMgr.ShowPauseScreen();
+        hudMgr_.DisconnectPlayer();
     }
 }
