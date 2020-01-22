@@ -43,20 +43,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbe5b082a785e7641bf1a62b930a3f5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BasePlayerStartNetworkObject: []
   ChatManagerNetworkObject:
   - {fileID: 1000012032569418, guid: b454b1be0b2c3fa4fb48430867af7566, type: 3}
   CubeForgeGameNetworkObject: []
   ExampleProximityPlayerNetworkObject:
   - {fileID: 1000012738253334, guid: feb25ecf90a8d8b4ab922a455249997b, type: 3}
+  FinishLineNetworkObject: []
   GameManagerNetworkObject:
   - {fileID: 2368014717883738015, guid: 08ed84b657352084f983abbd8e33c8de, type: 3}
   InputListenerNetworkObject:
   - {fileID: 4732720514674440848, guid: a1641ddf44fb253478220a57727f2c0f, type: 3}
   MovePlayerPawnNetworkObject:
-  - {fileID: 8889496837549421023, guid: 7b52631758d50d147b33578806a06465, type: 3}
+  - {fileID: 8222275286092878408, guid: 20e4a3cc40d93d9429b2d2f130428a03, type: 3}
   NetworkCameraNetworkObject:
   - {fileID: 139536, guid: 661f29f0c0c86fa47b6015bd602d0ac6, type: 3}
+  PawnSpawnerNetworkObject: []
   RotatePlayerPawnNetworkObject: []
   TestNetworkObject: []
-  BasePlayerStartNetworkObject: []
   automaticScenes: 1
