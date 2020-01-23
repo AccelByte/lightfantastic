@@ -46,6 +46,7 @@ namespace ABRuntimeLogic
             useSteam = cmdLine.ParseCommandLine();
         }
 
+        #region UI Listeners
         void OnEnable()
         {
             Debug.Log("ABAuth OnEnable called!");
@@ -108,6 +109,7 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
         }
+        #endregion // UI Listeners
 
         public void Start()
         {

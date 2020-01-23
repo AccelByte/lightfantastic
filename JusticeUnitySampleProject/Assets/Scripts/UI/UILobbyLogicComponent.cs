@@ -33,4 +33,24 @@ public class UILobbyLogicComponent : MonoBehaviour
     // Buttons
     public Button logoutButton;
     public Button findMatchButton;
+
+    public Button friendsTabButton;
+    public Button invitesTabButton;
+
+    public Button searchFriendButton;
+
+    public Button localPlayerButton;
+    public Button partyMember1stButton;
+    public Button partyMember2ndButton;
+    public Button partyMember3rdButton;
+
+    public Button acceptPartyInvitation;
+    public Button declinePartyInvitation;
+
+    public Button closePopupPartyButton;
+    public Button leaderLeavePartyButton;
+    public Button localLeavePartyButton;
+    public Button memberKickPartyButton;
+
+    public Button cancelMatchmakingButton;
 }

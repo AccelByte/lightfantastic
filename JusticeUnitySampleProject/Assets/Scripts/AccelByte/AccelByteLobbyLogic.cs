@@ -57,6 +57,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupMatchmakingBoard();
     }
 
+    #region UI Listeners
     void OnEnable()
     {
         Debug.Log("ABLobby OnEnable called!");
@@ -106,6 +107,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
         UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(FindMatchButtonClicked);
+        UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(LoadFriendsList);
+        UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetIncomingFriendsRequest);
+        UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetOutgoingFriendsRequest);
+        UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(ClearFriendsUIPrefabs);
+        UIHandlerLobbyComponent.searchFriendButton.onClick.AddListener(FindFriendByEmail);
+        UIHandlerLobbyComponent.localPlayerButton.onClick.AddListener(OnLocalPlayerProfileButtonClicked);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.acceptPartyInvitation.onClick.AddListener(OnAcceptPartyClicked);
+        UIHandlerLobbyComponent.declinePartyInvitation.onClick.AddListener(OnDeclinePartyClicked);
+        UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnPlayerPartyProfileClicked);
+        UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
+        UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
+        UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
     }
 
     void RemoveListeners()
@@ -113,7 +130,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         Debug.Log("ABLobby RemoveListeners!");
         UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.findMatchButton.onClick.RemoveListener(FindMatchButtonClicked);
+        UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.localPlayerButton.onClick.RemoveListener(OnLocalPlayerProfileButtonClicked);
+        UIHandlerLobbyComponent.acceptPartyInvitation.onClick.RemoveListener(OnAcceptPartyClicked);
+        UIHandlerLobbyComponent.declinePartyInvitation.onClick.RemoveListener(OnDeclinePartyClicked);
+        UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnPlayerPartyProfileClicked);
+        UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
+        UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
+        UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
     }
+    #endregion // UI Listeners
 
     private void SetupPopupPartyControl()
     {

@@ -189,20 +189,6 @@ namespace EntitlementUiLogic
         private Equipments.EquipmentList originalEquipmentList = new Equipments.EquipmentList();
         private AllPrefabsCollection allPrefabsCollection;
 
-        #region Inventory Viewer Component 
-
-        [SerializeField] private GameObject samplePrefab;
-        [SerializeField] private UiUtilities uiUtilities;
-        [SerializeField] private InventoryGridLayout gridLayoutHats;
-        [SerializeField] private InventoryGridLayout gridLayoutEffects;
-        [SerializeField] private AccelByteButtonScriptStyle buttonHat;
-        [SerializeField] private AccelByteButtonScriptStyle buttonEffect;
-        [SerializeField] private CanvasGroup promptPanel;
-        [SerializeField] private AccelByteUserProfileLogic abUserProfileLogic;
-        [SerializeField] private SpriteResolver hatSpriteResolver;
-
-        #endregion
-
         private void Start()
         {
             abEntitlements = AccelBytePlugin.GetEntitlements();
@@ -212,6 +198,7 @@ namespace EntitlementUiLogic
             ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
         }
 
+        #region UI Listeners
         void OnEnable()
         {
             Debug.Log("ABEntitlement OnEnable called!");
@@ -278,7 +265,7 @@ namespace EntitlementUiLogic
             UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
             UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
         }
-
+        #endregion // UI Listeners
         public void GetEntitlement()
         {
             //TODO: fix FadeLoadingIn
@@ -315,7 +302,7 @@ namespace EntitlementUiLogic
             }
             else
             {
-                abUserProfileLogic.GetMine(profileResult =>
+                UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
                 {
                     if (!profileResult.IsError)
                     {
@@ -333,10 +320,10 @@ namespace EntitlementUiLogic
                                 EquipFromList(originalEquipmentList);
                             }
                         }
-                        
-                        buttonHat.SetEnable(false);
+
+                        UIHandlerEntitlementComponent.buttonHat.SetEnable(false);
                         ShowHatInventories(true);
-                        buttonEffect.SetEnable(true);
+                        UIHandlerEntitlementComponent.buttonEffect.SetEnable(true);
                         ShowEffectInventories(false);
                     }
                 }
@@ -384,8 +371,8 @@ namespace EntitlementUiLogic
             //TODO: duplication tag handle
             var tag_entitlement_scrollview = new[]
             {
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), gridLayoutHats),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), gridLayoutEffects)
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutHats),
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutEffects)
             };
             
             // Insert entitlement for each kind of tag / equipment type
@@ -405,7 +392,7 @@ namespace EntitlementUiLogic
             
             foreach (var row in tag_entitlement_scrollview)
             {
-                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, samplePrefab);
+                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.samplePrefab);
                 allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
                 
                 for (var i = 0; i < prefabs.Length; i++)
@@ -421,7 +408,7 @@ namespace EntitlementUiLogic
                             {
                                 if (image.As == LightFantasticConfig.IMAGE_AS)
                                 {
-                                    uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
+                                    UIHandlerEntitlementComponent.uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
                                 }
                             }
                         }
@@ -486,8 +473,8 @@ namespace EntitlementUiLogic
         {
             UpdateUserProfileRequest savedEquipment = new UpdateUserProfileRequest();
             savedEquipment.customAttributes = activeEquipmentList.ToCustomAttribute();
-            
-            abUserProfileLogic.UpdateMine(savedEquipment, result =>
+
+            UIHandlerEntitlementComponent.abUserProfileLogic.UpdateMine(savedEquipment, result =>
             {
                 //TODO: handle on error and success
                 if (result.IsError)
@@ -503,29 +490,29 @@ namespace EntitlementUiLogic
 
         public void ShowPromptPanel()
         {
-            promptPanel.alpha = 1;
-            promptPanel.gameObject.SetActive(true);
+            UIHandlerEntitlementComponent.promptPanel.alpha = 1;
+            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(true);
         }
 
         public void HidePromptPanel()
         {
-            promptPanel.alpha = 0;
-            promptPanel.gameObject.SetActive(false);
+            UIHandlerEntitlementComponent.promptPanel.alpha = 0;
+            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(false);
         }
 
         public void ShowHatInventories(bool show)
         {
-            gridLayoutHats.SetVisibility(show);
+            UIHandlerEntitlementComponent.gridLayoutHats.SetVisibility(show);
         }
         
         public void ShowEffectInventories(bool show)
         {
-            gridLayoutEffects.SetVisibility(show);
+            UIHandlerEntitlementComponent.gridLayoutEffects.SetVisibility(show);
         }
 
         private void UpdateAvatar(string itemName)
         {
-            hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
+            UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
         }
     }
 }
