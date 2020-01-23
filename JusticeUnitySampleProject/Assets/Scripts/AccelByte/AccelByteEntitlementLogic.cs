@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.U2D.Animation;
 using Utf8Json;
+using UITools;
+using UnityEngine.SceneManagement;
 
 static class Equipments
 {
@@ -176,7 +178,11 @@ namespace EntitlementUiLogic
     {
         private Entitlements abEntitlements;
         private Items abItems;
-        
+
+        private GameObject UIHandler;
+        private UIEntitlementLogicComponent UIHandlerEntitlementComponent;
+        private UIElementHandler UIElementHandler;
+
         private readonly ItemCriteria ALL_ITEM_CRITERIA = new ItemCriteria();
         private readonly ItemPagingSlicedResult allItemInfo = new ItemPagingSlicedResult();
         private Equipments.EquipmentList activeEquipmentList = new Equipments.EquipmentList();
@@ -204,6 +210,73 @@ namespace EntitlementUiLogic
             ALL_ITEM_CRITERIA.offset = 0;
             ALL_ITEM_CRITERIA.language = LightFantasticConfig.DEFAULT_LANGUAGE;
             ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
+        }
+
+        void OnEnable()
+        {
+            Debug.Log("ABEntitlement OnEnable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        void OnDisable()
+        {
+            Debug.Log("ABEntitlement OnDisable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
+            if (UIHandler != null)
+            {
+                RemoveListeners();
+            }
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
+
+            RefreshUIHandler();
+        }
+
+        public void RefreshUIHandler()
+        {
+            UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+            if (UIHandler == null)
+            {
+                Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+                return;
+            }
+            UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
+            UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+            AddEventListeners();
+        }
+
+        void AddEventListeners()
+        {
+            Debug.Log("ABEntitlement AddEventListeners!");
+            // Bind Buttons
+            UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(GetEntitlement);
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowHatInventories(true));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowEffectInventories(false));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(false));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowHatInventories(false));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowEffectInventories(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
+            UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
+        }
+
+        void RemoveListeners()
+        {
+            Debug.Log("ABEntitlement RemoveListeners!");
+            UIHandlerEntitlementComponent.inventoryButton.onClick.RemoveListener(GetEntitlement);
+            UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
+            UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
+            UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
         }
 
         public void GetEntitlement()

@@ -9,10 +9,15 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
 using System;
+using UnityEngine.SceneManagement;
 
 public class AccelByteLobbyLogic : MonoBehaviour
 {
     private Lobby abLobby;
+
+    private GameObject UIHandler;
+    private UILobbyLogicComponent UIHandlerLobbyComponent;
+    private UIElementHandler UIElementHandler;
 
     private IDictionary<string, FriendData> friendList;
     private IDictionary<string, PartyData> partyMemberList;
@@ -28,65 +33,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private MultiplayerMenu multiplayerConnect;
 
     #region UI Fields
-    [SerializeField]
-    private ScrollRect friendScrollView;
-    [SerializeField]
-    private Transform friendScrollContent;
-    [SerializeField]
-    private Transform friendPrefab;
-    [SerializeField]
-    private InputField emailToFind;
-    [SerializeField]
-    private ScrollRect friendSearchScrollView;
-    [SerializeField]
-    private Transform friendSearchScrollContent;
-    [SerializeField]
-    private Transform friendSearchPrefab;
-    [SerializeField]
-    private Transform friendInvitePrefab;
-    [SerializeField]
-    private Transform sentInvitePrefab;
-    [SerializeField]
-    private Transform matchmakingStatus;
-    [SerializeField]
-    private Transform popupPartyInvitation;
-    [SerializeField]
-    private Transform popupMatchConfirmation;
-    [SerializeField]
-    private Transform popupPartyControl;
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
     private Transform memberCommand;
     private Transform PlayerNameText;
     private Transform playerEmailText;
-    [SerializeField]
-    private Transform[] partyMemberButtons;
-    [SerializeField]
-    private Transform ChatTextbox;
-    [SerializeField]
-    private Transform matchmakingBoard;
     private Transform matchmakingBoardSearchLayout;
     private Transform matchmakingBoardMatchFoundLayout;
     private Transform loadingDots;
     private Transform timeLeftText;
-
-    //Notification
-    [SerializeField]
-    private Text generalNotificationTitle;
-    [SerializeField]
-    private Text generalNotificationText;
-    [SerializeField]
-    private Text incomingFriendNotificationTitle;
-    [SerializeField]
-    private InvitationPrefab invite;
-
-    private UIElementHandler uiHandler;
     #endregion
 
     private void Awake()
     {
-        uiHandler = gameObject.GetComponent<UIElementHandler>();
-
         //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
@@ -98,21 +57,79 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupMatchmakingBoard();
     }
 
+    void OnEnable()
+    {
+        Debug.Log("ABLobby OnEnable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("ABLobby OnDisable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (UIHandler != null)
+        {
+            RemoveListeners();
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("ABLobby OnSceneLoaded level loaded!");
+
+        RefreshUIHandler();
+    }
+
+    public void RefreshUIHandler()
+    {
+        UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+        if (UIHandler == null)
+        {
+            Debug.Log("ABLobby RefreshUIHandler no reference to UI Handler!");
+            return;
+        }
+        UIHandlerLobbyComponent = UIHandler.GetComponent<UILobbyLogicComponent>();
+        UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+        AddEventListeners();
+    }
+
+    void AddEventListeners()
+    {
+        Debug.Log("ABLobby AddEventListeners!");
+        // Bind Buttons
+        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
+        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
+        UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(FindMatchButtonClicked);
+    }
+
+    void RemoveListeners()
+    {
+        Debug.Log("ABLobby RemoveListeners!");
+        UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveListener(FindMatchButtonClicked);
+    }
+
     private void SetupPopupPartyControl()
     {
-        localLeaderCommand = popupPartyControl.Find("LocalLeaderCommand");
-        localmemberCommand = popupPartyControl.Find("LocalMemberCommand");
-        memberCommand = popupPartyControl.Find("MemberCommand");
-        PlayerNameText = popupPartyControl.Find("PlayerNameText");
-        playerEmailText = popupPartyControl.Find("PlayerEmailText");
+        localLeaderCommand = UIHandlerLobbyComponent.popupPartyControl.Find("LocalLeaderCommand");
+        localmemberCommand = UIHandlerLobbyComponent.popupPartyControl.Find("LocalMemberCommand");
+        memberCommand = UIHandlerLobbyComponent.popupPartyControl.Find("MemberCommand");
+        PlayerNameText = UIHandlerLobbyComponent.popupPartyControl.Find("PlayerNameText");
+        playerEmailText = UIHandlerLobbyComponent.popupPartyControl.Find("PlayerEmailText");
 
         // TODO: Add player Image & player stats
     }
 
     private void SetupMatchmakingBoard()
     {
-        matchmakingBoardSearchLayout = matchmakingBoard.Find("SearchModeLayout");
-        matchmakingBoardMatchFoundLayout = matchmakingBoard.Find("MatchFoundLayout");
+        matchmakingBoardSearchLayout = UIHandlerLobbyComponent.matchmakingBoard.Find("SearchModeLayout");
+        matchmakingBoardMatchFoundLayout = UIHandlerLobbyComponent.matchmakingBoard.Find("MatchFoundLayout");
         loadingDots = matchmakingBoardSearchLayout.Find("LoadingDots");
         timeLeftText = matchmakingBoardSearchLayout.Find("TimeText");
     }
@@ -215,7 +232,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindFriendByEmail()
     {
-        AccelBytePlugin.GetUser().GetUserByEmailAddress(emailToFind.text, OnFindFriendByEmailRequest);
+        AccelBytePlugin.GetUser().GetUserByEmailAddress(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
     }
 
     public  void SendFriendRequest(string friendId, ResultCallback callback)
@@ -314,13 +331,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
         }
 
-        popupMatchConfirmation.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
     public void OnDeclineReadyForMatchClicked()
     {
         abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
-        popupMatchConfirmation.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
     public void OnAcceptPartyClicked()
@@ -334,12 +351,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
         }
 
-        popupPartyInvitation.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
     }
 
     public void OnDeclinePartyClicked()
     {
-        popupPartyInvitation.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
         Debug.Log("OnDeclinePartyClicked Join party failed");
     }
 
@@ -350,11 +367,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         if (isLocalPlayerInParty)
         {
             // Remove listerner before closing
-            if (popupPartyControl.gameObject.activeSelf)
+            if (UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf)
             {
                 memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
             }
-            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
         }
     }
 
@@ -375,7 +392,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void OnLeavePartyButtonClicked()
     {
-        popupPartyControl.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
         LeaveParty();
     }
 
@@ -431,8 +448,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         foreach (KeyValuePair<string, FriendData> friend in friendList)
         {
             int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
-            FriendPrefab friendPrefab = Instantiate(this.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
-            friendPrefab.transform.SetParent(friendScrollContent, false);
+            FriendPrefab friendPrefab = Instantiate(UIHandlerLobbyComponent.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
+            friendPrefab.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
 
             if (friend.Value.IsOnline == "0")
             {
@@ -444,7 +461,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online",  friend.Value.UserId, friend.Value.IsOnline == "1");
                 friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
             }
-            friendScrollView.Rebuild(CanvasUpdate.Layout);
+            UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
         }
     }
 
@@ -485,14 +502,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Friends abInvites = result.Value;
                 for (int i = 0; i < abInvites.friendsId.Length; i++)
                 {
-                    Transform friend = Instantiate(friendInvitePrefab, Vector3.zero, Quaternion.identity);
-                    friend.transform.SetParent(friendScrollContent, false);
+                    Transform friend = Instantiate(UIHandlerLobbyComponent.friendInvitePrefab, Vector3.zero, Quaternion.identity);
+                    friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
 
                     friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
                 }
             }
         }
-        friendScrollView.Rebuild(CanvasUpdate.Layout);
+        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
@@ -515,8 +532,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Friends abInvites = result.Value;
                 for (int i = 0; i < abInvites.friendsId.Length; i++)
                 {
-                    Transform friend = Instantiate(sentInvitePrefab, Vector3.zero, Quaternion.identity);
-                    friend.transform.SetParent(friendScrollContent, false);
+                    Transform friend = Instantiate(UIHandlerLobbyComponent.sentInvitePrefab, Vector3.zero, Quaternion.identity);
+                    friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
 
                     friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
 
@@ -524,14 +541,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
         }
 
-        friendScrollView.Rebuild(CanvasUpdate.Layout);
+        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
     private void OnFindFriendByEmailRequest(Result<PagedPublicUsersInfo> result)
     {
-        for (int i = 0; i < friendSearchScrollContent.childCount; i++)
+        for (int i = 0; i < UIHandlerLobbyComponent.friendSearchScrollContent.childCount; i++)
         {
-            Destroy(friendSearchScrollContent.GetChild(i).gameObject);
+            Destroy(UIHandlerLobbyComponent.friendSearchScrollContent.GetChild(i).gameObject);
         }
 
         if (result.IsError)
@@ -547,10 +564,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Debug.Log("Display Name: " + result.Value.data[0].displayName);
                 Debug.Log("UserID: " + result.Value.data[0].userId);
 
-                SearchFriendPrefab friend = Instantiate(friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
-                friend.transform.SetParent(friendSearchScrollContent, false);
+                SearchFriendPrefab friend = Instantiate(UIHandlerLobbyComponent.friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
+                friend.transform.SetParent(UIHandlerLobbyComponent.friendSearchScrollContent, false);
                 friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
-                friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
+                UIHandlerLobbyComponent.friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
             }
             else
             {
@@ -942,18 +959,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ClearFriendsUIPrefabs()
     {
-        for (int i = 0; i < friendScrollContent.childCount; i++)
+        for (int i = 0; i < UIHandlerLobbyComponent.friendScrollContent.childCount; i++)
         {
-            Destroy(friendScrollContent.GetChild(i).gameObject);
+            Destroy(UIHandlerLobbyComponent.friendScrollContent.GetChild(i).gameObject);
         }
     }
 
     private void ClearPartySlots()
     {
         // Clear the party slot buttons
-        for (int i = 0; i < partyMemberButtons.Length; i++)
+        for (int i = 0; i < UIHandlerLobbyComponent.partyMemberButtons.Length; i++)
         {
-            partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
+            UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
         }
 
         partyMemberList.Clear();
@@ -967,7 +984,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
-                partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
+                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
             }
         }
@@ -988,9 +1005,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     public void ShowPlayerProfile(PartyData memberData, bool isLocalPlayerButton = false)
     {
         // If visible then toogle it off to refresh the data
-        if (popupPartyControl.gameObject.activeSelf)
+        if (UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf)
         {
-            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
             memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         }
 
@@ -1021,7 +1038,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(memberData.UserID));
 
             // Show the popup
-            popupPartyControl.gameObject.SetActive(!popupPartyControl.gameObject.activeSelf);
+            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
         }
     }
 
@@ -1034,8 +1051,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     IEnumerator ShowPopupPartyInvitation(string displayName)
     {
         yield return new WaitForSecondsRealtime(1.0f);
-        popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + displayName;
-        popupPartyInvitation.gameObject.SetActive(true);
+        UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + displayName;
+        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
         Debug.Log("ShowPopupPartyInvitation Popup is opened");
     }
 
@@ -1090,12 +1107,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         matchmakingBoardSearchLayout.gameObject.SetActive(false);
         matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
-        matchmakingBoard.gameObject.SetActive(show);
+        UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
 
         if (gameFound)
         {
             matchmakingBoardMatchFoundLayout.gameObject.SetActive(true);
-            matchmakingBoard.gameObject.SetActive(true);
+            UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(true);
         }
         else
         {
@@ -1117,7 +1134,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             textChat += s + "\n";
         }
-        ChatTextbox.GetComponentInChildren<Text>().text = textChat;
+        UIHandlerLobbyComponent.ChatTextbox.GetComponentInChildren<Text>().text = textChat;
     }
 
     // On quit set user status to offline
@@ -1144,9 +1161,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #region AccelByte Notification Callbacks
     private void OnNotificationReceived(Result<Notification> result)
     {
-        generalNotificationTitle.text = result.Value.topic;
-        generalNotificationText.text = result.Value.payload;
-        uiHandler.ShowNotification(uiHandler.generalNotification);
+        UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
+        UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
+        UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
     }
 
     //This is for updating your friends list with up to date player information
@@ -1181,9 +1198,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             if (!friendList.ContainsKey(result.Value.userId))
             {
-                incomingFriendNotificationTitle.text = result.Value.displayName + " sent you a friend request!";
-                invite.SetupInvitationPrefab(result.Value.userId);
-                uiHandler.ShowNotification(uiHandler.inviteNotification);
+                UIHandlerLobbyComponent.incomingFriendNotificationTitle.text = result.Value.displayName + " sent you a friend request!";
+                UIHandlerLobbyComponent.invite.SetupInvitationPrefab(result.Value.userId);
+                UIElementHandler.ShowNotification(UIElementHandler.inviteNotification);
             }
         }
     }
