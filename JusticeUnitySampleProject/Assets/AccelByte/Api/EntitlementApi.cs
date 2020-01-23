@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -47,6 +47,39 @@ namespace AccelByte.Api
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             var result = response.TryParseJson<EntitlementPagingSlicedResult>();
+            callback.Try(result);
+        }
+
+        public IEnumerator ConsumeUserEntitlement(string @namespace, string userId, string userAccessToken, string entitlementId, int useCount,
+            ResultCallback<EntitlementInfo> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(@namespace, "Can't consume user entitlements! namespace parameter is null!");
+            Assert.IsNotNull(userId, "Can't consume user entitlements! userId parameter is null!");
+            Assert.IsNotNull(userAccessToken, "Can't consume user entitlements! userAccessToken parameter is null!");
+            Assert.IsNotNull(entitlementId, "Can't consume user entitlements! entitlementId parameter is null!");
+
+            ConsumeUserEntitlementRequest consumeUserEntitlement = new ConsumeUserEntitlementRequest
+            {
+                useCount = useCount
+            };
+
+            var request = HttpRequestBuilder
+                .CreatePut(this.baseUrl + "/public/namespaces/{namespace}/users/{userId}/entitlements/{entitlementId}/decrement")
+                .WithPathParam("namespace", @namespace)
+                .WithPathParam("userId", userId)
+                .WithPathParam("entitlementId", entitlementId)
+                .WithBearerAuth(userAccessToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(consumeUserEntitlement.ToUtf8Json())
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<EntitlementInfo>();
             callback.Try(result);
         }
     }

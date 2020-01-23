@@ -1640,6 +1640,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AB_SecondaryButton
       objectReference: {fileID: 0}
+    - target: {fileID: 9201604018932453393, guid: 85385663b5492834fa979be9f9997c75,
+        type: 3}
+      propertyPath: text
+      value: CANCEL
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85385663b5492834fa979be9f9997c75, type: 3}
 --- !u!224 &3905950200305960398 stripped

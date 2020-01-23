@@ -2,6 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace AccelByte.Models
@@ -21,7 +22,7 @@ namespace AccelByte.Models
         [DataMember] public string language { get; set; }
         [DataMember] public string timeZone { get; set; }
         [DataMember] public string dateOfBirth { get; set; }
-        [DataMember] public object customAttributes { get; set; }
+        [DataMember] public Dictionary<string, object> customAttributes { get; set; }
     }
 
     [DataContract]
@@ -33,6 +34,7 @@ namespace AccelByte.Models
         [DataMember] public string avatarSmallUrl { get; set; }
         [DataMember] public string avatarUrl { get; set; }
         [DataMember] public string avatarLargeUrl { get; set; }
+        [DataMember] public Dictionary<string, object> customAttributes { get; set; }
     }
 
     [DataContract]
@@ -46,7 +48,7 @@ namespace AccelByte.Models
         [DataMember] public string avatarLargeUrl { get; set; }
         [DataMember] public string timeZone { get; set; }
         [DataMember] public string dateOfBirth { get; set; }
-        [DataMember] public object customAttributes { get; set; }
+        [DataMember] public Dictionary<string, object> customAttributes { get; set; }
     }
 
     [DataContract]

@@ -14,7 +14,7 @@ namespace Game
     ///     The networked compoenent of the player pawn, 
     ///     handles all communications over the network and updateing the entity's state
     /// </summary>
-    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(BoxCollider2D), typeof(Animator))]
     public class BasePlayerPawn : MovePlayerPawnBehavior
     {
         private Rigidbody2D rb2d;

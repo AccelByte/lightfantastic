@@ -5,5 +5,6 @@ using UnityEngine;
 public enum DSNotifStatus
 {
     CREATING,
-    READY
+    READY,
+    BUSY
 }

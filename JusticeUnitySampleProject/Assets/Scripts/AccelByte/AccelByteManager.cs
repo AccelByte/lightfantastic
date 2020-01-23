@@ -8,7 +8,7 @@ public class AccelByteManager : MonoBehaviour
     private static AccelByteManager instance;
     public static AccelByteManager Instance { get { return instance; } }
 
-    
+
     private AccelByteAuthenticationLogic authLogic;
     public AccelByteAuthenticationLogic AuthLogic { get { return authLogic; } }
     private AccelByteLobbyLogic lobbyLogic;
@@ -20,6 +20,17 @@ public class AccelByteManager : MonoBehaviour
     public AccelByteGameProfileLogic GameProfileLogic { get { return gameprofileLogic; } }
     private AccelByteGameProfileLogic userProfileLogic;
     public AccelByteGameProfileLogic UserProfileLogic { get { return userProfileLogic; } }
+    private MultiplayerMenu multiplayerLogic;
+
+    [Header("Server Logic")]
+    [SerializeField]
+    private AccelByteServerLogic serverLogicPrefab = null;
+    [SerializeField]
+    private string localDSName = "LocalTestDS";
+    public string LocalDSName { get { return localDSName; } }
+
+    public AccelByteServerLogic ServerLogic { get { return serverLogic; } }
+    private AccelByteServerLogic serverLogic;
 
     private void Awake()
     {
@@ -36,5 +47,21 @@ public class AccelByteManager : MonoBehaviour
         lobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
         walletLogic = gameObject.GetComponent<AccelByteWalletLogic>();
         gameprofileLogic = gameObject.GetComponent<AccelByteGameProfileLogic>();
+        multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
+        MainThreadTaskRunner.CreateGameObject();
+    }
+
+    private void Start()
+    {
+        if (serverLogicPrefab != null)
+        {
+            serverLogic = Instantiate(serverLogicPrefab, Vector3.zero, Quaternion.identity);
+            serverLogic.onServerRegistered += multiplayerLogic.Host;
+            serverLogic.LocalDSName = localDSName;
+        }
+        else
+        {
+            Debug.Log("ServerLogicPrefab is null, this instance will become a client");
+        }
     }
 }

@@ -1,10 +1,10 @@
 {
   "PublisherNamespace": "accelbyte",
-  "Namespace": "lightfantastic",
-  "BaseUrl": "http://justice-iam-service",
-  "DSMServerUrl": "http://justice-dsm-service/dsm",
-  "IamServerUrl": "http://justice-iam-service/iam",
-  "ClientId": "73b0b59a31ef454ca1af43f80d887c74",
-  "ClientSecret": "4Aiur6a,BJ,fm1u#^EWIS$%knFtA68xn",
-  "RedirectUri": "http://localhost"
+  "Namespace": "accelbytetestingunity",
+  "BaseUrl": "https://dev.versusevil.accelbyte.io",
+  "DSMServerUrl": "https://dev.versusevil.accelbyte.io/dsmcontroller",
+  "IamServerUrl": "https://dev.versusevil.accelbyte.io/iam",
+  "ClientId": "check_lastpass",
+  "ClientSecret": "check_lastpass",
+  "RedirectUri": "http://127.0.0.1"
 }

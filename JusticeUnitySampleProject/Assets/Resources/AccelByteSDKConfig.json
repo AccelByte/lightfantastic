@@ -1,1 +1,18 @@
-{"PublisherNamespace":"accelbyte","Namespace":"lightfantastic","UseSessionManagement":true,"BaseUrl":"https://api.demo.accelbyte.io","LoginServerUrl":"https://api.demo.accelbyte.io","IamServerUrl":"https://api.demo.accelbyte.io/iam","PlatformServerUrl":"https://api.demo.accelbyte.io/platform","BasicServerUrl":"https://api.demo.accelbyte.io/basic","LobbyServerUrl":"wss://demo.accelbyte.io/lobby/","CloudStorageServerUrl":"https://api.demo.accelbyte.io/binary-store","TelemetryServerUrl":"https://api.demo.accelbyte.io/telemetry","GameProfileServerUrl":"https://api.demo.accelbyte.io/soc-profile","StatisticServerUrl":"https://api.demo.accelbyte.io/statistic","ClientId":"1f48b20616894c08a9f0b0dee0525f4d","ClientSecret":".@!Oe)&9X;;@]iFH)2cET_dPnlCLg9l6","RedirectUri":"http://127.0.0.1"}
+{
+    "PublisherNamespace": "accelbyte",
+    "Namespace": "accelbytetestingunity",
+    "UseSessionManagement": true,
+    "BaseUrl": "https://api.dev.versusevil.accelbyte.io",
+    "LoginServerUrl": "https://api.dev.versusevil.accelbyte.io",
+    "IamServerUrl": "https://api.dev.versusevil.accelbyte.io/iam",
+    "PlatformServerUrl": "https://api.dev.versusevil.accelbyte.io/platform",
+    "BasicServerUrl": "https://api.dev.versusevil.accelbyte.io/basic",
+    "LobbyServerUrl": "wss://dev.versusevil.accelbyte.io/lobby/",
+    "CloudStorageServerUrl": "https://api.dev.versusevil.accelbyte.io/binary-store",
+    "TelemetryServerUrl": "https://api.dev.versusevil.accelbyte.io/telemetry",
+    "GameProfileServerUrl": "https://api.dev.versusevil.accelbyte.io/soc-profile",
+    "StatisticServerUrl": "https://api.dev.versusevil.accelbyte.io/statistic",
+    "ClientId": "check_lastpass",
+    "ClientSecret": "check_lastpass",
+    "RedirectUri": "http://127.0.0.1"
+}
