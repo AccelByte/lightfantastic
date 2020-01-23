@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -52,6 +52,32 @@ namespace AccelByte.Api
                     this.session.AuthorizationToken,
                     offset,
                     limit,
+                    callback));
+        }
+
+        /// <summary>
+        /// Consume a user entitlement.
+        /// </summary>
+        /// <param name="entitlementId">The id of the user entitlement.</param>
+        /// <param name="useCount">Number of consumed entitlement</param>
+        /// <param name="callback">Returns a Result via callback when completed</param>
+        public void ConsumeUserEntitlement(string entitlementId, int useCount, ResultCallback<EntitlementInfo> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+
+            this.coroutineRunner.Run(
+                this.api.ConsumeUserEntitlement(
+                    this.@namespace,
+                    this.session.UserId,
+                    this.session.AuthorizationToken,
+                    entitlementId,
+                    useCount,
                     callback));
         }
     }

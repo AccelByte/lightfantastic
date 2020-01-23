@@ -33,11 +33,11 @@ public class AccelByteStatisticLogic : MonoBehaviour
         };
 
         statistic = AccelBytePlugin.GetStatistic();
-        statistic.GetUserStatItemsByStatCodes(playerStatistic, GetStatisticCallback);
+        statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
     }
 
     #region AccelByte Statistic Callback
-    public void GetStatisticCallback(Result<StatItemPagingSlicedResult> result)
+    public void GetStatisticCallback(Result<PagedStatItems> result)
     {
         if (result.IsError)
         {

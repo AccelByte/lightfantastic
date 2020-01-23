@@ -56,18 +56,7 @@ namespace Game
         public PawnSpawner PSpawner
         {
             get { return pawnSpawner_; }
-            set
-            {
-                PawnSpawner input = value as PawnSpawner;
-                if (input != null)
-                {
-                    pawnSpawner_ = input;
-                }
-                else
-                {
-                    Debug.LogError("Failed to register Pawn Spawner, Invalid Type");
-                }
-            }
+            set { pawnSpawner_ = value; }
         }
 
         [Header("Virtual Cameras")]
@@ -92,6 +81,7 @@ namespace Game
         {
             SetupEventHandlers();
             vCam_ = Instantiate(vCam, Camera.main.transform.position, Quaternion.identity);
+            MainThreadTaskRunner.CreateGameObject();
         }
 
         protected override void NetworkStart()

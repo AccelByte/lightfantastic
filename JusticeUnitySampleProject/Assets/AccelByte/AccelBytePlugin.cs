@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2018-2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -8,6 +8,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using AccelByte.Core;
 using AccelByte.Models;
+using AccelByte.Server;
 using HybridWebSocket;
 using UnityEngine;
 
@@ -31,6 +32,7 @@ namespace AccelByte.Api
         private static GameProfiles gameProfiles;
         private static Entitlements entitlements;
         private static Statistic statistic;
+        private static Qos qos;
 
         public static Config Config { get { return AccelBytePlugin.config; } }
 
@@ -289,6 +291,18 @@ namespace AccelByte.Api
             }
 
             return AccelBytePlugin.statistic;
+        }
+
+        public static Qos GetQos()
+        {
+            if (AccelBytePlugin.qos == null)
+            {
+                AccelBytePlugin.qos = new Qos(
+                    new QosManagerApi(AccelBytePlugin.config.QosManagerServerUrl, AccelBytePlugin.httpWorker),
+                    AccelBytePlugin.coroutineRunner);
+            }
+
+            return AccelBytePlugin.qos;
         }
     }
 }
