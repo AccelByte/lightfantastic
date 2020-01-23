@@ -33,6 +33,7 @@ namespace AccelByte.Api
         private static Entitlements entitlements;
         private static Statistic statistic;
         private static Qos qos;
+        private static Agreement agreement;
 
         public static Config Config { get { return AccelBytePlugin.config; } }
 
@@ -303,6 +304,20 @@ namespace AccelByte.Api
             }
 
             return AccelBytePlugin.qos;
+        }
+
+        public static Agreement GetAgreement()
+        {
+            if (AccelBytePlugin.agreement == null)
+            {
+                AccelBytePlugin.agreement = new Agreement(
+                    new AgreementApi(AccelBytePlugin.Config.AgreementServerUrl, AccelBytePlugin.httpWorker),
+                    AccelBytePlugin.user.Session,
+                    AccelBytePlugin.config.Namespace,
+                    AccelBytePlugin.coroutineRunner);
+            }
+
+            return AccelBytePlugin.agreement;
         }
     }
 }

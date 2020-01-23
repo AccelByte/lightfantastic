@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class UiUtilities : MonoBehaviour
@@ -19,5 +20,22 @@ public class UiUtilities : MonoBehaviour
         image.sprite = Sprite.Create(t2D, new Rect(0,0 , t2D.width, t2D.height), new Vector2(0, 0));
         www.Dispose();
         www = null;
+    }
+
+    public void GetText(string url, Action<string> textCallback)
+    {
+        
+        StartCoroutine(GetTextEnumerator(url, textCallback));
+    }
+
+    private static IEnumerator GetTextEnumerator(string url, Action<string> textCallback)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(url);
+        yield return webRequest.SendWebRequest();
+
+        if (!webRequest.isNetworkError && !webRequest.isHttpError)
+        {
+            textCallback(webRequest.downloadHandler.text);
+        }
     }
 }
