@@ -29,6 +29,7 @@ namespace Game
         private CharacterSpeedSetter speedSetter;
         private CharacterHatSetter hatSetter;
         private CharacterParticleSetter particleSetter;
+        private ParallaxSetter parallaxSetter;
         [SerializeField]
         private float speedDecayConst = 0.1f;
         [SerializeField]
@@ -60,6 +61,7 @@ namespace Game
             speedSetter = GetComponent<CharacterSpeedSetter>();
             hatSetter = GetComponent<CharacterHatSetter>();
             particleSetter = GetComponent<CharacterParticleSetter>();
+            parallaxSetter = gameMgr.parallaxSetter;
         }
 
         private void PrepareTouchButton()
@@ -171,6 +173,7 @@ namespace Game
             {
                 networkObject.SendRpc(RPC_UPDATE_POSITION, Receivers.Others, newPos);
                 transform.position = networkObject.Position = newPos;
+                parallaxSetter.SetSpeed(currSpeed);
             }
         }
 
