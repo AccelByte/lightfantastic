@@ -8,4 +8,6 @@
         public const string hat = "hat";
         public const string effect = "effect";
     }
+
+    public const float CURR_SPEED_MULTIPLIER_ANIMATION = 200.0f;
 }

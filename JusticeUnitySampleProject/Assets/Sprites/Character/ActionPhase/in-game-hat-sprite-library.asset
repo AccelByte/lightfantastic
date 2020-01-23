@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf7c34a0dc4e6348bea04faa70406ee, type: 3}
+  m_Name: in-game-hat-sprite-library
+  m_EditorClassIdentifier: 
+  m_Labels:
+  - m_Name: hat
+    m_Hash: -1844728759
+    m_CategoryList:
+    - m_Name: Bandana
+      m_Hash: -1748469671
+      m_Sprite: {fileID: 21300000, guid: 4e7ee4e5762d2d046afd71d6cf2ce1f4, type: 3}
+    - m_Name: Baseball
+      m_Hash: -1438036547
+      m_Sprite: {fileID: 21300000, guid: 4d640e518805b8a41b5157a99a81bf3c, type: 3}
+    - m_Name: Cowboy
+      m_Hash: 1433075814
+      m_Sprite: {fileID: 21300000, guid: 2fe5347ff9341f442af3a9ee84e21031, type: 3}
+    - m_Name: Crown
+      m_Hash: -1850174752
+      m_Sprite: {fileID: 21300000, guid: a46be0015584d6249950177a7647fa76, type: 3}
+    - m_Name: Detective
+      m_Hash: -2078931979
+      m_Sprite: {fileID: 21300000, guid: c2883e254286f9744859fca16ec3e530, type: 3}
+    - m_Name: Magic
+      m_Hash: -926431702
+      m_Sprite: {fileID: 21300000, guid: a11b81fa506a77146bbdbb45d6c3da58, type: 3}
+    - m_Name: Sweatband
+      m_Hash: 1957459409
+      m_Sprite: {fileID: 21300000, guid: fed8f34f0064b0349b0fa12f477c88e1, type: 3}
+    - m_Name: 
+      m_Hash: 0
+      m_Sprite: {fileID: 0}
