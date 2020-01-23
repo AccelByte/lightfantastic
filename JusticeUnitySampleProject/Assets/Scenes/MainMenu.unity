@@ -842,6 +842,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &1902262257 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4791581472392637644, guid: 119d7998bf7907646855f0df65473b22,
+    type: 3}
+  m_PrefabInstance: {fileID: 172419817898651101}
+  m_PrefabAsset: {fileID: 0}
 --- !u!225 &1915736427 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 172419818672749750, guid: 119d7998bf7907646855f0df65473b22,
@@ -988,7 +994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7d4cc2b7d5e504b999cb9452f607e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectToLocal: 0
+  connectToLocal: 1
   gameMode: testUnity
   friendScrollView: {fileID: 732458386}
   friendScrollContent: {fileID: 1617112408}
@@ -1029,8 +1035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f8dc46b9c602740ba73de41163e602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverLogicPrefab: {fileID: 7407485024963274912, guid: a8fad4b41c65e8140bfaabeb36628938,
-    type: 3}
+  serverLogicPrefab: {fileID: 0}
   localDSName: LocalTestDS
 --- !u!114 &2006644175
 MonoBehaviour:
@@ -1157,7 +1162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 327bc3df742849342a9c18b7e60b378b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerProfilePrefab: {fileID: 0}
+  PlayerProfilePrefab: {fileID: 1902262257}
 --- !u!1 &2075930364 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 172419818562650913, guid: 119d7998bf7907646855f0df65473b22,
