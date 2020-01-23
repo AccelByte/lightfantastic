@@ -392,7 +392,7 @@ namespace EntitlementUiLogic
             
             foreach (var row in tag_entitlement_scrollview)
             {
-                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.samplePrefab);
+                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.itemInventoryPrefab);
                 allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
                 
                 for (var i = 0; i < prefabs.Length; i++)

@@ -40,7 +40,7 @@ public class AccelByteUserProfileLogic : MonoBehaviour
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABEntitlement OnEnable called!");
+        Debug.Log("ABUserProfile OnEnable called!");
 
         // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -48,7 +48,7 @@ public class AccelByteUserProfileLogic : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.Log("ABEntitlement OnDisable called!");
+        Debug.Log("ABUserProfile OnDisable called!");
 
         // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -61,7 +61,7 @@ public class AccelByteUserProfileLogic : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
+        Debug.Log("ABUserProfile OnSceneLoaded level loaded!");
 
         RefreshUIHandler();
     }
@@ -71,7 +71,7 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
         if (UIHandler == null)
         {
-            Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+            Debug.Log("ABUserProfile RefreshUIHandler no reference to UI Handler!");
             return;
         }
         UIHandlerUserProfileComponent = UIHandler.GetComponent<UIUserProfileLogicComponent>();
@@ -82,13 +82,13 @@ public class AccelByteUserProfileLogic : MonoBehaviour
 
     void AddEventListeners()
     {
-        Debug.Log("ABEntitlement AddEventListeners!");
+        Debug.Log("ABUserProfile AddEventListeners!");
         // Bind Buttons
     }
 
     void RemoveListeners()
     {
-        Debug.Log("ABEntitlement RemoveListeners!");
+        Debug.Log("ABUserProfile RemoveListeners!");
     }
     #endregion // UI Listeners
 

@@ -7,7 +7,7 @@ using UnityEngine.Experimental.U2D.Animation;
 public class UIEntitlementLogicComponent : MonoBehaviour
 {
     #region Inventory Viewer Component 
-    public GameObject samplePrefab;
+    public GameObject itemInventoryPrefab;
     public UiUtilities uiUtilities;
     public InventoryGridLayout gridLayoutHats;
     public InventoryGridLayout gridLayoutEffects;

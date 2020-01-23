@@ -36,7 +36,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABEntitlement OnEnable called!");
+        Debug.Log("ABStatistics OnEnable called!");
 
         // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -44,7 +44,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.Log("ABEntitlement OnDisable called!");
+        Debug.Log("ABStatistics OnDisable called!");
 
         // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -57,7 +57,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
+        Debug.Log("ABStatistics OnSceneLoaded level loaded!");
 
         RefreshUIHandler();
     }
@@ -67,7 +67,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
         UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
         if (UIHandler == null)
         {
-            Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+            Debug.Log("ABStatistics RefreshUIHandler no reference to UI Handler!");
             return;
         }
         UIHandlerStatisticsComponent = UIHandler.GetComponent<UIStatisticsLogicComponent>();
@@ -78,13 +78,13 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
     void AddEventListeners()
     {
-        Debug.Log("ABEntitlement AddEventListeners!");
+        Debug.Log("ABStatistics AddEventListeners!");
         // Bind Buttons
     }
 
     void RemoveListeners()
     {
-        Debug.Log("ABEntitlement RemoveListeners!");
+        Debug.Log("ABStatistics RemoveListeners!");
     }
     #endregion // UI Listeners
 

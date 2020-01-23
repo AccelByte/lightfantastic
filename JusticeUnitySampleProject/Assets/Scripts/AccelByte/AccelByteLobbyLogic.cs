@@ -52,9 +52,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         partyMemberList = new Dictionary<string, PartyData>();
         chatList = new List<string>();
         multiplayerConnect = gameObject.GetComponent<MultiplayerMenu>();
-
-        SetupPopupPartyControl();
-        SetupMatchmakingBoard();
     }
 
     #region UI Listeners
@@ -75,6 +72,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
         if (UIHandler != null)
         {
+            Debug.Log("ABLobby OnDisable remove all listeners!");
             RemoveListeners();
         }
     }
@@ -98,6 +96,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
         AddEventListeners();
+
+        SetupPopupPartyControl();
+        SetupMatchmakingBoard();
     }
 
     void AddEventListeners()
