@@ -193,9 +193,12 @@ namespace AccelByte.Models
     #region Matchmaking
 
     [DataContract]
-    public class GameMode
+    public class StartMatchmakingRequest
     {
         [DataMember] public string gameMode;
+        [DataMember] public string serverName;
+        [DataMember] public string clientVersion;
+        [DataMember] public string latencies;
     }
 
     [DataContract]

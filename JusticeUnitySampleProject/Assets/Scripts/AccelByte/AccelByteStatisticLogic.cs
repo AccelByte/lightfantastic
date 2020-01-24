@@ -31,7 +31,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
         };
 
         statistic = AccelBytePlugin.GetStatistic();
-        statistic.GetUserStatItemsByStatCodes(playerStatistic, GetStatisticCallback);
+        statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
     }
     #region UI Listeners
     void OnEnable()
@@ -89,7 +89,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
     #endregion // UI Listeners
 
     #region AccelByte Statistic Callback
-    public void GetStatisticCallback(Result<StatItemPagingSlicedResult> result)
+    public void GetStatisticCallback(Result<PagedStatItems> result)
     {
         if (result.IsError)
         {

@@ -25,13 +25,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInfo abPartyInfo;
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
-    private string gameMode = "test";
+    [SerializeField]
+    private bool connectToLocal;
+    [SerializeField]
+    private string gameMode = "testUnity";
     private bool isLocalPlayerInParty;
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
     private List<string> chatList;
     private MultiplayerMenu multiplayerConnect;
-
+    private AccelByteManager accelByteManager;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -46,6 +49,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void Awake()
     {
+        uiHandler = gameObject.GetComponent<UIElementHandler>();
+        accelByteManager = gameObject.GetComponent<AccelByteManager>();
         //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
@@ -180,6 +185,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             SetupFriendCallbacks();
             SetupMatchmakingCallbacks();
             SetupChatCallbacks();
+
+            //AccelByteManager.Instance.GameProfileLogic.SetupGameProfile();
         }
         else
         {
@@ -264,10 +271,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindFriendByEmail()
     {
-        AccelBytePlugin.GetUser().GetUserByEmailAddress(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
+        AccelBytePlugin.GetUser().SearchUsers(emailToFind.text, OnFindFriendByEmailRequest);
     }
 
-    public  void SendFriendRequest(string friendId, ResultCallback callback)
+    public void SendFriendRequest(string friendId, ResultCallback callback)
     {
         abLobby.RequestFriend(friendId, callback);
     }
@@ -336,7 +343,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindMatch()
     {
-        abLobby.StartMatchmaking(gameMode, OnFindMatch);
+        if (connectToLocal)
+        {
+            abLobby.StartMatchmaking(gameMode, accelByteManager.LocalDSName, OnFindMatch);
+        }
+        else
+        {
+            abLobby.StartMatchmaking(gameMode, OnFindMatch);
+        }
     }
 
     public void FindMatchButtonClicked()
@@ -347,7 +361,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            abLobby.StartMatchmaking(gameMode, OnFindMatch);
+            FindMatch();
         }
     }
 
@@ -490,7 +504,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
             else
             {
-                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online",  friend.Value.UserId, friend.Value.IsOnline == "1");
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online", friend.Value.UserId, friend.Value.IsOnline == "1");
                 friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
             }
             UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
@@ -689,7 +703,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             for (int i = 0; i < result.Value.members.Length; i++)
             {
                 // get member info
-                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);                
+                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);
                 GetPartyMemberInfo(result.Value.members[i]);
             }
             StartCoroutine(WaitForUpdatedPartyInfo());
@@ -742,7 +756,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnGetUserOnInvite(Result<UserData> result)
     {
-        if(result.IsError)
+        if (result.IsError)
         {
             Debug.Log("OnGetUserOnInvite failed:" + result.Error.Message);
             Debug.Log("OnGetUserOnInvite Response Code::" + result.Error.Code);
@@ -875,7 +889,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnFindMatchCompleted Finding matchmaking Completed");
             Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
-            WriteInDebugBox(" Match status: " + result.Value.status);
+            Debug.Log(" Match status: " + result.Value.status);
+            Debug.Log(" Expected match status: " + MatchmakingNotifStatus.done.ToString());
             abMatchmakingNotif = result.Value;
             if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
@@ -949,21 +964,29 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnSuccessMatch success match completed");
-
             // DSM on process creating DS
             if (result.Value.status == DSNotifStatus.CREATING.ToString())
             {
                 // Show countdown waiting for the DS creation
-                WriteInDebugBox("Waiting for the game server!");
+                Debug.Log("Waiting for the game server!");
             }
             // DS is ready
             else if (result.Value.status == DSNotifStatus.READY.ToString())
             {
                 // Set IP and port to persistent and connect to the game
-                WriteInDebugBox("Entering the game!");
+                Debug.Log("Entering the game!");
 
                 Debug.Log("Lobby OnSuccessMatch Connect");
                 StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString()));
+            }
+            else if (result.Value.status == DSNotifStatus.BUSY.ToString())
+            {
+                Debug.Log("Entering the game!");
+
+                Debug.Log("Lobby OnSuccessMatch Connect");
+                Debug.Log("ip: " + result.Value.ip + "port: " + result.Value.port);
+                //StartStartCoroutine(result.Value.ip, result.Value.port.ToString());
+                MainThreadTaskRunner.Instance.Run(() => { StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString())); });
             }
 
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);
@@ -1062,7 +1085,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             {
                 localmemberCommand.gameObject.SetActive(true);
             }
-            else if(isPartyLeader && !isLocalPlayerButton)
+            else if (isPartyLeader && !isLocalPlayerButton)
             {
                 memberCommand.gameObject.SetActive(true);
             }
@@ -1079,7 +1102,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         Debug.Log("OnKickFromPartyClicked Usertokick userId");
         KickPartyMember(userId);
     }
-    
+
     IEnumerator ShowPopupPartyInvitation(string displayName)
     {
         yield return new WaitForSecondsRealtime(1.0f);
@@ -1210,7 +1233,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void OnFriendRequestAccepted(Result<Friend> result)
     {
         throw new NotImplementedException();
-        
+
     }
 
     //You have a new friend invite!

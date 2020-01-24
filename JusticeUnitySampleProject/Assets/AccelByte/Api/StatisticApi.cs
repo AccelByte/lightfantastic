@@ -1,9 +1,10 @@
-﻿// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2019-2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine.Assertions;
@@ -23,10 +24,36 @@ namespace AccelByte.Api
             this.httpWorker = httpWorker;
         }
 
-        public IEnumerator GetUserStatItems(string @namespace, string userId,
-            string accessToken, ICollection<string> statCodes, ICollection<string> tags, ResultCallback<StatItemPagingSlicedResult> callback)
+        public IEnumerator CreateUserStatItems(string @namespace, string userId, string accessToken,
+            CreateStatItemRequest[] statItems, ResultCallback<StatItemOperationResult[]> callback)
         {
-            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(@namespace, nameof(@namespace) + " cannot be null");
+            Assert.IsNotNull(userId, nameof(userId) + " cannot be null");
+            Assert.IsNotNull(accessToken, nameof(accessToken) + " cannot be null");
+            Assert.IsNotNull(statItems, nameof(statItems) + " cannot be null");
+
+            var request = HttpRequestBuilder
+                .CreatePost(this.baseUrl + "/v1/public/namespaces/{namespace}/users/{userId}/statitems/bulk")
+                .WithPathParam("namespace", @namespace)
+                .WithPathParam("userId", userId)
+                .WithBearerAuth(accessToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .Accepts(MediaType.ApplicationJson)
+                .WithBody(statItems.ToUtf8Json())
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<StatItemOperationResult[]>();
+
+            callback.Try(result);
+        }
+
+        public IEnumerator GetUserStatItems(string @namespace, string userId,
+            string accessToken, ICollection<string> statCodes, ICollection<string> tags, ResultCallback<PagedStatItems> callback)
+        {
             Assert.IsNotNull(@namespace, "Can't get stat items! namespace parameter is null!");
             Assert.IsNotNull(userId, "Can't get stat items! userIds parameter is null!");
             Assert.IsNotNull(accessToken, "Can't get stat items! accessToken parameter is null!");
@@ -40,54 +67,28 @@ namespace AccelByte.Api
                 .WithContentType(MediaType.ApplicationJson)
                 .Accepts(MediaType.ApplicationJson);
 
-            if (statCodes != null)
+            if (statCodes != null && statCodes.Count > 0)
             {
-                builder.WithQueryParam("statCodes", statCodes);
+                builder.WithQueryParam("statCodes", string.Join(",", statCodes));
             }
 
-            if (tags != null)
+            if (tags != null && tags.Count > 0)
             {
-                builder.WithQueryParam("tags", tags);
+                builder.WithQueryParam("tags", string.Join(",", tags));
             }
 
             var request = builder.GetResult();
-
             IHttpResponse response = null;
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<StatItemPagingSlicedResult>();
+            var result = response.TryParseJson<PagedStatItems>();
 
             callback.Try(result);
         }
 
-        public IEnumerator BulkAddStatItemValue(string @namespace, BulkUserStatItemInc[] data, string accessToken, ResultCallback<BulkStatItemOperationResult[]> callback)
+        public IEnumerator IncrementUserStatItems(string @namespace, string userId, StatItemIncrement[] increments, string accessToken, ResultCallback<StatItemOperationResult[]> callback)
         {
-            Report.GetFunctionLog(this.GetType().Name);
-            Assert.IsNotNull(@namespace, "Can't add stat item value! namespace parameter is null!");
-            Assert.IsNotNull(accessToken, "Can't add stat item value! accessToken parameter is null!");
-
-            var request = HttpRequestBuilder
-                .CreatePut(this.baseUrl + "/v1/public/namespaces/{namespace}/statitems/value/bulk")
-                .WithPathParam("namespace", @namespace)
-                .WithBearerAuth(accessToken)
-                .WithContentType(MediaType.ApplicationJson)
-                .WithBody(data.ToUtf8Json())
-                .Accepts(MediaType.ApplicationJson)
-                .GetResult();
-
-            IHttpResponse response = null;
-
-            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
-
-            var result = response.TryParseJson < BulkStatItemOperationResult[]>();
-
-            callback.Try(result);
-        }
-
-        public IEnumerator BulkAddUserStatItemValue(string @namespace, string userId, BulkStatItemInc[] data, string accessToken, ResultCallback<BulkStatItemOperationResult[]> callback)
-        {
-            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(@namespace, "Can't add stat item value! namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't add stat item value! accessToken parameter is null!");
             Assert.IsNotNull(userId, "Can't add stat item value! userId parameter is null!");
@@ -98,7 +99,7 @@ namespace AccelByte.Api
                 .WithPathParam("userId", userId)
                 .WithBearerAuth(accessToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .WithBody(data.ToUtf8Json())
+                .WithBody(increments.ToUtf8Json())
                 .Accepts(MediaType.ApplicationJson)
                 .GetResult();
 
@@ -106,41 +107,7 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            var result = response.TryParseJson<BulkStatItemOperationResult[]>();
-
-            callback.Try(result);
-        }
-
-        public IEnumerator AddUserStatItemValue(string @namespace, string userId, string statCode, float inc, string accessToken, ResultCallback<StatItemIncResult> callback)
-        {
-            Report.GetFunctionLog(this.GetType().Name);
-            Assert.IsNotNull(@namespace, "Can't add stat item value! namespace parameter is null!");
-            Assert.IsNotNull(accessToken, "Can't add stat item value! accessToken parameter is null!");
-            Assert.IsNotNull(userId, "Can't add stat item value! userId parameter is null!");
-            Assert.IsNotNull(statCode, "Can't add stat item value! statCode parameter is null!");
-
-            string jsonInfo = string.Format(
-                "{{" +
-                "\"inc\": {0}" +
-                "}}",
-                inc);
-
-            var request = HttpRequestBuilder
-                .CreatePut(this.baseUrl + "/v1/public/namespaces/{namespace}/users/{userId}/stats/{statCode}/statitems/value")
-                .WithPathParam("namespace", @namespace)
-                .WithPathParam("userId", userId)
-                .WithPathParam("statCode", statCode)
-                .WithBearerAuth(accessToken)
-                .WithContentType(MediaType.ApplicationJson)
-                .WithBody(jsonInfo)
-                .Accepts(MediaType.ApplicationJson)
-                .GetResult();
-
-            IHttpResponse response = null;
-
-            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
-
-            var result = response.TryParseJson<StatItemIncResult>();
+            var result = response.TryParseJson<StatItemOperationResult[]>();
 
             callback.Try(result);
         }

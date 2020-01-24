@@ -14,7 +14,7 @@ namespace Game
     ///     The networked compoenent of the player pawn, 
     ///     handles all communications over the network and updateing the entity's state
     /// </summary>
-    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(BoxCollider2D), typeof(Animator))]
     public class BasePlayerPawn : MovePlayerPawnBehavior
     {
         private Rigidbody2D rb2d;
@@ -22,6 +22,7 @@ namespace Game
         private bool isNetworkReady;
         private bool isInitialized;
         private BaseHoveringText hoveringText;
+        private CharacterSpeedSetter speedSetter;
         [SerializeField]
         private float speedDecayConst = 0.1f;
         [SerializeField]
@@ -41,6 +42,7 @@ namespace Game
             currSpeed = 0.0f;
             networkStarted += OnNetworkStarted;
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
+            speedSetter = GetComponent<CharacterSpeedSetter>();
         }
 
         protected override void NetworkStart()
@@ -85,6 +87,7 @@ namespace Game
             {
                 currSpeed = LinearDecay(currSpeed, dt);
             }
+            speedSetter.SetSpeed(currSpeed * LightFantasticConfig.CURR_SPEED_MULTIPLIER_ANIMATION);
             Vector3 newPos = transform.position;
             newPos.x = transform.position.x + currSpeed;
             if (networkObject.IsOwner)

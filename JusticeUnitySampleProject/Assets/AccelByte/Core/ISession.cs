@@ -4,7 +4,7 @@
 
 using UnityEngine.Assertions;
 
-namespace AccelByte.Api {
+namespace AccelByte.Core {
     public interface ISession
     {
         string AuthorizationToken { get; }

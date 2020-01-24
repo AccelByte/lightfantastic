@@ -1,4 +1,4 @@
-// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
@@ -98,7 +99,7 @@ namespace AccelByte.Api
 
         private readonly Dictionary<long, Action<ErrorCode, string>> responseCallbacks =
             new Dictionary<long, Action<ErrorCode, string>>();
-        
+
         private readonly string websocketUrl;
         private readonly ISession session;
         private readonly CoroutineRunner coroutineRunner;
@@ -133,12 +134,7 @@ namespace AccelByte.Api
         /// <summary>
         /// Lobby connection status
         /// </summary>
-        public bool IsConnected {
-            get
-            {
-                return this.webSocket.ReadyState == WsState.Open;
-            } 
-        }
+        public bool IsConnected { get { return this.webSocket.ReadyState == WsState.Open; } }
 
         /// <summary>
         /// Connect to lobby with current logged in user credentials.
@@ -146,6 +142,7 @@ namespace AccelByte.Api
         public void Connect()
         {
             Report.GetFunctionLog(this.GetType().Name);
+
             if (!this.session.IsValid())
             {
                 throw new Exception("Cannot connect to websocket because user is not logged in.");
@@ -171,53 +168,55 @@ namespace AccelByte.Api
             {
                 switch (this.webSocket.ReadyState)
                 {
-                    case WsState.Open:
-                        this.webSocket.Ping();
+                case WsState.Open:
+                    this.webSocket.Ping();
 
-                        yield return new WaitForSeconds(Lobby.PingDelay / 1000f);
+                    yield return new WaitForSeconds(Lobby.PingDelay / 1000f);
 
-                        break;
-                    case WsState.Connecting:
-                        while (this.webSocket.ReadyState == WsState.Connecting)
+                    break;
+                case WsState.Connecting:
+                    while (this.webSocket.ReadyState == WsState.Connecting)
+                    {
+                        yield return new WaitForSeconds(1f);
+                    }
+
+                    break;
+                case WsState.Closing:
+                    while (this.webSocket.ReadyState == WsState.Closing)
+                    {
+                        yield return new WaitForSeconds(1f);
+                    }
+
+                    break;
+                case WsState.Closed:
+                    System.Random rand = new System.Random();
+                    int nextDelay = backoffDelay;
+                    var firstClosedTime = DateTime.Now;
+
+                    while (this.webSocket.ReadyState == WsState.Closed &&
+                        DateTime.Now - firstClosedTime < TimeSpan.FromSeconds(totalTimeout))
+                    {
+                        this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
+                        float randomizedDelay = (float) (nextDelay + ((rand.NextDouble() * 0.5) - 0.5));
+
+                        yield return new WaitForSeconds(randomizedDelay / 1000f);
+
+                        nextDelay *= 2;
+
+                        if (nextDelay > maxDelay)
                         {
-                            yield return new WaitForSeconds(1f);
+                            nextDelay = maxDelay;
                         }
-                        break;
-                    case WsState.Closing:
-                        while (this.webSocket.ReadyState == WsState.Closing)
-                        {
-                            yield return new WaitForSeconds(1f);
-                        }
-                        break;
-                    case WsState.Closed:
-                        System.Random rand = new System.Random();
-                        int nextDelay = backoffDelay;
-                        var firstClosedTime = DateTime.Now;
+                    }
 
-                        while (this.webSocket.ReadyState == WsState.Closed &&
-                            (DateTime.Now - firstClosedTime) < TimeSpan.FromSeconds(totalTimeout))
-                        {
-                            this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
-                            float randomizedDelay = (float) (nextDelay + ((rand.NextDouble()*0.5) - 0.5));
+                    if (this.webSocket.ReadyState == WsState.Closed)
+                    {
+                        RaiseOnRetryAttemptFailed();
 
-                            yield return new WaitForSeconds(randomizedDelay / 1000f);
+                        yield break;
+                    }
 
-                            nextDelay *= 2;
-
-                            if (nextDelay > maxDelay)
-                            {
-                                nextDelay = maxDelay;
-                            }
-                        }
-
-                        if (this.webSocket.ReadyState == WsState.Closed)
-                        {
-                            RaiseOnRetryAttemptFailed();
-
-                            yield break;
-                        }
-                        
-                        break;
+                    break;
                 }
             }
         }
@@ -233,19 +232,13 @@ namespace AccelByte.Api
 
             this.coroutineRunner.Stop(this.maintainConnectionCoroutine);
 
-            if (this.webSocket != null)
-            {
-                this.webSocket.Close();
-            }
+            this.webSocket?.Close();
         }
 
         // Invoker for OnRetryAttemptFailed
         protected virtual void RaiseOnRetryAttemptFailed()
         {
-            if (this.OnRetryAttemptFailed != null)
-            {
-                this.OnRetryAttemptFailed(this, EventArgs.Empty);
-            }
+            this.OnRetryAttemptFailed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -480,7 +473,73 @@ namespace AccelByte.Api
         public void StartMatchmaking(string gameMode, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            SendRequest(MessageType.startMatchmakingRequest, new GameMode {gameMode = gameMode}, callback);
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest {gameMode = gameMode},
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest {gameMode = gameMode, serverName = serverName},
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, string clientVersion,
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode, serverName = serverName, clientVersion = clientVersion
+                },
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="latencies">Server latencies based on regions</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, string clientVersion,
+            Dictionary<string, int> latencies, ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(GetType().Name);
+            string strLatencies = "{" +
+                string.Join(",", latencies.Select(pair => $@"{{""{pair.Key}"":{pair.Value}}}").ToArray()) +
+                "}";
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    serverName = serverName,
+                    clientVersion = clientVersion,
+                    latencies = strLatencies
+                },
+                callback);
         }
 
         /// <summary>
@@ -491,7 +550,7 @@ namespace AccelByte.Api
         public void ConfirmReadyForMatch(string matchId, ResultCallback callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            SendRequest(MessageType.setReadyConsentRequest, new ReadyConsentRequest { matchId = matchId }, callback);
+            SendRequest(MessageType.setReadyConsentRequest, new ReadyConsentRequest {matchId = matchId}, callback);
         }
 
         /// <summary>
@@ -502,7 +561,10 @@ namespace AccelByte.Api
         public void CancelMatchmaking(string gameMode, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            SendRequest(MessageType.cancelMatchmakingRequest, new GameMode {gameMode = gameMode}, callback);
+            SendRequest(
+                MessageType.cancelMatchmakingRequest,
+                new StartMatchmakingRequest {gameMode = gameMode},
+                callback);
         }
 
         private long GenerateId()
@@ -675,17 +737,15 @@ namespace AccelByte.Api
                 Lobby.HandleNotification(message, this.OnIncomingFriendRequest);
 
                 break;
-            case MessageType.setReadyConsentNotif: 
+            case MessageType.setReadyConsentNotif:
                 Lobby.HandleNotification(message, this.ReadyForMatchConfirmed);
-                
+
                 break;
             case MessageType.rematchmakingNotif:
                 Lobby.HandleNotification(message, this.RematchmakingNotif);
 
                 break;
-            case MessageType.connectNotif:
-
-                break;
+            case MessageType.connectNotif: break;
             default:
                 Action<ErrorCode, string> handler;
 
@@ -702,6 +762,7 @@ namespace AccelByte.Api
         private static void HandleNotification<T>(string message, ResultCallback<T> handler) where T : class, new()
         {
             Report.GetWebSocketNotification(message);
+
             if (handler == null)
             {
                 return;
