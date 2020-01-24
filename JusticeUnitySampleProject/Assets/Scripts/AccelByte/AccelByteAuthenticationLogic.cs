@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UITools;
 using Steamworks;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ABRuntimeLogic
 {
@@ -16,44 +17,10 @@ namespace ABRuntimeLogic
     {
         private User abUser;
         private UserData abUserData;
-        
-        #region Register UI Fields
-        [SerializeField]
-        private InputField registerEmail;
-        [SerializeField]
-        private InputField registerDisplayName;
-        [SerializeField]
-        private InputField registerPassword;
-        [SerializeField]
-        private InputField registerConfirmPassword;
-        [SerializeField]
-        private InputField registerDobDay;
-        [SerializeField]
-        private InputField registerDobMonth;
-        [SerializeField]
-        private InputField registerDobYear;
-        #endregion
 
-        #region Verify UI Fields
-        [SerializeField]
-        private InputField verificationCode;
-        #endregion
-
-        #region Login UI Fields
-        [SerializeField]
-        private InputField loginEmail;
-        [SerializeField]
-        private InputField loginPassword;
-        #endregion
-
-        #region Debug UI Fields
-        [SerializeField]
-        private Text displayName;
-        [SerializeField]
-        private Text userId;
-        [SerializeField]
-        private Text sessionId;
-        #endregion
+        private GameObject UIHandler;
+        private UIAuthLogicComponent UIHandlerAuthComponent;
+        private UIElementHandler UIElementHandler;
 
         [SerializeField]
         private SteamAuth steamAuth;
@@ -62,11 +29,8 @@ namespace ABRuntimeLogic
         private CommandLineArgs cmdLine;
 
         private AccelByteLobbyLogic abLobbyLogic;
-        [SerializeField]
-        private GameObject loginPanel;
         private AccelByteGameProfileLogic abGameProfileLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
-        private UIElementHandler uiHandler;
 
         private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
@@ -76,24 +40,88 @@ namespace ABRuntimeLogic
             abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
 
-            uiHandler = GetComponent<UIElementHandler>();
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
 
             useSteam = cmdLine.ParseCommandLine();
         }
 
+        #region UI Listeners
+        void OnEnable()
+        {
+            Debug.Log("ABAuth OnEnable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        void OnDisable()
+        {
+            Debug.Log("ABAuth OnDisable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
+            if (UIHandler != null)
+            {
+                RemoveListeners();
+            }
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("ABAuth OnSceneLoaded level loaded!");
+
+            RefreshUIHandler();
+        }
+
+        public void RefreshUIHandler()
+        {
+            UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+            if (UIHandler == null)
+            {
+                Debug.Log("ABAuth RefreshUIHandler no reference to UI Handler!");
+                return;
+            }
+            UIHandlerAuthComponent = UIHandler.GetComponent<UIAuthLogicComponent>();
+            UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+            AddEventListeners();
+        }
+
+        void AddEventListeners()
+        {
+            Debug.Log("ABAuth AddEventListeners!");
+            // Bind Buttons
+            UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
+            UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
+            UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
+            UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
+            UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
+        }
+
+        void RemoveListeners()
+        {
+            Debug.Log("ABAuth RemoveListeners!");
+            UIHandlerAuthComponent.loginButton.onClick.RemoveListener(Login);
+            UIHandlerAuthComponent.registerButton.onClick.RemoveListener(Register);
+            UIHandlerAuthComponent.verifyButton.onClick.RemoveListener(VerifyRegister);
+            UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
+            UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+        }
+        #endregion // UI Listeners
+
         public void Start()
         {
             if (useSteam)
             {
-                loginPanel.gameObject.SetActive(false);
+                UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
                 Debug.Log("USE STEAM");
             }
             else 
             {
-                loginPanel.gameObject.SetActive(true);
+                UIHandlerAuthComponent.gameObject.SetActive(true);
 
                 Debug.Log("Don't USE STEAM");
                 // Try to login with launcher
@@ -106,17 +134,17 @@ namespace ABRuntimeLogic
         //Uses RegionInfo to get the two letter ISO Region Name
         public void Register()
         {
-            System.DateTime dob = new System.DateTime(int.Parse(registerDobYear.text), 
-                int.Parse(registerDobMonth.text), int.Parse(registerDobDay.text));
+            System.DateTime dob = new System.DateTime(int.Parse(UIHandlerAuthComponent.registerDobYear.text), 
+                int.Parse(UIHandlerAuthComponent.registerDobMonth.text), int.Parse(UIHandlerAuthComponent.registerDobDay.text));
 
-            abUser.Register(registerEmail.text, registerPassword.text, registerDisplayName.text, 
+            abUser.Register(UIHandlerAuthComponent.registerEmail.text, UIHandlerAuthComponent.registerPassword.text, UIHandlerAuthComponent.registerDisplayName.text, 
                 RegionInfo.CurrentRegion.TwoLetterISORegionName, dob, OnRegister);
         }
 
         //Sends the verification code to the backend server
         public void VerifyRegister()
         {
-            abUser.Verify(verificationCode.text, OnVerify);
+            abUser.Verify(UIHandlerAuthComponent.verificationCode.text, OnVerify);
         }
 
         //Tells the server to send another verification code to the user's email
@@ -128,9 +156,9 @@ namespace ABRuntimeLogic
         //Attempts to log the user in
         public void Login()
         {
-            abUser.LoginWithUsername(loginEmail.text, loginPassword.text, OnLogin);
+            abUser.LoginWithUsername(UIHandlerAuthComponent.loginEmail.text, UIHandlerAuthComponent.loginPassword.text, OnLogin);
 
-            uiHandler.FadeLoading();
+            UIElementHandler.FadeLoading();
         }
 
         //Attempts to login with launcher
@@ -142,7 +170,7 @@ namespace ABRuntimeLogic
             if (authCode != null)
             {
                 abUser.LoginWithLauncher(OnLogin);
-                uiHandler.FadeLoading();
+                UIElementHandler.FadeLoading();
             }
             else
             {
@@ -181,9 +209,9 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("Register successful.");
-                abUser.LoginWithUsername(registerEmail.text, registerPassword.text, OnLogin);
+                abUser.LoginWithUsername(UIHandlerAuthComponent.registerEmail.text, UIHandlerAuthComponent.registerPassword.text, OnLogin);
                 //Show Verification Panel
-                uiHandler.FadeRegister();
+                UIElementHandler.FadeRegister();
             }
         }
 
@@ -199,9 +227,9 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("Verification successful.");
-                uiHandler.FadeVerify();
-                uiHandler.FadePersistentFriends();
-                uiHandler.FadeMenu();
+                UIElementHandler.FadeVerify();
+                UIElementHandler.FadePersistentFriends();
+                UIElementHandler.FadeMenu();
                 abLobbyLogic.ConnectToLobby();
             }
         }
@@ -211,7 +239,7 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
-                uiHandler.FadeLoading();
+                UIElementHandler.FadeLoading();
 
                 Debug.Log("Resend Verification failed:" + result.Error.Message);
                 Debug.Log("Resend Verification Response Code: " + result.Error.Code);
@@ -230,7 +258,7 @@ namespace ABRuntimeLogic
             {
                 if (!useSteam)
                 {
-                    uiHandler.FadeLoading();
+                    UIElementHandler.FadeLoading();
                 }
 
                 Debug.Log("Login failed:" + result.Error.Message);
@@ -258,24 +286,24 @@ namespace ABRuntimeLogic
             else
             {
                 abUserData = result.Value;
-                displayName.text = "DisplayName: " + abUserData.displayName;
-                userId.text = "UserId: " + abUserData.userId;
-                sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
+                UIHandlerAuthComponent.displayName.text = "DisplayName: " + abUserData.displayName;
+                UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
+                UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
                 if (!abUserData.emailVerified && !useSteam)
                 {
-                    uiHandler.FadeVerify();
+                    UIElementHandler.FadeVerify();
                 }
                 else
                 {
                     //Progress to Main Menu
                     if (!useSteam)
                     {
-                        uiHandler.FadeLoading();
+                        UIElementHandler.FadeLoading();
                     }
-                    uiHandler.FadeLogin();
-                    uiHandler.FadePersistentFriends();
-                    uiHandler.FadeMenu();
+                    UIElementHandler.FadeLogin();
+                    UIElementHandler.FadePersistentFriends();
+                    UIElementHandler.FadeMenu();
                     abUserProfileLogic.Init();
                     abLobbyLogic.ConnectToLobby();
                 }
@@ -292,11 +320,11 @@ namespace ABRuntimeLogic
             }
             else
             {
-                uiHandler.FadeCurrent();
-                uiHandler.FadeLogin();
-                uiHandler.FadePersistentFriends();
-                loginEmail.text = string.Empty;
-                loginPassword.text = string.Empty;
+                UIElementHandler.FadeCurrent();
+                UIElementHandler.FadeLogin();
+                UIElementHandler.FadePersistentFriends();
+                UIHandlerAuthComponent.loginEmail.text = string.Empty;
+                UIHandlerAuthComponent.loginPassword.text = string.Empty;
             }
         }
         #endregion

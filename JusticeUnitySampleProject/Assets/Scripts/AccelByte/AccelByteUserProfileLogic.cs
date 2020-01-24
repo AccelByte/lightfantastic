@@ -4,14 +4,20 @@ using AccelByte.Api;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UITools;
 
 public class AccelByteUserProfileLogic : MonoBehaviour
 {
     private UserProfiles abUserProfiles;
     private UserProfile myProfile;
     private List<UserProfile> userProfilesCache = new List<UserProfile>();
-    [SerializeField]
-    private Transform PlayerProfilePrefab;
+
+    private GameObject UIHandler;
+    private UIUserProfileLogicComponent UIHandlerUserProfileComponent;
+    private UIElementHandler UIElementHandler;
+
     void Start()
     {
         abUserProfiles = AccelBytePlugin.GetUserProfiles();
@@ -23,13 +29,68 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         abUserProfiles.CreateUserProfile(defaultUserProfile, OnCreateUserProfile);
 
         // Update player profile info
-        PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
+        UIHandlerUserProfileComponent.PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
     }
     
     public void GetMine(ResultCallback<UserProfile> onGetProfile)
     {
         abUserProfiles.GetUserProfile(onGetProfile);
     }
+
+    #region UI Listeners
+    void OnEnable()
+    {
+        Debug.Log("ABUserProfile OnEnable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("ABUserProfile OnDisable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (UIHandler != null)
+        {
+            RemoveListeners();
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("ABUserProfile OnSceneLoaded level loaded!");
+
+        RefreshUIHandler();
+    }
+
+    public void RefreshUIHandler()
+    {
+        UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+        if (UIHandler == null)
+        {
+            Debug.Log("ABUserProfile RefreshUIHandler no reference to UI Handler!");
+            return;
+        }
+        UIHandlerUserProfileComponent = UIHandler.GetComponent<UIUserProfileLogicComponent>();
+        UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+        AddEventListeners();
+    }
+
+    void AddEventListeners()
+    {
+        Debug.Log("ABUserProfile AddEventListeners!");
+        // Bind Buttons
+    }
+
+    void RemoveListeners()
+    {
+        Debug.Log("ABUserProfile RemoveListeners!");
+    }
+    #endregion // UI Listeners
 
     public UserProfile Get(string userId)
     {

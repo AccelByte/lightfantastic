@@ -4,20 +4,18 @@ using AccelByte.Models;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UITools;
 
 public class AccelByteStatisticLogic : MonoBehaviour
 {
     private User abUser;
     private Statistic statistic;
 
-    #region Register UI Fields
-    [SerializeField]
-    private Text totalWinText;
-    [SerializeField]
-    private Text totalLoseText;
-    [SerializeField]
-    private Text totalMatchText;
-    #endregion
+    private GameObject UIHandler;
+    private UIStatisticsLogicComponent UIHandlerStatisticsComponent;
+    private UIElementHandler UIElementHandler;
+
 
     ICollection<string> playerStatistic;
 
@@ -35,6 +33,60 @@ public class AccelByteStatisticLogic : MonoBehaviour
         statistic = AccelBytePlugin.GetStatistic();
         statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
     }
+    #region UI Listeners
+    void OnEnable()
+    {
+        Debug.Log("ABStatistics OnEnable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("ABStatistics OnDisable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (UIHandler != null)
+        {
+            RemoveListeners();
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("ABStatistics OnSceneLoaded level loaded!");
+
+        RefreshUIHandler();
+    }
+
+    public void RefreshUIHandler()
+    {
+        UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+        if (UIHandler == null)
+        {
+            Debug.Log("ABStatistics RefreshUIHandler no reference to UI Handler!");
+            return;
+        }
+        UIHandlerStatisticsComponent = UIHandler.GetComponent<UIStatisticsLogicComponent>();
+        UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+        AddEventListeners();
+    }
+
+    void AddEventListeners()
+    {
+        Debug.Log("ABStatistics AddEventListeners!");
+        // Bind Buttons
+    }
+
+    void RemoveListeners()
+    {
+        Debug.Log("ABStatistics RemoveListeners!");
+    }
+    #endregion // UI Listeners
 
     #region AccelByte Statistic Callback
     public void GetStatisticCallback(Result<PagedStatItems> result)
@@ -52,15 +104,15 @@ public class AccelByteStatisticLogic : MonoBehaviour
             {
                 if (data.statCode == "TOTAL_WIN")
                 {
-                    totalWinText.text = data.value.ToString();
+                    UIHandlerStatisticsComponent.totalWinText.text = data.value.ToString();
                 }
                 else if (data.statCode == "TOTAL_LOSE")
                 {
-                    totalLoseText.text = data.value.ToString();
+                    UIHandlerStatisticsComponent.totalLoseText.text = data.value.ToString();
                 }
                 else if (data.statCode == "TOTAL_MATCH")
                 {
-                    totalMatchText.text = data.value.ToString();
+                    UIHandlerStatisticsComponent.totalMatchText.text = data.value.ToString();
                 }
             }
         }

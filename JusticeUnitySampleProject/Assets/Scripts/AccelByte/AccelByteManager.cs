@@ -18,8 +18,10 @@ public class AccelByteManager : MonoBehaviour
 
     private AccelByteGameProfileLogic gameprofileLogic;
     public AccelByteGameProfileLogic GameProfileLogic { get { return gameprofileLogic; } }
-    private AccelByteGameProfileLogic userProfileLogic;
-    public AccelByteGameProfileLogic UserProfileLogic { get { return userProfileLogic; } }
+    private AccelByteUserProfileLogic userProfileLogic;
+    public AccelByteUserProfileLogic UserProfileLogic { get { return userProfileLogic; } }
+    private AccelByteStatisticLogic userStaticticLogic;
+    public AccelByteStatisticLogic UserStaticticLogic { get { return userStaticticLogic; } }
     private MultiplayerMenu multiplayerLogic;
 
     [Header("Server Logic")]
@@ -47,6 +49,8 @@ public class AccelByteManager : MonoBehaviour
         lobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
         walletLogic = gameObject.GetComponent<AccelByteWalletLogic>();
         gameprofileLogic = gameObject.GetComponent<AccelByteGameProfileLogic>();
+        userProfileLogic = gameObject.GetComponent<AccelByteUserProfileLogic>();
+        userStaticticLogic = gameObject.GetComponent<AccelByteStatisticLogic>();
         multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
         MainThreadTaskRunner.CreateGameObject();
     }

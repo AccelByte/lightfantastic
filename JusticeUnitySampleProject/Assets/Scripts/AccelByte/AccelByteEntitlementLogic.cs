@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.U2D.Animation;
 using Utf8Json;
+using UITools;
+using UnityEngine.SceneManagement;
 
 static class Equipments
 {
@@ -176,26 +178,16 @@ namespace EntitlementUiLogic
     {
         private Entitlements abEntitlements;
         private Items abItems;
-        
+
+        private GameObject UIHandler;
+        private UIEntitlementLogicComponent UIHandlerEntitlementComponent;
+        private UIElementHandler UIElementHandler;
+
         private readonly ItemCriteria ALL_ITEM_CRITERIA = new ItemCriteria();
         private readonly ItemPagingSlicedResult allItemInfo = new ItemPagingSlicedResult();
         private Equipments.EquipmentList activeEquipmentList = new Equipments.EquipmentList();
         private Equipments.EquipmentList originalEquipmentList = new Equipments.EquipmentList();
         private AllPrefabsCollection allPrefabsCollection;
-
-        #region Inventory Viewer Component 
-
-        [SerializeField] private GameObject samplePrefab;
-        [SerializeField] private UiUtilities uiUtilities;
-        [SerializeField] private InventoryGridLayout gridLayoutHats;
-        [SerializeField] private InventoryGridLayout gridLayoutEffects;
-        [SerializeField] private AccelByteButtonScriptStyle buttonHat;
-        [SerializeField] private AccelByteButtonScriptStyle buttonEffect;
-        [SerializeField] private CanvasGroup promptPanel;
-        [SerializeField] private AccelByteUserProfileLogic abUserProfileLogic;
-        [SerializeField] private SpriteResolver hatSpriteResolver;
-
-        #endregion
 
         private void Start()
         {
@@ -206,6 +198,74 @@ namespace EntitlementUiLogic
             ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
         }
 
+        #region UI Listeners
+        void OnEnable()
+        {
+            Debug.Log("ABEntitlement OnEnable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        void OnDisable()
+        {
+            Debug.Log("ABEntitlement OnDisable called!");
+
+            // Register to onsceneloaded
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
+            if (UIHandler != null)
+            {
+                RemoveListeners();
+            }
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
+
+            RefreshUIHandler();
+        }
+
+        public void RefreshUIHandler()
+        {
+            UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+            if (UIHandler == null)
+            {
+                Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+                return;
+            }
+            UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
+            UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+
+            AddEventListeners();
+        }
+
+        void AddEventListeners()
+        {
+            Debug.Log("ABEntitlement AddEventListeners!");
+            // Bind Buttons
+            UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(GetEntitlement);
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowHatInventories(true));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowEffectInventories(false));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(false));
+            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowHatInventories(false));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowEffectInventories(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
+            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
+            UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
+        }
+
+        void RemoveListeners()
+        {
+            Debug.Log("ABEntitlement RemoveListeners!");
+            UIHandlerEntitlementComponent.inventoryButton.onClick.RemoveListener(GetEntitlement);
+            UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
+            UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
+            UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
+        }
+        #endregion // UI Listeners
         public void GetEntitlement()
         {
             //TODO: fix FadeLoadingIn
@@ -242,7 +302,7 @@ namespace EntitlementUiLogic
             }
             else
             {
-                abUserProfileLogic.GetMine(profileResult =>
+                UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
                 {
                     if (!profileResult.IsError)
                     {
@@ -260,10 +320,10 @@ namespace EntitlementUiLogic
                                 EquipFromList(originalEquipmentList);
                             }
                         }
-                        
-                        buttonHat.SetEnable(false);
+
+                        UIHandlerEntitlementComponent.buttonHat.SetEnable(false);
                         ShowHatInventories(true);
-                        buttonEffect.SetEnable(true);
+                        UIHandlerEntitlementComponent.buttonEffect.SetEnable(true);
                         ShowEffectInventories(false);
                     }
                 }
@@ -311,8 +371,8 @@ namespace EntitlementUiLogic
             //TODO: duplication tag handle
             var tag_entitlement_scrollview = new[]
             {
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), gridLayoutHats),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), gridLayoutEffects)
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutHats),
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutEffects)
             };
             
             // Insert entitlement for each kind of tag / equipment type
@@ -332,7 +392,7 @@ namespace EntitlementUiLogic
             
             foreach (var row in tag_entitlement_scrollview)
             {
-                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, samplePrefab);
+                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.itemInventoryPrefab);
                 allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
                 
                 for (var i = 0; i < prefabs.Length; i++)
@@ -348,7 +408,7 @@ namespace EntitlementUiLogic
                             {
                                 if (image.As == LightFantasticConfig.IMAGE_AS)
                                 {
-                                    uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
+                                    UIHandlerEntitlementComponent.uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
                                 }
                             }
                         }
@@ -413,8 +473,8 @@ namespace EntitlementUiLogic
         {
             UpdateUserProfileRequest savedEquipment = new UpdateUserProfileRequest();
             savedEquipment.customAttributes = activeEquipmentList.ToCustomAttribute();
-            
-            abUserProfileLogic.UpdateMine(savedEquipment, result =>
+
+            UIHandlerEntitlementComponent.abUserProfileLogic.UpdateMine(savedEquipment, result =>
             {
                 //TODO: handle on error and success
                 if (result.IsError)
@@ -430,29 +490,29 @@ namespace EntitlementUiLogic
 
         public void ShowPromptPanel()
         {
-            promptPanel.alpha = 1;
-            promptPanel.gameObject.SetActive(true);
+            UIHandlerEntitlementComponent.promptPanel.alpha = 1;
+            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(true);
         }
 
         public void HidePromptPanel()
         {
-            promptPanel.alpha = 0;
-            promptPanel.gameObject.SetActive(false);
+            UIHandlerEntitlementComponent.promptPanel.alpha = 0;
+            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(false);
         }
 
         public void ShowHatInventories(bool show)
         {
-            gridLayoutHats.SetVisibility(show);
+            UIHandlerEntitlementComponent.gridLayoutHats.SetVisibility(show);
         }
         
         public void ShowEffectInventories(bool show)
         {
-            gridLayoutEffects.SetVisibility(show);
+            UIHandlerEntitlementComponent.gridLayoutEffects.SetVisibility(show);
         }
 
         private void UpdateAvatar(string itemName)
         {
-            hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
+            UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
         }
     }
 }
