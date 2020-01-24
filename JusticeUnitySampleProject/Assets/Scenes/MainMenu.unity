@@ -1437,6 +1437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7d4cc2b7d5e504b999cb9452f607e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  connectToLocal: 1
+  gameMode: testUnity
 --- !u!114 &2006644174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1449,6 +1451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f8dc46b9c602740ba73de41163e602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverLogicPrefab: {fileID: 0}
+  localDSName: LocalTestDS
 --- !u!114 &2006644175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1466,6 +1470,7 @@ MonoBehaviour:
   masterServerPort: 15940
   natServerHost: 
   natServerPort: 15941
+  initialGameplayScene: ActionPhase_One
   connectUsingMatchmaking: 0
   useElo: 0
   myElo: 0
