@@ -49,7 +49,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void Awake()
     {
-        uiHandler = gameObject.GetComponent<UIElementHandler>();
         accelByteManager = gameObject.GetComponent<AccelByteManager>();
         //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
@@ -271,7 +270,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindFriendByEmail()
     {
-        AccelBytePlugin.GetUser().SearchUsers(emailToFind.text, OnFindFriendByEmailRequest);
+        AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
     }
 
     public void SendFriendRequest(string friendId, ResultCallback callback)
