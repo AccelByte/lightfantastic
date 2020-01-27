@@ -4,13 +4,15 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][][\"string\"][\"string\", \"string\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][][\"newUserId\"][\"newHatTitle\", \"newEffectTitle\"]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
 		public const byte RPC_UPDATE_POSITION = 0 + 5;
 		public const byte RPC_SETUP = 1 + 5;
 		public const byte RPC_BAN = 2 + 5;
+		public const byte RPC_SET_USER_ID = 3 + 5;
+		public const byte RPC_SET_ACTIVE_EQUIPMENT = 4 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -27,6 +29,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("UpdatePosition", UpdatePosition, typeof(Vector3));
 			networkObject.RegisterRpc("RPCSetup", RPCSetup, typeof(uint), typeof(uint), typeof(Vector3));
 			networkObject.RegisterRpc("Ban", Ban);
+			networkObject.RegisterRpc("RPCSetUserId", RPCSetUserId, typeof(string));
+			networkObject.RegisterRpc("RPCSetActiveEquipment", RPCSetActiveEquipment, typeof(string), typeof(string));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -119,6 +123,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// </summary>
 		public abstract void Ban(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCSetUserId(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCSetActiveEquipment(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

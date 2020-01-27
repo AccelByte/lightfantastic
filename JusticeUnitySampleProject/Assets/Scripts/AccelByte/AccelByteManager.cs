@@ -3,11 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AccelByteAuthenticationLogic))]
+[RequireComponent(typeof(AccelByteLobbyLogic))]
+[RequireComponent(typeof(AccelByteWalletLogic))]
+[RequireComponent(typeof(AccelByteGameProfileLogic))]
+[RequireComponent(typeof(AccelByteUserProfileLogic))]
+[RequireComponent(typeof(AccelByteStatisticLogic))]
+[RequireComponent(typeof(AccelByteEntitlementLogic))]
+[RequireComponent(typeof(MultiplayerMenu))]
 public class AccelByteManager : MonoBehaviour
 {
     private static AccelByteManager instance;
     public static AccelByteManager Instance { get { return instance; } }
-
 
     private AccelByteAuthenticationLogic authLogic;
     public AccelByteAuthenticationLogic AuthLogic { get { return authLogic; } }
@@ -22,6 +29,8 @@ public class AccelByteManager : MonoBehaviour
     public AccelByteUserProfileLogic UserProfileLogic { get { return userProfileLogic; } }
     private AccelByteStatisticLogic userStaticticLogic;
     public AccelByteStatisticLogic UserStaticticLogic { get { return userStaticticLogic; } }
+    private AccelByteEntitlementLogic entitlementLogic;
+    public AccelByteEntitlementLogic EntitlementLogic { get { return entitlementLogic; } }
     private MultiplayerMenu multiplayerLogic;
 
     [Header("Server Logic")]
@@ -52,6 +61,7 @@ public class AccelByteManager : MonoBehaviour
         userProfileLogic = gameObject.GetComponent<AccelByteUserProfileLogic>();
         userStaticticLogic = gameObject.GetComponent<AccelByteStatisticLogic>();
         multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
+        entitlementLogic = gameObject.GetComponent<AccelByteEntitlementLogic>();
         MainThreadTaskRunner.CreateGameObject();
     }
 

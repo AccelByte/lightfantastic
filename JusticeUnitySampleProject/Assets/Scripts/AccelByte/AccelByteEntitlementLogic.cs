@@ -14,7 +14,7 @@ using Utf8Json;
 using UITools;
 using UnityEngine.SceneManagement;
 
-static class Equipments
+public static class Equipments
 {
     public enum Type
     {
@@ -35,7 +35,7 @@ static class Equipments
         [DataMember] public string hatItemId;
         [DataMember] public string effectItemId;
     }
-    
+
     public class EquipmentList : ICloneable
     {
         public ItemInfo hat;
@@ -45,8 +45,8 @@ static class Equipments
         public object ToCustomAttribute()
         {
             CustomAttributes customAttributes = new CustomAttributes();
-            customAttributes.hatItemId = hat == null ? null : hat.itemId ;
-            customAttributes.effectItemId = effect == null ? null : effect.itemId ;
+            customAttributes.hatItemId = hat == null ? null : hat.itemId;
+            customAttributes.effectItemId = effect == null ? null : effect.itemId;
             return customAttributes;
         }
 
@@ -62,13 +62,13 @@ static class Equipments
             throw Exception;
         }
         public Exception Exception { get; set; }
-        
+
         public object Clone()
         {
             return MemberwiseClone();
         }
     }
-    
+
     public static EquipmentList ListFromCustomAttributes(string attribute, ItemInfo[] itemInformations)
     {
         CustomAttributes customAttributes;
@@ -78,17 +78,18 @@ static class Equipments
         }
         catch (Exception e)
         {
+            Debug.LogError(e.Message);
             return null;
         }
-        
+
         var result = new EquipmentList();
-        
+
         foreach (var itemInformation in itemInformations)
         {
-            if (itemInformation.itemId == customAttributes.hatItemId){ result.hat = itemInformation; }
-            if (itemInformation.itemId == customAttributes.effectItemId){ result.effect = itemInformation; }
+            if (itemInformation.itemId == customAttributes.hatItemId) { result.hat = itemInformation; }
+            if (itemInformation.itemId == customAttributes.effectItemId) { result.effect = itemInformation; }
         }
-        
+
         return result;
     }
 
@@ -173,346 +174,428 @@ namespace EntitlementUiLogic
             }
         }
     }
-    
-    public class AccelByteEntitlementLogic : MonoBehaviour
+}
+
+public class AccelByteEntitlementLogic : MonoBehaviour
+{
+    public delegate void GetEntitlementCompletion(bool inMenum, Error error);
+    public event GetEntitlementCompletion OnGetEntitlementCompleted;
+    private Entitlements abEntitlements;
+    private Items abItems;
+
+    private GameObject UIHandler;
+    private UIEntitlementLogicComponent UIHandlerEntitlementComponent;
+    private UIElementHandler UIElementHandler;
+
+    private readonly ItemCriteria ALL_ITEM_CRITERIA = new ItemCriteria();
+    private readonly ItemPagingSlicedResult allItemInfo = new ItemPagingSlicedResult();
+    private Equipments.EquipmentList activeEquipmentList = new Equipments.EquipmentList();
+    private Equipments.EquipmentList originalEquipmentList = new Equipments.EquipmentList();
+    private EntitlementUiLogic.AllPrefabsCollection allPrefabsCollection;
+
+    private void Start()
     {
-        private Entitlements abEntitlements;
-        private Items abItems;
+        abEntitlements = AccelBytePlugin.GetEntitlements();
+        abItems = AccelBytePlugin.GetItems();
+        ALL_ITEM_CRITERIA.offset = 0;
+        ALL_ITEM_CRITERIA.language = LightFantasticConfig.DEFAULT_LANGUAGE;
+        ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
+    }
 
-        private GameObject UIHandler;
-        private UIEntitlementLogicComponent UIHandlerEntitlementComponent;
-        private UIElementHandler UIElementHandler;
+    #region UI Listeners
+    void OnEnable()
+    {
+        Debug.Log("ABEntitlement OnEnable called!");
 
-        private readonly ItemCriteria ALL_ITEM_CRITERIA = new ItemCriteria();
-        private readonly ItemPagingSlicedResult allItemInfo = new ItemPagingSlicedResult();
-        private Equipments.EquipmentList activeEquipmentList = new Equipments.EquipmentList();
-        private Equipments.EquipmentList originalEquipmentList = new Equipments.EquipmentList();
-        private AllPrefabsCollection allPrefabsCollection;
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
-        private void Start()
+    void OnDisable()
+    {
+        Debug.Log("ABEntitlement OnDisable called!");
+
+        // Register to onsceneloaded
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (UIHandler != null)
         {
-            abEntitlements = AccelBytePlugin.GetEntitlements();
-            abItems = AccelBytePlugin.GetItems();
-            ALL_ITEM_CRITERIA.offset = 0;
-            ALL_ITEM_CRITERIA.language = LightFantasticConfig.DEFAULT_LANGUAGE;
-            ALL_ITEM_CRITERIA.itemType = ItemType.NONE;
+            RemoveListeners();
         }
+    }
 
-        #region UI Listeners
-        void OnEnable()
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
+
+        RefreshUIHandler();
+    }
+
+    public void RefreshUIHandler()
+    {
+        UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
+        if (UIHandler == null)
         {
-            Debug.Log("ABEntitlement OnEnable called!");
-
-            // Register to onsceneloaded
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+            return;
         }
+        UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
+        UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
-        void OnDisable()
+        AddEventListeners();
+    }
+
+    void AddEventListeners()
+    {
+        Debug.Log("ABEntitlement AddEventListeners!");
+        // Bind Buttons
+        UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(() => GetEntitlement(true));
+        UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowHatInventories(true));
+        UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowEffectInventories(false));
+        UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(false));
+        UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(true));
+        UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowHatInventories(false));
+        UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowEffectInventories(true));
+        UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
+        UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
+        UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
+    }
+
+    void RemoveListeners()
+    {
+        Debug.Log("ABEntitlement RemoveListeners!");
+        UIHandlerEntitlementComponent.inventoryButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
+    }
+    #endregion // UI Listeners
+
+    public void GetEntitlement(bool inMenu)
+    {
+        //TODO: fix FadeLoadingIn
+        //uiHandler.FadeLoading();
+
+        activeEquipmentList = null;
+        originalEquipmentList = null;
+        if (inMenu)
         {
-            Debug.Log("ABEntitlement OnDisable called!");
-
-            // Register to onsceneloaded
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-
-            if (UIHandler != null)
-            {
-                RemoveListeners();
-            }
-        }
-
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
-
-            RefreshUIHandler();
-        }
-
-        public void RefreshUIHandler()
-        {
-            UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
-            if (UIHandler == null)
-            {
-                Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
-                return;
-            }
-            UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
-            UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
-
-            AddEventListeners();
-        }
-
-        void AddEventListeners()
-        {
-            Debug.Log("ABEntitlement AddEventListeners!");
-            // Bind Buttons
-            UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(GetEntitlement);
-            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowHatInventories(true));
-            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowEffectInventories(false));
-            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(false));
-            UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(true));
-            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowHatInventories(false));
-            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => ShowEffectInventories(true));
-            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
-            UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
-            UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
-        }
-
-        void RemoveListeners()
-        {
-            Debug.Log("ABEntitlement RemoveListeners!");
-            UIHandlerEntitlementComponent.inventoryButton.onClick.RemoveListener(GetEntitlement);
-            UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
-            UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
-            UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
-        }
-        #endregion // UI Listeners
-        public void GetEntitlement()
-        {
-            //TODO: fix FadeLoadingIn
-            //uiHandler.FadeLoading();
-            
-            activeEquipmentList = null;
-            originalEquipmentList = null;
             HidePromptPanel();
-            
-            if (allItemInfo.data == null)
+        }
+        if (allItemInfo.data == null)
+        {
+            abItems.GetItemsByCriteria(ALL_ITEM_CRITERIA, result =>
             {
-                abItems.GetItemsByCriteria(ALL_ITEM_CRITERIA, result =>
+                if (!result.IsError)
                 {
-                    if (!result.IsError)
+                    allItemInfo.data = result.Value.data;
+                    if (inMenu)
                     {
-                        allItemInfo.data = result.Value.data;
                         abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlement);
-                    }
-                });
-            }
-            else
-            {
-                abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlement);
-            }
-        }
-
-        private void OnGetEntitlement(Result<EntitlementPagingSlicedResult> result)
-        {
-            //TODO: fix FadeLoadingOut
-            //uiHandler.FadeLoading();
-            if (result.IsError)
-            {
-                // handle
-            }
-            else
-            {
-                UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
-                {
-                    if (!profileResult.IsError)
-                    {
-                        //originalEquipmentList = null;
-                        activeEquipmentList = new Equipments.EquipmentList();
-                        PopulateInventories(result.Value.data);
-        
-                        if (profileResult.Value.customAttributes != null)
-                        {
-                            originalEquipmentList = Equipments.ListFromCustomAttributes(
-                                profileResult.Value.customAttributes.ToJsonString(), allItemInfo.data);
-                            if (originalEquipmentList != null)
-                            {
-                                activeEquipmentList = (Equipments.EquipmentList) originalEquipmentList.Clone();
-                                EquipFromList(originalEquipmentList);
-                            }
-                        }
-
-                        UIHandlerEntitlementComponent.buttonHat.SetEnable(false);
-                        ShowHatInventories(true);
-                        UIHandlerEntitlementComponent.buttonEffect.SetEnable(true);
-                        ShowEffectInventories(false);
-                    }
-                }
-                );
-            }
-        }
-
-        private void EquipFromList(Equipments.EquipmentList list)
-        {
-            foreach (Equipments.Type type in Enum.GetValues(typeof(Equipments.Type)))
-            {
-                if (type == Equipments.Type.None){ break; }
-                var listItemInfo = list.GetItemInfo(type);
-                foreach (var prefab in allPrefabsCollection.GetItemInventoryPrefabs(type))
-                {
-                    if (listItemInfo != null && listItemInfo.itemId == prefab.GetItemInfo().itemId)
-                    {
-                        prefab.Select();
-                        UpdateAvatar(prefab.GetItemInfo().name);
                     }
                     else
                     {
-                        prefab.Unselect();
+                        abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlementNoMenu);
+                    }
+                }
+            });
+        }
+        else
+        {
+            if (inMenu)
+            {
+                abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlement);
+            }
+            else
+            {
+                abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlementNoMenu);
+            }
+        }
+    }
+
+    private void OnGetEntitlementNoMenu(Result<EntitlementPagingSlicedResult> result)
+    {
+        //TODO: fix FadeLoadingOut
+        //uiHandler.FadeLoading();
+        if (result.IsError)
+        {
+            // handle
+            OnGetEntitlementCompleted?.Invoke(false, result.Error);
+        }
+        else
+        {
+            UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
+            {
+                if (!profileResult.IsError)
+                {
+                    //originalEquipmentList = null;
+                    activeEquipmentList = new Equipments.EquipmentList();
+
+                    if (profileResult.Value.customAttributes != null)
+                    {
+                        originalEquipmentList = Equipments.ListFromCustomAttributes(
+                            profileResult.Value.customAttributes.ToJsonString(), allItemInfo.data);
+                        if (originalEquipmentList != null)
+                        {
+                            activeEquipmentList = (Equipments.EquipmentList)originalEquipmentList.Clone();
+                            OnGetEntitlementCompleted?.Invoke(false, null);
+                        }
+                        else
+                        {
+                            OnGetEntitlementCompleted?.Invoke(false, new Error(ErrorCode.UnknownError, "Null Equipment list"));
+                        }
+                    }
+                    else
+                    {
+                        OnGetEntitlementCompleted?.Invoke(false, new Error(ErrorCode.UnknownError, "Custom attributes field is empty"));
+                    }
+                }
+                else
+                {
+                    OnGetEntitlementCompleted?.Invoke(false, profileResult.Error);
+                }
+            });
+        }
+    }
+
+    private void OnGetEntitlement(Result<EntitlementPagingSlicedResult> result)
+    {
+        //TODO: fix FadeLoadingOut
+        //uiHandler.FadeLoading();
+        if (result.IsError)
+        {
+            // handle
+            OnGetEntitlementCompleted?.Invoke(true, result.Error);
+        }
+        else
+        {
+            UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
+            {
+                if (!profileResult.IsError)
+                {
+                    //originalEquipmentList = null;
+                    activeEquipmentList = new Equipments.EquipmentList();
+                    PopulateInventories(result.Value.data);
+
+                    if (profileResult.Value.customAttributes != null)
+                    {
+                        originalEquipmentList = Equipments.ListFromCustomAttributes(
+                            profileResult.Value.customAttributes.ToJsonString(), allItemInfo.data);
+                        if (originalEquipmentList != null)
+                        {
+                            activeEquipmentList = (Equipments.EquipmentList)originalEquipmentList.Clone();
+                            EquipFromList(originalEquipmentList);
+                            OnGetEntitlementCompleted?.Invoke(true, result.Error);
+                        }
+                        else
+                        {
+                            OnGetEntitlementCompleted?.Invoke(true, new Error(ErrorCode.UnknownError, "Null Equipment list"));
+                        }
+                    }
+                    else
+                    {
+                        OnGetEntitlementCompleted?.Invoke(true, new Error(ErrorCode.UnknownError, "Custom attributes field is empty"));
+                    }
+                    UIHandlerEntitlementComponent.buttonHat.SetEnable(false);
+                    ShowHatInventories(true);
+                    UIHandlerEntitlementComponent.buttonEffect.SetEnable(true);
+                    ShowEffectInventories(false);
+                }
+                else
+                {
+                    OnGetEntitlementCompleted?.Invoke(true, profileResult.Error);
+                }
+            });
+        }
+    }
+
+    public Equipments.EquipmentList GetActiveEquipmentList()
+    {
+        return activeEquipmentList;
+    }
+
+    private void EquipFromList(Equipments.EquipmentList list)
+    {
+        foreach (Equipments.Type type in Enum.GetValues(typeof(Equipments.Type)))
+        {
+            if (type == Equipments.Type.None) { break; }
+            var listItemInfo = list.GetItemInfo(type);
+            foreach (var prefab in allPrefabsCollection.GetItemInventoryPrefabs(type))
+            {
+                if (listItemInfo != null && listItemInfo.itemId == prefab.GetItemInfo().itemId)
+                {
+                    prefab.Select();
+                    UpdateAvatar(prefab.GetItemInfo().name);
+                }
+                else
+                {
+                    prefab.Unselect();
+                }
+            }
+        }
+    }
+
+    public ItemInfo GetItemFromCache(string input)
+    {
+        foreach (var entry in allItemInfo.data)
+        {
+            if (input == entry.itemId)
+            {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    private void PopulateInventories(EntitlementInfo[] results)
+    {
+        allPrefabsCollection = new EntitlementUiLogic.AllPrefabsCollection();
+
+
+        //TODO: duplication tag handle
+        var tag_entitlement_scrollview = new[]
+        {
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutHats),
+                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutEffects)
+            };
+
+        // Insert entitlement for each kind of tag / equipment type
+        foreach (var entitlement in results)
+        {
+            foreach (var tag in GetItemFromCache(entitlement.itemId).tags)
+            {
+                foreach (var entry in tag_entitlement_scrollview)
+                {
+                    if (Equipments.TypeFromString(tag) == entry.Item1)
+                    {
+                        entry.Item2.Add(entitlement);
                     }
                 }
             }
         }
 
-        private void PopulateInventories(EntitlementInfo[] results)
+        foreach (var row in tag_entitlement_scrollview)
         {
-            allPrefabsCollection = new AllPrefabsCollection();
-            
-            ItemInfo GetItemFromCache(string input)
-            {
-                foreach (var entry in allItemInfo.data)
-                {
-                    if (input == entry.itemId)
-                    {
-                        return entry;
-                    }
-                }
-                return null;
-            }
-            
-            //TODO: duplication tag handle
-            var tag_entitlement_scrollview = new[]
-            {
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutHats),
-                new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutEffects)
-            };
-            
-            // Insert entitlement for each kind of tag / equipment type
-            foreach (var entitlement in results)
-            {
-                foreach (var tag in GetItemFromCache(entitlement.itemId).tags)
-                {
-                    foreach (var entry in tag_entitlement_scrollview)
-                    {
-                        if (Equipments.TypeFromString(tag) == entry.Item1)
-                        {
-                            entry.Item2.Add(entitlement);
-                        }
-                    }
-                }
-            }
-            
-            foreach (var row in tag_entitlement_scrollview)
-            {
-                var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.itemInventoryPrefab);
-                allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
-                
-                for (var i = 0; i < prefabs.Length; i++)
-                {
-                    var index = i;
-                    foreach (var itemInfo in allItemInfo.data)
-                    {
-                        if (row.Item2[index].itemId == itemInfo.itemId)
-                        {
-                            prefabs[index].Init(OnItemSelected(prefabs[index], prefabs), itemInfo);
+            var prefabs = row.Item3.PopulateChild<ItemInventoryPrefab>(row.Item2.Count, UIHandlerEntitlementComponent.itemInventoryPrefab);
+            allPrefabsCollection.SetItemInventoryPrefabs(row.Item1, prefabs);
 
-                            foreach (var image in itemInfo.images)
+            for (var i = 0; i < prefabs.Length; i++)
+            {
+                var index = i;
+                foreach (var itemInfo in allItemInfo.data)
+                {
+                    if (row.Item2[index].itemId == itemInfo.itemId)
+                    {
+                        prefabs[index].Init(OnItemSelected(prefabs[index], prefabs), itemInfo);
+
+                        foreach (var image in itemInfo.images)
+                        {
+                            if (image.As == LightFantasticConfig.IMAGE_AS)
                             {
-                                if (image.As == LightFantasticConfig.IMAGE_AS)
-                                {
-                                    UIHandlerEntitlementComponent.uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
-                                }
+                                UIHandlerEntitlementComponent.uiUtilities.DownloadImage(image.smallImageUrl, prefabs[index].image);
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        private UnityAction OnItemSelected(ItemInventoryPrefab selectedPrefab, ItemInventoryPrefab[] prefabsInCurrentRow)
+    private UnityAction OnItemSelected(ItemInventoryPrefab selectedPrefab, ItemInventoryPrefab[] prefabsInCurrentRow)
+    {
+        return () =>
         {
-            return () =>
+            foreach (var prefab in prefabsInCurrentRow)
             {
-                foreach (var prefab in prefabsInCurrentRow)
+                if (prefab == selectedPrefab)
                 {
-                    if (prefab == selectedPrefab)
+                    if (prefab.IsSelected())
                     {
-                        if (prefab.IsSelected())
-                        {
-                            ClickItem(false, selectedPrefab, activeEquipmentList);
-                        }
-                        else
-                        {
-                            ClickItem(true, selectedPrefab, activeEquipmentList);
-                        }
+                        ClickItem(false, selectedPrefab, activeEquipmentList);
                     }
-                    else if (prefab != selectedPrefab)
+                    else
                     {
-                        prefab.Unselect();
+                        ClickItem(true, selectedPrefab, activeEquipmentList);
                     }
                 }
-            };
-        }
-
-        private void ClickItem(bool equipping, ItemInventoryPrefab prefab, Equipments.EquipmentList updatedList)
-        {
-            var itemInfo = prefab.GetItemInfo();
-            
-            foreach (var tag in prefab.GetItemInfo().tags)
-            {
-                ref var tmp = ref updatedList.GetItemInfo(Equipments.TypeFromString(tag));
-                tmp = equipping ? itemInfo : null;
+                else if (prefab != selectedPrefab)
+                {
+                    prefab.Unselect();
+                }
             }
-            if (equipping)
+        };
+    }
+
+    private void ClickItem(bool equipping, ItemInventoryPrefab prefab, Equipments.EquipmentList updatedList)
+    {
+        var itemInfo = prefab.GetItemInfo();
+
+        foreach (var tag in prefab.GetItemInfo().tags)
+        {
+            ref var tmp = ref updatedList.GetItemInfo(Equipments.TypeFromString(tag));
+            tmp = equipping ? itemInfo : null;
+        }
+        if (equipping)
+        {
+            prefab.Select();
+            UpdateAvatar(prefab.GetItemInfo().name);
+        }
+        else
+        {
+            prefab.Unselect();
+            UpdateAvatar("");
+        }
+    }
+
+    public void RevertToOriginalEquipment()
+    {
+        activeEquipmentList = (Equipments.EquipmentList)originalEquipmentList.Clone();
+        EquipFromList(originalEquipmentList);
+    }
+
+    public void UploadEquipment()
+    {
+        UpdateUserProfileRequest savedEquipment = new UpdateUserProfileRequest();
+        savedEquipment.customAttributes = activeEquipmentList.ToCustomAttribute();
+
+        UIHandlerEntitlementComponent.abUserProfileLogic.UpdateMine(savedEquipment, result =>
+        {
+            //TODO: handle on error and success
+            if (result.IsError)
             {
-                prefab.Select();
-                UpdateAvatar(prefab.GetItemInfo().name);
+                Debug.Log("Failed to save current equipment!");
             }
             else
             {
-                prefab.Unselect();
-                UpdateAvatar("");
+                Debug.Log("Current equipment saved!");
             }
-        }
+        });
+    }
 
-        public void RevertToOriginalEquipment()
-        {
-            activeEquipmentList = (Equipments.EquipmentList) originalEquipmentList.Clone();
-            EquipFromList(originalEquipmentList);
-        }
+    public void ShowPromptPanel()
+    {
+        UIHandlerEntitlementComponent.promptPanel.alpha = 1;
+        UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(true);
+    }
 
-        public void UploadEquipment()
-        {
-            UpdateUserProfileRequest savedEquipment = new UpdateUserProfileRequest();
-            savedEquipment.customAttributes = activeEquipmentList.ToCustomAttribute();
+    public void HidePromptPanel()
+    {
+        UIHandlerEntitlementComponent.promptPanel.alpha = 0;
+        UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(false);
+    }
 
-            UIHandlerEntitlementComponent.abUserProfileLogic.UpdateMine(savedEquipment, result =>
-            {
-                //TODO: handle on error and success
-                if (result.IsError)
-                {
-                    Debug.Log("Failed to save current equipment!");
-                }
-                else
-                {
-                    Debug.Log("Current equipment saved!");
-                }
-            });
-        }
+    public void ShowHatInventories(bool show)
+    {
+        UIHandlerEntitlementComponent.gridLayoutHats.SetVisibility(show);
+    }
 
-        public void ShowPromptPanel()
-        {
-            UIHandlerEntitlementComponent.promptPanel.alpha = 1;
-            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(true);
-        }
+    public void ShowEffectInventories(bool show)
+    {
+        UIHandlerEntitlementComponent.gridLayoutEffects.SetVisibility(show);
+    }
 
-        public void HidePromptPanel()
-        {
-            UIHandlerEntitlementComponent.promptPanel.alpha = 0;
-            UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(false);
-        }
-
-        public void ShowHatInventories(bool show)
-        {
-            UIHandlerEntitlementComponent.gridLayoutHats.SetVisibility(show);
-        }
-        
-        public void ShowEffectInventories(bool show)
-        {
-            UIHandlerEntitlementComponent.gridLayoutEffects.SetVisibility(show);
-        }
-
-        private void UpdateAvatar(string itemName)
-        {
-            UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
-        }
+    private void UpdateAvatar(string itemName)
+    {
+        UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
     }
 }
