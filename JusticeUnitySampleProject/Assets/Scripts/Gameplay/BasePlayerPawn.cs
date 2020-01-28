@@ -105,6 +105,7 @@ namespace Game
             if (error != null)
             {
                 Debug.LogError("[" + error.Code + "] " + error.Message);
+                isInitialized = true;
                 return;
             }
             AccelByteEntitlementLogic abEntitlement = AccelByteManager.Instance.EntitlementLogic;
@@ -116,7 +117,6 @@ namespace Game
                 effectTitle_ = activeEquipments.effect != null ? activeEquipments.effect.title : "NULL";
                 hatSetter.SetHatSprite(hatTitle_);
                 networkObject.SendRpc(RPC_SET_ACTIVE_EQUIPMENT, Receivers.Others, new object[] { hatTitle_, effectTitle_ });
-
             }
             else
             {

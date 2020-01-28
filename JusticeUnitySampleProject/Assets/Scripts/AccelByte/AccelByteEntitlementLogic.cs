@@ -298,6 +298,10 @@ public class AccelByteEntitlementLogic : MonoBehaviour
                         abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlementNoMenu);
                     }
                 }
+                else
+                {
+                    OnGetEntitlementCompleted?.Invoke(inMenu, result.Error);
+                }
             });
         }
         else
