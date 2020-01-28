@@ -48,8 +48,6 @@ namespace Game
             if (networkObject.MyPlayerId == ownerNetId)
             {
                 MovePlayerPawnBehavior p = NetworkManager.Instance.InstantiateMovePlayerPawn(0, playerStarts_[idx].transform.position, Quaternion.identity);
-                UpdatePlayerStarts((uint)idx, true);
-                playerStarts_[idx].Occupied = true;
                 p.networkObject.SetInitialPos(playerStarts_[idx].transform.position);
                 p.networkObject.OwnerNetId = ownerNetId;
                 p.networkObject.playerNum = (uint)idx + 1;
@@ -58,16 +56,20 @@ namespace Game
 
         public override void RPCAnnounceReady(RpcArgs args)
         {
-            if (networkObject.IsServer)
+            MainThreadManager.Run(() =>
             {
-                int idx = FindEmptyStartPos();
-                if (idx == -1)
+                if (networkObject.IsServer)
                 {
-                    return;
+                    int idx = FindEmptyStartPos();
+                    if (idx == -1)
+                    {
+                        return;
+                    }
+                    uint ownerNetId = args.Info.SendingPlayer.NetworkId;
+                    UpdatePlayerStarts((uint)idx, true);
+                    networkObject.SendRpc(args.Info.SendingPlayer, RPC_SPAWN_PAWN, new object[] { ownerNetId, idx });
                 }
-                uint ownerNetId = args.Info.SendingPlayer.NetworkId;
-                networkObject.SendRpc(args.Info.SendingPlayer, RPC_SPAWN_PAWN, new object[] { ownerNetId, idx });
-            }
+            });
         }
 
         public override void RPCUpdateStartPos(RpcArgs args)
