@@ -15,14 +15,20 @@ namespace Game
     ///     handles all communications over the network and updateing the entity's state
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D), typeof(Animator))]
+    [RequireComponent(typeof(CharacterHatSetter))]
+    [RequireComponent(typeof(CharacterParticleSetter))]
+    [RequireComponent(typeof(CharacterSpeedSetter))]
     public class BasePlayerPawn : MovePlayerPawnBehavior
     {
+        #region Field and Properties
         private Rigidbody2D rb2d;
         private Collider2D col2d;
         private bool isNetworkReady;
         private bool isInitialized;
         private BaseHoveringText hoveringText;
         private CharacterSpeedSetter speedSetter;
+        private CharacterHatSetter hatSetter;
+        private CharacterParticleSetter particleSetter;
         [SerializeField]
         private float speedDecayConst = 0.1f;
         [SerializeField]
@@ -31,6 +37,15 @@ namespace Game
         private float maxSpeed_ = 0.1f;
         private float currSpeed;
         public float MaxSpeed { get { return maxSpeed_; } }
+        #region Cloud Data
+        private string userId_;
+        public string UserId { get { return userId_; } }
+        private string hatTitle_;
+        public string HatTitle { get { return hatTitle_; } }
+        private string effectTitle_;
+        public string EffectTitle { get { return effectTitle_; } }
+        #endregion
+        #endregion //Field and Properties
 
         private BaseGameManager gameMgr = null;
 
@@ -43,6 +58,8 @@ namespace Game
             networkStarted += OnNetworkStarted;
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
             speedSetter = GetComponent<CharacterSpeedSetter>();
+            hatSetter = GetComponent<CharacterHatSetter>();
+            particleSetter = GetComponent<CharacterParticleSetter>();
         }
 
         protected override void NetworkStart()
@@ -60,6 +77,51 @@ namespace Game
         {
             networkObject.MaxSpeed = maxSpeed_;
             hoveringText.ChangeTextLabel("Player " + networkObject.playerNum);
+            GetCloudData();
+        }
+
+        private void GetCloudData()
+        {
+            if (!networkObject.IsOwner)
+            {
+                isInitialized = true;
+                return;
+            }
+            ABRuntimeLogic.AccelByteAuthenticationLogic abAuth = AccelByteManager.Instance.AuthLogic;
+            AccelByte.Models.UserData ud = abAuth.GetUserData();
+            userId_ = ud.userId;
+            networkObject.SendRpc(RPC_SET_USER_ID, Receivers.Others, userId_);
+            AccelByteEntitlementLogic abEntitlement = AccelByteManager.Instance.EntitlementLogic;
+            abEntitlement.OnGetEntitlementCompleted += OnGetSelfEntitlementCompleted;
+            abEntitlement.GetEntitlement(false);
+        }
+
+        private void OnGetSelfEntitlementCompleted(bool inMenu, AccelByte.Core.Error error)
+        {
+            if (inMenu)
+            {
+                return;
+            }
+            if (error != null)
+            {
+                Debug.LogError("[" + error.Code + "] " + error.Message);
+                return;
+            }
+            AccelByteEntitlementLogic abEntitlement = AccelByteManager.Instance.EntitlementLogic;
+            abEntitlement.OnGetEntitlementCompleted -= OnGetSelfEntitlementCompleted;
+            Equipments.EquipmentList activeEquipments = abEntitlement.GetActiveEquipmentList();
+            if (activeEquipments != null)
+            {
+                hatTitle_ = activeEquipments.hat != null ? activeEquipments.hat.title : "NULL";
+                effectTitle_ = activeEquipments.effect != null ? activeEquipments.effect.title : "NULL";
+                hatSetter.SetHatSprite(hatTitle_);
+                networkObject.SendRpc(RPC_SET_ACTIVE_EQUIPMENT, Receivers.Others, new object[] { hatTitle_, effectTitle_ });
+
+            }
+            else
+            {
+                Debug.LogError("No Active Equipment");
+            }
             isInitialized = true;
         }
 
@@ -154,10 +216,25 @@ namespace Game
             }
         }
 
+        public override void RPCSetUserId(RpcArgs args)
+        {
+            if (networkObject.IsOwner) { return; }
+            string newUserId = args.GetAt<string>(0);
+            userId_ = newUserId;
+        }
+
+        public override void RPCSetActiveEquipment(RpcArgs args)
+        {
+            if (networkObject.IsOwner) { return; }
+            string newHatTitle = args.GetAt<string>(0);
+            string newEffectTitle = args.GetAt<string>(1);
+            hatTitle_ = newHatTitle;
+            effectTitle_ = newEffectTitle;
+            hatSetter.SetHatSprite(hatTitle_); 
+        }
         #endregion //RPCs
 
         #region Events
-
         private void OnDisconnected(NetWorker sender)
         {
             networkObject.Destroy();
