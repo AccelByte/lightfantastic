@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BeardedManStudios.Forge.Networking;
@@ -55,7 +56,7 @@ public class AccelByteServerLogic : MonoBehaviour
 
     private string GetPodName()
     {
-        return "";
+        return Environment.GetEnvironmentVariable("POD_NAME");
     }
 
     private void OnLogin(Result result)
