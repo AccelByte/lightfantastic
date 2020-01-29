@@ -35,6 +35,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private List<string> chatList;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
+    private bool isActionPhaseOver = false;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -103,6 +104,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
         SetupPopupPartyControl();
         SetupMatchmakingBoard();
+		
+        if (isActionPhaseOver)
+        {
+            Debug.Log("AbLogic SetIsActionPhaseOver called");
+            // move to main menu screen
+            // TODO: after from action pahse all the main menu stuff has tobe refreshed
+            UIElementHandler.FadeLogin();
+            UIElementHandler.FadePersistentFriends();
+            UIElementHandler.FadeMenu();
+            //AccelByteManager.Instance.UserProfileLogic.Init();
+            SetupLobbyUI();
+
+            isActionPhaseOver = false;
+        }
     }
 
     void AddEventListeners()
@@ -179,17 +194,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             //If we successfully connected, load our friend list.
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
             abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
-            LoadFriendsList();
-            SetupGeneralCallbacks();
-            SetupFriendCallbacks();
-            SetupMatchmakingCallbacks();
-            SetupChatCallbacks();
-
-            //AccelByteManager.Instance.GameProfileLogic.SetupGameProfile();
+            SetupLobbyUI();
         }
         else
         {
             //If we don't connect Retry.
+            // TODO: use coroutine to day the call to avoid spam
             Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
             ConnectToLobby();
         }
@@ -208,6 +218,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("There is no Connection to lobby");
         }
+    }
+
+    private void SetupLobbyUI()
+    {
+        abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
+        LoadFriendsList();
+        SetupGeneralCallbacks();
+        SetupFriendCallbacks();
+        SetupMatchmakingCallbacks();
+        SetupChatCallbacks();
     }
 
     private void SetupGeneralCallbacks()
@@ -1212,6 +1232,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         multiplayerConnect.Connect();
     }
 
+    public void SetIsActionPhaseOver(bool isOver)
+    {
+        isActionPhaseOver = isOver;
+    }
+
+    public bool GetIsActionPhaseOver()
+    {
+        return isActionPhaseOver;
+    }
+	
     #region AccelByte Notification Callbacks
     private void OnNotificationReceived(Result<Notification> result)
     {
