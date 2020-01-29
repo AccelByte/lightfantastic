@@ -4,7 +4,7 @@
   "BaseUrl": "https://dev.versusevil.accelbyte.io",
   "DSMServerUrl": "https://dev.versusevil.accelbyte.io/dsmcontroller",
   "IamServerUrl": "https://dev.versusevil.accelbyte.io/iam",
-  "ClientId": "7c608fd2a2214a438e95303d79d7ba63",
-  "ClientSecret": "~UXY=Y=Q-P~gSL;Rv@jIRyZP1fwq3.,#",
+  "ClientId": "check_lastpass",
+  "ClientSecret": "check_lastpass",
   "RedirectUri": "http://127.0.0.1"
 }

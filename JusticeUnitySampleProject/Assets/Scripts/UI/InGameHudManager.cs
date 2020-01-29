@@ -62,10 +62,7 @@ namespace Game
 
         public void DisconnectPlayer()
         {
-            Debug.Log("Gameplay: DisconnectPlayer");
             gameMgr.DisconnectPlayer();
-            // notify the lobby logic that the player's match is already over
-            AccelByteManager.Instance.LobbyLogic.SetIsActionPhaseOver(true);
         }
     }
 }
