@@ -105,7 +105,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupPopupPartyControl();
         SetupMatchmakingBoard();
 		
-		if (isActionPhaseOver)
+        if (isActionPhaseOver)
         {
             Debug.Log("AbLogic SetIsActionPhaseOver called");
             // move to main menu screen
