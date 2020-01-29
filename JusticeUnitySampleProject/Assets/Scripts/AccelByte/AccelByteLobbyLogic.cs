@@ -35,7 +35,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private List<string> chatList;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
-	private bool isActionPhaseOver = false;
+    private bool isActionPhaseOver = false;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -220,7 +220,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-	private void SetupLobbyUI()
+    private void SetupLobbyUI()
     {
         abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
         LoadFriendsList();
@@ -1232,7 +1232,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         multiplayerConnect.Connect();
     }
 
-	public void SetIsActionPhaseOver(bool isOver)
+    public void SetIsActionPhaseOver(bool isOver)
     {
         isActionPhaseOver = isOver;
     }

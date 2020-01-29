@@ -230,7 +230,7 @@ namespace ABRuntimeLogic
                 UIElementHandler.FadeVerify();
                 UIElementHandler.FadePersistentFriends();
                 UIElementHandler.FadeMenu();
-				abUserProfileLogic.Init();
+                abUserProfileLogic.Init();
                 abLobbyLogic.ConnectToLobby();
             }
         }
