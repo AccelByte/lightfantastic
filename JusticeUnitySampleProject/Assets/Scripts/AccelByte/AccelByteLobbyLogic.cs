@@ -199,7 +199,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             //If we don't connect Retry.
-			// TODO: use coroutine to day the call to avoid spam
+            // TODO: use coroutine to day the call to avoid spam
             Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
             ConnectToLobby();
         }
