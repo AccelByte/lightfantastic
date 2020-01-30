@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -122,6 +122,7 @@ namespace AccelByte.Core
         EmailAlreadyUsed = 10133,
         CountryNotFound = 10154,
         
+        PlayerOffline = 11284,
     }
 
     public class Error
@@ -254,6 +255,11 @@ namespace AccelByte.Core
             case ErrorCode.MessageCannotBeSent:
 
                 return "Sending message to server failed.";
+
+            //Chat error codes
+            case ErrorCode.PlayerOffline:
+
+                return "The player is offline.";
             default:
 
                 return "Unknown error: " + this.Code.ToString("G");

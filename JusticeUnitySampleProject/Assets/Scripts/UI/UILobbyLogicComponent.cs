@@ -24,6 +24,11 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Transform ChatTextbox;
     public Transform matchmakingBoard;
 
+    //Chat
+    public InputField playerNameInputField;
+    public InputField messageInputField;
+    public Text chatMessageText;
+
     // Notification
     public Text generalNotificationTitle;
     public Text generalNotificationText;
