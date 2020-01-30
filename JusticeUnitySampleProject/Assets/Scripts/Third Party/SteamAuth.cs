@@ -59,9 +59,9 @@ public class SteamAuth : MonoBehaviour
             m_HAuthTicket = SteamUser.GetAuthSessionTicket(m_Ticket, 1024, out m_pcbTicket);
             print("SteamUser.GetAuthSessionTicket(Ticket, 1024, out pcbTicket) - " + m_HAuthTicket + " -- " + m_pcbTicket);
             StringBuilder sb = new StringBuilder();
-            foreach (byte b in m_Ticket)
+            for(int i = 0; i < m_pcbTicket; i++)
             {
-                sb.AppendFormat("{0:x2}", b);
+                sb.AppendFormat("{0:x2}", m_Ticket[i]);
             }
             string hexTicket = sb.ToString();
 
