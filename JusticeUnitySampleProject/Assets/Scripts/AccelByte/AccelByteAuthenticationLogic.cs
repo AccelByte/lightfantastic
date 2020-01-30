@@ -209,7 +209,9 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("Register successful.");
-                abUser.LoginWithUsername(UIHandlerAuthComponent.registerEmail.text, UIHandlerAuthComponent.registerPassword.text, OnLogin);
+                UIHandlerAuthComponent.loginEmail.text = UIHandlerAuthComponent.registerEmail.text;
+                UIHandlerAuthComponent.loginPassword.text = UIHandlerAuthComponent.registerPassword.text;
+                Login();
                 //Show Verification Panel
                 UIElementHandler.FadeRegister();
             }
@@ -284,6 +286,11 @@ namespace ABRuntimeLogic
                 Debug.Log("GetUserData failed:" + result.Error.Message);
                 Debug.Log("GetUserData Response Code: " + result.Error.Code);
             }
+            else if (!result.Value.eligible)
+            {
+                UIElementHandler.FadeLoading();// hide
+                gameObject.GetComponent<AccelByteAgreementLogic>().GetUserPolicy();
+            }
             else
             {
                 abUserData = result.Value;
@@ -293,6 +300,7 @@ namespace ABRuntimeLogic
 
                 if (!abUserData.emailVerified && !useSteam)
                 {
+                    UIElementHandler.FadeLoading();// hide
                     UIElementHandler.FadeVerify();
                 }
                 else

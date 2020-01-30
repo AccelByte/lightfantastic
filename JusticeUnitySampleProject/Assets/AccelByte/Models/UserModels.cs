@@ -72,6 +72,7 @@ namespace AccelByte.Models
         [DataMember] public string[] roles { get; set; }
         [DataMember] public string userId { get; set; }
         [DataMember] public string userName { get; set; }
+        [DataMember] public bool eligible { get; set; } = true;
     }
 
     [DataContract]
