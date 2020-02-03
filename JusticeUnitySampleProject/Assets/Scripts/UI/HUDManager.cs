@@ -90,6 +90,12 @@ public class HUDManager<EnumT> : MonoBehaviour where EnumT : System.Enum
         Pop();
     }
 
+    public T FindPanel<T>()
+    {
+        T panel = GetComponentInChildren<T>();
+        return panel;
+    }
+    
     private void Push(BaseHUD tgt, bool resetStack, bool replace, bool blend)
     {
         if (!panelsPopulated_)
