@@ -34,11 +34,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private bool isReadyToInviteToParty;
     private List<string> chatList;
     private List<string> chatBoxList;
-    private ChatMesssage receivedMessage;
+    private ChatMesssage receivedPersonalMessage;
+    private ChatMesssage receivedPartyMessage;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
     private bool isActionPhaseOver = false;
-    private bool isReceivedMessage = false;
+    static bool isReceivedPersonalMessage = false;
+    static bool isReceivedPartyMessage = false;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -65,10 +67,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void Update()
     {
-        if (isReceivedMessage)
+        if (isReceivedPersonalMessage)
         {
-            AccelBytePlugin.GetUser().GetUserByUserId(receivedMessage.from, OnGetDisplayNamebyUserId);
-            isReceivedMessage = false;
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPersonalMessage.from, OnGetPersonalChatDisplayNamebyUserId);
+            isReceivedPersonalMessage = false;
+        }
+        if (isReceivedPartyMessage)
+        {
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPartyMessage.from, OnGetPartyChatDisplayNamebyUserId);
+            isReceivedPartyMessage = false;
         }
     }
 
@@ -1302,11 +1309,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
         }
     }
-
-    private void OnPartyChatReceived(Result<ChatMesssage> result)
-    {
-        throw new NotImplementedException();
-    }
     #endregion
 
     #region AccelByte Chat Functions
@@ -1315,11 +1317,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         if (string.IsNullOrEmpty(UIHandlerLobbyComponent.messageInputField.text))
             Debug.Log("Please fill the chat message");
         else if (string.IsNullOrEmpty(UIHandlerLobbyComponent.playerNameInputField.text))
-            Debug.Log("Please fill the exist player name");
+            SendPartyChat();
         else
         {
             AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.playerNameInputField.text, OnSearchUsers);
         }
+    }
+
+    private void SendPartyChat()
+    {
+        abLobby.SendPartyChat(UIHandlerLobbyComponent.messageInputField.text, OnSendPartyChat);
     }
 
     private void SendPersonalChat(string userId)
@@ -1354,7 +1361,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Send personal message failed:" + result.Error.Message);
             Debug.Log("Send personal message Response Code: " + result.Error.Code);
             //Show Error Message
-            if (result.Error.Code == ErrorCode.PlayerOffline)
+            if (result.Error.Code == ErrorCode.ReceiverNotFound)
             {
                 WriteChatBoxText("Player is offline");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
@@ -1368,6 +1375,26 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void OnSendPartyChat(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Send party chat failed:" + result.Error.Message);
+            Debug.Log("Send party chat Response Code: " + result.Error.Code);
+            if (result.Error.Code == ErrorCode.PartyNotFound)
+            {
+                WriteChatBoxText("Party is not found");
+                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+            }
+        }
+        else
+        {
+            Debug.Log("Send party chat successful");
+            WriteChatBoxText("<party>" + AccelByteManager.Instance.AuthLogic.GetUserData().displayName + " : " + UIHandlerLobbyComponent.messageInputField.text);
+            UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+        }
+    }
+
     private void OnPersonalChatReceived(Result<ChatMesssage> result)
     {
         if (result.IsError)
@@ -1377,12 +1404,26 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            receivedMessage = result.Value;
-            isReceivedMessage = true;
+            receivedPersonalMessage = result.Value;
+            isReceivedPersonalMessage = true;
         }
     }
 
-    private void OnGetDisplayNamebyUserId(Result<UserData> result)
+    private void OnPartyChatReceived(Result<ChatMesssage> result)
+    {
+        if(result.IsError)
+        {
+            Debug.Log("Get party chat failed:" + result.Error.Message);
+            Debug.Log("Get party chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedPartyMessage = result.Value;
+            isReceivedPartyMessage = true;
+        }
+    }
+
+    private void OnGetPersonalChatDisplayNamebyUserId(Result<UserData> result)
     {
         if (result.IsError)
         {
@@ -1391,7 +1432,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            WriteChatBoxText(result.Value.displayName + " : " + receivedMessage.payload);
+            WriteChatBoxText(result.Value.displayName + " : " + receivedPersonalMessage.payload);
+        }
+    }
+
+    private void OnGetPartyChatDisplayNamebyUserId(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get display name failed:" + result.Error.Message);
+            Debug.Log("Get display name Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            WriteChatBoxText("<party>" + result.Value.displayName + " : " + receivedPartyMessage.payload);
         }
     }
 

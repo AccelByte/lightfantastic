@@ -121,8 +121,9 @@ namespace AccelByte.Core
         UserUnderage = 10130,
         EmailAlreadyUsed = 10133,
         CountryNotFound = 10154,
-        
-        PlayerOffline = 11284,
+
+        ReceiverNotFound = 11284,
+        PartyNotFound = 11293,
     }
 
     public class Error
@@ -257,9 +258,12 @@ namespace AccelByte.Core
                 return "Sending message to server failed.";
 
             //Chat error codes
-            case ErrorCode.PlayerOffline:
+            case ErrorCode.ReceiverNotFound:
 
-                return "The player is offline.";
+                return "Player is offline.";
+            case ErrorCode.PartyNotFound:
+
+                return "Party is not found.";
             default:
 
                 return "Unknown error: " + this.Code.ToString("G");
