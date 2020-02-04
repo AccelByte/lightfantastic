@@ -71,6 +71,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new TestNetworkObject(networker, id, frame);
 						break;
+					case GameTimerNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new GameTimerNetworkObject(networker, id, frame);
+						break;
 				}
 
 				if (!availableCallback)

@@ -132,6 +132,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGameHUDManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4885716678053571233, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_TagString
+      value: HUDManager
+      objectReference: {fileID: 0}
     - target: {fileID: 4885716678053571236, guid: 7943412d6ac99b64d95fa7c5e8eee206,
         type: 3}
       propertyPath: m_Camera

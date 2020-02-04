@@ -290,7 +290,7 @@ namespace BeardedManStudios.Forge.Networking
 		public void Ping()
 		{
             LastPing = Networker.Time.Timestep;
-            UnityEngine.Debug.Log("networkingplayer Ping: " + LastPing);
+//            UnityEngine.Debug.Log("networkingplayer Ping: " + LastPing);
         }
 
 		/// <summary>
@@ -299,7 +299,7 @@ namespace BeardedManStudios.Forge.Networking
 		/// <returns>True if the player has timed out</returns>
 		public bool TimedOut()
 		{
-            UnityEngine.Debug.Log("networkingplayer timeout");
+ //           UnityEngine.Debug.Log("networkingplayer timeout");
             return LastPing + TimeoutMilliseconds <= Networker.Time.Timestep;
 		}
 

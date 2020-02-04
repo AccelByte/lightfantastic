@@ -12,6 +12,9 @@ namespace Game
     {
         public delegate void OnPlayerDisconnectBroadcast(MovePlayerPawnBehavior behavior);
         public event OnPlayerDisconnectBroadcast disconnectBroadcast;
+        public delegate void GameManagerInitCompletion();
+        public event GameManagerInitCompletion onInitCompleted;
+        
         public class PlayerData
         {
             public PlayerData(MovePlayerPawnBehavior newCharacter, int newStartPosIdx = 0, ulong newFinishedTime = 0)
@@ -75,6 +78,7 @@ namespace Game
                 return null;
             }
         }
+
         #endregion
 
         private void Awake()
@@ -87,6 +91,11 @@ namespace Game
         protected override void NetworkStart()
         {
             base.NetworkStart();
+            if(networkObject.IsServer)
+            {
+                NetworkManager.Instance.InstantiateGameTimer(0);
+                onInitCompleted?.Invoke();
+            }
             isNetworkReady = true;
         }
 

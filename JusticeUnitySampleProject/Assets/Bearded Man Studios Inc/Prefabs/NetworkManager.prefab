@@ -61,4 +61,6 @@ MonoBehaviour:
   PawnSpawnerNetworkObject: []
   RotatePlayerPawnNetworkObject: []
   TestNetworkObject: []
+  GameTimerNetworkObject:
+  - {fileID: 3199766214774226786, guid: 9c664e973fabbaa41ac552e50dd65b82, type: 3}
   automaticScenes: 1
