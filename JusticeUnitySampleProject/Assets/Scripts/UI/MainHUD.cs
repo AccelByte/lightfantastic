@@ -8,7 +8,10 @@ public class MainHUD : BaseHUD
     [SerializeField]
     private Button pauseButton_;
     [SerializeField]
-
+    public Button leftRunButton_;
+    [SerializeField]
+    public Button rightRunButton_;
+    [SerializeField]
     private TextMeshProUGUI timerText_ = null;
 
     private Game.InGameHudManager hudMgr;
@@ -21,6 +24,7 @@ public class MainHUD : BaseHUD
         hudMgr = GetComponentInParent<Game.InGameHudManager>();
         gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Game.BaseGameManager>();
         canvas_.sortingLayerName = "UI";
+        TouchButtonInit();
     }
 
     protected override void Start()
@@ -60,6 +64,16 @@ public class MainHUD : BaseHUD
     private void ShowPauseScreen()
     {
         hudMgr.ShowPauseScreen();
+    }
+
+    private void TouchButtonInit()
+    {
+        bool touchInteraction = false;
+#if UNITY_ANDROID || UNITY_SWITCH
+        touchInteraction = true;
+#endif
+        leftRunButton_.gameObject.SetActive(touchInteraction);
+        rightRunButton_.gameObject.SetActive(touchInteraction);
     }
 
     private void OnDestroy()

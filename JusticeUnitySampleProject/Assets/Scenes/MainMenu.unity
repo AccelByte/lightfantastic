@@ -2433,11 +2433,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 545861802}
     - target: {fileID: 4409914957356771190, guid: 119d7998bf7907646855f0df65473b22,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
+      objectReference: {fileID: 545861802}
+    - target: {fileID: 4409914957356771190, guid: 119d7998bf7907646855f0df65473b22,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: FadeInventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 4409914957356771190, guid: 119d7998bf7907646855f0df65473b22,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: FadeMenu
       objectReference: {fileID: 0}
     - target: {fileID: 6058451838113468968, guid: 119d7998bf7907646855f0df65473b22,
         type: 3}
