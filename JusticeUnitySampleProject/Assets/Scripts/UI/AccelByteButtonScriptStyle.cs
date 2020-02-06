@@ -7,18 +7,6 @@ using UnityEngine.UI;
 public class AccelByteButtonScriptStyle : MonoBehaviour
 {
     [SerializeField]
-    private Color TINT_NORMAL_IMAGE;
-    [SerializeField]
-    private Color TINT_HOVER_IMAGE;
-    [SerializeField]
-    private Color TINT_NORMAL_TEXT;
-    [SerializeField]
-    private Color TINT_HOVER_TEXT;
-    [SerializeField]
-    private Color TINT_DISABLED_IMAGE;
-    [SerializeField]
-    private Color TINT_DISABLED_TEXT;
-    [SerializeField]
     private Button button;
     [SerializeField]
     private Text buttonText;
@@ -27,24 +15,6 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
     
     [SerializeField]
     public string text;
-
-    private void SetHoverColor()
-    {
-        button.image.color = TINT_HOVER_IMAGE;
-        buttonText.color = TINT_HOVER_TEXT; 
-    }
-
-    private void SetNormalColor()
-    {
-        button.image.color = TINT_NORMAL_IMAGE;
-        buttonText.color = TINT_NORMAL_TEXT; 
-    }
-
-    private void SetDisableColor()
-    {
-        button.image.color = TINT_DISABLED_IMAGE;
-        buttonText.color = TINT_DISABLED_TEXT; 
-    }
 
     private void SetText(string text)
     {
@@ -60,18 +30,18 @@ public class AccelByteButtonScriptStyle : MonoBehaviour
     public void SetEnable(bool enable)
     {
         button.interactable = enable;
-        if (enable)
-        {
-            SetNormalColor();
-            mouseHoverComponent.OnMouseHoverAction = SetHoverColor;
-            mouseHoverComponent.OnMouseExitAction = SetNormalColor;
-        }
-        else
-        {
-            SetDisableColor();
-            mouseHoverComponent.OnMouseHoverAction = null;
-            mouseHoverComponent.OnMouseExitAction = null;
-        }
+//        if (enable)
+//        {
+//            SetNormalColor();
+//            mouseHoverComponent.OnMouseHoverAction = SetHoverColor;
+//           mouseHoverComponent.OnMouseExitAction = SetNormalColor;
+//        }
+//        else
+//        {
+//            SetDisableColor();
+//            mouseHoverComponent.OnMouseHoverAction = null;
+//            mouseHoverComponent.OnMouseExitAction = null;
+//        }
     }
 
     public Button getButton()
