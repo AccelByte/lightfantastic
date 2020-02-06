@@ -66,7 +66,7 @@ namespace Game
 
         private void PrepareTouchButton()
         {
-            #if UNITY_ANDROID || UNITY_SWITCH
+            #if UNITY_ANDROID || UNITY_SWITCH || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             var mainHud = gameMgr.HudManager.GetComponentsInChildren<MainHUD>()[0];
             mainHud.leftRunButton_.onClick.RemoveAllListeners();
             mainHud.rightRunButton_.onClick.RemoveAllListeners();
@@ -166,12 +166,13 @@ namespace Game
             {
                 currSpeed = LinearDecay(currSpeed, dt);
             }
-            speedSetter.SetSpeed(currSpeed * LightFantasticConfig.CURR_SPEED_MULTIPLIER_ANIMATION);
             Vector3 newPos = transform.position;
             newPos.x = transform.position.x + currSpeed;
             if (networkObject.IsOwner)
             {
+                speedSetter.SetSpeed(currSpeed);
                 networkObject.SendRpc(RPC_UPDATE_POSITION, Receivers.Others, newPos);
+                networkObject.SendRpc(RPC_SET_CURRENT_SPEED, Receivers.Others, currSpeed);
                 transform.position = networkObject.Position = newPos;
                 parallaxSetter.SetSpeed(currSpeed);
             }
@@ -203,6 +204,15 @@ namespace Game
             //Leave this empty since this is only used to check for cheating
         }
 
+        public override void RPCSetCurrentSpeed(RpcArgs args)
+        {
+            if (!networkObject.IsOwner)
+            {
+                var currentSpeed = args.GetAt<float>(0);
+                speedSetter.SetSpeed(currentSpeed);
+            }
+        }
+        
         public override void Ban(RpcArgs args)
         {
             MainThreadManager.Run(() =>

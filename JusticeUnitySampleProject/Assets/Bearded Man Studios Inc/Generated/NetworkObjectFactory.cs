@@ -47,6 +47,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new GameManagerNetworkObject(networker, id, frame);
 						break;
+					case GameTimerNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new GameTimerNetworkObject(networker, id, frame);
+						break;
 					case InputListenerNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new InputListenerNetworkObject(networker, id, frame);
@@ -70,10 +74,6 @@ namespace BeardedManStudios.Forge.Networking.Generated
 					case TestNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new TestNetworkObject(networker, id, frame);
-						break;
-					case GameTimerNetworkObject.IDENTITY:
-						availableCallback = true;
-						obj = new GameTimerNetworkObject(networker, id, frame);
 						break;
 				}
 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][][\"string\"][\"string\", \"string\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][][\"newUserId\"][\"newHatTitle\", \"newEffectTitle\"]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][][\"string\"][\"string\", \"string\"][\"float\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][][\"newUserId\"][\"newHatTitle\", \"newEffectTitle\"][\"CurrentSpeed\"]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
 		public const byte RPC_UPDATE_POSITION = 0 + 5;
@@ -13,6 +13,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public const byte RPC_BAN = 2 + 5;
 		public const byte RPC_SET_USER_ID = 3 + 5;
 		public const byte RPC_SET_ACTIVE_EQUIPMENT = 4 + 5;
+		public const byte RPC_SET_CURRENT_SPEED = 5 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -31,6 +32,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("Ban", Ban);
 			networkObject.RegisterRpc("RPCSetUserId", RPCSetUserId, typeof(string));
 			networkObject.RegisterRpc("RPCSetActiveEquipment", RPCSetActiveEquipment, typeof(string), typeof(string));
+			networkObject.RegisterRpc("RPCSetCurrentSpeed", RPCSetCurrentSpeed, typeof(float));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -131,6 +133,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// </summary>
 		public abstract void RPCSetActiveEquipment(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCSetCurrentSpeed(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}
