@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class CollectionPrefab : MonoBehaviour
 {
     [SerializeField]
-    private Transform currentItemCountText;
+    private Text currentItemCountText;
     [SerializeField]
-    private Transform totalItemCountText;
+    private Text totalItemCountText;
     [SerializeField]
-    private Transform itemCategoryText;
+    private Text itemCategoryText;
     [SerializeField]
     private int currentItemCount = 1;
     [SerializeField]
@@ -38,8 +39,8 @@ public class CollectionPrefab : MonoBehaviour
         currentItemCount = current;
         totalItemCount = total;
 
-        itemCategoryText.GetComponent<TextMeshProUGUI>().text = itemCategory;
-        currentItemCountText.GetComponent<TextMeshProUGUI>().text = currentItemCount.ToString();
-        totalItemCountText.GetComponent<TextMeshProUGUI>().text = totalItemCount.ToString();
+        itemCategoryText.text = itemCategory;
+        currentItemCountText.text = currentItemCount.ToString();
+        totalItemCountText.text = totalItemCount.ToString();
     }
 }
