@@ -33,9 +33,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private bool isReadyToUpdatePartySlot;
     private bool isReadyToInviteToParty;
     private List<string> chatList;
+    private List<string> chatBoxList;
+    private ChatMesssage receivedPersonalMessage;
+    private ChatMesssage receivedPartyMessage;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
     private bool isActionPhaseOver = false;
+    static bool isReceivedPersonalMessage = false;
+    static bool isReceivedPartyMessage = false;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -56,7 +61,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         friendList = new Dictionary<string, FriendData>();
         partyMemberList = new Dictionary<string, PartyData>();
         chatList = new List<string>();
+        chatBoxList = new List<string>();
         multiplayerConnect = gameObject.GetComponent<MultiplayerMenu>();
+    }
+
+    private void Update()
+    {
+        if (isReceivedPersonalMessage)
+        {
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPersonalMessage.from, OnGetPersonalChatDisplayNamebyUserId);
+            isReceivedPersonalMessage = false;
+        }
+        if (isReceivedPartyMessage)
+        {
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPartyMessage.from, OnGetPartyChatDisplayNamebyUserId);
+            isReceivedPartyMessage = false;
+        }
     }
 
     #region UI Listeners
@@ -479,7 +499,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Debug.Log(result.Value.friendsId[i]);
                 GetFriendInfo(result.Value.friendsId[i], OnGetFriendInfoRequest);
             }
-            ListFriendsStatus();
+            // This is only for temporary bug fix
+            //ListFriendsStatus();
         }
     }
 
@@ -1288,18 +1309,178 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region AccelByte Chat Functions
+    private void SendChatMessage()
+    {
+        if (string.IsNullOrEmpty(UIHandlerLobbyComponent.messageInputField.text))
+            Debug.Log("Please fill the chat message");
+        else if (string.IsNullOrEmpty(UIHandlerLobbyComponent.playerNameInputField.text))
+            SendPartyChat();
+        else
+        {
+            AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.playerNameInputField.text, OnSearchUsers);
+        }
+    }
+
+    private void SendPartyChat()
+    {
+        abLobby.SendPartyChat(UIHandlerLobbyComponent.messageInputField.text, OnSendPartyChat);
+    }
+
+    private void SendPersonalChat(string userId)
+    {
+        abLobby.SendPersonalChat(userId, UIHandlerLobbyComponent.messageInputField.text, OnSendPersonalChat);
+    }
+
+    private void WriteChatBoxText(string chat)
+    {
+        string textChat = "";
+
+        if (chatList.Count >= 5)
+        {
+            chatList.RemoveAt(0);
+        }
+        chatList.Add(chat);
+
+        foreach (var s in chatList)
+        {
+            textChat += s + "\n";
+        }
+
+        UIHandlerLobbyComponent.chatMessageText.text = textChat;
+    }
+    #endregion
+
+    #region AccelByte Chat Callbacks
+    private void OnSendPersonalChat(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Send personal message failed:" + result.Error.Message);
+            Debug.Log("Send personal message Response Code: " + result.Error.Code);
+            //Show Error Message
+            if (result.Error.Code == ErrorCode.ReceiverNotFound)
+            {
+                WriteChatBoxText("Player is offline");
+                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+            }
+        }
+        else
+        {
+            Debug.Log("Send personal chat successful");
+            WriteChatBoxText(AccelByteManager.Instance.AuthLogic.GetUserData().displayName + " : " + UIHandlerLobbyComponent.messageInputField.text);
+            UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+        }
+    }
+
+    private void OnSendPartyChat(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Send party chat failed:" + result.Error.Message);
+            Debug.Log("Send party chat Response Code: " + result.Error.Code);
+            if (result.Error.Code == ErrorCode.PartyNotFound)
+            {
+                WriteChatBoxText("Party is not found");
+                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+            }
+        }
+        else
+        {
+            Debug.Log("Send party chat successful");
+            WriteChatBoxText("<party>" + AccelByteManager.Instance.AuthLogic.GetUserData().displayName + " : " + UIHandlerLobbyComponent.messageInputField.text);
+            UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+        }
+    }
 
     private void OnPersonalChatReceived(Result<ChatMesssage> result)
     {
-        throw new NotImplementedException();
+        if (result.IsError)
+        {
+            Debug.Log("Get personal chat failed:" + result.Error.Message);
+            Debug.Log("Get personal chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedPersonalMessage = result.Value;
+            isReceivedPersonalMessage = true;
+        }
     }
 
     private void OnPartyChatReceived(Result<ChatMesssage> result)
     {
-        throw new NotImplementedException();
+        if(result.IsError)
+        {
+            Debug.Log("Get party chat failed:" + result.Error.Message);
+            Debug.Log("Get party chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedPartyMessage = result.Value;
+            isReceivedPartyMessage = true;
+        }
+    }
+
+    private void OnGetPersonalChatDisplayNamebyUserId(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get display name failed:" + result.Error.Message);
+            Debug.Log("Get display name Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            WriteChatBoxText(result.Value.displayName + " : " + receivedPersonalMessage.payload);
+        }
+    }
+
+    private void OnGetPartyChatDisplayNamebyUserId(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get display name failed:" + result.Error.Message);
+            Debug.Log("Get display name Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            WriteChatBoxText("<party>" + result.Value.displayName + " : " + receivedPartyMessage.payload);
+        }
+    }
+
+    private void OnSearchUsers(Result<PagedPublicUsersInfo> result)
+    {
+        string notValidText = "Player is not exist";
+        if (result.IsError)
+        {
+            Debug.Log("Search user failed:" + result.Error.Message);
+            Debug.Log("Search user Response Code: " + result.Error.Code);
+            WriteChatBoxText(notValidText);
+        }
+        else
+        {
+            bool isValid = false;
+            foreach (var data in result.Value.data)
+            {
+                if (data.displayName == AccelByteManager.Instance.AuthLogic.GetUserData().displayName && data.displayName == UIHandlerLobbyComponent.playerNameInputField.text)
+                {
+                    isValid = true;
+                    UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+                    Debug.Log("You can't chat with yourself");
+                }
+                else if (data.displayName == UIHandlerLobbyComponent.playerNameInputField.text)
+                {
+                    isValid = true;
+                    SendPersonalChat(data.userId);
+                }
+            }
+            if (!isValid)
+            {
+                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+                WriteChatBoxText(notValidText);
+            }
+        }
     }
     #endregion
-
-
 }

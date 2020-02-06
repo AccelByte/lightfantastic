@@ -62,6 +62,17 @@ namespace Game
             particleSetter = GetComponent<CharacterParticleSetter>();
         }
 
+        private void PrepareTouchButton()
+        {
+            #if UNITY_ANDROID || UNITY_SWITCH
+            var mainHud = gameMgr.HudManager.GetComponentsInChildren<MainHUD>()[0];
+            mainHud.leftRunButton_.onClick.RemoveAllListeners();
+            mainHud.rightRunButton_.onClick.RemoveAllListeners();
+            mainHud.leftRunButton_.onClick.AddListener(()=>IncreaseCurrSpeed());
+            mainHud.rightRunButton_.onClick.AddListener(()=>IncreaseCurrSpeed());
+            #endif
+        }
+
         protected override void NetworkStart()
         {
             base.NetworkStart();
@@ -77,6 +88,10 @@ namespace Game
         {
             networkObject.MaxSpeed = maxSpeed_;
             hoveringText.ChangeTextLabel("Player " + networkObject.playerNum);
+            if (networkObject.IsOwner)
+            {
+                PrepareTouchButton();
+            }
             GetCloudData();
         }
 
@@ -143,7 +158,7 @@ namespace Game
         {
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
             {
-                currSpeed += speedIncreaseConst;
+                IncreaseCurrSpeed();
             }
             else
             {
@@ -157,6 +172,11 @@ namespace Game
                 networkObject.SendRpc(RPC_UPDATE_POSITION, Receivers.Others, newPos);
                 transform.position = networkObject.Position = newPos;
             }
+        }
+
+        private void IncreaseCurrSpeed()
+        {
+            currSpeed += speedIncreaseConst;
         }
 
         /// <summary>
