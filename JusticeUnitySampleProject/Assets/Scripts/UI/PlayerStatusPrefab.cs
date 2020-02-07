@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using AccelByte.Models;
+using UnityEngine.UI;
 
 public class PlayerStatusPrefab : MonoBehaviour
 {
     [SerializeField]
-    private Transform playerNameText;
+    private Text playerNameText;
     [SerializeField]
-    private Transform playerIdText;
+    private Text playerIdText;
     [SerializeField]
-    private Transform playerEmailText;
+    private Text playerEmailText;
 
     [SerializeField]
     private Transform playerLevelText;
@@ -71,9 +72,9 @@ public class PlayerStatusPrefab : MonoBehaviour
         playerLevel = 8;
         playerLevelExp = 888;
 
-        playerNameText.GetComponent<TextMeshProUGUI>().text = playerName;
-        playerIdText.GetComponent<TextMeshProUGUI>().text = playerId;
-        playerEmailText.GetComponent<TextMeshProUGUI>().text = playerEmail;
+        playerNameText.text = playerName;
+        playerIdText.text = playerId;
+        playerEmailText.text = playerEmail;
 
         // TODO: create player level and exp
         //playerLevelText.GetComponent<TextMeshProUGUI>().text = playerLevel.ToString();
