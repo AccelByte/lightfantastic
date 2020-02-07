@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 40
-    OrthographicSize: 2
+    OrthographicSize: 1.77
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
@@ -133,14 +133,14 @@ MonoBehaviour:
   m_ScreenY: 0.5207102
   m_CameraDistance: 10
   m_DeadZoneWidth: 0.295
-  m_DeadZoneHeight: 0.731
+  m_DeadZoneHeight: 1
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
   m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneHeight: 1
   m_BiasX: 0.35799998
   m_BiasY: 0
-  m_CenterOnActivate: 1
+  m_CenterOnActivate: 0
   m_GroupFramingMode: 2
   m_AdjustmentMode: 2
   m_GroupFramingSize: 0.8

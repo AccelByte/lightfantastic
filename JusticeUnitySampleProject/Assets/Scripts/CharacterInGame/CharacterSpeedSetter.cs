@@ -8,6 +8,6 @@ public class CharacterSpeedSetter : MonoBehaviour
 
     public void SetSpeed(float speed)
     {
-        animator.SetFloat("Speed", speed);
+        animator.SetFloat("Speed", speed * LightFantasticConfig.CURR_SPEED_MULTIPLIER_ANIMATION);
     }
 }

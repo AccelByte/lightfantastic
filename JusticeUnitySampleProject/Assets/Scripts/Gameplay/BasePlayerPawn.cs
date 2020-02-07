@@ -29,6 +29,7 @@ namespace Game
         private CharacterSpeedSetter speedSetter;
         private CharacterHatSetter hatSetter;
         private CharacterParticleSetter particleSetter;
+        private ParallaxSetter parallaxSetter;
         [SerializeField]
         private float speedDecayConst = 0.1f;
         [SerializeField]
@@ -60,6 +61,7 @@ namespace Game
             speedSetter = GetComponent<CharacterSpeedSetter>();
             hatSetter = GetComponent<CharacterHatSetter>();
             particleSetter = GetComponent<CharacterParticleSetter>();
+            parallaxSetter = gameMgr.parallaxSetter;
         }
 
         private void PrepareTouchButton()
@@ -164,13 +166,15 @@ namespace Game
             {
                 currSpeed = LinearDecay(currSpeed, dt);
             }
-            speedSetter.SetSpeed(currSpeed * LightFantasticConfig.CURR_SPEED_MULTIPLIER_ANIMATION);
             Vector3 newPos = transform.position;
             newPos.x = transform.position.x + currSpeed;
             if (networkObject.IsOwner)
             {
+                speedSetter.SetSpeed(currSpeed);
                 networkObject.SendRpc(RPC_UPDATE_POSITION, Receivers.Others, newPos);
+                networkObject.SendRpc(RPC_SET_CURRENT_SPEED, Receivers.Others, currSpeed);
                 transform.position = networkObject.Position = newPos;
+                parallaxSetter.SetSpeed(currSpeed);
             }
         }
 
@@ -200,6 +204,15 @@ namespace Game
             //Leave this empty since this is only used to check for cheating
         }
 
+        public override void RPCSetCurrentSpeed(RpcArgs args)
+        {
+            if (!networkObject.IsOwner)
+            {
+                var currentSpeed = args.GetAt<float>(0);
+                speedSetter.SetSpeed(currentSpeed);
+            }
+        }
+        
         public override void Ban(RpcArgs args)
         {
             MainThreadManager.Run(() =>

@@ -79,6 +79,10 @@ namespace Game
             }
         }
 
+        [Header("Parallax")]
+        [SerializeField] 
+        public ParallaxSetter parallaxSetter;
+
         #endregion
 
         private void Awake()
