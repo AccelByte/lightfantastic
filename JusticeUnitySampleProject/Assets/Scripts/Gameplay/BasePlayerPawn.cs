@@ -66,7 +66,7 @@ namespace Game
 
         private void PrepareTouchButton()
         {
-            #if UNITY_ANDROID || UNITY_SWITCH || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+            #if UNITY_ANDROID || UNITY_SWITCH
             var mainHud = gameMgr.HudManager.GetComponentsInChildren<MainHUD>()[0];
             mainHud.leftRunButton_.onClick.RemoveAllListeners();
             mainHud.rightRunButton_.onClick.RemoveAllListeners();
