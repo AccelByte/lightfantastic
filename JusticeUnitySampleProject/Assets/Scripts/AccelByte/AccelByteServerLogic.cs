@@ -113,6 +113,7 @@ public class AccelByteServerLogic : MonoBehaviour
     {
         instance = null;
         Destroy(gameObject);
+        Application.Quit(0);
     }
 
     private void DeregisterServer()
@@ -120,6 +121,10 @@ public class AccelByteServerLogic : MonoBehaviour
         if (isLocal)
         {
             abServerManager.DeregisterLocalServer(OnDeregister);
+        }
+        else
+        {
+            abServerManager.ShutdownServer(true, OnDeregister);
         }
     }
 

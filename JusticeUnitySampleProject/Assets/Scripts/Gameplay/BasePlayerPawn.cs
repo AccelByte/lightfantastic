@@ -206,7 +206,7 @@ namespace Game
 
         public override void RPCSetCurrentSpeed(RpcArgs args)
         {
-            if (!networkObject.IsOwner)
+            if (networkObject != null && !networkObject.IsOwner && speedSetter != null)
             {
                 var currentSpeed = args.GetAt<float>(0);
                 speedSetter.SetSpeed(currentSpeed);
