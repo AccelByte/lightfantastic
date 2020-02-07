@@ -29,18 +29,26 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private bool connectToLocal;
     [SerializeField]
     private string gameMode = "testUnity";
-    private bool isLocalPlayerInParty;
-    private bool isReadyToUpdatePartySlot;
-    private bool isReadyToInviteToParty;
+    static bool isLocalPlayerInParty;
+    static bool isReadyToInviteToParty;
     private List<string> chatList;
     private List<string> chatBoxList;
     private ChatMesssage receivedPersonalMessage;
     private ChatMesssage receivedPartyMessage;
+    private FriendsStatusNotif friendsStatusNotif;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
     private bool isActionPhaseOver = false;
+
     static bool isReceivedPersonalMessage = false;
     static bool isReceivedPartyMessage = false;
+    static bool isRecevedPartyInvitation = false;
+    static bool isMemberJoinedParty = false;
+    static bool isMemberLeftParty = false;
+    static bool isMemberKickedParty = false;
+    static bool isLoadFriendDisplayName = false;
+    static bool isFriendStatusChanged = false;
+    static bool isFriendAcceptRequest = false;
     #region UI Fields
     private Transform localLeaderCommand;
     private Transform localmemberCommand;
@@ -69,13 +77,67 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         if (isReceivedPersonalMessage)
         {
-            AccelBytePlugin.GetUser().GetUserByUserId(receivedPersonalMessage.from, OnGetPersonalChatDisplayNamebyUserId);
             isReceivedPersonalMessage = false;
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPersonalMessage.from, OnGetPersonalChatDisplayNamebyUserId);
         }
         if (isReceivedPartyMessage)
         {
-            AccelBytePlugin.GetUser().GetUserByUserId(receivedPartyMessage.from, OnGetPartyChatDisplayNamebyUserId);
             isReceivedPartyMessage = false;
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedPartyMessage.from, OnGetPartyChatDisplayNamebyUserId);
+        }
+        if (isRecevedPartyInvitation)
+        {
+            isRecevedPartyInvitation = false;
+            AccelBytePlugin.GetUser().GetUserByUserId(abPartyInvitation.from, OnGetUserOnInvite);
+        }
+        if (isMemberJoinedParty)
+        {
+            isMemberJoinedParty = false;
+            ClearPartySlots();
+            GetPartyInfo();
+        }
+        if (isMemberLeftParty)
+        {
+            isMemberLeftParty = false;
+            ClearPartySlots();
+            GetPartyInfo();
+        }
+        if (isMemberKickedParty)
+        {
+            isMemberKickedParty = false;
+            ClearPartySlots();
+            GetPartyInfo();
+        }
+        if (isLoadFriendDisplayName)
+        {
+            isLoadFriendDisplayName = false;
+            foreach (var data in friendList.Keys)
+            {
+                GetFriendInfo(friendList[data].UserId, OnGetFriendInfoRequest);
+            }
+        }
+        if (isFriendStatusChanged)
+        {
+            isFriendStatusChanged = false;
+            string friendName = friendList[friendsStatusNotif.userID].DisplayName;
+            friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
+            RefreshFriendsUI();
+        }
+        if (isFriendAcceptRequest)
+        {
+            isFriendAcceptRequest = false;
+            LoadFriendsList();
+        }
+    }
+
+    // On quit set user status to offline
+    private void OnApplicationQuit()
+    {
+        Debug.Log("Application ending after " + Time.time + " seconds");
+        if (abLobby.IsConnected)
+        {
+            abLobby.LeaveParty(OnLeaveParty);
+            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
         }
     }
 
@@ -160,6 +222,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.AddListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.AddListener(OnDeclinePartyClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnPlayerPartyProfileClicked);
+        UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnClosePartyInfoButtonClicked);
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
@@ -180,6 +243,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.RemoveListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.RemoveListener(OnDeclinePartyClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnPlayerPartyProfileClicked);
+        UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnClosePartyInfoButtonClicked);
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
@@ -214,6 +278,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             //If we successfully connected, load our friend list.
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
             abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
+            friendList.Clear();
             SetupLobbyUI();
         }
         else
@@ -231,8 +296,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
-            LoadFriendsList();
             UnsubscribeAllCallbacks();
+            abLobby.Disconnect();
         }
         else
         {
@@ -291,95 +356,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.KickedFromParty -= OnKickedFromParty;
         abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
-
-    public void LoadFriendsList()
+	
+    #region AccelByte Notification Callbacks
+    private void OnNotificationReceived(Result<Notification> result)
     {
-        abLobby.LoadFriendsList(OnLoadFriendsListRequest);
+        UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
+        UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
+        UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
     }
+    #endregion
 
-    //Doesn't return any display names so needs to be married to an array of usernames or a dictionary of online user data.
-    public void ListFriendsStatus()
-    {
-        abLobby.ListFriendsStatus(OnListFriendsStatusRequest);
-    }
-
-    public void GetFriendInfo(string friendId, ResultCallback<UserData> callback)
-    {
-        AccelBytePlugin.GetUser().GetUserByUserId(friendId, callback);
-    }
-
-    public void FindFriendByEmail()
-    {
-        AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
-    }
-
-    public void SendFriendRequest(string friendId, ResultCallback callback)
-    {
-        abLobby.RequestFriend(friendId, callback);
-    }
-
-    public void AcceptFriendRequest(string friendId, ResultCallback callback)
-    {
-        abLobby.AcceptFriend(friendId, callback);
-    }
-
-    public void DeclineFriendRequest(string friendId, ResultCallback callback)
-    {
-        abLobby.RejectFriend(friendId, callback);
-    }
-
-    public void GetIncomingFriendsRequest()
-    {
-        abLobby.ListIncomingFriends(OnGetIncomingFriendsRequest);
-    }
-
-    public void GetOutgoingFriendsRequest()
-    {
-        abLobby.ListOutgoingFriends(OnGetOutgoingFriendsRequest);
-    }
-
-    public void CreateParty()
-    {
-        abLobby.CreateParty(OnPartyCreated);
-    }
-
-    public void CreateParty(ResultCallback<PartyInfo> callback)
-    {
-        abLobby.CreateParty(callback);
-    }
-
-    public void CreateAndInvitePlayer(string userId)
-    {
-        abLobby.CreateParty(OnPartyCreated);
-        StartCoroutine(WaitForInviteToParty(userId));
-    }
-
-    public void InviteToParty(string id, ResultCallback callback)
-    {
-        string invitedPlayerId = id;
-
-        abLobby.InviteToParty(invitedPlayerId, callback);
-    }
-
-    public void KickPartyMember(string id)
-    {
-        abLobby.KickPartyMember(id, OnKickPartyMember);
-    }
-    public void LeaveParty()
-    {
-        abLobby.LeaveParty(OnLeaveParty);
-    }
-
-    public void GetPartyInfo()
-    {
-        abLobby.GetPartyInfo(OnGetPartyInfo);
-    }
-
-    public void GetPartyMemberInfo(string friendId)
-    {
-        AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetPartyMemberInfo);
-    }
-
+    #region AccelByte MatchMaking Functions
     public void FindMatch()
     {
         if (connectToLocal)
@@ -425,484 +412,74 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
-    public void OnAcceptPartyClicked()
+    IEnumerator WaitForGameServerReady(string ip, string port)
     {
-        if (abPartyInvitation != null)
+        bool isActive = true;
+        while (isActive)
         {
-            abLobby.JoinParty(abPartyInvitation.partyID, abPartyInvitation.invitationToken, OnJoinedParty);
+            yield return new WaitForSecondsRealtime(1.0f);
+            multiplayerConnect.SetIPAddressPort(ip, port);
+            multiplayerConnect.Connect();
+            isActive = false;
+        }
+    }
+
+    public void ShowMatchmakingBoard(bool show, bool gameFound = false)
+    {
+        matchmakingBoardSearchLayout.gameObject.SetActive(false);
+        matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
+
+        if (gameFound)
+        {
+            matchmakingBoardMatchFoundLayout.gameObject.SetActive(true);
+            UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(true);
         }
         else
         {
-            Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
+            matchmakingBoardSearchLayout.gameObject.SetActive(true);
         }
-
-        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
     }
 
-    public void OnDeclinePartyClicked()
+    private void WriteInDebugBox(string chat)
     {
-        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
-        Debug.Log("OnDeclinePartyClicked Join party failed");
+        string textChat = "";
+
+        if (chatList.Count >= 5)
+        {
+            chatList.RemoveAt(0);
+        }
+        chatList.Add(chat);
+
+        foreach (var s in chatList)
+        {
+            textChat += s + "\n";
+        }
+        UIHandlerLobbyComponent.ChatTextbox.GetComponentInChildren<Text>().text = textChat;
     }
 
-    public void OnPlayerPartyProfileClicked()
+    public void HostingGameServer()
     {
-        // If in a party then show the party control menu party leader can invite, kick and leave the party.
-        // party member only able to leave the party.
-        if (isLocalPlayerInParty)
-        {
-            // Remove listerner before closing
-            if (UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf)
-            {
-                memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
-            }
-            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
-        }
+        multiplayerConnect.Host();
     }
 
-    public List<PartyData> GetMemberPartyData()
+    public void ConnecttoGameServer()
     {
-        List<PartyData> partyMemberData = new List<PartyData>();
-
-        if (partyMemberList.Count > 0)
-        {
-            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
-            {
-                partyMemberData.Add(member.Value);
-            }
-        }
-
-        return partyMemberData;
+        multiplayerConnect.Connect();
     }
 
-    public void OnLeavePartyButtonClicked()
+    public void SetIsActionPhaseOver(bool isOver)
     {
-        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
-        LeaveParty();
+        isActionPhaseOver = isOver;
     }
 
-    #region AccelByte Lobby Callbacks
-    private void OnLoadFriendsListRequest(Result<Friends> result)
+    public bool GetIsActionPhaseOver()
     {
-        if (result.IsError)
-        {
-            Debug.Log("LoadFriends failed:" + result.Error.Message);
-            Debug.Log("LoadFriends Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("Loaded friends list successfully.");
-
-            for (int i = 0; i < result.Value.friendsId.Length; i++)
-            {
-                Debug.Log(result.Value.friendsId[i]);
-                GetFriendInfo(result.Value.friendsId[i], OnGetFriendInfoRequest);
-            }
-            // This is only for temporary bug fix
-            //ListFriendsStatus();
-        }
+        return isActionPhaseOver;
     }
+    #endregion
 
-    //THIS REALLY NEEDS TO RETURN THE DISPLAY NAME
-    private void OnListFriendsStatusRequest(Result<FriendsStatus> result)
-    {
-        ClearFriendsUIPrefabs();
-        if (result.IsError)
-        {
-            Debug.Log("ListFriendsStatusRequest failed:" + result.Error.Message);
-            Debug.Log("ListFriendsStatusRequest Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            if (friendList.Count > 0)
-            {
-                Debug.Log("ListFriendsStatusRequest sent successfully.");
-
-                for (int i = 0; i < result.Value.friendsId.Length; i++)
-                {
-                    friendList[result.Value.friendsId[i]] = new FriendData(result.Value.friendsId[i], friendList[result.Value.friendsId[i]].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
-                }
-                RefreshFriendsUI();
-            }
-        }
-    }
-
-    private void RefreshFriendsUI()
-    {
-        foreach (KeyValuePair<string, FriendData> friend in friendList)
-        {
-            int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
-            FriendPrefab friendPrefab = Instantiate(UIHandlerLobbyComponent.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
-            friendPrefab.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
-
-            if (friend.Value.IsOnline == "0")
-            {
-                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago", friend.Value.UserId);
-                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
-            }
-            else
-            {
-                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online", friend.Value.UserId, friend.Value.IsOnline == "1");
-                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
-            }
-            UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
-        }
-    }
-
-    private void OnGetFriendInfoRequest(Result<UserData> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
-            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            if (!friendList.ContainsKey(result.Value.userId))
-            {
-                friendList.Add(result.Value.userId, new FriendData(result.Value.userId, result.Value.displayName, new DateTime(1970, 12, 30), "1"));
-            }
-        }
-    }
-
-    private void OnGetIncomingFriendsRequest(Result<Friends> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
-            Debug.Log("GetIncomingFriendsRequest Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("Loaded incoming friends list successfully.");
-
-            foreach (string friendId in result.Value.friendsId)
-            {
-                Debug.Log("Friend Id: " + friendId);
-                //Get person's name, picture, etc
-                Friends abInvites = result.Value;
-                for (int i = 0; i < abInvites.friendsId.Length; i++)
-                {
-                    Transform friend = Instantiate(UIHandlerLobbyComponent.friendInvitePrefab, Vector3.zero, Quaternion.identity);
-                    friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
-
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
-                }
-            }
-        }
-        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
-    }
-
-    private void OnGetOutgoingFriendsRequest(Result<Friends> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
-            Debug.Log("GetGetOutgoingFriendsRequest Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("Loaded outgoing friends list successfully.");
-
-            foreach (string friendId in result.Value.friendsId)
-            {
-                Debug.Log("Friend Id: " + friendId);
-                //Get person's name, picture, etc
-
-                Friends abInvites = result.Value;
-                for (int i = 0; i < abInvites.friendsId.Length; i++)
-                {
-                    Transform friend = Instantiate(UIHandlerLobbyComponent.sentInvitePrefab, Vector3.zero, Quaternion.identity);
-                    friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
-
-                    friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
-
-                }
-            }
-        }
-
-        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
-    }
-
-    private void OnFindFriendByEmailRequest(Result<PagedPublicUsersInfo> result)
-    {
-        for (int i = 0; i < UIHandlerLobbyComponent.friendSearchScrollContent.childCount; i++)
-        {
-            Destroy(UIHandlerLobbyComponent.friendSearchScrollContent.GetChild(i).gameObject);
-        }
-
-        if (result.IsError)
-        {
-            Debug.Log("GetUserData failed:" + result.Error.Message);
-            Debug.Log("GetUserData Response Code: " + result.Error.Code);
-        }
-        else
-        {
-            if (result.Value.data.Length > 0)
-            {
-                Debug.Log("Search Results:");
-                Debug.Log("Display Name: " + result.Value.data[0].displayName);
-                Debug.Log("UserID: " + result.Value.data[0].userId);
-
-                SearchFriendPrefab friend = Instantiate(UIHandlerLobbyComponent.friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
-                friend.transform.SetParent(UIHandlerLobbyComponent.friendSearchScrollContent, false);
-                friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
-                UIHandlerLobbyComponent.friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
-            }
-            else
-            {
-                Debug.Log("Search Results: Not Found!");
-            }
-        }
-    }
-
-    private void OnSetUserStatus(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnSetUserStatus failed:" + result.Error.Message);
-            Debug.Log("OnSetUserStatus Response Code::" + result.Error.Code);
-
-        }
-        else
-        {
-            Debug.Log("OnSetUserStatus Success ");
-        }
-    }
-
-    private void OnPartyCreated(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
-            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
-
-        }
-        else
-        {
-            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
-            abPartyInfo = result.Value;
-            isLocalPlayerInParty = true;
-            isReadyToInviteToParty = true;
-        }
-    }
-
-    private void OnPartyCreatedFindMatch(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
-            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
-
-        }
-        else
-        {
-            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
-            abPartyInfo = result.Value;
-            isLocalPlayerInParty = true;
-            FindMatch();
-        }
-    }
-
-    private void OnLeaveParty(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnLeaveParty failed:" + result.Error.Message);
-            Debug.Log("OnLeaveParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnLeaveParty Left a party");
-            ClearPartySlots();
-            isLocalPlayerInParty = false;
-        }
-    }
-
-    private void OnJoinedParty(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnJoinedParty failed:" + result.Error.Message);
-            Debug.Log("OnJoinedParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            // On joined should change the party slot with newer players info
-            Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID);
-            isLocalPlayerInParty = true;
-            abPartyInfo = result.Value;
-
-            ClearPartySlots();
-            for (int i = 0; i < result.Value.members.Length; i++)
-            {
-                // get member info
-                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);
-                GetPartyMemberInfo(result.Value.members[i]);
-            }
-            StartCoroutine(WaitForUpdatedPartyInfo());
-            isReadyToUpdatePartySlot = true;
-        }
-    }
-
-    private void OnKickedFromParty(Result<KickNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnKickedFromParty failed:" + result.Error.Message);
-            Debug.Log("OnKickedFromParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
-            isLocalPlayerInParty = false;
-            ClearPartySlots();
-        }
-    }
-
-    private void OnInviteParty(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnInviteParty failed:" + result.Error.Message);
-            Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnInviteParty Succeded on Inviting player to party");
-        }
-    }
-
-    private void OnInvitedToParty(Result<PartyInvitation> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnInvitedToParty failed:" + result.Error.Message);
-            Debug.Log("OnInvitedToParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnInvitedToParty Received Invitation from " + result.Value.from);
-            AccelBytePlugin.GetUser().GetUserByUserId(result.Value.from, OnGetUserOnInvite);
-            abPartyInvitation = result.Value;
-        }
-    }
-
-    private void OnGetUserOnInvite(Result<UserData> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetUserOnInvite failed:" + result.Error.Message);
-            Debug.Log("OnGetUserOnInvite Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            StartCoroutine(ShowPopupPartyInvitation(result.Value.displayName));
-        }
-    }
-
-    private void OnMemberJoinedParty(Result<JoinNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnMemberJoinedParty failed:" + result.Error.Message);
-            Debug.Log("OnMemberJoinedParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnMemberJoinedParty Retrieved successfully");
-            ClearPartySlots();
-            GetPartyInfo();
-            StartCoroutine(WaitForUpdatedPartyInfo());
-        }
-    }
-
-    private void OnMemberLeftParty(Result<LeaveNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnMemberLeftParty failed:" + result.Error.Message);
-            Debug.Log("OnMemberLeftParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
-            ClearPartySlots();
-            GetPartyInfo();
-            StartCoroutine(WaitForUpdatedPartyInfo());
-        }
-    }
-
-    private void OnKickPartyMember(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnKickPartyMember failed:" + result.Error.Message);
-            Debug.Log("OnKickPartyMember Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnKickPartyMember Retrieved successfully");
-            ClearPartySlots();
-            GetPartyInfo();
-            StartCoroutine(WaitForUpdatedPartyInfo());
-        }
-    }
-
-    private void OnGetPartyInfo(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetPartyInfo failed:" + result.Error.Message);
-            Debug.Log("OnGetPartyInfo Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnGetPartyInfo Retrieved successfully");
-            abPartyInfo = result.Value;
-
-            for (int i = 0; i < result.Value.members.Length; i++)
-            {
-                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);
-                // Get member info
-                GetPartyMemberInfo(result.Value.members[i]);
-            }
-            isReadyToUpdatePartySlot = true;
-        }
-    }
-
-    private void OnGetPartyMemberInfo(Result<UserData> result)
-    {
-        // add party member to party member list
-        if (result.IsError)
-        {
-            Debug.Log("OnGetPartyMemberInfo failed:" + result.Error.Message);
-            Debug.Log("OnGetPartyMemberInfo Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("OnGetPartyMemberInfo sent successfully.");
-
-            // TODO: store userdata locally
-            // Add the member info to partymemberlist
-            UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            string ownId = data.userId;
-            if (!partyMemberList.ContainsKey(result.Value.userId) && (result.Value.userId != ownId))
-            {
-                Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.userId + " DisplayName: " + result.Value.displayName);
-                partyMemberList.Add(result.Value.userId, new PartyData(result.Value.userId, result.Value.displayName, result.Value.emailAddress));
-            }
-        }
-    }
-
+    #region AccelByte MatchMaking Callbacks
     private void OnFindMatch(Result<MatchmakingCode> result)
     {
         if (result.IsError)
@@ -918,6 +495,37 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    private void OnFindMatchCanceled(Result<MatchmakingCode> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnFindMatchCanceled failed:" + result.Error.Message);
+            Debug.Log("OnFindMatchCanceled Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnFindMatchCanceled The Match is canceled");
+            ShowMatchmakingBoard(false);
+            WriteInDebugBox(" Match Canceled");
+        }
+    }
+
+    private void OnReadyForMatchConfirmation(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnReadyForMatchConfirmation failed:" + result.Error.Message);
+            Debug.Log("OnReadyForMatchConfirmation Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnReadyForMatchConfirmation Waiting for other player . . .");
+            WriteInDebugBox("Waiting for other players . . .");
+        }
+    }
+    #endregion
+
+    #region AccelByte MatchMaking Notification Callbacks
     private void OnFindMatchCompleted(Result<MatchmakingNotif> result)
     {
         if (result.IsError)
@@ -947,50 +555,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             {
                 ShowMatchmakingBoard(false);
             }
-        }
-    }
-
-    private void OnFindMatchCanceled(Result<MatchmakingCode> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnFindMatchCanceled failed:" + result.Error.Message);
-            Debug.Log("OnFindMatchCanceled Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnFindMatchCanceled The Match is canceled");
-            ShowMatchmakingBoard(false);
-            WriteInDebugBox(" Match Canceled");
-        }
-    }
-
-    private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetReadyConfirmationStatus failed:" + result.Error.Message);
-            Debug.Log("OnGetReadyConfirmationStatus Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
-            Debug.Log("OnGetReadyConfirmationStatus: " + result.Value.userId + " is ready");
-            WriteInDebugBox("Player " + result.Value.userId + " is ready");
-        }
-    }
-
-    private void OnReadyForMatchConfirmation(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnReadyForMatchConfirmation failed:" + result.Error.Message);
-            Debug.Log("OnReadyForMatchConfirmation Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnReadyForMatchConfirmation Waiting for other player . . .");
-            WriteInDebugBox("Waiting for other players . . .");
         }
     }
 
@@ -1050,7 +614,151 @@ public class AccelByteLobbyLogic : MonoBehaviour
             WriteInDebugBox(string.Format("OnRematchmaking... Banned for {0} seconds", result.Value.banDuration));
         }
     }
+
+    private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetReadyConfirmationStatus failed:" + result.Error.Message);
+            Debug.Log("OnGetReadyConfirmationStatus Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetReadyConfirmationStatus Ready confirmation completed");
+            Debug.Log("OnGetReadyConfirmationStatus: " + result.Value.userId + " is ready");
+            WriteInDebugBox("Player " + result.Value.userId + " is ready");
+        }
+    }
     #endregion
+
+    #region AccelByte Friend Functions
+    public void LoadFriendsList()
+    {
+        abLobby.LoadFriendsList(OnLoadFriendsListRequest);
+        UIHandlerLobbyComponent.friendsTabButton.interactable = false;
+        UIHandlerLobbyComponent.invitesTabButton.interactable = true;
+    }
+
+    //Doesn't return any display names so needs to be married to an array of usernames or a dictionary of online user data.
+    public void ListFriendsStatus()
+    {
+        abLobby.ListFriendsStatus(OnListFriendsStatusRequest);
+    }
+
+    public void GetFriendInfo(string friendId, ResultCallback<UserData> callback)
+    {
+        AccelBytePlugin.GetUser().GetUserByUserId(friendId, callback);
+    }
+
+    public void FindFriendByEmail()
+    {
+        AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
+    }
+
+    public void SendFriendRequest(string friendId, ResultCallback callback)
+    {
+        abLobby.RequestFriend(friendId, callback);
+    }
+
+    public void AcceptFriendRequest(string friendId, ResultCallback callback)
+    {
+        abLobby.AcceptFriend(friendId, callback);
+    }
+
+    public void DeclineFriendRequest(string friendId, ResultCallback callback)
+    {
+        abLobby.RejectFriend(friendId, callback);
+    }
+
+    public void GetIncomingFriendsRequest()
+    {
+        abLobby.ListIncomingFriends(OnGetIncomingFriendsRequest);
+    }
+
+    public void GetOutgoingFriendsRequest()
+    {
+        abLobby.ListOutgoingFriends(OnGetOutgoingFriendsRequest);
+    }
+
+    #endregion
+
+    #region AccelByte Friend Callbacks
+    private void OnLoadFriendsListRequest(Result<Friends> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("LoadFriends failed:" + result.Error.Message);
+            Debug.Log("LoadFriends Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("Loaded friends list successfully.");
+
+            for (int i = 0; i < result.Value.friendsId.Length; i++)
+            {
+                Debug.Log(result.Value.friendsId[i]);
+                if (!friendList.ContainsKey(result.Value.friendsId[i]))
+                {
+                    friendList.Add(result.Value.friendsId[i], new FriendData(result.Value.friendsId[i], "Loading...", new DateTime(1970, 12, 30), "1"));
+                }
+            }
+            isLoadFriendDisplayName = true;
+            ListFriendsStatus();
+        }
+    }
+
+    //THIS REALLY NEEDS TO RETURN THE DISPLAY NAME
+    private void OnListFriendsStatusRequest(Result<FriendsStatus> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("ListFriendsStatusRequest failed:" + result.Error.Message);
+            Debug.Log("ListFriendsStatusRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            if (friendList.Count > 0)
+            {
+                Debug.Log("ListFriendsStatusRequest sent successfully.");
+
+                for (int i = 0; i < result.Value.friendsId.Length; i++)
+                {
+                    friendList[result.Value.friendsId[i]] = new FriendData(result.Value.friendsId[i], friendList[result.Value.friendsId[i]].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
+                }
+                RefreshFriendsUI();
+            }
+        }
+    }
+
+    private void RefreshFriendsUI()
+    {
+        ClearFriendsUIPrefabs();
+        foreach (KeyValuePair<string, FriendData> friend in friendList)
+        {
+            int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
+            FriendPrefab friendPrefab = Instantiate(UIHandlerLobbyComponent.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
+            friendPrefab.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
+
+            if (friend.Value.IsOnline == "0")
+            {
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago", friend.Value.UserId);
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
+            }
+            else
+            {
+                bool isNotInParty = true;
+                if (partyMemberList.ContainsKey(friend.Value.UserId))
+                {
+                    isNotInParty = false;
+                }
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online", friend.Value.UserId, isNotInParty);
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
+            }
+            UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+        }
+    }
 
     public void ClearFriendsUIPrefabs()
     {
@@ -1058,6 +766,220 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Destroy(UIHandlerLobbyComponent.friendScrollContent.GetChild(i).gameObject);
         }
+    }
+
+    private void OnGetFriendInfoRequest(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
+            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("OnGetFriendInfoRequest sent successfully.");
+            friendList[result.Value.userId] = new FriendData(result.Value.userId, result.Value.displayName, new DateTime(1970, 12, 30), "1");
+        }
+    }
+
+    private void OnGetIncomingFriendsRequest(Result<Friends> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("GetIncomingFriendsRequest failed:" + result.Error.Message);
+            Debug.Log("GetIncomingFriendsRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("Loaded incoming friends list successfully.");
+
+            foreach (string friendId in result.Value.friendsId)
+            {
+                Debug.Log("Incoming Friend Id: " + friendId);
+                //Get person's name, picture, etc
+
+                Transform friend = Instantiate(UIHandlerLobbyComponent.friendInvitePrefab, Vector3.zero, Quaternion.identity);
+                friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
+
+                friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
+            }
+        }
+        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+    }
+
+    private void OnGetOutgoingFriendsRequest(Result<Friends> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("GetGetOutgoingFriendsRequest failed:" + result.Error.Message);
+            Debug.Log("GetGetOutgoingFriendsRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("Loaded outgoing friends list successfully.");
+
+            foreach (string friendId in result.Value.friendsId)
+            {
+                Debug.Log("Outgoing Friend Id: " + friendId);
+                //Get person's name, picture, etc
+
+                Transform friend = Instantiate(UIHandlerLobbyComponent.sentInvitePrefab, Vector3.zero, Quaternion.identity);
+                friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
+
+                friend.GetComponent<InvitationPrefab>().SetupInvitationPrefab(friendId);
+            }
+        }
+
+        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+    }
+
+    private void OnFindFriendByEmailRequest(Result<PagedPublicUsersInfo> result)
+    {
+        for (int i = 0; i < UIHandlerLobbyComponent.friendSearchScrollContent.childCount; i++)
+        {
+            Destroy(UIHandlerLobbyComponent.friendSearchScrollContent.GetChild(i).gameObject);
+        }
+
+        if (result.IsError)
+        {
+            Debug.Log("GetUserData failed:" + result.Error.Message);
+            Debug.Log("GetUserData Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            if (result.Value.data.Length > 0)
+            {
+                Debug.Log("Search Results:");
+                Debug.Log("Display Name: " + result.Value.data[0].displayName);
+                Debug.Log("UserID: " + result.Value.data[0].userId);
+
+                SearchFriendPrefab friend = Instantiate(UIHandlerLobbyComponent.friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
+                friend.transform.SetParent(UIHandlerLobbyComponent.friendSearchScrollContent, false);
+                friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
+                UIHandlerLobbyComponent.friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
+            }
+            else
+            {
+                Debug.Log("Search Results: Not Found!");
+            }
+        }
+    }
+
+    private void OnSetUserStatus(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnSetUserStatus failed:" + result.Error.Message);
+            Debug.Log("OnSetUserStatus Response Code::" + result.Error.Code);
+
+        }
+        else
+        {
+            Debug.Log("OnSetUserStatus Success ");
+        }
+    }
+    #endregion
+
+    #region AccelByte Friend Notification Callbacks
+    //This is for updating your friends list with up to date player information
+    private void OnFriendsStatusChanged(Result<FriendsStatusNotif> result)
+    {
+        friendsStatusNotif = result.Value;
+        isFriendStatusChanged = true;
+    }
+
+    //Updating your friends list if someone accepts your friend request
+    private void OnFriendRequestAccepted(Result<Friend> result)
+    {
+        isFriendAcceptRequest = true;
+    }
+
+    //You have a new friend invite!
+    private void OnIncomingFriendsRequest(Result<Friend> result)
+    {
+        GetFriendInfo(result.Value.friendId, OnGetFriendInfoIncomingFriendRequest);
+    }
+
+    private void OnGetFriendInfoIncomingFriendRequest(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
+            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            if (!friendList.ContainsKey(result.Value.userId))
+            {
+                UIHandlerLobbyComponent.incomingFriendNotificationTitle.text = result.Value.displayName + " sent you a friend request!";
+                UIHandlerLobbyComponent.invite.SetupInvitationPrefab(result.Value.userId);
+                UIElementHandler.ShowNotification(UIElementHandler.inviteNotification);
+            }
+        }
+    }
+    #endregion
+
+    #region AccelByte Party Functions
+    public void CreateParty(ResultCallback<PartyInfo> callback)
+    {
+        abLobby.CreateParty(callback);
+    }
+
+    public void CreateAndInvitePlayer(string userId)
+    {
+        if (!isLocalPlayerInParty)
+            abLobby.CreateParty(OnPartyCreated);
+        else
+            isReadyToInviteToParty = true;
+        StartCoroutine(WaitForInviteToParty(userId));
+
+    }
+
+    IEnumerator WaitForInviteToParty(string userID)
+    {
+        bool isActive = true;
+        while (isActive)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            if (isReadyToInviteToParty)
+            {
+                Debug.Log("WaitForInviteToParty InviteToParty is ready");
+                InviteToParty(userID, OnInviteParty);
+                isReadyToInviteToParty = isActive = false;
+            }
+        }
+    }
+
+    public void InviteToParty(string id, ResultCallback callback)
+    {
+        string invitedPlayerId = id;
+
+        abLobby.InviteToParty(invitedPlayerId, callback);
+    }
+
+    public void KickPartyMember(string id)
+    {
+        abLobby.KickPartyMember(id, OnKickPartyMember);
+        HidePopUpPartyControl();
+    }
+    public void LeaveParty()
+    {
+        abLobby.LeaveParty(OnLeaveParty);
+        HidePopUpPartyControl();
+    }
+
+    public void GetPartyInfo()
+    {
+        abLobby.GetPartyInfo(OnGetPartyInfo);
+    }
+
+    public void GetPartyMemberInfo(string friendId)
+    {
+        AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetPartyMemberInfo);
     }
 
     private void ClearPartySlots()
@@ -1079,10 +1001,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
+                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().OnClearProfileButton();
                 UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
             }
         }
+        RefreshFriendsUI();
+    }
+
+    private void HidePopUpPartyControl()
+    {
+        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
     }
 
     public void OnLocalPlayerProfileButtonClicked()
@@ -1137,182 +1066,308 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    public void OnClosePartyInfoButtonClicked()
+    {
+        HidePopUpPartyControl();
+    }
+
+    public void OnAcceptPartyClicked()
+    {
+        if (abPartyInvitation != null)
+        {
+            abLobby.JoinParty(abPartyInvitation.partyID, abPartyInvitation.invitationToken, OnJoinedParty);
+        }
+        else
+        {
+            Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
+        }
+
+        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
+    }
+
+    public void OnDeclinePartyClicked()
+    {
+        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
+        Debug.Log("OnDeclinePartyClicked Join party failed");
+    }
+
+    public void OnPlayerPartyProfileClicked()
+    {
+        // If in a party then show the party control menu party leader can invite, kick and leave the party.
+        // party member only able to leave the party.
+        if (isLocalPlayerInParty)
+        {
+            // Remove listerner before closing
+            if (UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf)
+            {
+                memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+            }
+            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
+        }
+    }
+
+    public List<PartyData> GetMemberPartyData()
+    {
+        List<PartyData> partyMemberData = new List<PartyData>();
+
+        if (partyMemberList.Count > 0)
+        {
+            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
+            {
+                partyMemberData.Add(member.Value);
+            }
+        }
+
+        return partyMemberData;
+    }
+
+    public void OnLeavePartyButtonClicked()
+    {
+        if (accelByteManager.AuthLogic.GetUserData().userId == abPartyInfo.leaderID)
+        {
+            localLeaderCommand.gameObject.SetActive(false);
+        }
+        else
+        {
+            localmemberCommand.gameObject.SetActive(false);
+        }
+        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
+        LeaveParty();
+    }
+    #endregion
+
+    #region AccelByte Party Callbacks
+    private void OnPartyCreated(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
+            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
+
+        }
+        else
+        {
+            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
+            abPartyInfo = result.Value;
+            isLocalPlayerInParty = true;
+            isReadyToInviteToParty = true;
+        }
+    }
+
+    private void OnPartyCreatedFindMatch(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
+            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
+
+        }
+        else
+        {
+            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
+            abPartyInfo = result.Value;
+            isLocalPlayerInParty = true;
+            FindMatch();
+        }
+    }
+
+    private void OnLeaveParty(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnLeaveParty failed:" + result.Error.Message);
+            Debug.Log("OnLeaveParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnLeaveParty Left a party");
+            ClearPartySlots();
+            isLocalPlayerInParty = false;
+            RefreshFriendsUI();
+        }
+    }
+
+    private void OnJoinedParty(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnJoinedParty failed:" + result.Error.Message);
+            Debug.Log("OnJoinedParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            // On joined should change the party slot with newer players info
+            Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID + result.Value.leaderID);
+            isLocalPlayerInParty = true;
+            abPartyInfo = result.Value;
+            ClearPartySlots();
+            GetPartyInfo();
+        }
+    }
+
+    private void OnInviteParty(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnInviteParty failed:" + result.Error.Message);
+            Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnInviteParty Succeded on Inviting player to party");
+        }
+    }
+
+    private void OnGetUserOnInvite(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetUserOnInvite failed:" + result.Error.Message);
+            Debug.Log("OnGetUserOnInvite Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
+            UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + result.Value.displayName;
+            UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnGetPartyInfo(Result<PartyInfo> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnGetPartyInfo failed:" + result.Error.Message);
+            Debug.Log("OnGetPartyInfo Response Code::" + result.Error.Code);
+            if (result.Error.Code == ErrorCode.PartyInfoSuccessGetUserPartyInfoEmpty)
+            {
+                isLocalPlayerInParty = false;
+                RefreshFriendsUI();
+            }
+        }
+        else
+        {
+            Debug.Log("OnGetPartyInfo Retrieved successfully");
+            abPartyInfo = result.Value;
+
+            for (int i = 0; i < result.Value.members.Length; i++)
+            {
+                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);
+                // Get member info
+                GetPartyMemberInfo(result.Value.members[i]);
+            }
+        }
+    }
+
+    private void OnGetPartyMemberInfo(Result<UserData> result)
+    {
+        // add party member to party member list
+        if (result.IsError)
+        {
+            Debug.Log("OnGetPartyMemberInfo failed:" + result.Error.Message);
+            Debug.Log("OnGetPartyMemberInfo Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("OnGetPartyMemberInfo sent successfully.");
+
+            // TODO: store userdata locally
+            // Add the member info to partymemberlist
+            UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+            string ownId = data.userId;
+            if (!partyMemberList.ContainsKey(result.Value.userId) && (result.Value.userId != ownId))
+            {
+                Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.userId + " DisplayName: " + result.Value.displayName);
+                partyMemberList.Add(result.Value.userId, new PartyData(result.Value.userId, result.Value.displayName, result.Value.emailAddress));
+            }
+            RefreshPartySlots();
+        }
+    }
+
     private void OnKickFromPartyClicked(string userId)
     {
         Debug.Log("OnKickFromPartyClicked Usertokick userId");
         KickPartyMember(userId);
     }
 
-    IEnumerator ShowPopupPartyInvitation(string displayName)
-    {
-        yield return new WaitForSecondsRealtime(1.0f);
-        UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + displayName;
-        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
-        Debug.Log("ShowPopupPartyInvitation Popup is opened");
-    }
-
-    IEnumerator WaitForUpdatedPartyInfo()
-    {
-        bool isActive = true;
-        while (isActive)
-        {
-            yield return new WaitForSecondsRealtime(0.5f);
-
-            // Check if partymemberlist filled, excluding local player
-            bool isPartyUpdated = (partyMemberList.Count == (abPartyInfo.members.Length - 1));
-
-            // Calling update for party slot display
-            if (isReadyToUpdatePartySlot && isPartyUpdated)
-            {
-                Debug.Log("WaitForUpdatedPartyInfo PartyUpdateReady is ready");
-                RefreshPartySlots();
-                isReadyToUpdatePartySlot = isActive = false;
-            }
-        }
-    }
-
-    IEnumerator WaitForInviteToParty(string userID)
-    {
-        bool isActive = true;
-        while (isActive)
-        {
-            yield return new WaitForSecondsRealtime(1.0f);
-            if (isReadyToInviteToParty)
-            {
-                Debug.Log("WaitForInviteToParty InviteToParty is ready");
-                InviteToParty(userID, OnInviteParty);
-                isReadyToInviteToParty = isActive = false;
-            }
-        }
-    }
-
-    IEnumerator WaitForGameServerReady(string ip, string port)
-    {
-        bool isActive = true;
-        while (isActive)
-        {
-            yield return new WaitForSecondsRealtime(1.0f);
-            multiplayerConnect.SetIPAddressPort(ip, port);
-            multiplayerConnect.Connect();
-            isActive = false;
-        }
-    }
-
-    public void ShowMatchmakingBoard(bool show, bool gameFound = false)
-    {
-        matchmakingBoardSearchLayout.gameObject.SetActive(false);
-        matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
-        UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
-
-        if (gameFound)
-        {
-            matchmakingBoardMatchFoundLayout.gameObject.SetActive(true);
-            UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(true);
-        }
-        else
-        {
-            matchmakingBoardSearchLayout.gameObject.SetActive(true);
-        }
-    }
-
-    private void WriteInDebugBox(string chat)
-    {
-        string textChat = "";
-
-        if (chatList.Count >= 5)
-        {
-            chatList.RemoveAt(0);
-        }
-        chatList.Add(chat);
-
-        foreach (var s in chatList)
-        {
-            textChat += s + "\n";
-        }
-        UIHandlerLobbyComponent.ChatTextbox.GetComponentInChildren<Text>().text = textChat;
-    }
-
-    // On quit set user status to offline
-    private void OnApplicationQuit()
-    {
-        Debug.Log("Application ending after " + Time.time + " seconds");
-        if (abLobby.IsConnected)
-        {
-            abLobby.LeaveParty(OnLeaveParty);
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
-        }
-    }
-
-    public void HostingGameServer()
-    {
-        multiplayerConnect.Host();
-    }
-
-    public void ConnecttoGameServer()
-    {
-        multiplayerConnect.Connect();
-    }
-
-    public void SetIsActionPhaseOver(bool isOver)
-    {
-        isActionPhaseOver = isOver;
-    }
-
-    public bool GetIsActionPhaseOver()
-    {
-        return isActionPhaseOver;
-    }
-	
-    #region AccelByte Notification Callbacks
-    private void OnNotificationReceived(Result<Notification> result)
-    {
-        UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
-        UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
-        UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
-    }
-
-    //This is for updating your friends list with up to date player information
-    private void OnFriendsStatusChanged(Result<FriendsStatusNotif> result)
-    {
-        string friendName = friendList[result.Value.userID].DisplayName;
-        friendList[result.Value.userID] = new FriendData(result.Value.userID, friendName, result.Value.lastSeenAt, result.Value.availability);
-        RefreshFriendsUI();
-    }
-
-    //Updating your friends list if someone accepts your friend request
-    private void OnFriendRequestAccepted(Result<Friend> result)
-    {
-        throw new NotImplementedException();
-
-    }
-
-    //You have a new friend invite!
-    private void OnIncomingFriendsRequest(Result<Friend> result)
-    {
-        GetFriendInfo(result.Value.friendId, OnGetFriendInfoIncomingFriendRequest);
-    }
-    private void OnGetFriendInfoIncomingFriendRequest(Result<UserData> result)
+    private void OnKickPartyMember(Result result)
     {
         if (result.IsError)
         {
-            Debug.Log("OnGetFriendInfoRequest failed:" + result.Error.Message);
-            Debug.Log("OnGetFriendInfoRequest Response Code: " + result.Error.Code);
-            //Show Error Message
+            Debug.Log("OnKickPartyMember failed:" + result.Error.Message);
+            Debug.Log("OnKickPartyMember Response Code::" + result.Error.Code);
         }
         else
         {
-            if (!friendList.ContainsKey(result.Value.userId))
-            {
-                UIHandlerLobbyComponent.incomingFriendNotificationTitle.text = result.Value.displayName + " sent you a friend request!";
-                UIHandlerLobbyComponent.invite.SetupInvitationPrefab(result.Value.userId);
-                UIElementHandler.ShowNotification(UIElementHandler.inviteNotification);
-            }
+            Debug.Log("OnKickPartyMember Retrieved successfully");
+            ClearPartySlots();
+            GetPartyInfo();
+        }
+    }
+    #endregion
+
+    #region AccelByte Party Notification Callbacks
+    private void OnInvitedToParty(Result<PartyInvitation> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnInvitedToParty failed:" + result.Error.Message);
+            Debug.Log("OnInvitedToParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnInvitedToParty Received Invitation from " + result.Value.from);
+            abPartyInvitation = result.Value;
+            isRecevedPartyInvitation = true;
+        }
+    }
+
+    private void OnMemberJoinedParty(Result<JoinNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnMemberJoinedParty failed:" + result.Error.Message);
+            Debug.Log("OnMemberJoinedParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnMemberJoinedParty Retrieved successfully");
+            isMemberJoinedParty = true;
+        }
+    }
+
+    private void OnMemberLeftParty(Result<LeaveNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnMemberLeftParty failed:" + result.Error.Message);
+            Debug.Log("OnMemberLeftParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
+            isMemberLeftParty = true;
+        }
+    }
+
+    private void OnKickedFromParty(Result<KickNotification> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("OnKickedFromParty failed:" + result.Error.Message);
+            Debug.Log("OnKickedFromParty Response Code::" + result.Error.Code);
+        }
+        else
+        {
+            Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
+            isMemberKickedParty = true;
         }
     }
     #endregion
 
     #region AccelByte Chat Functions
-    private void SendChatMessage()
+    public void SendChatMessage()
     {
         if (string.IsNullOrEmpty(UIHandlerLobbyComponent.messageInputField.text))
             Debug.Log("Please fill the chat message");
@@ -1395,34 +1450,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void OnPersonalChatReceived(Result<ChatMesssage> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("Get personal chat failed:" + result.Error.Message);
-            Debug.Log("Get personal chat Response Code: " + result.Error.Code);
-        }
-        else
-        {
-            receivedPersonalMessage = result.Value;
-            isReceivedPersonalMessage = true;
-        }
-    }
-
-    private void OnPartyChatReceived(Result<ChatMesssage> result)
-    {
-        if(result.IsError)
-        {
-            Debug.Log("Get party chat failed:" + result.Error.Message);
-            Debug.Log("Get party chat Response Code: " + result.Error.Code);
-        }
-        else
-        {
-            receivedPartyMessage = result.Value;
-            isReceivedPartyMessage = true;
-        }
-    }
-
     private void OnGetPersonalChatDisplayNamebyUserId(Result<UserData> result)
     {
         if (result.IsError)
@@ -1480,6 +1507,36 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
                 WriteChatBoxText(notValidText);
             }
+        }
+    }
+    #endregion
+
+    #region AccelByte Chat Notification Callbacks
+    private void OnPersonalChatReceived(Result<ChatMesssage> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get personal chat failed:" + result.Error.Message);
+            Debug.Log("Get personal chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedPersonalMessage = result.Value;
+            isReceivedPersonalMessage = true;
+        }
+    }
+
+    private void OnPartyChatReceived(Result<ChatMesssage> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get party chat failed:" + result.Error.Message);
+            Debug.Log("Get party chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedPartyMessage = result.Value;
+            isReceivedPartyMessage = true;
         }
     }
     #endregion
