@@ -40,9 +40,9 @@ namespace Game
             ShowPanel(PanelTypes.MainHud, null);
         }
 
-        public void ShowRaceOverScreen(string winnerText)
+        public void ShowRaceOverScreen(bool isWinner)
         {
-            ShowPanel(PanelTypes.RaceOver, new object[] { winnerText });
+            ShowPanel(PanelTypes.RaceOver, new object[] { isWinner });
         }
 
         public void HideRaceOverScreen()

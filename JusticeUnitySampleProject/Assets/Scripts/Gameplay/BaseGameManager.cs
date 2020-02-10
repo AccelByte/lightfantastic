@@ -195,7 +195,8 @@ namespace Game
         /// <param></param>
         public override void BroadcastEndGame(RpcArgs args)
         {
-            hudMgr_.ShowRaceOverScreen("Player " + args.GetAt<uint>(0) + " Wins!!");
+            var isWinner = networkObject.MyPlayerId == args.GetAt<uint>(0);
+            hudMgr_.ShowRaceOverScreen(isWinner);
         }
 
         /// <summary>
