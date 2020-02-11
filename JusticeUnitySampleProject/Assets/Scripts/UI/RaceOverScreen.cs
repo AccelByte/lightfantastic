@@ -1,22 +1,29 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class RaceOverScreen : BaseHUD
 {
+    private readonly float REDIRECTING_COUNTDOWN = 10.0f;
+    
     #region Fields and Properties
     [Header("UI Elements")]
     [SerializeField, Tooltip("The button to return to menu")]
     private Button toMenuButton_ = null;
 
-    [SerializeField, Tooltip("Race over announcer text")]
-    private TextMeshProUGUI announcerText_ = null;
-    public TextMeshProUGUI AnnouncerText { get { return announcerText_; } }
+    [SerializeField, Tooltip("WIN canvas group component")]
+    private CanvasGroup winCanvasGroup_ = null;
+    public CanvasGroup WinCanvasGroup => winCanvasGroup_;
 
-    [SerializeField, Tooltip("The text to announce race winner")]
-    private TextMeshProUGUI winnerText_ = null;
-    public TextMeshProUGUI WinnerText { get { return winnerText_; } }
+    [SerializeField, Tooltip("LOSE canvas group component")]
+    private CanvasGroup loseCanvasGroup_ = null;
+    public CanvasGroup LoseCanvasGroup => loseCanvasGroup_;
+
+    [SerializeField, Tooltip("Redirecting countdown text")]
+    private Text redirectingText_ = null;
+    public Text RedirectingText => redirectingText_;
+
+    private float timeLeft;
+    private bool isCountingDown;
     private Game.InGameHudManager hudMgr;
     #endregion //Fields and Properties
 
@@ -45,8 +52,19 @@ public class RaceOverScreen : BaseHUD
 
     public override void SetupData(object[] args)
     {
-        string winAnnouncement = args[0] as string;
-        winnerText_.text = winAnnouncement;
+        if ((bool) args[0])
+        {
+            winCanvasGroup_.alpha = 1;
+            loseCanvasGroup_.alpha = 0;
+        }
+        else
+        {
+            loseCanvasGroup_.alpha = 1;
+            winCanvasGroup_.alpha = 0;
+        }
+
+        timeLeft = REDIRECTING_COUNTDOWN;
+        isCountingDown = true;
     }
 
     protected override void AddListeners()
@@ -57,5 +75,20 @@ public class RaceOverScreen : BaseHUD
     private void ReturnToMenu()
     {
         hudMgr.DisconnectPlayer();
+    }
+
+    private void Update()
+    {
+        if (isCountingDown)
+        {
+            timeLeft -= Time.deltaTime;
+            redirectingText_.text = $"Redirecting to main menu within {(int)timeLeft} secs ...";
+            if (timeLeft < 0)
+            {
+                isCountingDown = false;
+                timeLeft = REDIRECTING_COUNTDOWN;
+                ReturnToMenu();
+            }
+        }
     }
 }
