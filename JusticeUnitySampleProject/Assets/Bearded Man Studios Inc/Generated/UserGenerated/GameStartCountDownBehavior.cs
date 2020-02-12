@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"winnerPlayerNum\"][]]")]
-	public abstract partial class GameManagerBehavior : NetworkBehavior
+	[GeneratedRPC("{\"types\":[[]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[]]")]
+	public abstract partial class GameStartCountDownBehavior : NetworkBehavior
 	{
-		public const byte RPC_BROADCAST_END_GAME = 0 + 5;
-		public const byte RPC_BROADCAST_START_GAME = 1 + 5;
+		public const byte RPC_COUNT_DOWN_START = 0 + 5;
 		
-		public GameManagerNetworkObject networkObject = null;
+		public GameStartCountDownNetworkObject networkObject = null;
 
 		public override void Initialize(NetworkObject obj)
 		{
@@ -19,12 +18,11 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (networkObject != null && networkObject.AttachedBehavior != null)
 				return;
 			
-			networkObject = (GameManagerNetworkObject)obj;
+			networkObject = (GameStartCountDownNetworkObject)obj;
 			networkObject.AttachedBehavior = this;
 
 			base.SetupHelperRpcs(networkObject);
-			networkObject.RegisterRpc("BroadcastEndGame", BroadcastEndGame, typeof(uint));
-			networkObject.RegisterRpc("BroadcastStartGame", BroadcastStartGame);
+			networkObject.RegisterRpc("CountDownStart", CountDownStart);
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -82,7 +80,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override void Initialize(NetWorker networker, byte[] metadata = null)
 		{
-			Initialize(new GameManagerNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
+			Initialize(new GameStartCountDownNetworkObject(networker, createCode: TempAttachCode, metadata: metadata));
 		}
 
 		private void DestroyGameObject(NetWorker sender)
@@ -93,7 +91,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		public override NetworkObject CreateNetworkObject(NetWorker networker, int createCode, byte[] metadata = null)
 		{
-			return new GameManagerNetworkObject(networker, this, createCode, metadata);
+			return new GameStartCountDownNetworkObject(networker, this, createCode, metadata);
 		}
 
 		protected override void InitializedTransform()
@@ -103,13 +101,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		/// <summary>
 		/// Arguments:
-		/// uint winnerPlayerNum
 		/// </summary>
-		public abstract void BroadcastEndGame(RpcArgs args);
-		/// <summary>
-		/// Arguments:
-		/// </summary>
-		public abstract void BroadcastStartGame(RpcArgs args);
+		public abstract void CountDownStart(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

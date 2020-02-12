@@ -1606,7 +1606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f8dc46b9c602740ba73de41163e602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverLogicPrefab: {fileID: 0}
+  serverLogicPrefab: {fileID: 7407485024963274912, guid: a8fad4b41c65e8140bfaabeb36628938,
+    type: 3}
   localDSName: LocalTestDS
 --- !u!114 &2006644175
 MonoBehaviour:
@@ -3873,6 +3874,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1500485539}
     m_Modifications:
+    - target: {fileID: 2045071916359081381, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Password_321
+      objectReference: {fileID: 0}
     - target: {fileID: 2045071917220962646, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4002,6 +4008,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Alpha
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2045071917790028957, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: afif+unity1@accelbyte.net
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a, type: 3}

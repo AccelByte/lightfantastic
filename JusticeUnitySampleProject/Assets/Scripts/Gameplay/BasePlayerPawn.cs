@@ -49,6 +49,7 @@ namespace Game
         #endregion //Field and Properties
 
         private BaseGameManager gameMgr = null;
+        private bool isGameStarted = false;
 
         private void Awake()
         {
@@ -82,6 +83,7 @@ namespace Game
             networkObject.playerNumChanged += OnPlayerNumChanged;
             networkObject.OwnerNetIdChanged += OnOwnerNetIdChanged;
             NetworkManager.Instance.Networker.disconnected += OnDisconnected;
+            gameMgr.onGameStart += OnGameStart;
             Initialize();
             isNetworkReady = true;
         }
@@ -158,16 +160,23 @@ namespace Game
 
         public void ReceiveInput(float dt)
         {
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-            {
-                IncreaseCurrSpeed();
-            }
-            else
-            {
-                currSpeed = LinearDecay(currSpeed, dt);
-            }
             Vector3 newPos = transform.position;
-            newPos.x = transform.position.x + currSpeed;
+
+            // restrain the player from moving
+            if (isGameStarted)
+            {
+                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+                {
+                    IncreaseCurrSpeed();
+                }
+                else
+                {
+                    currSpeed = LinearDecay(currSpeed, dt);
+                }
+
+                newPos.x = transform.position.x + currSpeed;
+            }
+
             if (networkObject.IsOwner)
             {
                 speedSetter.SetSpeed(currSpeed);
@@ -278,6 +287,9 @@ namespace Game
             networkObject.onDestroy -= OnNetworkObjectDestroy;
             networkObject.playerNumChanged -= OnPlayerNumChanged;
             networkObject.OwnerNetIdChanged -= OnOwnerNetIdChanged;
+
+            Debug.Log("BasePlayerPawn OnNetworkObjectDestroy unregister gamemanager gamestart");
+            gameMgr.onGameStart -= OnGameStart;
         }
 
         private void OnNetworkStarted(NetworkBehavior behavior)
@@ -305,9 +317,16 @@ namespace Game
             {
                 if (networkObject.IsOwner || networkObject.IsServer)
                 {
+                    Debug.Log("BasePlayerPawn OnOwnerNetIdChanged");
                     gameMgr.RegisterCharacter(newOwnerNetId, this);
                 }
             });
+        }
+
+        private void OnGameStart()
+        {
+            Debug.Log("BasePlayerPawn OnGameStart unlock player input");
+            isGameStarted = true;
         }
         #endregion //Events
     }

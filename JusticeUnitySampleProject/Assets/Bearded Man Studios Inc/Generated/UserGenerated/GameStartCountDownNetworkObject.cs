@@ -6,9 +6,9 @@ using UnityEngine;
 namespace BeardedManStudios.Forge.Networking.Generated
 {
 	[GeneratedInterpol("{\"inter\":[0]")]
-	public partial class GameTimerNetworkObject : NetworkObject
+	public partial class GameStartCountDownNetworkObject : NetworkObject
 	{
-		public const int IDENTITY = 8;
+		public const int IDENTITY = 7;
 
 		private byte[] _dirtyFields = new byte[1];
 
@@ -16,35 +16,35 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public event FieldChangedEvent fieldAltered;
 		#pragma warning restore 0067
 		[ForgeGeneratedField]
-		private int _sec;
-		public event FieldEvent<int> secChanged;
-		public Interpolated<int> secInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
-		public int sec
+		private int _second;
+		public event FieldEvent<int> secondChanged;
+		public Interpolated<int> secondInterpolation = new Interpolated<int>() { LerpT = 0f, Enabled = false };
+		public int second
 		{
-			get { return _sec; }
+			get { return _second; }
 			set
 			{
 				// Don't do anything if the value is the same
-				if (_sec == value)
+				if (_second == value)
 					return;
 
 				// Mark the field as dirty for the network to transmit
 				_dirtyFields[0] |= 0x1;
-				_sec = value;
+				_second = value;
 				hasDirtyFields = true;
 			}
 		}
 
-		public void SetsecDirty()
+		public void SetsecondDirty()
 		{
 			_dirtyFields[0] |= 0x1;
 			hasDirtyFields = true;
 		}
 
-		private void RunChange_sec(ulong timestep)
+		private void RunChange_second(ulong timestep)
 		{
-			if (secChanged != null) secChanged(_sec, timestep);
-			if (fieldAltered != null) fieldAltered("sec", _sec, timestep);
+			if (secondChanged != null) secondChanged(_second, timestep);
+			if (fieldAltered != null) fieldAltered("second", _second, timestep);
 		}
 
 		protected override void OwnershipChanged()
@@ -55,24 +55,24 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		
 		public void SnapInterpolations()
 		{
-			secInterpolation.current = secInterpolation.target;
+			secondInterpolation.current = secondInterpolation.target;
 		}
 
 		public override int UniqueIdentity { get { return IDENTITY; } }
 
 		protected override BMSByte WritePayload(BMSByte data)
 		{
-			UnityObjectMapper.Instance.MapBytes(data, _sec);
+			UnityObjectMapper.Instance.MapBytes(data, _second);
 
 			return data;
 		}
 
 		protected override void ReadPayload(BMSByte payload, ulong timestep)
 		{
-			_sec = UnityObjectMapper.Instance.Map<int>(payload);
-			secInterpolation.current = _sec;
-			secInterpolation.target = _sec;
-			RunChange_sec(timestep);
+			_second = UnityObjectMapper.Instance.Map<int>(payload);
+			secondInterpolation.current = _second;
+			secondInterpolation.target = _second;
+			RunChange_second(timestep);
 		}
 
 		protected override BMSByte SerializeDirtyFields()
@@ -81,7 +81,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			dirtyFieldsData.Append(_dirtyFields);
 
 			if ((0x1 & _dirtyFields[0]) != 0)
-				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _sec);
+				UnityObjectMapper.Instance.MapBytes(dirtyFieldsData, _second);
 
 			// Reset all the dirty fields
 			for (int i = 0; i < _dirtyFields.Length; i++)
@@ -100,15 +100,15 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			if ((0x1 & readDirtyFlags[0]) != 0)
 			{
-				if (secInterpolation.Enabled)
+				if (secondInterpolation.Enabled)
 				{
-					secInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
-					secInterpolation.Timestep = timestep;
+					secondInterpolation.target = UnityObjectMapper.Instance.Map<int>(data);
+					secondInterpolation.Timestep = timestep;
 				}
 				else
 				{
-					_sec = UnityObjectMapper.Instance.Map<int>(data);
-					RunChange_sec(timestep);
+					_second = UnityObjectMapper.Instance.Map<int>(data);
+					RunChange_second(timestep);
 				}
 			}
 		}
@@ -118,10 +118,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			if (IsOwner)
 				return;
 
-			if (secInterpolation.Enabled && !secInterpolation.current.UnityNear(secInterpolation.target, 0.0015f))
+			if (secondInterpolation.Enabled && !secondInterpolation.current.UnityNear(secondInterpolation.target, 0.0015f))
 			{
-				_sec = (int)secInterpolation.Interpolate();
-				//RunChange_sec(secInterpolation.Timestep);
+				_second = (int)secondInterpolation.Interpolate();
+				//RunChange_second(secondInterpolation.Timestep);
 			}
 		}
 
@@ -132,9 +132,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 		}
 
-		public GameTimerNetworkObject() : base() { Initialize(); }
-		public GameTimerNetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null) : base(networker, networkBehavior, createCode, metadata) { Initialize(); }
-		public GameTimerNetworkObject(NetWorker networker, uint serverId, FrameStream frame) : base(networker, serverId, frame) { Initialize(); }
+		public GameStartCountDownNetworkObject() : base() { Initialize(); }
+		public GameStartCountDownNetworkObject(NetWorker networker, INetworkBehavior networkBehavior = null, int createCode = 0, byte[] metadata = null) : base(networker, networkBehavior, createCode, metadata) { Initialize(); }
+		public GameStartCountDownNetworkObject(NetWorker networker, uint serverId, FrameStream frame) : base(networker, serverId, frame) { Initialize(); }
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

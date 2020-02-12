@@ -32,6 +32,12 @@ public class AccelByteServerLogic : MonoBehaviour
     public string LocalDSName { get; set; }
     private string mainMenuSceneName;
 
+    public delegate void OnServerGetMatchRequestEvent(int playerCount);
+    public event OnServerGetMatchRequestEvent onServerGetMatchRequest;
+
+    private MatchRequest currentMatchmakingRequest = null;
+    private int playerCount = 0;
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -52,6 +58,7 @@ public class AccelByteServerLogic : MonoBehaviour
         abServer.LoginWithClientCredentials(OnLogin);
         mainMenuSceneName = SceneManager.GetActiveScene().name;
         SceneManager.sceneUnloaded += OnCurrentSceneUnloaded;
+        abServerManager.OnMatchRequest += OnMatchRequest;
     }
 
     private string GetPodName()
@@ -146,5 +153,66 @@ public class AccelByteServerLogic : MonoBehaviour
             Debug.Log("[AccelByteServerLogic] OnDeregister Success! Shutting down");
         }
         DestroySelf();
+    }
+
+    private void OnMatchRequest(MatchRequest result)
+    {
+        Debug.Log("[AccelByteServerLogic] OnMatchRequest");
+        if (result == null)
+        {
+            Debug.Log("[AccelByteServerLogic] OnMatchRequest is null");
+        }
+        else
+        {
+            Debug.Log("[AccelByteServerLogic] OnMatchRequest Success! Game Mode: " + result.game_mode);
+            currentMatchmakingRequest = result;
+
+            // do head count
+            if (playerCount == 0 && currentMatchmakingRequest.matching_allies.Length > 0)
+            {
+                Debug.Log("[AccelByteServerLogic] OnMatchRequest player count 0");
+
+                foreach (MatchingAlly ally in currentMatchmakingRequest.matching_allies)
+                {
+                    Debug.Log("[AccelByteServerLogic] OnMatchRequest matching_allies");
+
+                    Debug.Log("[AccelByteServerLogic] OnMatchRequest matching_allies length: " + currentMatchmakingRequest.matching_allies.Length);
+
+                    //for (int i = 0; i < ally.matching_parties.Length; i++)
+                    //{
+                    //    Debug.Log("[AccelByteServerLogic] OnMatchRequest partyMember: " + i + " " + ally.matching_parties[i]);
+                    //}
+
+                    if (ally.matching_parties.Length > 0)
+                    {
+                        Debug.Log("[AccelByteServerLogic] OnMatchRequest ally.partyMember length: " + ally.matching_parties.Length);
+                        foreach (MatchParty member in ally.matching_parties)
+                        {
+                            Debug.Log("[AccelByteServerLogic] OnMatchRequest partyMember");
+                            playerCount++;
+                            Debug.Log("[AccelByteServerLogic] OnMatchRequest count: " + playerCount);
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("[AccelByteServerLogic] OnMatchRequest ally.partyMember length is 0: " + ally.matching_parties.Length);
+                    }
+                    //playerCount++;
+                    Debug.Log("[AccelByteServerLogic] OnMatchRequest partyMember = 0");
+                }
+            }
+
+            onServerGetMatchRequest?.Invoke(playerCount);
+            Debug.Log("[AccelByteServerLogic] OnMatchRequest head count: " + playerCount);
+        }
+    }
+    public int GetPlayerCount()
+    {
+        return playerCount;
+    }
+
+    public MatchRequest GetMatchRequest()
+    {
+        return currentMatchmakingRequest;
     }
 }

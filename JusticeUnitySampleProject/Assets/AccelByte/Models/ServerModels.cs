@@ -45,8 +45,7 @@ namespace AccelByte.Models
     [DataContract]
     public class MatchingAlly
     {
-        [DataMember] public string partyId { get; set; }
-        [DataMember] public string[] partyMember { get; set; }
+        [DataMember] public MatchParty[] matching_parties { get; set; }
     }
 
     [DataContract]
