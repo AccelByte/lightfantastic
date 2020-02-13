@@ -53,6 +53,7 @@ public class MainHUD : BaseHUD
     {
         pauseButton_.onClick.AddListener(ShowPauseScreen);
         gameMgr.onAllplayerConnected += OnAllPlayerConnected;
+        gameMgr.onGameStart += OnGameStart;
     }
 
     public void AttachTimer(GameTimer gameTimer)
@@ -93,7 +94,6 @@ public class MainHUD : BaseHUD
         gameTimer_.StartGameTimer();
         gameMgr.StartGame();
         countDownText_.gameObject.SetActive(false);
-        countDownTimer_.gameObject.SetActive(false);
     }
 
     private void ShowPauseScreen()
@@ -127,5 +127,10 @@ public class MainHUD : BaseHUD
     private void OnAllPlayerConnected()
     {
         countDownTimer_.StartCountDown();
+    }
+
+    private void OnGameStart()
+    {
+        countDownText_.gameObject.SetActive(false);
     }
 }
