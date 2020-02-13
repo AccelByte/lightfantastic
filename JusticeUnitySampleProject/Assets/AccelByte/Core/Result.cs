@@ -122,6 +122,49 @@ namespace AccelByte.Core
         EmailAlreadyUsed = 10133,
         CountryNotFound = 10154,
 
+        // Party error codes
+        // get user party info
+        PartyInfoUnableGetUserRegistry = 11221,
+        PartyInfoUnableGetUserPartyInfo = 11222,
+        PartyInfoSuccessGetUserPartyInfoEmpty = 11223,
+        PartyInfoSuccessGetUserPartyInfo = 11224,
+        // party creation
+        PartyCreationUnableGetUserRegistry = 11231,
+        PartyCreationAlreadyInParty = 11232,
+        PartyCreationUnableCreateParty = 11233,
+        PartyCreationSuccessCreateParty = 11234,
+        // party leave
+        PartyLeaveUnableGetUserRegistry = 11241,
+        PartyLeavePartyIsNil = 11242,
+        PartyLeavePartyNotFound = 11243,
+        PartyLeaveUserNotInParty = 11244,
+        PartyLeaveUnableToLeaveParty = 11245,
+        PartyLeaveSuccessLeaveParty = 11246,
+        // party invite
+        PartyInviteUnableGetUserRegistry = 11251,
+        PartyInviteInviteeNotFound = 11252,
+        PartyInviteNotInParty = 11253,
+        PartyInviteInviteeInParty = 11254,
+        PartyInviteUnableInviteToParty = 11255,
+        PartyInviteSuccessInviteToParty = 11256,
+        // party join
+        PartyJoinUnableGetUserRegistry = 11261,
+        PartyJoinPartyNotFound = 11262,
+        PartyJoinInvalidInvitationToken = 11263,
+        PartyJoinNotInvited = 11264,
+        PartyJoinAlreadyInParty = 11265,
+        PartyJoinPartyFull = 11266,
+        PartyJoinUnableJoinParty = 11267,
+        PartyJoinSuccessJoinParty = 11268,
+        // party kick
+        PartyKickUnableGetUserRegistry = 11271,
+        PartyKickNotInParty = 11272,
+        PartyKickNotLeader = 11273,
+        PartyKickKickeeNotInParty = 11274,
+        PartyKickUnableKickUser = 11275,
+        PartyKickSuccessKickUser = 11276,
+        PartyKickKickOwnSelf = 11277,
+
         ReceiverNotFound = 11284,
         PartyNotFound = 11293,
     }

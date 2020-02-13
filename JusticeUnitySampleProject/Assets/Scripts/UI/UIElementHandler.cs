@@ -44,7 +44,7 @@ namespace UITools
         private const float MIN_ALPHA = 0f;
         private const float TRIGGER_MAX_ALPHA = 0.9f;
         private const float TRIGGER_ZERO_ALPHA = 0.1f;
-        private const float TRANSITION_SPEED = 4f;
+        private const float TRANSITION_SPEED = 80f;
 
         //Fade In/Out the Login UI Panel
         public void FadeLogin()
@@ -118,6 +118,15 @@ namespace UITools
             }
             else
             {
+                StartCoroutine(FadeIn(friendPanel));
+            }
+        }
+
+        public void FadeInFriends()
+        {
+            if (friendPanel.alpha != MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(currentPanel));
                 StartCoroutine(FadeIn(friendPanel));
             }
         }
