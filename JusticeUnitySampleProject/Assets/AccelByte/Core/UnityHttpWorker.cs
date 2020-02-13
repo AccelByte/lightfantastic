@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
+using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 namespace AccelByte.Core
@@ -52,8 +53,9 @@ namespace AccelByte.Core
 
                 Report.GetHttpResponse(unityWebRequest);
 
-                if (unityWebRequest.isNetworkError)
+                if (unityWebRequest.isNetworkError && Application.internetReachability == NetworkReachability.NotReachable)
                 {
+                    Debug.Log("Network not reachable");
                     Action<UnityWebRequest> netErrorHandler = this.NetworkErrorOccured;
 
                     if (netErrorHandler != null)
@@ -71,11 +73,13 @@ namespace AccelByte.Core
 
                 switch ((HttpStatusCode) unityWebRequest.responseCode)
                 {
+                case 0: // On connection refused port 443
                 case HttpStatusCode.InternalServerError:
                 case HttpStatusCode.BadGateway:
                 case HttpStatusCode.ServiceUnavailable:
                 case HttpStatusCode.GatewayTimeout:
                     Action<UnityWebRequest> serverErrorHandler = this.ServerErrorOccured;
+                    Debug.Log("Retrying....");
 
                     if (serverErrorHandler != null)
                     {
@@ -105,7 +109,8 @@ namespace AccelByte.Core
                 }
             }
             while (stopwatch.Elapsed < TimeSpan.FromMilliseconds(this.totalTimeout));
-            
+            Debug.Log("Maximum retry timeout");
+
             if (requestDoneCallback != null)
             {
                 requestDoneCallback(unityWebRequest.GetHttpResponse());

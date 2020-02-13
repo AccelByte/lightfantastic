@@ -581,7 +581,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Debug.Log("Entering the game!");
 
                 Debug.Log("Lobby OnSuccessMatch Connect");
-                StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString()));
+                MainThreadTaskRunner.Instance.Run(() => { StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString())); });
             }
             else if (result.Value.status == DSNotifStatus.BUSY.ToString())
             {
