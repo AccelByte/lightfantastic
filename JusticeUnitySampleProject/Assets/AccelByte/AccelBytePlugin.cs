@@ -39,7 +39,7 @@ namespace AccelByte.Api
 
         static AccelBytePlugin()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR || UNITY_SWITCH
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 new [] {
                     Utf8Json.Formatters.PrimitiveObjectFormatter.Default

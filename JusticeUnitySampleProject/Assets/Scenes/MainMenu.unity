@@ -2405,7 +2405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f62455f26600c4e9af36d0807b2c8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steamAuth: {fileID: 2006644180}
   useSteam: 0
   cmdLine: {fileID: 2006644179}
 --- !u!4 &2006644170
@@ -2458,6 +2457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7d4cc2b7d5e504b999cb9452f607e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  connectToLocal: 0
+  gameMode: testUnity
 --- !u!114 &2006644174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2470,8 +2471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f8dc46b9c602740ba73de41163e602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverLogicPrefab: {fileID: 7407485024963274912, guid: a8fad4b41c65e8140bfaabeb36628938,
-    type: 3}
+  serverLogicPrefab: {fileID: 0}
   localDSName: LocalTestDS
   asLocalDS: 1
 --- !u!114 &2006644175

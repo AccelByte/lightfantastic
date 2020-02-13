@@ -28,8 +28,8 @@ namespace BeardedManStudios.Forge.Networking
         //TODO: Brent, figure out how to processor define this in a dll for unity
         // or we need to make 2 dlls, one with and one without this pre-processored defined out
         // This breaks iOS support because it cannot do [DllImport..]
-#if !UNITY_IOS
-		[DllImport("__Internal")]
+#if !UNITY_IOS && !UNITY_SWITCH
+        [DllImport("__Internal")]
 		private static extern void ForgeConnect(string host, ushort port);
 
 		[DllImport("__Internal")]

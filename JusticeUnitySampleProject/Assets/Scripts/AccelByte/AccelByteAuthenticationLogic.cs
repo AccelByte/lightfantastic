@@ -7,7 +7,9 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+#if UNITY_STANDALONE
 using Steamworks;
+#endif
 using System;
 using UnityEngine.SceneManagement;
 
@@ -22,8 +24,10 @@ namespace ABRuntimeLogic
         private UIAuthLogicComponent UIHandlerAuthComponent;
         private UIElementHandler UIElementHandler;
 
+#if UNITY_STANDALONE
         [SerializeField]
         private SteamAuth steamAuth;
+#endif
         public bool useSteam;
         [SerializeField]
         private CommandLineArgs cmdLine;
@@ -127,6 +131,7 @@ namespace ABRuntimeLogic
         {
             if (useSteam)
             {
+#if UNITY_STANDALONE
                 loginType = E_LoginType.Steam;
                 UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 Debug.Log("Valid ABUSER:"+abUser.Session.IsValid());
@@ -134,6 +139,7 @@ namespace ABRuntimeLogic
                 abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
                 Debug.Log("USE STEAM");
                 UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
+#endif
             }
             else 
             {

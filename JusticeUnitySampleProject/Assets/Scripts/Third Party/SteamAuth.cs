@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if UNITY_STANDALONE
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
@@ -7,11 +8,11 @@ using System.Text;
 public class SteamAuth : MonoBehaviour
 {
 
-    #region
+#region
     private byte[] m_Ticket;
     private uint m_pcbTicket;
     private HAuthTicket m_HAuthTicket;
-    #endregion
+#endregion
 
     protected Callback<SteamServersConnected_t> m_SteamServersConnected;
     protected Callback<SteamServerConnectFailure_t> m_SteamServerConnectFailure;
@@ -165,3 +166,4 @@ public class SteamAuth : MonoBehaviour
     }
 
 }
+#endif //UNITY_STANDALONE
