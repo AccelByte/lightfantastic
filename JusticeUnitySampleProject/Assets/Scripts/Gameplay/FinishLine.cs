@@ -11,9 +11,11 @@ namespace Game
     {
         private BaseGameManager gameMgr;
         private Collider2D col2d;
+        private bool gameAlreadyStarted = false;
         private void Awake()
         {
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
+            gameMgr.onGameStart += () => { gameAlreadyStarted = true; };
             col2d = GetComponent<Collider2D>();
         }
 
@@ -27,7 +29,7 @@ namespace Game
             if (!networkObject.IsServer)
             {
                 BasePlayerPawn finishedPawn = other.gameObject.GetComponent<Game.BasePlayerPawn>();
-                if (finishedPawn != null)
+                if (finishedPawn != null && gameAlreadyStarted)
                 {
                     Debug.Log("Player " + finishedPawn.networkObject.playerNum + " finished");
                     networkObject.SendRpc(RPC_PLAYER_FINISHED, Receivers.Server, finishedPawn.networkObject.OwnerNetId);
