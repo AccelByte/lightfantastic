@@ -47,6 +47,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 						availableCallback = true;
 						obj = new GameManagerNetworkObject(networker, id, frame);
 						break;
+					case GameStartCountDownNetworkObject.IDENTITY:
+						availableCallback = true;
+						obj = new GameStartCountDownNetworkObject(networker, id, frame);
+						break;
 					case GameTimerNetworkObject.IDENTITY:
 						availableCallback = true;
 						obj = new GameTimerNetworkObject(networker, id, frame);

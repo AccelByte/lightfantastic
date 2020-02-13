@@ -13,10 +13,14 @@ public class MainHUD : BaseHUD
     public Button rightRunButton_;
     [SerializeField]
     private TextMeshProUGUI timerText_ = null;
+    // countdown
+    [SerializeField]
+    private TextMeshProUGUI countDownText_ = null;
 
     private Game.InGameHudManager hudMgr;
     private Game.BaseGameManager gameMgr;
     private GameTimer gameTimer_;
+    private CountDown countDownTimer_;
 
     protected override void Awake()
     {
@@ -48,17 +52,48 @@ public class MainHUD : BaseHUD
     protected override void AddListeners()
     {
         pauseButton_.onClick.AddListener(ShowPauseScreen);
+        gameMgr.onAllplayerConnected += OnAllPlayerConnected;
+        gameMgr.onGameStart += OnGameStart;
     }
 
     public void AttachTimer(GameTimer gameTimer)
     {
         gameTimer_ = gameTimer;
         gameTimer.timerUpdated += OnTimerUpdated;
+        gameTimer.onTimerExpired += OnGameTimerExpired;
+    }
+
+    // countdown
+    public void AttachCountDown(CountDown countDownTimer)
+    {
+        countDownTimer_ = countDownTimer;
+        countDownTimer.timerUpdated += OnCountDownUpdated;
+        countDownTimer.onTimerExpired += OnCountDownStartExpired;
     }
 
     private void OnTimerUpdated(int newValue)
     {
         MainThreadTaskRunner.Instance.Run(() => { timerText_.text = "Time Remaining: " + newValue.ToString(); });
+    }
+
+    // countdown
+    private void OnCountDownUpdated(int newValue)
+    {
+        MainThreadTaskRunner.Instance.Run(() => { countDownText_.text =  newValue.ToString(); });
+    }
+
+    private void OnGameTimerExpired()
+    {
+        // after game timer expired then show result screen
+        Debug.Log("MainHUD OnGameTimerExpired");
+    }
+
+    private void OnCountDownStartExpired()
+    {
+        Debug.Log("MainHUD OnCountDownStartExpired");
+        gameTimer_.StartGameTimer();
+        gameMgr.StartGame();
+        countDownText_.gameObject.SetActive(false);
     }
 
     private void ShowPauseScreen()
@@ -78,9 +113,24 @@ public class MainHUD : BaseHUD
 
     private void OnDestroy()
     {
+        if (gameMgr != null)
+        {
+            gameMgr.onAllplayerConnected -= OnAllPlayerConnected;
+        }
+
         if (gameTimer_ != null)
         {
             gameTimer_.timerUpdated -= OnTimerUpdated;
         }
+    }
+
+    private void OnAllPlayerConnected()
+    {
+        countDownTimer_.StartCountDown();
+    }
+
+    private void OnGameStart()
+    {
+        countDownText_.gameObject.SetActive(false);
     }
 }

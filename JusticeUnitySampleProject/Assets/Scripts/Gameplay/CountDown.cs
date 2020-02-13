@@ -1,14 +1,11 @@
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
-using Game.Util;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
-public class GameTimer : GameTimerBehavior
+public class CountDown : GameStartCountDownBehavior
 {
     public delegate void TimerUpdated(int newValue);
     public event TimerUpdated timerUpdated;
@@ -37,12 +34,12 @@ public class GameTimer : GameTimerBehavior
 
     private void Initialize()
     {
-        Debug.Log("Game Timer is running");
+        Debug.Log("Count down Timer is running");
         inGameHudMgr_ = GameObject.FindGameObjectWithTag("HUDManager").GetComponent<Game.InGameHudManager>();
         mainHud_ = inGameHudMgr_.FindPanel<MainHUD>();
-        mainHud_.AttachTimer(this);
+        mainHud_.AttachCountDown(this);
         expired_ = false;
-        networkObject.secChanged += OnSecChanged;
+        networkObject.secondChanged += OnSecondChanged;
         if (networkObject.IsServer && networkObject.IsOwner)
         {
             if (isCountdown_)
@@ -53,7 +50,7 @@ public class GameTimer : GameTimerBehavior
             {
                 currentSec_ = 0;
             }
-            networkObject.sec = currentSec_;
+            networkObject.second = currentSec_;
             timerUpdated?.Invoke(currentSec_);
             //MainThreadManager.Run(() => { StartCoroutine(TimerRoutine()); });
         }
@@ -72,7 +69,7 @@ public class GameTimer : GameTimerBehavior
         if (!expired_)
         {
             currentSec_ = isCountdown_ ? currentSec_ - 1 : currentSec_ + 1;
-            networkObject.sec = currentSec_;
+            networkObject.second = currentSec_;
             timerUpdated?.Invoke(currentSec_);
             if (isCountdown_ && currentSec_ == 0)
             {
@@ -87,8 +84,13 @@ public class GameTimer : GameTimerBehavior
         }
     }
 
+    public override void CountDownStart(RpcArgs args)
+    {
+        // Start count down
+    }
+
     #region Events
-    private void OnSecChanged(int newValue, ulong timestep)
+    private void OnSecondChanged(int newValue, ulong timestep)
     {
         timerUpdated?.Invoke(newValue);
     }
@@ -103,9 +105,9 @@ public class GameTimer : GameTimerBehavior
         }
     }
 
-    public void StartGameTimer()
+    public void StartCountDown()
     {
-        Debug.Log("GameTimer StartCountDown start timer");
+        Debug.Log("CountDown StartCountDown start timer");
         StartTimer();
     }
 }

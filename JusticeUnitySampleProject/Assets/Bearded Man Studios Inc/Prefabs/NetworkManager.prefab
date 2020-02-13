@@ -52,6 +52,10 @@ MonoBehaviour:
   FinishLineNetworkObject: []
   GameManagerNetworkObject:
   - {fileID: 2368014717883738015, guid: 08ed84b657352084f983abbd8e33c8de, type: 3}
+  GameStartCountDownNetworkObject:
+  - {fileID: 6939495441290941638, guid: fac9325e074ad304fa01e43f4151a93b, type: 3}
+  GameTimerNetworkObject:
+  - {fileID: 3199766214774226786, guid: 9c664e973fabbaa41ac552e50dd65b82, type: 3}
   InputListenerNetworkObject:
   - {fileID: 4732720514674440848, guid: a1641ddf44fb253478220a57727f2c0f, type: 3}
   MovePlayerPawnNetworkObject:
@@ -61,6 +65,4 @@ MonoBehaviour:
   PawnSpawnerNetworkObject: []
   RotatePlayerPawnNetworkObject: []
   TestNetworkObject: []
-  GameTimerNetworkObject:
-  - {fileID: 3199766214774226786, guid: 9c664e973fabbaa41ac552e50dd65b82, type: 3}
   automaticScenes: 1

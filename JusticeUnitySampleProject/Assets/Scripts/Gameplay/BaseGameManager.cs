@@ -14,7 +14,11 @@ namespace Game
         public event OnPlayerDisconnectBroadcast disconnectBroadcast;
         public delegate void GameManagerInitCompletion();
         public event GameManagerInitCompletion onInitCompleted;
-        
+        public delegate void OnAllPlayerConnectedEvent();
+        public event OnAllPlayerConnectedEvent onAllplayerConnected;
+        public delegate void OnGameStartEvent();
+        public event OnGameStartEvent onGameStart;
+
         public class PlayerData
         {
             public PlayerData(MovePlayerPawnBehavior newCharacter, int newStartPosIdx = 0, ulong newFinishedTime = 0)
@@ -83,6 +87,10 @@ namespace Game
         [SerializeField] 
         public ParallaxSetter parallaxSetter;
 
+        public int PlayerConnected = 0;
+        public int PlayerMatched = 0;
+
+
         #endregion
 
         private void Awake()
@@ -98,6 +106,7 @@ namespace Game
             if(networkObject.IsServer)
             {
                 NetworkManager.Instance.InstantiateGameTimer(0);
+                NetworkManager.Instance.InstantiateGameStartCountDown(0);
                 onInitCompleted?.Invoke();
             }
             isNetworkReady = true;
@@ -112,6 +121,10 @@ namespace Game
         {
             PlayerData data = new PlayerData(pawn);
             players.Add(playerNetworkId, data);
+            if (networkObject.IsServer)
+            {
+                Debug.Log("BaseGameManager RegisterCharacter player: " + playerNetworkId);
+            }
             if (!networkObject.IsServer && pawn.networkObject.IsOwner)
             {
                 GameObject tgt = pawn.gameObject;
@@ -139,6 +152,7 @@ namespace Game
             {
                 NetworkManager.Instance.Networker.playerAccepted += OnPlayerAccepted;
                 NetworkManager.Instance.Networker.playerDisconnected += OnPlayerDisconnected;
+                AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest += onServerMatched;
             }
         }
 
@@ -193,6 +207,17 @@ namespace Game
         /// End the game, making all clients show the Race Over Screen
         /// </summary>
         /// <param></param>
+        public override void BroadcastStartGame(RpcArgs args)
+        {
+            // unlock player pawn controller
+            Debug.Log("BaseGameManager BroadcastStartGame!");
+            onGameStart?.Invoke();
+        }
+
+        /// <summary>
+        /// End the game, making all clients show the Race Over Screen
+        /// </summary>
+        /// <param></param>
         public override void BroadcastEndGame(RpcArgs args)
         {
             var isWinner = networkObject.MyPlayerId == args.GetAt<uint>(0);
@@ -210,6 +235,14 @@ namespace Game
         {
             NetworkManager.Instance.Disconnect();
             SceneManager.LoadScene(mainMenuSceneIdx_);
+        }
+
+        public void StartGame()
+        {
+            if (networkObject.IsServer)
+            {
+                networkObject.SendRpc(RPC_BROADCAST_START_GAME, Receivers.All);
+            }
         }
 
         #region Events
@@ -230,7 +263,24 @@ namespace Game
 
         private void OnPlayerAccepted(NetworkingPlayer player, NetWorker sender)
         {
-            //Currently there's nothing to do on player accepted, might as well delete this?
+            Debug.Log("GameManager OnPlayerAccepted!");
+
+            if (NetworkManager.Instance.IsServer)
+            {
+                PlayerConnected++;
+                Debug.Log("GameManager OnPlayerAccepted player number : " + player.NetworkId);
+                Debug.Log("GameManager OnPlayerAccepted player connected: " + PlayerConnected);
+            }
+        }
+
+        private void onServerMatched(int playerCount)
+        {
+            PlayerMatched = playerCount;
+            onAllplayerConnected?.Invoke();
+            Debug.Log("GameManager onServerMatched! player count: " + PlayerMatched);
+            
+            // unsubscribe once get the info
+            AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest -= onServerMatched;
         }
 
         private void OnPlayerDisconnected(NetworkingPlayer player, NetWorker sender)
