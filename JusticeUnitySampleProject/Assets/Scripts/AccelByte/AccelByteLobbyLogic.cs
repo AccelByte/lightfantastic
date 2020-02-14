@@ -191,7 +191,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("AbLogic SetIsActionPhaseOver called");
             // move to main menu screen
-            // TODO: after from action pahse all the main menu stuff has tobe refreshed
+            // TODO: after from action pahse all the main menu stuff has tobe refreshed (player profile and statistic)
             UIElementHandler.FadeLogin();
             UIElementHandler.FadePersistentFriends();
             UIElementHandler.FadeMenu();
@@ -313,6 +313,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupFriendCallbacks();
         SetupMatchmakingCallbacks();
         SetupChatCallbacks();
+        GetPartyInfo();
     }
 
     private void SetupGeneralCallbacks()
@@ -762,9 +763,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ClearFriendsUIPrefabs()
     {
-        for (int i = 0; i < UIHandlerLobbyComponent.friendScrollContent.childCount; i++)
+        if (UIHandlerLobbyComponent.friendScrollContent.childCount > 0)
         {
-            Destroy(UIHandlerLobbyComponent.friendScrollContent.GetChild(i).gameObject);
+            for (int i = 0; i < UIHandlerLobbyComponent.friendScrollContent.childCount; i++)
+            {
+                Destroy(UIHandlerLobbyComponent.friendScrollContent.GetChild(i).gameObject);
+            }
         }
     }
 
@@ -1256,6 +1260,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 // Get member info
                 GetPartyMemberInfo(result.Value.members[i]);
             }
+            isLocalPlayerInParty = true;
         }
     }
 
