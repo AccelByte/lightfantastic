@@ -26,7 +26,7 @@ namespace Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!networkObject.IsServer)
+            if (!networkObject.IsServer && networkObject.IsOwner)
             {
                 BasePlayerPawn finishedPawn = other.gameObject.GetComponent<Game.BasePlayerPawn>();
                 if (finishedPawn != null && gameAlreadyStarted)
