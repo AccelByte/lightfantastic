@@ -199,8 +199,7 @@ namespace Game
         private void EndTheGame()
         {
             uint winnerNetId = DecideWinner();
-            uint winnerPlayerNum = players[winnerNetId].Character.networkObject.playerNum;
-            networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.All, winnerPlayerNum);
+            networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
         }
 
         /// <summary>
