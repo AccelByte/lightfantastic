@@ -21,14 +21,14 @@ namespace Game
 
         public class PlayerData
         {
-            public PlayerData(MovePlayerPawnBehavior newCharacter, int newStartPosIdx = 0, ulong newFinishedTime = 0)
+            public PlayerData(BasePlayerPawn newCharacter, int newStartPosIdx = 0, ulong newFinishedTime = 0)
             {
                 character = newCharacter;
                 finishedTime = newFinishedTime;
                 startPosIdx = newStartPosIdx;
             }
-            private readonly MovePlayerPawnBehavior character;
-            public MovePlayerPawnBehavior Character { get { return character; } }
+            private readonly BasePlayerPawn character;
+            public BasePlayerPawn Character { get { return character; } }
             public ulong finishedTime;
             public int startPosIdx;
         }
@@ -118,7 +118,7 @@ namespace Game
         /// </summary>
         /// <param name="playerNetworkId">The player network ID</param>
         /// <param name="pawn">Behaviour class of the pawn</param>
-        public void RegisterCharacter(uint playerNetworkId, MovePlayerPawnBehavior pawn)
+        public void RegisterCharacter(uint playerNetworkId, BasePlayerPawn pawn)
         {
             PlayerData data = new PlayerData(pawn);
             players.Add(playerNetworkId, data);
@@ -200,6 +200,11 @@ namespace Game
         private void EndTheGame()
         {
             uint winnerNetId = DecideWinner();
+            foreach (var player in players)
+            {
+                var isWinner = player.Key == winnerNetId;
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
+            }
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
         }
 
