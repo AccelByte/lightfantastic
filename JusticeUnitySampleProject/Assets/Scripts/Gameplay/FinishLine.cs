@@ -26,10 +26,10 @@ namespace Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!networkObject.IsServer && networkObject.IsOwner)
+            if (!networkObject.IsServer && gameAlreadyStarted)
             {
                 BasePlayerPawn finishedPawn = other.gameObject.GetComponent<Game.BasePlayerPawn>();
-                if (finishedPawn != null && gameAlreadyStarted)
+                if (finishedPawn != null)
                 {
                     Debug.Log("Player " + finishedPawn.networkObject.playerNum + " finished");
                     networkObject.SendRpc(RPC_PLAYER_FINISHED, Receivers.Server, finishedPawn.networkObject.OwnerNetId);
