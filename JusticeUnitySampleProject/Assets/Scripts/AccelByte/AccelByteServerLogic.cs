@@ -21,6 +21,7 @@ public class AccelByteServerLogic : MonoBehaviour
 
     private DedicatedServer abServer;
     private DedicatedServerManager abServerManager;
+    private ServerStatistic abServerStatistic;
 
     [Header("Local Dedicated Server Settings")]
     [SerializeField]
@@ -37,6 +38,7 @@ public class AccelByteServerLogic : MonoBehaviour
 
     private MatchRequest currentMatchmakingRequest = null;
     private int playerCount = 0;
+    private int playerStatUpdatedCount = 0;
 
     private void Awake()
     {
@@ -53,8 +55,9 @@ public class AccelByteServerLogic : MonoBehaviour
 
     private void Start()
     {
-        abServer = AccelByte.Server.AccelByteServerPlugin.GetDedicatedServer();
-        abServerManager = AccelByte.Server.AccelByteServerPlugin.GetDedicatedServerManager();
+        abServer = AccelByteServerPlugin.GetDedicatedServer();
+        abServerManager = AccelByteServerPlugin.GetDedicatedServerManager();
+        abServerStatistic = AccelByteServerPlugin.GetStatistic();
         abServer.LoginWithClientCredentials(OnLogin);
         mainMenuSceneName = SceneManager.GetActiveScene().name;
         SceneManager.sceneUnloaded += OnCurrentSceneUnloaded;
@@ -214,5 +217,77 @@ public class AccelByteServerLogic : MonoBehaviour
     public MatchRequest GetMatchRequest()
     {
         return currentMatchmakingRequest;
+    }
+
+    public void UpdateUserStatItem(string userId, bool isWinner)
+    {
+        if (playerStatUpdatedCount < playerCount)
+        {
+            var createStatItemRequest = new CreateStatItemRequest[3];
+            createStatItemRequest[0] = new CreateStatItemRequest() { statCode = "total-match" };
+            createStatItemRequest[1] = new CreateStatItemRequest() { statCode = "total-win" };
+            createStatItemRequest[2] = new CreateStatItemRequest() { statCode = "total-lose" };
+
+            abServerStatistic.CreateUserStatItems(userId, createStatItemRequest, OnCreateUserStatItems);
+
+            var statItemOperationResult = new StatItemIncrement[2];
+            //Update TOTAL_MATCH
+            statItemOperationResult[0] = new StatItemIncrement()
+            {
+                statCode = createStatItemRequest[0].statCode,
+                inc = 1
+            };
+            //Update TOTAL_LOSE or TOTAL_WIN
+            if (isWinner)
+            {
+                statItemOperationResult[1] = new StatItemIncrement()
+                {
+                    statCode = createStatItemRequest[1].statCode,
+                    inc = 1
+                };
+            }
+            else
+            {
+                statItemOperationResult[1] = new StatItemIncrement()
+                {
+                    statCode = createStatItemRequest[2].statCode,
+                    inc = 1
+                };
+            }
+
+            abServerStatistic.IncrementUserStatItems(userId, statItemOperationResult, OnIncrementUserStatItems);
+            playerStatUpdatedCount += 1;
+        }
+    }
+
+    private void OnCreateUserStatItems(Result<StatItemOperationResult[]> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("[AccelByteServerLogic] Create User statistic item failed:" + result.Error.Message);
+            Debug.Log("[AccelByteServerLogic] Create User statistic item  Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            Debug.Log("[AccelByteServerLogic] Create User statistic item successful");
+        }
+    }
+
+    private void OnIncrementUserStatItems(Result<StatItemOperationResult[]> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("[AccelByteServerLogic] Increment User statistic item failed:" + result.Error.Message);
+            Debug.Log("[AccelByteServerLogic] Increment User statistic item  Response Code: " + result.Error.Code);
+            //Show Error Message
+        }
+        else
+        {
+            foreach (var data in result.Value)
+            {
+                Debug.Log("[AccelByteServerLogic] Increment User statistic item successful, stat code is: " + data.statCode);
+            }
+        }
     }
 }

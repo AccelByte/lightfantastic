@@ -25,9 +25,9 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
         playerStatistic = new List<string>
         {
-            "TOTAL_WIN",
-            "TOTAL_LOSE",
-            "TOTAL_MATCH"
+            "total-win",
+            "total-lose",
+            "total-match"
         };
 
         statistic = AccelBytePlugin.GetStatistic();
@@ -102,15 +102,15 @@ public class AccelByteStatisticLogic : MonoBehaviour
             Debug.Log("Get Statistic successful.");
             foreach (var data in result.Value.data)
             {
-                if (data.statCode == "TOTAL_WIN")
+                if (data.statCode == "total-win")
                 {
                     UIHandlerStatisticsComponent.totalWinText.text = data.value.ToString();
                 }
-                else if (data.statCode == "TOTAL_LOSE")
+                else if (data.statCode == "total-lose")
                 {
                     UIHandlerStatisticsComponent.totalLoseText.text = data.value.ToString();
                 }
-                else if (data.statCode == "TOTAL_MATCH")
+                else if (data.statCode == "total-match")
                 {
                     UIHandlerStatisticsComponent.totalMatchText.text = data.value.ToString();
                 }
