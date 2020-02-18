@@ -98,6 +98,7 @@ namespace Game
             SetupEventHandlers();
             vCam_ = Instantiate(vCam, Camera.main.transform.position, Quaternion.identity);
             MainThreadTaskRunner.CreateGameObject();
+            DeveloperConsoleHelper.Instance.Refresh();
         }
 
         protected override void NetworkStart()

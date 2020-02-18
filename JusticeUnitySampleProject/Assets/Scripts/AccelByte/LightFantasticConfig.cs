@@ -10,4 +10,5 @@
     }
 
     public const float CURR_SPEED_MULTIPLIER_ANIMATION = 200.0f;
+    public const bool DEVELOPER_CONSOLE_VISIBLE = false;
 }

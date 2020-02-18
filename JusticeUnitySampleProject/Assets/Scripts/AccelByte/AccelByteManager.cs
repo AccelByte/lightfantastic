@@ -77,5 +77,7 @@ public class AccelByteManager : MonoBehaviour
         {
             Debug.Log("ServerLogicPrefab is null, this instance will become a client");
         }
+        
+        DeveloperConsoleHelper.Instance.Refresh();
     }
 }
