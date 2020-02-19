@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 [System.Serializable]
-public class InGameAudio
+public class SoundFX
 {
-    public SoundFX Name;
+    public E_SoundFX Name;
     public AudioClip Clip;
 
     [Range(0f,1f)]

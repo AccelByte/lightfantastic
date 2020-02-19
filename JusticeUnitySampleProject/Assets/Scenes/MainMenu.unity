@@ -738,6 +738,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &567854955
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2042770501597636108, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_Name
+      value: AudioHandler
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.0920086
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -19.282673
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 87.853645
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042770501597636110, guid: d685cd0b8b0aadf409857e1db9ff09ca,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d685cd0b8b0aadf409857e1db9ff09ca, type: 3}
 --- !u!224 &669977106 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5701122653806372803, guid: 3f5e40b02fa8ce64a8c16328990048d8,
@@ -1149,9 +1218,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1440, y: 900}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.511
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -3521,6 +3590,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1500485539}
     m_Modifications:
+    - target: {fileID: 1456205870325572335, guid: c123910603c41ab43a71bf0446cb62da,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.2999878
+      objectReference: {fileID: 0}
     - target: {fileID: 2732412261523123390, guid: c123910603c41ab43a71bf0446cb62da,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

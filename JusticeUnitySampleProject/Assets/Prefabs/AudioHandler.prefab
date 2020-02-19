@@ -68,4 +68,28 @@ MonoBehaviour:
     Pitch: 1
     IsLooping: 0
     Source: {fileID: 0}
-  backgroundMusics: []
+  backgroundMusics:
+  - Name: 0
+    Clip: {fileID: 8300000, guid: 00088a07e5d048d46a454910f67611f6, type: 3}
+    Volume: 1
+    Pitch: 1
+    IsLooping: 0
+    Source: {fileID: 0}
+  - Name: 1
+    Clip: {fileID: 8300000, guid: 6be438be3556eb0458ed42fd309fa3ba, type: 3}
+    Volume: 1
+    Pitch: 1
+    IsLooping: 0
+    Source: {fileID: 0}
+  - Name: 2
+    Clip: {fileID: 8300000, guid: 0a58c94dcf9bbd646b393cce1e50752a, type: 3}
+    Volume: 1
+    Pitch: 1
+    IsLooping: 0
+    Source: {fileID: 0}
+  - Name: 3
+    Clip: {fileID: 8300000, guid: 30c57d9bd7d98f24dad91b7ed95657bb, type: 3}
+    Volume: 1
+    Pitch: 1
+    IsLooping: 0
+    Source: {fileID: 0}

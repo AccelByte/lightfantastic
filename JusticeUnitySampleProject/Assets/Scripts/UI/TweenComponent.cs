@@ -31,7 +31,7 @@ public class TweenComponent : MonoBehaviour
     {
         // scale to 80 %
         gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f)* ScalePersentage, AnimationDuration).OnComplete(OnButtonClickedComplete);
-        AudioManager.Instance.PlaySoundFX(SoundFX.ButtonClick01);
+        AudioManager.Instance.PlaySoundFX(E_SoundFX.ButtonClick01);
     }
 
     private void OnButtonClickedComplete()
