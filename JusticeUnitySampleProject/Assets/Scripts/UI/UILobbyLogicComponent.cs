@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UILobbyLogicComponent : MonoBehaviour
 {
+    [Header("Miscellaneous")]
     public ScrollRect friendScrollView;
     public Transform friendScrollContent;
     public Transform friendPrefab;
@@ -15,27 +16,27 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Transform friendInvitePrefab;
     public Transform sentInvitePrefab;
 
-    // Party & matchmaking
-    public Transform matchmakingStatus;
+    [Header("TRANSFORM Party & matchmaking")] 
     public Transform popupPartyInvitation;
     public Transform popupMatchConfirmation;
     public Transform popupPartyControl;
     public Transform[] partyMemberButtons;
     public Transform ChatTextbox;
-    public Transform matchmakingBoard;
+    public MatchmakingBoardScript matchmakingBoard;
+    public PromptPanel matchmakingFailedPromptPanel;
 
-    //Chat
+    [Header("Chat")]
     public InputField playerNameInputField;
     public InputField messageInputField;
     public Text chatMessageText;
 
-    // Notification
+    [Header("Notification")]
     public Text generalNotificationTitle;
     public Text generalNotificationText;
     public Text incomingFriendNotificationTitle;
     public InvitationPrefab invite;
 
-    // Buttons
+    [Header("Buttons")]
     public Button logoutButton;
     
     public Button findMatchButton;
@@ -61,7 +62,7 @@ public class UILobbyLogicComponent : MonoBehaviour
 
     public Button cancelMatchmakingButton;
     
-    // Input Fields
+    [Header("Input Fields")]
     public InputField localMatch_IP_inputFields;
     public InputField localMatch_Port_inputFields;
 }

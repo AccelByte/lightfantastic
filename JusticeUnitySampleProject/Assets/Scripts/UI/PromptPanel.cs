@@ -50,4 +50,26 @@ public class PromptPanel : MonoBehaviour
         component.headerText.text = header;
         component.descriptionText.text = description;
     }
+
+    public void Show()
+    {
+        component.gameObject.SetActive(true);
+        component.promptPanelCanvasGroup.alpha = 1;
+        component.promptPanelCanvasGroup.blocksRaycasts = true;
+        component.promptPanelCanvasGroup.interactable = true;
+    }
+
+    public void Hide()
+    {
+        component.gameObject.SetActive(false);
+        component.promptPanelCanvasGroup.alpha = 0;
+        component.promptPanelCanvasGroup.blocksRaycasts = false;
+        component.promptPanelCanvasGroup.interactable = false;
+    }
+
+    public void SetText(string _header, string _description)
+    {
+        header = _header;
+        description = _description;
+    }
 }
