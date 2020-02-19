@@ -11,4 +11,5 @@
 
     public const float CURR_SPEED_MULTIPLIER_ANIMATION = 200.0f;
     public const bool DEVELOPER_CONSOLE_VISIBLE = false;
+    public const string DS_LOCALMODE_CMD_ARG = "localds"; // Arguments passed to set this server behavior as local DS
 }

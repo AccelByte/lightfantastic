@@ -37,7 +37,9 @@ public class UILobbyLogicComponent : MonoBehaviour
 
     // Buttons
     public Button logoutButton;
+    
     public Button findMatchButton;
+    public Button findLocalMatchButton;
 
     public Button friendsTabButton;
     public Button invitesTabButton;
@@ -58,4 +60,8 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Button memberKickPartyButton;
 
     public Button cancelMatchmakingButton;
+    
+    // Input Fields
+    public InputField localMatch_IP_inputFields;
+    public InputField localMatch_Port_inputFields;
 }

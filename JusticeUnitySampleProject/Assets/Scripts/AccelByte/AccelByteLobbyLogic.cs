@@ -25,7 +25,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private PartyInfo abPartyInfo;
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
-    [SerializeField]
     private bool connectToLocal;
     [SerializeField]
     private string gameMode = "testUnity";
@@ -208,7 +207,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         // Bind Buttons
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
-        UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(FindMatchButtonClicked);
+        UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(false); });
+        UIHandlerLobbyComponent.findLocalMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(true); });
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(LoadFriendsList);
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetIncomingFriendsRequest);
@@ -232,7 +232,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         Debug.Log("ABLobby RemoveListeners!");
         UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveListener(FindMatchButtonClicked);
+        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
@@ -380,8 +381,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void FindMatchButtonClicked()
+    public void FindMatchButtonClicked(bool isLocal)
     {
+        connectToLocal = isLocal;
         if (!isLocalPlayerInParty)
         {
             abLobby.CreateParty(OnPartyCreatedFindMatch);
