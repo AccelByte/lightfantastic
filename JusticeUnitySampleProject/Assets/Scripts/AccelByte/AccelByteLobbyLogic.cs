@@ -233,7 +233,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         Debug.Log("ABLobby RemoveListeners!");
         UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.findMatchButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.findLocalMatchButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
