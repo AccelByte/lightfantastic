@@ -1,7 +1,9 @@
 ﻿using ABRuntimeLogic;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(AccelByteAuthenticationLogic))]
 [RequireComponent(typeof(AccelByteLobbyLogic))]
@@ -9,6 +11,7 @@ using UnityEngine;
 [RequireComponent(typeof(AccelByteGameProfileLogic))]
 [RequireComponent(typeof(AccelByteUserProfileLogic))]
 [RequireComponent(typeof(AccelByteStatisticLogic))]
+[RequireComponent(typeof(AccelByteServerLogic))]
 [RequireComponent(typeof(AccelByteEntitlementLogic))]
 [RequireComponent(typeof(MultiplayerMenu))]
 public class AccelByteManager : MonoBehaviour
@@ -34,10 +37,12 @@ public class AccelByteManager : MonoBehaviour
     private MultiplayerMenu multiplayerLogic;
 
     [Header("Server Logic")]
-    [SerializeField]
+    [SerializeField][Tooltip("WARNING! Don't remove this prefab.")]
     private AccelByteServerLogic serverLogicPrefab = null;
     [SerializeField]
     private string localDSName = "LocalTestDS";
+    [SerializeField][Tooltip("Will be ignored on standalone mode. Only work in editor")]
+    private bool asLocalDS = true;
     public string LocalDSName { get { return localDSName; } }
 
     public AccelByteServerLogic ServerLogic { get { return serverLogic; } }
@@ -67,15 +72,22 @@ public class AccelByteManager : MonoBehaviour
 
     private void Start()
     {
-        if (serverLogicPrefab != null)
+        if (
+        #if UNITY_EDITOR
+            EditorUserBuildSettings.enableHeadlessMode    // If "BuildSetting">"ServerBuild" has a checkmark
+        #else
+            SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null // If it's a server that doesn't have graphic
+        #endif
+            )  
         {
             serverLogic = Instantiate(serverLogicPrefab, Vector3.zero, Quaternion.identity);
             serverLogic.onServerRegistered += multiplayerLogic.Host;
             serverLogic.LocalDSName = localDSName;
+            serverLogic.isLocal = asLocalDS;
         }
         else
         {
-            Debug.Log("ServerLogicPrefab is null, this instance will become a client");
+            Debug.Log("This instance will become a client");
         }
         
         DeveloperConsoleHelper.Instance.Refresh();

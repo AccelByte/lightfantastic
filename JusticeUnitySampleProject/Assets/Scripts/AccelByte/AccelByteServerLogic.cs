@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BeardedManStudios.Forge.Networking;
@@ -23,9 +24,7 @@ public class AccelByteServerLogic : MonoBehaviour
     private DedicatedServerManager abServerManager;
     private ServerStatistic abServerStatistic;
 
-    [Header("Local Dedicated Server Settings")]
-    [SerializeField]
-    private bool isLocal = true;
+    public bool isLocal = true;
     [SerializeField]
     private string ipAddress = "127.0.0.1";
     [SerializeField]
@@ -62,6 +61,10 @@ public class AccelByteServerLogic : MonoBehaviour
         mainMenuSceneName = SceneManager.GetActiveScene().name;
         SceneManager.sceneUnloaded += OnCurrentSceneUnloaded;
         abServerManager.OnMatchRequest += OnMatchRequest;
+
+        #if !UNITY_EDITOR 
+        isLocal = Environment.GetCommandLineArgs().Contains(LightFantasticConfig.DS_LOCALMODE_CMD_ARG);
+        #endif
     }
 
     private string GetPodName()

@@ -40,7 +40,7 @@ namespace AccelByte.Models {
 
                 if (this.IamServerUrl == null) this.IamServerUrl = httpBaseUrl + "/iam";
 
-                if (this.DSMServerUrl == null) this.DSMServerUrl = httpBaseUrl + "/dsm";
+                if (this.DSMServerUrl == null) this.DSMServerUrl = httpBaseUrl + "/dsmcontroller";
 
                 if (this.StatisticServerUrl == null) this.StatisticServerUrl = httpBaseUrl + "/statistic";
             }
@@ -61,7 +61,7 @@ namespace AccelByte.Models {
 
                 if (this.IamServerUrl == httpBaseUrl + "/iam") this.IamServerUrl = null;
 
-                if (this.DSMServerUrl == httpBaseUrl + "/dsm") this.DSMServerUrl = null;
+                if (this.DSMServerUrl == httpBaseUrl + "/dsmcontroller") this.DSMServerUrl = null;
 
                 if (this.StatisticServerUrl == httpBaseUrl + "/statistic") this.StatisticServerUrl = null;
             }
