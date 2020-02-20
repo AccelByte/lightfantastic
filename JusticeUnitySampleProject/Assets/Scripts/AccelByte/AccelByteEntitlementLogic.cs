@@ -241,6 +241,8 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         }
         UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+        UIHandlerEntitlementComponent.uiUtilities = AccelByteManager.Instance.gameObject.GetComponent<UiUtilities>();
+        UIHandlerEntitlementComponent.abUserProfileLogic = AccelByteManager.Instance.gameObject.GetComponent<AccelByteUserProfileLogic>();
 
         AddEventListeners();
     }

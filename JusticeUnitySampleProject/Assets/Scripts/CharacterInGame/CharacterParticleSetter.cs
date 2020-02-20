@@ -4,10 +4,10 @@
 public class CharacterParticleSetter : MonoBehaviour
 {
     [SerializeField] 
-    public ParticleSystemRenderer particleSystemRenderer;
+    public CharacterParticleLibraryAndResolver particleLibraryAndResolver;
 
-    public void SetMaterial(Material material)
+    public void SetItem(string item)
     {
-        particleSystemRenderer.material = material;
+        particleLibraryAndResolver.Select(item);
     }
 }

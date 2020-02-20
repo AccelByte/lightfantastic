@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2412989428371364830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 136012951342604841}
+  - component: {fileID: 5899991144526240219}
+  m_Layer: 0
+  m_Name: ParticleLibraryAndResolver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &136012951342604841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2412989428371364830}
+  m_LocalRotation: {x: -0, y: -0, z: -0.3427336, w: 0.9394327}
+  m_LocalPosition: {x: 11, y: 7, z: 0}
+  m_LocalScale: {x: 10, y: 10, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -40.087}
+--- !u!114 &5899991144526240219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2412989428371364830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1728df07869474980e5b1aeb9958d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabInfos:
+  - prefab: {fileID: 1824484875709894321, guid: 00666c7d541ed1a48b8e01485357423a,
+      type: 3}
+    name: Rainbow
+  - prefab: {fileID: 8037948742764529590, guid: 4ea1fb379695e80499a23f80b5811613,
+      type: 3}
+    name: Star
+  - prefab: {fileID: 6053378520979531651, guid: 7a6f1e4fc6ffefd46840629f3a6a89f3,
+      type: 3}
+    name: Wind
