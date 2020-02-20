@@ -33,10 +33,16 @@ public class PauseScreen : BaseHUD
     protected override void AddListeners()
     {
         disconnectButton_.onClick.AddListener(DisconnectPlayer);
+        backButton_.onClick.AddListener(HidePauseScreen);
     }
 
     private void DisconnectPlayer()
     {
         hudMgr_.DisconnectPlayer();
+    }
+
+    private void HidePauseScreen()
+    {
+        hudMgr_.HidePauseScreen();
     }
 }
