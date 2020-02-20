@@ -43,5 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d1e0d9b325a11341a4f031ffed5ec89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length_: 100
+  length_: 30
   isCountdown_: 1

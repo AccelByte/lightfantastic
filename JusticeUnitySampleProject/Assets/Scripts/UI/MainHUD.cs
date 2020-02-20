@@ -86,6 +86,7 @@ public class MainHUD : BaseHUD
     {
         // after game timer expired then show result screen
         Debug.Log("MainHUD OnGameTimerExpired");
+        gameMgr.GameTimeOver();
     }
 
     private void OnCountDownStartExpired()
