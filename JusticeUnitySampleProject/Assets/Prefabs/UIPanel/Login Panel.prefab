@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 2045071916359081435}
   - component: {fileID: 2045071916359081434}
   - component: {fileID: 2045071916359081381}
+  - component: {fileID: 1926577766}
   m_Layer: 5
   m_Name: PasswordInput
   m_TagString: Untagged
@@ -389,9 +390,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2045071916359081434}
-          m_MethodName: SetTextWithoutNotify
-          m_Mode: 5
+        - m_Target: {fileID: 1926577766}
+          m_MethodName: AnimateScaleUp
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -400,6 +401,37 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1926577766}
+          m_MethodName: AnimateScaleToNormal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1926577766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045071916359081432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 3
+  AnimationDuration: 0.2
+  ScalePersentage: 0.9
+  TranslationOffset: 20
 --- !u!1 &2045071917070565568
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,7 +666,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2045071917267493017
 RectTransform:
   m_ObjectHideFlags: 0
@@ -642,7 +674,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2045071917267493016}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -694,6 +726,7 @@ GameObject:
   - component: {fileID: 2045071917684374853}
   - component: {fileID: 2045071917684374852}
   - component: {fileID: 2045071917684374907}
+  - component: {fileID: 7093256565074485974}
   m_Layer: 5
   m_Name: LoginButton
   m_TagString: Untagged
@@ -800,8 +833,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Login
+      - m_Target: {fileID: 7093256565074485974}
+        m_MethodName: OnButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -811,6 +844,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7093256565074485974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045071917684374905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 1
+  AnimationDuration: 0.1
+  ScalePersentage: 0.95
+  TranslationOffset: 10
 --- !u!1 &2045071917790028944
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +873,7 @@ GameObject:
   - component: {fileID: 2045071917790028947}
   - component: {fileID: 2045071917790028946}
   - component: {fileID: 2045071917790028957}
+  - component: {fileID: 604545409}
   m_Layer: 5
   m_Name: EmailInput
   m_TagString: Untagged
@@ -969,9 +1019,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2045071917790028946}
-          m_MethodName: SetTextWithoutNotify
-          m_Mode: 5
+        - m_Target: {fileID: 604545409}
+          m_MethodName: AnimateScaleUp
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -980,6 +1030,37 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 10
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 604545409}
+          m_MethodName: AnimateScaleToNormal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &604545409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045071917790028944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 3
+  AnimationDuration: 0.2
+  ScalePersentage: 0.9
+  TranslationOffset: 20
 --- !u!1 &4758400542594077486
 GameObject:
   m_ObjectHideFlags: 0
@@ -1668,14 +1749,14 @@ RectTransform:
   m_GameObject: {fileID: 7049878803318351168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 2045071917267493017}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -506.7, y: -344.2}
+  m_AnchoredPosition: {x: -533, y: -332}
   m_SizeDelta: {x: 144, y: 29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7049878803318351199
