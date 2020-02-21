@@ -245,7 +245,7 @@ namespace Game
                 {
                     hoveringText.ChangeTextLabel("Player " + newPlayerNum);
                     gameMgr.RegisterCharacter(newOwnerNetId, this);
-                    networkObject.Banable = true;
+                    networkObject.Banable = false;
                 });
             }
             else
@@ -253,7 +253,7 @@ namespace Game
                 MainThreadManager.Run(() =>
                 {
                     networkObject.SetInitialPos(initialPos);
-                    networkObject.Banable = true;
+                    networkObject.Banable = false;
                 });
             }
         }

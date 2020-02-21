@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 738729327}
   m_Layer: 5
   m_Name: InGameHUDManager
-  m_TagString: Untagged
+  m_TagString: HUDManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -285,7 +285,12 @@ PrefabInstance:
     - target: {fileID: 826130214512022373, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
       propertyPath: m_fontSize
-      value: 35.2
+      value: 36.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 826130214512022373, guid: 2f352dda09da8d34eb4dd240c6a41a63,
+        type: 3}
+      propertyPath: m_text
+      value: 'Time remaining: 30'
       objectReference: {fileID: 0}
     - target: {fileID: 1347609267925623037, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
@@ -569,6 +574,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885716678053571237}
     m_Modifications:
+    - target: {fileID: 617304688638383577, guid: 287b7de451053b248a3fedd4b221541d,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 67.25
+      objectReference: {fileID: 0}
     - target: {fileID: 5415083708628732975, guid: 287b7de451053b248a3fedd4b221541d,
         type: 3}
       propertyPath: m_Name

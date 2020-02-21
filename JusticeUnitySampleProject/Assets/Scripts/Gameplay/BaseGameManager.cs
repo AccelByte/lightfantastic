@@ -175,6 +175,22 @@ namespace Game
         }
 
         /// <summary>
+        /// Check wheter aany player has reached the finish line
+        /// </summary>
+        /// <returns></returns>
+        private bool HasAnyPlayerFinished()
+        {
+            foreach (var player in players)
+            {
+                if (player.Value.finishedTime > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Determine the winner by finish time (The finish time is using the server timestep)
         /// </summary>
         /// <param></param>
@@ -206,6 +222,61 @@ namespace Game
                 AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
             }
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
+        }
+
+        private void EndTheGameTimeout(uint winnerId)
+        {
+            uint winnerNetId = winnerId;
+            foreach (var player in players)
+            {
+                var isWinner = player.Key == winnerNetId;
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
+            }
+            networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
+        }
+
+        /// <summary>
+        /// Called when the game timer is up
+        /// </summary>
+        public void GameTimeOver()
+        {
+            // check if any player has reached finish line
+            if (HasAnyPlayerFinished())
+            {
+                Debug.Log("[GameManager] GameTimeOver is over, ONE player has finished!");
+                uint theWinner = 0;
+                foreach (var player in players)
+                {
+                    if (player.Value.finishedTime > 0)
+                    {
+                        theWinner = player.Key;
+                    }
+                }
+                Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
+                EndTheGameTimeout(theWinner);
+            }
+            else
+            {
+                // calculate distance from player start to player position
+                // add new var to player data, and fill it from player pawn to game manager
+                Debug.Log("[GameManager] GameTimeOver is over, NO player has finished!");
+
+                uint theWinner = 0;
+                float longestDistance = float.MinValue;
+                foreach (var player in players)
+                {
+                    var positionX = player.Value.Character.transform.position.x;
+                    Debug.Log("[GameManager] GameTimeOver player " + player.Key + " position X : " + positionX);
+
+                    if (positionX > longestDistance)
+                    {
+                        longestDistance = positionX;
+                        theWinner = player.Key;
+                    }
+                }
+                Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
+                EndTheGameTimeout(theWinner);
+            }
         }
 
         /// <summary>
