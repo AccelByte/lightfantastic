@@ -12,6 +12,7 @@ namespace AccelByte.Models {
         [DataMember] public string BaseUrl { get; set; }
         [DataMember] public string IamServerUrl { get; set; }
         [DataMember] public string DSMServerUrl { get; set; }
+        [DataMember] public string PlatformServerUrl { get; set; }
         [DataMember] public string StatisticServerUrl { get; set; }
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
@@ -42,6 +43,8 @@ namespace AccelByte.Models {
 
                 if (this.DSMServerUrl == null) this.DSMServerUrl = httpBaseUrl + "/dsmcontroller";
 
+                if (this.PlatformServerUrl == null) this.PlatformServerUrl = httpBaseUrl + "/platform";
+
                 if (this.StatisticServerUrl == null) this.StatisticServerUrl = httpBaseUrl + "/statistic";
             }
         }
@@ -62,6 +65,8 @@ namespace AccelByte.Models {
                 if (this.IamServerUrl == httpBaseUrl + "/iam") this.IamServerUrl = null;
 
                 if (this.DSMServerUrl == httpBaseUrl + "/dsmcontroller") this.DSMServerUrl = null;
+
+                if (this.PlatformServerUrl == httpBaseUrl + "/platform") this.PlatformServerUrl = null;
 
                 if (this.StatisticServerUrl == httpBaseUrl + "/statistic") this.StatisticServerUrl = null;
             }

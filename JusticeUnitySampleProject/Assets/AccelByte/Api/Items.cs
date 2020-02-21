@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -59,6 +59,8 @@ namespace AccelByte.Api
         /// callback will returns a ItemPagingSlicedResult that contains Items within it.
         /// </summary>
         /// <param name="criteria">Criteria to search items</param>
+        /// <param name="region">Region of items</param>
+        /// <param name="language">Display language</param>
         /// <param name="callback">Returns a Result that contains ItemPagingSlicedResult via callback when completed.</param>
         public void GetItemsByCriteria(ItemCriteria criteria,
             ResultCallback<ItemPagingSlicedResult> callback)

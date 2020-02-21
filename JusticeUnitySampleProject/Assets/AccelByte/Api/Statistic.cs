@@ -114,7 +114,9 @@ namespace AccelByte.Api
         /// <summary>
         /// Update stat items for a users
         /// </summary>
-        /// <param name="increments">Consist of one or more statCode and value to update</param>
+        /// <param name="increments">Consist of one or more statCode with its increament value.
+        ///     Positive increament value means it will increase the previous statCode value.
+        ///     Negative increament value means it will decrease the previous statCode value. </param>
         /// <param name="callback">Returns an array of BulkStatItemOperationResult via callback when completed</param>
         public void IncrementUserStatItems(StatItemIncrement[] increments,
             ResultCallback<StatItemOperationResult[]> callback)

@@ -180,7 +180,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 {
     public delegate void GetEntitlementCompletion(bool inMenum, Error error);
     public event GetEntitlementCompletion OnGetEntitlementCompleted;
-    private Entitlements abEntitlements;
+    private Entitlement abEntitlements;
     private Items abItems;
 
     private GameObject UIHandler;
@@ -293,11 +293,11 @@ public class AccelByteEntitlementLogic : MonoBehaviour
                     allItemInfo.data = result.Value.data;
                     if (inMenu)
                     {
-                        abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlement);
+                        abEntitlements.QueryUserEntitlements("", "", 0, 99, OnGetEntitlement);
                     }
                     else
                     {
-                        abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlementNoMenu);
+                        abEntitlements.QueryUserEntitlements("", "", 0, 99, OnGetEntitlementNoMenu);
                     }
                 }
                 else
@@ -310,11 +310,11 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         {
             if (inMenu)
             {
-                abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlement);
+                abEntitlements.QueryUserEntitlements("", "", 0, 99, OnGetEntitlement);
             }
             else
             {
-                abEntitlements.GetUserEntitlements(0, 99, OnGetEntitlementNoMenu);
+                abEntitlements.QueryUserEntitlements("", "", 0, 99, OnGetEntitlementNoMenu);
             }
         }
     }

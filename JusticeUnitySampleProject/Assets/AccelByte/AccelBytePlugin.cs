@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018-2020 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -30,7 +30,7 @@ namespace AccelByte.Api
         private static Lobby lobby;
         private static CloudStorage cloudStorage;
         private static GameProfiles gameProfiles;
-        private static Entitlements entitlements;
+        private static Entitlement entitlement;
         private static Statistic statistic;
         private static Qos qos;
         private static Agreement agreement;
@@ -266,18 +266,18 @@ namespace AccelByte.Api
             return AccelBytePlugin.gameProfiles;
         }
 
-        public static Entitlements GetEntitlements()
+        public static Entitlement GetEntitlements()
         {
-            if (AccelBytePlugin.entitlements == null)
+            if (AccelBytePlugin.entitlement == null)
             {
-                AccelBytePlugin.entitlements = new Entitlements(
+                AccelBytePlugin.entitlement = new Entitlement(
                     new EntitlementApi(AccelBytePlugin.config.PlatformServerUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
                     AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
-            return AccelBytePlugin.entitlements;
+            return AccelBytePlugin.entitlement;
         }
 
         public static Statistic GetStatistic()
