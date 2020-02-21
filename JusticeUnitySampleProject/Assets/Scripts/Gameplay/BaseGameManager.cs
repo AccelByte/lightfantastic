@@ -240,26 +240,28 @@ namespace Game
         /// </summary>
         public void GameTimeOver()
         {
-            // check if any player has reached finish line
-            if (HasAnyPlayerFinished())
+            if (networkObject.IsServer)
             {
-                Debug.Log("[GameManager] GameTimeOver is over, ONE player has finished!");
-                uint theWinner = 0;
-                foreach (var player in players)
+                // check if any player has reached finish line
+                if (HasAnyPlayerFinished())
                 {
-                    if (player.Value.finishedTime > 0)
+                    Debug.Log("[GameManager] GameTimeOver is over, ONE player has finished!");
+                    uint theWinner = 0;
+                    foreach (var player in players)
                     {
-                        theWinner = player.Key;
+                        if (player.Value.finishedTime > 0)
+                        {
+                            theWinner = player.Key;
+                        }
                     }
+                    Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
+                    EndTheGameTimeout(theWinner);
                 }
-                Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
-                EndTheGameTimeout(theWinner);
-            }
-            else
-            {
-                // calculate distance from player start to player position
-                // add new var to player data, and fill it from player pawn to game manager
-                Debug.Log("[GameManager] GameTimeOver is over, NO player has finished!");
+                else
+                {
+                    // calculate distance from player start to player position
+                    // add new var to player data, and fill it from player pawn to game manager
+                    Debug.Log("[GameManager] GameTimeOver is over, NO player has finished!");
 
                 uint theWinner = 0;
                 float longestDistance = float.MinValue;
