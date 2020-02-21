@@ -263,21 +263,22 @@ namespace Game
                     // add new var to player data, and fill it from player pawn to game manager
                     Debug.Log("[GameManager] GameTimeOver is over, NO player has finished!");
 
-                uint theWinner = 0;
-                float longestDistance = float.MinValue;
-                foreach (var player in players)
-                {
-                    var positionX = player.Value.Character.transform.position.x;
-                    Debug.Log("[GameManager] GameTimeOver player " + player.Key + " position X : " + positionX);
-
-                    if (positionX > longestDistance)
+                    uint theWinner = 0;
+                    float longestDistance = float.MinValue;
+                    foreach (var player in players)
                     {
-                        longestDistance = positionX;
-                        theWinner = player.Key;
+                        var positionX = player.Value.Character.transform.position.x;
+                        Debug.Log("[GameManager] GameTimeOver player " + player.Key + " position X : " + positionX);
+
+                        if (positionX > longestDistance)
+                        {
+                            longestDistance = positionX;
+                            theWinner = player.Key;
+                        }
                     }
+                    Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
+                    EndTheGameTimeout(theWinner);
                 }
-                Debug.Log("[GameManager] GameTimeOver The winner is : " + theWinner);
-                EndTheGameTimeout(theWinner);
             }
         }
 
