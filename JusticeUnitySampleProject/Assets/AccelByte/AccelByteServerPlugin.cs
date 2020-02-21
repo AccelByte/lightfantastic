@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018-2020 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -23,6 +23,7 @@ namespace AccelByte.Server
         private static TokenData accessToken;
         private static DedicatedServer server;
         private static DedicatedServerManager dedicatedServerManager;
+        private static ServerEcommerce ecommerce;
         private static ServerStatistic statistic;
 
         public static ServerConfig Config { get { return AccelByteServerPlugin.config; } }
@@ -89,6 +90,22 @@ namespace AccelByte.Server
             }
 
             return AccelByteServerPlugin.dedicatedServerManager;
+        }
+        
+        public static ServerEcommerce GetEcommerce()
+        {
+            if (AccelByteServerPlugin.ecommerce == null)
+            {
+                AccelByteServerPlugin.ecommerce = new ServerEcommerce(
+                    new ServerEcommerceApi(
+                        AccelByteServerPlugin.config.PlatformServerUrl,
+                        AccelByteServerPlugin.httpWorker),
+                    AccelByteServerPlugin.session,
+                    AccelByteServerPlugin.config.Namespace,
+                    AccelByteServerPlugin.coroutineRunner);
+            }
+
+            return AccelByteServerPlugin.ecommerce;
         }
         
         public static ServerStatistic GetStatistic()

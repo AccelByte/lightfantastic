@@ -444,7 +444,7 @@ namespace AccelByte.Api
         /// <param name="callback"> Return a Result that contains UserData when completed. </param>
         public void SearchUsers(string emailOrDisplayName, ResultCallback<PagedPublicUsersInfo> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
 
             if (!this.sessionAdapter.IsValid())
             {
@@ -484,7 +484,7 @@ namespace AccelByte.Api
         public void GetUserByOtherPlatformUserId(PlatformType platformType, string otherPlatformUserId,
             ResultCallback<UserData> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
 
             if (!this.sessionAdapter.IsValid())
             {

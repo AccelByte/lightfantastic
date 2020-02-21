@@ -27,7 +27,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private DsNotif abDSNotif;
     private bool connectToLocal;
     
-    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.testUnity;
+    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.testunity;
     private string gameMode = gameModeEnum.ToString();
     
     static bool isLocalPlayerInParty;
