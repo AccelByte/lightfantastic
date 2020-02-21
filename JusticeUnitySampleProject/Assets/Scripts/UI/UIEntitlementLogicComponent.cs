@@ -8,13 +8,13 @@ public class UIEntitlementLogicComponent : MonoBehaviour
 {
     #region Inventory Viewer Component 
     public GameObject itemInventoryPrefab;
-    public UiUtilities uiUtilities;
+    public UiUtilities uiUtilities; // Held by GameLogic, need to be refreshed on scene loaded
     public InventoryGridLayout gridLayoutHats;
     public InventoryGridLayout gridLayoutEffects;
     public AccelByteButtonScriptStyle buttonHat;
     public AccelByteButtonScriptStyle buttonEffect;
     public CanvasGroup promptPanel;
-    public AccelByteUserProfileLogic abUserProfileLogic;
+    public AccelByteUserProfileLogic abUserProfileLogic; // Held by GameLogic, need to be refreshed on scene loaded
     public SpriteResolver hatSpriteResolver;
     #endregion
 

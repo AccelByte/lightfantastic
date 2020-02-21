@@ -241,6 +241,8 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         }
         UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+        UIHandlerEntitlementComponent.uiUtilities = AccelByteManager.Instance.gameObject.GetComponent<UiUtilities>();
+        UIHandlerEntitlementComponent.abUserProfileLogic = AccelByteManager.Instance.gameObject.GetComponent<AccelByteUserProfileLogic>();
 
         AddEventListeners();
     }
@@ -429,7 +431,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
                 if (listItemInfo != null && listItemInfo.itemId == prefab.GetItemInfo().itemId)
                 {
                     prefab.Select();
-                    UpdateAvatar(prefab.GetItemInfo().name);
+                    UpdateAvatar(prefab.GetItemInfo(), true);
                 }
                 else
                 {
@@ -542,12 +544,12 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         if (equipping)
         {
             prefab.Select();
-            UpdateAvatar(prefab.GetItemInfo().name);
+            UpdateAvatar(prefab.GetItemInfo(), true);
         }
         else
         {
             prefab.Unselect();
-            UpdateAvatar("");
+            UpdateAvatar(prefab.GetItemInfo(), false);
         }
     }
 
@@ -598,8 +600,19 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.gridLayoutEffects.SetVisibility(show);
     }
 
-    private void UpdateAvatar(string itemName)
+    private void UpdateAvatar(ItemInfo itemInfo, bool equip)
     {
-        UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemName);
+        // Set Hat
+        if (itemInfo.tags.Contains(LightFantasticConfig.ItemTags.hat))
+        {
+            if (equip)
+            {
+                UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, itemInfo.name);
+            }
+            else
+            {
+                UIHandlerEntitlementComponent.hatSpriteResolver.SetCategoryAndLabel(LightFantasticConfig.ItemTags.hat, "");
+            }
+        }
     }
 }

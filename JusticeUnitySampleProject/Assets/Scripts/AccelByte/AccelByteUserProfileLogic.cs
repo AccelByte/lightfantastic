@@ -68,6 +68,7 @@ public class AccelByteUserProfileLogic : MonoBehaviour
 
     public void RefreshUIHandler()
     {
+        if (abUserProfiles == null) { abUserProfiles = AccelBytePlugin.GetUserProfiles(); }
         UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
         if (UIHandler == null)
         {

@@ -135,6 +135,7 @@ namespace Game
                 hatTitle_ = activeEquipments.hat != null ? activeEquipments.hat.title : "NULL";
                 effectTitle_ = activeEquipments.effect != null ? activeEquipments.effect.title : "NULL";
                 hatSetter.SetHatSprite(hatTitle_);
+                particleSetter.SetItem(effectTitle_);
                 networkObject.SendRpc(RPC_SET_ACTIVE_EQUIPMENT, Receivers.Others, new object[] { hatTitle_, effectTitle_ });
             }
             else
@@ -273,6 +274,7 @@ namespace Game
             hatTitle_ = newHatTitle;
             effectTitle_ = newEffectTitle;
             hatSetter.SetHatSprite(hatTitle_); 
+            particleSetter.SetItem(effectTitle_); 
         }
         #endregion //RPCs
 
