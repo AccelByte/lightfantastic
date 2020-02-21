@@ -68,6 +68,7 @@ public class AccelByteManager : MonoBehaviour
         multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
         entitlementLogic = gameObject.GetComponent<AccelByteEntitlementLogic>();
         MainThreadTaskRunner.CreateGameObject();
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
