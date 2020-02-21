@@ -9,5 +9,5 @@ public class PromptPanelComponent : MonoBehaviour
     [SerializeField] public AccelByteButtonScriptStyle closeButton;
     [SerializeField] public Text headerText;
     [SerializeField] public Text descriptionText;
-    
+    [SerializeField] public CanvasGroup promptPanelCanvasGroup;
 }

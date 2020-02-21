@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 6230588455565860147}
   - component: {fileID: 6230588455565860158}
   - component: {fileID: 6230588455565860159}
+  - component: {fileID: 4363004198323099224}
   m_Layer: 5
   m_Name: AB_PrimaryButton
   m_TagString: Untagged
@@ -196,7 +197,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6230588455565860144}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4363004198323099224}
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6230588455565860158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,12 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0315f5832782c143bf1f0b1ec80e571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TINT_NORMAL_IMAGE: {r: 0.5254902, g: 0, b: 1, a: 1}
-  TINT_HOVER_IMAGE: {r: 0.80784315, g: 0.47058824, b: 1, a: 1}
-  TINT_NORMAL_TEXT: {r: 0.5254902, g: 0, b: 1, a: 1}
-  TINT_HOVER_TEXT: {r: 0.8078432, g: 0.47058827, b: 1, a: 1}
-  TINT_DISABLED_IMAGE: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
-  TINT_DISABLED_TEXT: {r: 1, g: 1, b: 1, a: 1}
   button: {fileID: 6230588455565860147}
   buttonText: {fileID: 6230588454474061539}
   mouseHoverComponent: {fileID: 6230588455565860159}
@@ -231,3 +237,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648802f4892c69e4f9ccedc542bbf1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4363004198323099224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6230588455565860149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 1
+  AnimationDuration: 0.1
+  ScalePersentage: 0.95
+  TranslationOffset: 10
