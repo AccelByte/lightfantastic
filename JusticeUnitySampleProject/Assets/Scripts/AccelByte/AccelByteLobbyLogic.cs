@@ -26,8 +26,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
     private bool connectToLocal;
-    [SerializeField]
-    private string gameMode = "testUnity";
+    
+    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.testUnity;
+    private string gameMode = gameModeEnum.ToString();
+    
     static bool isLocalPlayerInParty;
     static bool isReadyToInviteToParty;
     private List<string> chatList;
@@ -54,10 +56,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform memberCommand;
     private Transform PlayerNameText;
     private Transform playerEmailText;
-    private Transform matchmakingBoardSearchLayout;
-    private Transform matchmakingBoardMatchFoundLayout;
-    private Transform loadingDots;
-    private Transform timeLeftText;
     #endregion
 
     private void Awake()
@@ -184,8 +182,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         AddEventListeners();
 
         SetupPopupPartyControl();
-        SetupMatchmakingBoard();
-		
+        
         if (isActionPhaseOver)
         {
             Debug.Log("AbLogic SetIsActionPhaseOver called");
@@ -260,14 +257,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         playerEmailText = UIHandlerLobbyComponent.popupPartyControl.Find("PlayerEmailText");
 
         // TODO: Add player Image & player stats
-    }
-
-    private void SetupMatchmakingBoard()
-    {
-        matchmakingBoardSearchLayout = UIHandlerLobbyComponent.matchmakingBoard.Find("SearchModeLayout");
-        matchmakingBoardMatchFoundLayout = UIHandlerLobbyComponent.matchmakingBoard.Find("MatchFoundLayout");
-        loadingDots = matchmakingBoardSearchLayout.Find("LoadingDots");
-        timeLeftText = matchmakingBoardSearchLayout.Find("TimeText");
     }
 
     public void ConnectToLobby()
@@ -429,18 +418,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
-        matchmakingBoardSearchLayout.gameObject.SetActive(false);
-        matchmakingBoardMatchFoundLayout.gameObject.SetActive(false);
+        UIHandlerLobbyComponent.matchmakingBoard.waitingTimerLayout.gameObject.SetActive(false);
         UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
+        if (!show)
+        {
+            UIHandlerLobbyComponent.matchmakingBoard.TerminateCountdown();
+        }
 
         if (gameFound)
         {
-            matchmakingBoardMatchFoundLayout.gameObject.SetActive(true);
             UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(true);
         }
         else
         {
-            matchmakingBoardSearchLayout.gameObject.SetActive(true);
+            UIHandlerLobbyComponent.matchmakingBoard.waitingTimerLayout.gameObject.SetActive(true);
         }
     }
 
@@ -480,6 +471,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         return isActionPhaseOver;
     }
+
+    /// <summary>
+    /// Show prompt panel to choose "RETRY" or "CANCEL" matchmaking
+    /// </summary>
+    private void OnFailedMatchmaking(string reason)
+    {
+        abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
+        UIHandlerLobbyComponent.matchmakingFailedPromptPanel.SetText("MATCHMAKING FAILED", reason);
+        UIHandlerLobbyComponent.matchmakingFailedPromptPanel.Show();
+    }
     #endregion
 
     #region AccelByte MatchMaking Callbacks
@@ -489,12 +490,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnFindMatch failed:" + result.Error.Message);
             Debug.Log("OnFindMatch Response Code::" + result.Error.Code);
+            OnFailedMatchmaking("Couldn't do a matchmaking");
         }
         else
         {
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
             WriteInDebugBox("Searching a match game mode " + gameMode);
             ShowMatchmakingBoard(true);
+            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch, 
+                delegate { OnFailedMatchmaking("Matchmaking timed out"); });
+            UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
         }
     }
 
@@ -567,14 +572,28 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnSuccessMatch failed:" + result.Error.Message);
             Debug.Log("OnSuccessMatch Response Code::" + result.Error.Code);
+            MainThreadTaskRunner.Instance.Run(delegate
+            {
+                OnFailedMatchmaking("An error occurs in the dedicated server manager");
+            });
         }
         else
         {
+            if (result.Value.isOK == "false")
+            {
+                MainThreadTaskRunner.Instance.Run(delegate
+                {
+                    OnFailedMatchmaking("Failed to create a dedicated server");
+                });
+                return;
+            }
+            
+            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.WaitingDSM, 
+                delegate { OnFailedMatchmaking("Spawning a dedicated server timed out"); });
             Debug.Log("OnSuccessMatch success match completed");
             // DSM on process creating DS
             if (result.Value.status == DSNotifStatus.CREATING.ToString())
             {
-                // Show countdown waiting for the DS creation
                 Debug.Log("Waiting for the game server!");
             }
             // DS is ready
@@ -1166,7 +1185,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnPartyCreated failed:" + result.Error.Message);
             Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
-
         }
         else
         {
