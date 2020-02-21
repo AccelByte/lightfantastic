@@ -54,6 +54,31 @@ public class MainHUD : BaseHUD
         pauseButton_.onClick.AddListener(ShowPauseScreen);
         gameMgr.onAllplayerConnected += OnAllPlayerConnected;
         gameMgr.onGameStart += OnGameStart;
+        gameMgr.onGameEnd += OnGameEnd;
+    }
+
+    protected void RemoveListeners()
+    {
+        pauseButton_.onClick.RemoveListener(ShowPauseScreen);
+
+        if (gameMgr != null)
+        {
+            gameMgr.onAllplayerConnected -= OnAllPlayerConnected;
+            gameMgr.onGameStart -= OnGameStart;
+            gameMgr.onGameEnd -= OnGameEnd;
+        }
+
+        if (gameTimer_ != null)
+        {
+            gameTimer_.timerUpdated -= OnTimerUpdated;
+            gameTimer_.onTimerExpired -= OnGameTimerExpired;
+        }
+
+        if (countDownTimer_ != null)
+        {
+            countDownTimer_.timerUpdated -= OnTimerUpdated;
+            countDownTimer_.onTimerExpired += OnCountDownStartExpired;
+        }
     }
 
     public void AttachTimer(GameTimer gameTimer)
@@ -133,5 +158,11 @@ public class MainHUD : BaseHUD
     private void OnGameStart()
     {
         countDownText_.gameObject.SetActive(false);
+    }
+
+    private void OnGameEnd()
+    {
+        // remove all listeners
+        RemoveListeners();
     }
 }

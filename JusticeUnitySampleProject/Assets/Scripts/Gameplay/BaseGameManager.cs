@@ -18,6 +18,8 @@ namespace Game
         public event OnAllPlayerConnectedEvent onAllplayerConnected;
         public delegate void OnGameStartEvent();
         public event OnGameStartEvent onGameStart;
+        public delegate void OnGameEndEvent();
+        public event OnGameEndEvent onGameEnd;
 
         public class PlayerData
         {
@@ -221,6 +223,7 @@ namespace Game
                 var isWinner = player.Key == winnerNetId;
                 AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
             }
+            onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
         }
 
