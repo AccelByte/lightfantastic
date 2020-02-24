@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ namespace Game
     public class BaseHoveringText : MonoBehaviour
     {
         [SerializeField]
-        [Tooltip("The prefab of hovertext.")]
-        private GameObject hoveringText = null;
+        [Tooltip("The hovering text in scene.")]
+        private TextMeshPro hoveringText = null;
         [SerializeField]
         [Tooltip("The text to display.")]
         private string textInput = "";
@@ -21,7 +22,6 @@ namespace Game
         private Camera alternativeCamera = null;
 
         private Camera currentCamera;
-        private GameObject currentText;
 
         // Start is called before the first frame update
         void Start()
@@ -34,29 +34,16 @@ namespace Game
             {
                 currentCamera = alternativeCamera;
             }
-
-            currentText = Instantiate(hoveringText, transform);
-            currentText.transform.SetParent(GameObject.Find("HoverTextPanel").transform, false);
-            currentText.GetComponent<Text>().text = textInput;
         }
 
-        void OnDestroy()
-        {
-            if (currentText != null)
-            {
-                Destroy(currentText);
-            }
-        }
+        void OnDestroy() { }
 
         // Update is called once per frame
-        void Update()
-        {
-            currentText.transform.position = currentCamera.WorldToScreenPoint(transform.position + offsetPosition);
-        }
+        void Update(){}
 
         public void ChangeTextLabel(string text)
         {
-            currentText.GetComponent<Text>().text = text;
+            hoveringText.text = text;
         }
     }
 }
