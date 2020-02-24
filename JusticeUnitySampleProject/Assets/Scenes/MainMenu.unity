@@ -648,9 +648,7 @@ MonoBehaviour:
   localLeavePartyButton: {fileID: 1972041862}
   memberKickPartyButton: {fileID: 1304305521}
   cancelMatchmakingButton: {fileID: 810787898}
-  mainMenuMultiplayerButton: {fileID: 755630831}
-  mainMenuMultiplayerButtonText: {fileID: 1168640500}
-  mainMenuMutliplayerEventTrigger: {fileID: 755630829}
+  mainMenuMultiplayerButton: {fileID: 755630827}
   localMatch_IP_inputFields: {fileID: 222051158}
   localMatch_Port_inputFields: {fileID: 970799501}
 --- !u!114 &545861806
@@ -861,30 +859,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3345507616181488150}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &755630829 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6262890460365765288, guid: c123910603c41ab43a71bf0446cb62da,
+--- !u!1 &755630827 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2732412261523123388, guid: c123910603c41ab43a71bf0446cb62da,
     type: 3}
   m_PrefabInstance: {fileID: 6262890460365765249}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &755630831 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2732412261523123390, guid: c123910603c41ab43a71bf0446cb62da,
-    type: 3}
-  m_PrefabInstance: {fileID: 6262890460365765249}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &779391988 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4196211107636989515, guid: ca70ed89b82fba141a9330ba67b52264,
