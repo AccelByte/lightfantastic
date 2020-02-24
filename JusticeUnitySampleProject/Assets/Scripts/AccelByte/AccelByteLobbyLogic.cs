@@ -9,6 +9,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
 using System;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class AccelByteLobbyLogic : MonoBehaviour
@@ -418,6 +419,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
+        // If there's matchmaking board shown, disable the [Multiplayer] button 
+        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<Button>().interactable = !show;
+        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<EventTrigger>().enabled = !show;
+        
         UIHandlerLobbyComponent.matchmakingBoard.waitingTimerLayout.gameObject.SetActive(false);
         UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
         if (!show)
