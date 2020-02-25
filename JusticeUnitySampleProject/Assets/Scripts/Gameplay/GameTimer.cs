@@ -16,8 +16,7 @@ public class GameTimer : GameTimerBehavior
     public delegate void TimerExpired();
     public event TimerExpired onTimerExpired;
 
-    [SerializeField]
-    private int length_;
+    private int length_ = (int) LightFantasticConfig.RACE_LENGTH_SECOND;
     [SerializeField]
     private bool isCountdown_;
     public bool IsCountdown { get { return isCountdown_; } }

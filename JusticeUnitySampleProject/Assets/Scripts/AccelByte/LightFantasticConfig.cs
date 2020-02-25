@@ -52,4 +52,8 @@ public static class LightFantasticConfig
         return Platform.LINUX;
 #endif
     }
+
+    /// GAMEPLAY STUFF
+    public static readonly uint COUNT_TO_START_RACE_SECOND = 4; // [ "GO", "1", "2", "3"]
+    public static readonly uint RACE_LENGTH_SECOND = 30;
 }

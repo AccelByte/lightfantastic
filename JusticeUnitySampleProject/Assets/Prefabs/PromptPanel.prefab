@@ -497,7 +497,7 @@ PrefabInstance:
     - target: {fileID: 6230588455565860149, guid: d8054ade13012dc4db09bc964ee01a1a,
         type: 3}
       propertyPath: m_Name
-      value: PromptPanel_RETRY_Button
+      value: PromptPanel_Primary_Button
       objectReference: {fileID: 0}
     - target: {fileID: 6230588455565860158, guid: d8054ade13012dc4db09bc964ee01a1a,
         type: 3}
@@ -649,7 +649,7 @@ PrefabInstance:
     - target: {fileID: 8919114029920427106, guid: 85385663b5492834fa979be9f9997c75,
         type: 3}
       propertyPath: m_Name
-      value: PromptPanel_CANCEL_Button
+      value: PromptPanel_Secondary_Button
       objectReference: {fileID: 0}
     - target: {fileID: 9201604018932453393, guid: 85385663b5492834fa979be9f9997c75,
         type: 3}
