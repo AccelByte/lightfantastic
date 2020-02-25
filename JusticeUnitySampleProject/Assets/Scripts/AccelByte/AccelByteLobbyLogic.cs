@@ -59,6 +59,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private Transform playerEmailText;
     #endregion
 
+    public delegate void LobbyMatchOverEvent();
+    public event LobbyMatchOverEvent onMatchOver;
+
     private void Awake()
     {
         accelByteManager = gameObject.GetComponent<AccelByteManager>();
@@ -192,8 +195,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIElementHandler.FadeLogin();
             UIElementHandler.FadePersistentFriends();
             UIElementHandler.FadeMenu();
-            //AccelByteManager.Instance.UserProfileLogic.Init();
+            
             SetupLobbyUI();
+
+            //AccelByteManager.Instance.UserProfileLogic.UpdatePlayerProfileUI();
+            //AccelByteManager.Instance.UserStaticticLogic.UpdatePlayerStatisticUI();
 
             isActionPhaseOver = false;
         }
@@ -470,6 +476,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     public void SetIsActionPhaseOver(bool isOver)
     {
         isActionPhaseOver = isOver;
+        onMatchOver?.Invoke();
     }
 
     public bool GetIsActionPhaseOver()

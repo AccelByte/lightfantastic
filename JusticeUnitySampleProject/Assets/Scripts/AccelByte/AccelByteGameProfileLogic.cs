@@ -6,6 +6,10 @@ using AccelByte.Api;
 using AccelByte.Models;
 using AccelByte.Core;
 
+/// <summary>
+///  GAME PROFILE IS DEPRECATED
+///  TODO : Clean up unused objects
+/// </summary>
 public class AccelByteGameProfileLogic : MonoBehaviour
 {
     private GameProfiles abGameProfiles;
