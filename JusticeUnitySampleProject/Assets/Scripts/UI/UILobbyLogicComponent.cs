@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UILobbyLogicComponent : MonoBehaviour
@@ -61,6 +62,9 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Button memberKickPartyButton;
 
     public Button cancelMatchmakingButton;
+    
+    [Tooltip("MainMenu's MUTLIPAYER Button")]
+    public GameObject mainMenuMultiplayerButton;
     
     [Header("Input Fields")]
     public InputField localMatch_IP_inputFields;

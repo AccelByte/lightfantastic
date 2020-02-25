@@ -9,6 +9,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
 using System;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class AccelByteLobbyLogic : MonoBehaviour
@@ -27,7 +28,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private DsNotif abDSNotif;
     private bool connectToLocal;
     
-    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.testunity;
+    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
     private string gameMode = gameModeEnum.ToString();
     
     static bool isLocalPlayerInParty;
@@ -418,6 +419,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
+        // If there's matchmaking board shown, disable the [Multiplayer] button 
+        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<Button>().interactable = !show;
+        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<EventTrigger>().enabled = !show;
+        
         UIHandlerLobbyComponent.matchmakingBoard.waitingTimerLayout.gameObject.SetActive(false);
         UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);
         if (!show)
@@ -579,7 +584,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            if (result.Value.isOK == "false")
+            if (result.Value.isOK == "false" && !connectToLocal)
             {
                 MainThreadTaskRunner.Instance.Run(delegate
                 {

@@ -17,12 +17,12 @@ public static class LightFantasticConfig
     
     public enum GAME_MODES
     {
-        testunity
+        unitytest
     }
 
     public readonly static Dictionary<GAME_MODES, string> GAME_MODES_VERBOSE = new Dictionary<GAME_MODES,string>()
     {
-        {GAME_MODES.testunity, "1 VS 1"}
+        {GAME_MODES.unitytest, "1 VS 1"}
     };
 
     public const int MATCHMAKING_FINDMATCH_TIMEOUT = 30;
