@@ -29,6 +29,7 @@ namespace Game
         private CharacterSpeedSetter speedSetter;
         private CharacterHatSetter hatSetter;
         private CharacterParticleSetter particleSetter;
+        private CharacterPlatformSpriteSetter platformSetter;
         private ParallaxSetter parallaxSetter;
         [SerializeField]
         private float speedDecayConst = 0.1f;
@@ -62,6 +63,7 @@ namespace Game
             speedSetter = GetComponent<CharacterSpeedSetter>();
             hatSetter = GetComponent<CharacterHatSetter>();
             particleSetter = GetComponent<CharacterParticleSetter>();
+            platformSetter = GetComponent<CharacterPlatformSpriteSetter>();
             parallaxSetter = gameMgr.parallaxSetter;
         }
 
@@ -110,6 +112,16 @@ namespace Game
             AccelByte.Models.UserData ud = abAuth.GetUserData();
             userId_ = ud.userId;
             networkObject.SendRpc(RPC_SET_USER_ID, Receivers.Others, userId_);
+            
+            // Set mine and other player's displayName and Platform
+            if (!networkObject.IsServer)
+            {
+                networkObject.SendRpc(RPC_SET_DISPLAY_NAME_AND_PLATFORM, Receivers.All, new object[]
+                {
+                    ud.displayName, (uint) LightFantasticConfig.GetPlatform()
+                });
+            }
+            
             AccelByteEntitlementLogic abEntitlement = AccelByteManager.Instance.EntitlementLogic;
             abEntitlement.OnGetEntitlementCompleted += OnGetSelfEntitlementCompleted;
             abEntitlement.GetEntitlement(false);
@@ -244,7 +256,6 @@ namespace Game
                 networkObject.SetInitialPos(initialPos);
                 MainThreadManager.Run(() =>
                 {
-                    hoveringText.ChangeTextLabel("Player " + newPlayerNum);
                     gameMgr.RegisterCharacter(newOwnerNetId, this);
                     networkObject.Banable = false;
                 });
@@ -275,6 +286,16 @@ namespace Game
             effectTitle_ = newEffectTitle;
             hatSetter.SetHatSprite(hatTitle_); 
             particleSetter.SetItem(effectTitle_); 
+        }
+
+        /// <summary>
+        /// Applied for both owner and other
+        /// </summary>
+        /// <param name="args"></param>
+        public override void RPCSetDisplayNameAndPlatform(RpcArgs args)
+        {
+            hoveringText.ChangeTextLabel(args.GetAt<string>(0));
+            platformSetter.SetSprite((LightFantasticConfig.Platform) args.GetAt<uint>(1));
         }
         #endregion //RPCs
 
@@ -307,10 +328,6 @@ namespace Game
 
         private void OnPlayerNumChanged(uint newPlayerNum, ulong timestep)
         {
-            MainThreadManager.Run(() =>
-            {
-                hoveringText.ChangeTextLabel("Player " + newPlayerNum);
-            });
         }
 
         private void OnOwnerNetIdChanged(uint newOwnerNetId, ulong timestep)
