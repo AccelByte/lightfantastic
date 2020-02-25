@@ -36,7 +36,6 @@ namespace AccelByte.Api
         public void GetUserProfile(ResultCallback<UserProfile> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -44,8 +43,7 @@ namespace AccelByte.Api
                 return;
             }
 
-            this.coroutineRunner.Run(
-                this.api.GetUserProfile(this.@namespace, this.session.AuthorizationToken, callback));
+            this.coroutineRunner.Run(this.api.GetUserProfile(this.@namespace, this.session.AuthorizationToken, callback));
         }
 
         /// <summary>
@@ -56,7 +54,6 @@ namespace AccelByte.Api
         public void CreateUserProfile(CreateUserProfileRequest createRequest, ResultCallback<UserProfile> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -64,8 +61,11 @@ namespace AccelByte.Api
                 return;
             }
 
-            this.coroutineRunner.Run(
-                this.api.CreateUserProfile(this.@namespace, this.session.AuthorizationToken, createRequest, callback));
+            this.coroutineRunner.Run(this.api.CreateUserProfile(
+                        this.@namespace,
+                        this.session.AuthorizationToken,
+                        createRequest,
+                        callback));
         }
 
         /// <summary>

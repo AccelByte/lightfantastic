@@ -1,9 +1,9 @@
 {
   "PublisherNamespace": "accelbyte",
-  "Namespace": "accelbytetestingunity",
-  "BaseUrl": "https://dev.versusevil.accelbyte.io",
+  "Namespace": "lightfantastic",
+  "BaseUrl": "https://demo.accelbyte.io",
   "DSMServerUrl": "http://justice-dsm-service/dsm",
-  "IamServerUrl": "https://dev.versusevil.accelbyte.io/iam",
+  "IamServerUrl": "https://demo.accelbyte.io/iam",
   "ClientId": "check_lastpass",
   "ClientSecret": "check_lastpass",
   "RedirectUri": "http://127.0.0.1"

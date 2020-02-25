@@ -266,7 +266,7 @@ namespace AccelByte.Api
 
         public IEnumerator SearchUsers(string emailOrDisplayName, ResultCallback<PagedPublicUsersInfo> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(emailOrDisplayName, nameof(emailOrDisplayName) + " cannot be null.");
 
             var request = HttpRequestBuilder
@@ -288,7 +288,7 @@ namespace AccelByte.Api
 
         public IEnumerator GetUserByUserId(string userId, ResultCallback<UserData> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(userId, "Can't get user data! userId parameter is null!");
 
             var request = HttpRequestBuilder
@@ -310,7 +310,7 @@ namespace AccelByte.Api
         public IEnumerator GetUserByOtherPlatformUserId(PlatformType platformType, string otherPlatformUserId,
             ResultCallback<UserData> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(otherPlatformUserId, nameof(otherPlatformUserId) + " cannot be null.");
 
             var request = HttpRequestBuilder

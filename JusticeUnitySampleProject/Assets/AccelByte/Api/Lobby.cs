@@ -19,6 +19,13 @@ namespace AccelByte.Api
     /// </summary>
     public class Lobby
     {
+        public event Action Connected;
+
+        /// <summary>
+        /// Raised when lobby got message from server that it will disconnect
+        /// </summary>
+        public event ResultCallback<DisconnectNotif> Disconnecting;
+
         /// <summary>
         /// Raised when lobby is disconnected
         /// </summary>
@@ -91,26 +98,27 @@ namespace AccelByte.Api
 
         public event ResultCallback<RematchmakingNotification> RematchmakingNotif;
 
-        private const int PingDelay = 30000;
-
-        private const int BackoffDelay = 1000;
-        private const int MaxDelay = 30000;
-        private const int TotalTimeout = 1000;
+        private readonly int pingDelay;
+        private readonly int backoffDelay;
+        private readonly int maxDelay;
+        private readonly int totalTimeout;
 
         private readonly Dictionary<long, Action<ErrorCode, string>> responseCallbacks =
             new Dictionary<long, Action<ErrorCode, string>>();
-
+        
         private readonly string websocketUrl;
         private readonly ISession session;
         private readonly CoroutineRunner coroutineRunner;
         private readonly object syncToken = new object();
         private readonly IWebSocket webSocket;
+        private bool reconnectsOnClose;
         private long id;
         private Coroutine maintainConnectionCoroutine;
 
         public event EventHandler OnRetryAttemptFailed;
 
-        internal Lobby(string websocketUrl, IWebSocket webSocket, ISession session, CoroutineRunner coroutineRunner)
+        internal Lobby(string websocketUrl, IWebSocket webSocket, ISession session, CoroutineRunner coroutineRunner,
+            int pingDelay = 4000, int backoffDelay = 1000, int maxDelay = 30000, int totalTimeout = 60000)
         {
             Assert.IsNotNull(webSocket);
             Assert.IsNotNull(coroutineRunner);
@@ -119,16 +127,15 @@ namespace AccelByte.Api
             this.webSocket = webSocket;
             this.session = session;
             this.coroutineRunner = coroutineRunner;
-        }
+            this.pingDelay = pingDelay;
+            this.backoffDelay = backoffDelay;
+            this.maxDelay = maxDelay;
+            this.totalTimeout = totalTimeout;
+            this.reconnectsOnClose = false;
 
-        private void HandleOnClose(ushort closecode)
-        {
-            Action handler = this.Disconnected;
-
-            if (handler != null)
-            {
-                handler();
-            }
+            this.webSocket.OnOpen += HandleOnOpen;
+            this.webSocket.OnMessage += HandleOnMessage;
+            this.webSocket.OnClose += HandleOnClose;
         }
 
         /// <summary>
@@ -148,11 +155,25 @@ namespace AccelByte.Api
                 throw new Exception("Cannot connect to websocket because user is not logged in.");
             }
 
-            this.webSocket.OnMessage += HandleOnMessage;
-            this.webSocket.OnClose += HandleOnClose;
             this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
+            StartMaintainConnection();
+        }
+
+        private void StartMaintainConnection()
+        {
+            this.reconnectsOnClose = true;
             this.maintainConnectionCoroutine = this.coroutineRunner.Run(
-                MaintainConnection(Lobby.BackoffDelay, Lobby.MaxDelay, Lobby.TotalTimeout));
+                MaintainConnection(this.backoffDelay, this.maxDelay, this.totalTimeout));
+        }
+
+        private void StopMaintainConnection()
+        {
+            this.reconnectsOnClose = false;
+
+            if (this.maintainConnectionCoroutine == null) return;
+
+            this.coroutineRunner.Stop(this.maintainConnectionCoroutine);
+            this.maintainConnectionCoroutine = null;
         }
 
         /// <summary>
@@ -171,7 +192,7 @@ namespace AccelByte.Api
                 case WsState.Open:
                     this.webSocket.Ping();
 
-                    yield return new WaitForSeconds(Lobby.PingDelay / 1000f);
+                    yield return new WaitForSeconds(this.pingDelay / 1000f);
 
                     break;
                 case WsState.Connecting:
@@ -193,7 +214,8 @@ namespace AccelByte.Api
                     int nextDelay = backoffDelay;
                     var firstClosedTime = DateTime.Now;
 
-                    while (this.webSocket.ReadyState == WsState.Closed &&
+                    while (this.reconnectsOnClose &&
+                        this.webSocket.ReadyState == WsState.Closed &&
                         DateTime.Now - firstClosedTime < TimeSpan.FromSeconds(totalTimeout))
                     {
                         this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
@@ -227,12 +249,12 @@ namespace AccelByte.Api
         public void Disconnect()
         {
             Report.GetFunctionLog(this.GetType().Name);
-            this.webSocket.OnMessage -= HandleOnMessage;
-            this.webSocket.OnClose -= HandleOnClose;
+            StopMaintainConnection();
 
-            this.coroutineRunner.Stop(this.maintainConnectionCoroutine);
-
-            this.webSocket?.Close();
+            if (this.webSocket.ReadyState == WsState.Open || this.webSocket.ReadyState == WsState.Connecting)
+            {
+                this.webSocket.Close();
+            }
         }
 
         // Invoker for OnRetryAttemptFailed
@@ -525,7 +547,7 @@ namespace AccelByte.Api
         public void StartMatchmaking(string gameMode, string serverName, string clientVersion,
             Dictionary<string, int> latencies, ResultCallback<MatchmakingCode> callback)
         {
-            Report.GetFunctionLog(GetType().Name);
+            Report.GetFunctionLog(this.GetType().Name);
             string strLatencies = "{" +
                 string.Join(",", latencies.Select(pair => $@"{{""{pair.Key}"":{pair.Value}}}").ToArray()) +
                 "}";
@@ -610,7 +632,7 @@ namespace AccelByte.Api
                         : Result<U>.CreateOk(responsePayload);
                 }
 
-                this.coroutineRunner.Run(() => callback(result));
+                this.coroutineRunner.Run(() => callback.Try(result));
             };
 
             this.webSocket.Send(writer.ToString());
@@ -628,7 +650,7 @@ namespace AccelByte.Api
             {
                 Result result = errorCode != ErrorCode.None ? Result.CreateError(errorCode) : Result.CreateOk();
 
-                this.coroutineRunner.Run(() => callback(result));
+                this.coroutineRunner.Run(() => callback.Try(result));
             };
 
             this.webSocket.Send(writer.ToString());
@@ -658,7 +680,7 @@ namespace AccelByte.Api
                         : Result<U>.CreateOk(responsePayload);
                 }
 
-                this.coroutineRunner.Run(() => callback(result));
+                this.coroutineRunner.Run(() => callback.Try(result));
             };
 
             this.webSocket.Send(writer.ToString());
@@ -674,10 +696,42 @@ namespace AccelByte.Api
             {
                 Result result = errorCode != ErrorCode.None ? Result.CreateError(errorCode) : Result.CreateOk();
 
-                this.coroutineRunner.Run(() => callback(result));
+                this.coroutineRunner.Run(() => callback.Try(result));
             };
 
             this.webSocket.Send(writer.ToString());
+        }
+
+        private void HandleOnOpen()
+        {
+            this.coroutineRunner.Run(
+                () =>
+                {
+                    Action handler = this.Connected;
+
+                    if (handler != null)
+                    {
+                        handler();
+                    }
+                });
+        }
+
+        private void HandleOnClose(ushort closecode)
+        {
+            this.coroutineRunner.Run(
+                () =>
+                {
+                    StopMaintainConnection();
+
+                    Action handler = this.Disconnected;
+
+                    if (handler != null)
+                    {
+                        handler();
+                    }
+
+                    ;
+                });
         }
 
         private void HandleOnMessage(string message)
@@ -746,6 +800,10 @@ namespace AccelByte.Api
 
                 break;
             case MessageType.connectNotif: break;
+            case MessageType.disconnectNotif:
+                Lobby.HandleNotification(message, this.Disconnecting);
+
+                break;
             default:
                 Action<ErrorCode, string> handler;
 
