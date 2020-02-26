@@ -18,11 +18,19 @@ public class AccelByteUserProfileLogic : MonoBehaviour
     private UIUserProfileLogicComponent UIHandlerUserProfileComponent;
     private UIElementHandler UIElementHandler;
 
+    private bool isActionPhaseOver = false;
+
     void Start()
     {
         abUserProfiles = AccelBytePlugin.GetUserProfiles();
+        AccelByteManager.Instance.LobbyLogic.onMatchOver += LobbyLogic_onMatchOver;
     }
-    
+
+    private void LobbyLogic_onMatchOver()
+    {
+        isActionPhaseOver = true;
+    }
+
     public void Init()
     {
         var defaultUserProfile = new CreateUserProfileRequest{language = LightFantasticConfig.DEFAULT_LANGUAGE};
@@ -35,6 +43,11 @@ public class AccelByteUserProfileLogic : MonoBehaviour
     public void GetMine(ResultCallback<UserProfile> onGetProfile)
     {
         abUserProfiles.GetUserProfile(onGetProfile);
+    }
+
+    public void UpdatePlayerProfileUI()
+    {
+        UIHandlerUserProfileComponent.PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
     }
 
     #region UI Listeners
@@ -79,6 +92,12 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
         AddEventListeners();
+
+        if (isActionPhaseOver)
+        {
+            UpdatePlayerProfileUI();
+            isActionPhaseOver = false;
+        }
     }
 
     void AddEventListeners()

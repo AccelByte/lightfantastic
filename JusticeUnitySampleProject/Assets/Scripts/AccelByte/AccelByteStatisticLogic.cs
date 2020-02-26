@@ -16,8 +16,19 @@ public class AccelByteStatisticLogic : MonoBehaviour
     private UIStatisticsLogicComponent UIHandlerStatisticsComponent;
     private UIElementHandler UIElementHandler;
 
+    private bool isActionPhaseOver = false;
 
     ICollection<string> playerStatistic;
+
+    private void Start()
+    {
+        AccelByteManager.Instance.LobbyLogic.onMatchOver += LobbyLogic_onMatchOver;
+    }
+
+    private void LobbyLogic_onMatchOver()
+    {
+        isActionPhaseOver = true;
+    }
 
     public void GetPlayerStatistic()
     {
@@ -33,6 +44,12 @@ public class AccelByteStatisticLogic : MonoBehaviour
         statistic = AccelBytePlugin.GetStatistic();
         statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
     }
+
+    public void UpdatePlayerStatisticUI()
+    {
+        statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
+    }
+
     #region UI Listeners
     void OnEnable()
     {
@@ -74,6 +91,12 @@ public class AccelByteStatisticLogic : MonoBehaviour
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
         AddEventListeners();
+
+        if (isActionPhaseOver)
+        {
+            UpdatePlayerStatisticUI();
+            isActionPhaseOver = false;
+        }
     }
 
     void AddEventListeners()
