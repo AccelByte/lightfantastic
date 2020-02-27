@@ -89,6 +89,7 @@ public class AccelByteStatisticLogic : MonoBehaviour
         }
         UIHandlerStatisticsComponent = UIHandler.GetComponent<UIStatisticsLogicComponent>();
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
+        statistic = AccelBytePlugin.GetStatistic();
 
         AddEventListeners();
 

@@ -8,7 +8,8 @@ public enum MatchmakingWaitingPhase
 {
     None = 0,
     FindMatch = 1, //Matchmaking Service
-    WaitingDSM = 2 //DSM Service
+    ConfirmingMatch = 2, //Matchmaking Service
+    WaitingDSM = 3 //DSM Service
 }
 
 [RequireComponent(typeof(Transform))]
@@ -99,6 +100,7 @@ public class MatchmakingBoardScript : MonoBehaviour
     {
         {MatchmakingWaitingPhase.None, "..."},
         {MatchmakingWaitingPhase.FindMatch, "Finding Match..."},
+        {MatchmakingWaitingPhase.ConfirmingMatch, "Confirming Match Ready..."},
         {MatchmakingWaitingPhase.WaitingDSM, "Entering Level..."}
     };
     
@@ -106,6 +108,7 @@ public class MatchmakingBoardScript : MonoBehaviour
     {
         {MatchmakingWaitingPhase.None, 0},
         {MatchmakingWaitingPhase.FindMatch, LightFantasticConfig.MATCHMAKING_FINDMATCH_TIMEOUT},
+        {MatchmakingWaitingPhase.ConfirmingMatch, LightFantasticConfig.MATCHMAKING_CONFIRMING_READY_TIMEOUT},
         {MatchmakingWaitingPhase.WaitingDSM, LightFantasticConfig.WAITING_DEDICATED_SERVER_TIMEOUT}
     };
 }
