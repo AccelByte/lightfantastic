@@ -316,6 +316,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void SetupGeneralCallbacks()
     {
         abLobby.OnNotification += result => OnNotificationReceived(result);
+        abLobby.Disconnected += OnDisconnectNotificationReceived;
     }
 
     private void SetupFriendCallbacks()
@@ -345,6 +346,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void UnsubscribeAllCallbacks()
     {
+        abLobby.Disconnected -= OnDisconnectNotificationReceived;
         abLobby.InvitedToParty -= OnInvitedToParty;
         abLobby.JoinedParty -= OnMemberJoinedParty;
         abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
@@ -361,6 +363,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
         UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
         UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+    }
+
+    private void OnDisconnectNotificationReceived()
+    {
+        UIHandlerLobbyComponent.logoutButton.onClick.Invoke();
     }
     #endregion
 
