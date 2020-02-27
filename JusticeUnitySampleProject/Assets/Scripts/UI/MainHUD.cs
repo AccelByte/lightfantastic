@@ -12,7 +12,7 @@ public class MainHUD : BaseHUD
     [SerializeField]
     public Button rightRunButton_;
     [SerializeField]
-    private TextMeshProUGUI timerText_ = null;
+    private MainHUDTimerPrefab raceTimerPrefab_ = null;
     // countdown
     [SerializeField]
     private TextMeshProUGUI countDownText_ = null;
@@ -98,13 +98,26 @@ public class MainHUD : BaseHUD
 
     private void OnTimerUpdated(int newValue)
     {
-        MainThreadTaskRunner.Instance.Run(() => { timerText_.text = "Time Remaining: " + newValue.ToString(); });
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            raceTimerPrefab_.SetTime(newValue);
+        });
     }
 
     // countdown
     private void OnCountDownUpdated(int newValue)
     {
-        MainThreadTaskRunner.Instance.Run(() => { countDownText_.text =  newValue.ToString(); });
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            if (newValue < 1)
+            {
+                countDownText_.text =  "GO";
+            }
+            else
+            {
+                countDownText_.text =  newValue.ToString();
+            }
+        });
     }
 
     private void OnGameTimerExpired()

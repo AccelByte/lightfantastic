@@ -13,8 +13,7 @@ public class CountDown : GameStartCountDownBehavior
     public delegate void TimerExpired();
     public event TimerExpired onTimerExpired;
 
-    [SerializeField]
-    private int length_;
+    private int length_ = (int) LightFantasticConfig.COUNT_TO_START_RACE_SECOND;
     [SerializeField]
     private bool isCountdown_;
     public bool IsCountdown { get { return isCountdown_; } }
@@ -68,10 +67,7 @@ public class CountDown : GameStartCountDownBehavior
     {
         if (!expired_)
         {
-            currentSec_ = isCountdown_ ? currentSec_ - 1 : currentSec_ + 1;
-            networkObject.second = currentSec_;
-            timerUpdated?.Invoke(currentSec_);
-            if (isCountdown_ && currentSec_ == 0)
+            if (isCountdown_ && currentSec_ < 0)
             {
                 expired_ = true;
                 onTimerExpired?.Invoke();
@@ -81,6 +77,9 @@ public class CountDown : GameStartCountDownBehavior
                 expired_ = true;
                 onTimerExpired?.Invoke();
             }
+            currentSec_ = isCountdown_ ? currentSec_ - 1 : currentSec_ + 1;
+            networkObject.second = currentSec_;
+            timerUpdated?.Invoke(currentSec_);
         }
     }
 
