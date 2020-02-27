@@ -69,4 +69,9 @@ public class UILobbyLogicComponent : MonoBehaviour
     [Header("Input Fields")]
     public InputField localMatch_IP_inputFields;
     public InputField localMatch_Port_inputFields;
+
+    [Header("Player Icon")]
+    public Transform PlayerDisplayNameText;
+    public Text JusticeCoinValueText;
+    public Text PhotonsValueText;
 }

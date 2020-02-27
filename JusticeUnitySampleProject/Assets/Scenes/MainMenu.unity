@@ -433,7 +433,7 @@ PrefabInstance:
     - target: {fileID: 1153871529108728049, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000015258789
+      value: 0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 2534319129041332869, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
         type: 3}
@@ -568,7 +568,7 @@ PrefabInstance:
     - target: {fileID: 4161664356315573742, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.12997437
+      value: -0.12988281
       objectReference: {fileID: 0}
     - target: {fileID: 7073643915515748204, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
         type: 3}
@@ -921,6 +921,9 @@ MonoBehaviour:
   mainMenuMultiplayerButton: {fileID: 755630827}
   localMatch_IP_inputFields: {fileID: 222051158}
   localMatch_Port_inputFields: {fileID: 970799501}
+  PlayerDisplayNameText: {fileID: 1873490090}
+  JusticeCoinValueText: {fileID: 1173280736}
+  PhotonsValueText: {fileID: 1401950258}
 --- !u!114 &545861806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1303,6 +1306,18 @@ CanvasGroup:
     type: 3}
   m_PrefabInstance: {fileID: 3345507616181488150}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1173280736 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5244545566647075311, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1215853334 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4348196316535854262, guid: 55e2127d3980f23488d22e30a947c680,
@@ -1451,6 +1466,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1401950258 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5624214067579566334, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1413266003 stripped
@@ -1812,6 +1839,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &1873490090 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3668481965953699240, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1873619879 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4348196316169357207, guid: 55e2127d3980f23488d22e30a947c680,
@@ -3087,6 +3120,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 545861802}
+    - target: {fileID: 5770536157069764483, guid: 55e2127d3980f23488d22e30a947c680,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerDisplayNameText
+      objectReference: {fileID: 0}
+    - target: {fileID: 6613602018282776988, guid: 55e2127d3980f23488d22e30a947c680,
+        type: 3}
+      propertyPath: m_Name
+      value: JusticeCoinValueText
+      objectReference: {fileID: 0}
     - target: {fileID: 7068157033133777888, guid: 55e2127d3980f23488d22e30a947c680,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
