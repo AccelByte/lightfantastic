@@ -686,7 +686,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Before returning to the main menu, \nwould you like to save your refinement?"
+  m_Text: "Do you want to save your \nequipment preference and exit?"
 --- !u!1 &817059523984498665
 GameObject:
   m_ObjectHideFlags: 0
@@ -3063,7 +3063,7 @@ MonoBehaviour:
   button: {fileID: 6710847774287137125}
   buttonText: {fileID: 5080187282672510520}
   mouseHoverComponent: {fileID: 6710847774287137129}
-  text: SAVE
+  text: SAVE & EXIT
 --- !u!114 &6710847774287137129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3698,7 +3698,7 @@ MonoBehaviour:
   button: {fileID: 3747386239765281851}
   buttonText: {fileID: 4628681650688164552}
   mouseHoverComponent: {fileID: 1808063608598026270}
-  text: CANCEL
+  text: DON'T SAVE & EXIT
 --- !u!1 &8343651685689187106
 GameObject:
   m_ObjectHideFlags: 0

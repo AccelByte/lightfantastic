@@ -23,4 +23,6 @@ public class UIEntitlementLogicComponent : MonoBehaviour
     public Button hatTabButton;
     public Button effectTabButton;
     public Button backButton;
+    public Button promptPanelSaveButton;
+    public Button promptPanelDontSaveButton;
 }
