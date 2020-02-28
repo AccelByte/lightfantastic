@@ -31,6 +31,7 @@ namespace ABRuntimeLogic
         private AccelByteLobbyLogic abLobbyLogic;
         private AccelByteGameProfileLogic abGameProfileLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
+        private AccelByteStatisticLogic abUserStatisticLogic;
 
         private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
@@ -39,6 +40,7 @@ namespace ABRuntimeLogic
             abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
             abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
+            abUserStatisticLogic = GetComponent<AccelByteStatisticLogic>();
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -235,6 +237,7 @@ namespace ABRuntimeLogic
                 UIElementHandler.FadePersistentFriends();
                 UIElementHandler.FadeMenu();
                 abUserProfileLogic.Init();
+                abUserStatisticLogic.UpdatePlayerStatisticUI();
                 abLobbyLogic.ConnectToLobby();
             }
         }
@@ -316,6 +319,7 @@ namespace ABRuntimeLogic
                     UIElementHandler.FadePersistentFriends();
                     UIElementHandler.FadeMenu();
                     abUserProfileLogic.Init();
+                    abUserStatisticLogic.UpdatePlayerStatisticUI();
                     abLobbyLogic.ConnectToLobby();
                 }
             }
