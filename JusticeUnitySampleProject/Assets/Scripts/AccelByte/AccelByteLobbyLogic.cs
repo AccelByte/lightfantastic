@@ -66,10 +66,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void Awake()
     {
         accelByteManager = gameObject.GetComponent<AccelByteManager>();
-        var webSocket = new HybridWebSocket.WebSocket();
-        webSocket.SetProxy("http://127.0.0.1:8888", "", "");
-        abLobby = new Lobby(AccelBytePlugin.Config.LobbyServerUrl, webSocket, AccelBytePlugin.GetUser().Session, new CoroutineRunner());
         //Initialize our Lobby object
+        abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         partyMemberList = new Dictionary<string, PartyData>();
         chatList = new List<string>();
