@@ -17,15 +17,18 @@ public static class LightFantasticConfig
     
     public enum GAME_MODES
     {
-        unitytest
+        unitytest = 0,
+        upto4player = 1
     }
 
     public readonly static Dictionary<GAME_MODES, string> GAME_MODES_VERBOSE = new Dictionary<GAME_MODES,string>()
     {
-        {GAME_MODES.unitytest, "1 VS 1"}
+        {GAME_MODES.upto4player, "4 Players FFA"},
+        {GAME_MODES.unitytest, "1 VS 1"},
     };
 
-    public const int MATCHMAKING_FINDMATCH_TIMEOUT = 30;
+    public const int MATCHMAKING_FINDMATCH_TIMEOUT = 15; // Should be less than 20 second to avoid ban
+    public const int MATCHMAKING_CONFIRMING_READY_TIMEOUT = 10;
     public const int WAITING_DEDICATED_SERVER_TIMEOUT = 120;
 
     /// <summary>
