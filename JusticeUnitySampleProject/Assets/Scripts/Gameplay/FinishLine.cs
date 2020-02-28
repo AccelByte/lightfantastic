@@ -38,6 +38,7 @@ namespace Game
                 {
                     Debug.Log("Player " + finishedPawn.networkObject.playerNum + " finished");
                     networkObject.SendRpc(RPC_PLAYER_FINISHED, Receivers.Server, finishedPawn.networkObject.OwnerNetId);
+                    finishedPawn.FreezePlayerOnFinish();
                 }
             }
         }

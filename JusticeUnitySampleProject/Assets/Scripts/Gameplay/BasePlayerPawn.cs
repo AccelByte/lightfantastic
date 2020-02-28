@@ -182,13 +182,10 @@ namespace Game
                 {
                     IncreaseCurrSpeed();
                 }
-                else
-                {
-                    currSpeed = LinearDecay(currSpeed, dt);
-                }
-
-                newPos.x = transform.position.x + currSpeed;
             }
+            
+            currSpeed = LinearDecay(currSpeed, dt);
+            newPos.x = transform.position.x + currSpeed;
 
             if (networkObject.IsOwner)
             {
@@ -218,6 +215,11 @@ namespace Game
                 inVal = 0;
             }
             return inVal;
+        }
+
+        public void FreezePlayerOnFinish()
+        {
+            isGameStarted = false;
         }
 
         #region RPCs
