@@ -3,14 +3,12 @@ using AccelByte.Core;
 using AccelByte.Models;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UITools;
 
 public class AccelByteStatisticLogic : MonoBehaviour
 {
-    private User abUser;
-    private Statistic statistic;
+    private Statistic abStatistic;
 
     private GameObject UIHandler;
     private UIStatisticsLogicComponent UIHandlerStatisticsComponent;
@@ -23,16 +21,6 @@ public class AccelByteStatisticLogic : MonoBehaviour
     private void Start()
     {
         AccelByteManager.Instance.LobbyLogic.onMatchOver += LobbyLogic_onMatchOver;
-    }
-
-    private void LobbyLogic_onMatchOver()
-    {
-        isActionPhaseOver = true;
-    }
-
-    public void GetPlayerStatistic()
-    {
-        abUser = AccelBytePlugin.GetUser();
 
         playerStatistic = new List<string>
         {
@@ -40,14 +28,17 @@ public class AccelByteStatisticLogic : MonoBehaviour
             "total-lose",
             "total-match"
         };
+    }
 
-        statistic = AccelBytePlugin.GetStatistic();
-        statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
+    private void LobbyLogic_onMatchOver()
+    {
+        isActionPhaseOver = true;
     }
 
     public void UpdatePlayerStatisticUI()
     {
-        statistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
+        if (abStatistic == null) abStatistic = AccelBytePlugin.GetStatistic();
+        abStatistic.GetUserStatItems(playerStatistic, null, GetStatisticCallback);
     }
 
     #region UI Listeners
