@@ -919,8 +919,11 @@ MonoBehaviour:
   memberKickPartyButton: {fileID: 1304305521}
   cancelMatchmakingButton: {fileID: 810787898}
   mainMenuMultiplayerButton: {fileID: 755630827}
+  PlayerDisplayNameText: {fileID: 3345507616181488154}
+  JusticeCoinValueText: {fileID: 3345507616181488152}
+  PhotonsValueText: {fileID: 3345507616181488153}
   localMatch_IP_inputFields: {fileID: 222051158}
-  gameModeDropDown: {fileID: 801292614}
+  gameModeDropDown: {fileID: 0}
 --- !u!114 &545861806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1141,18 +1144,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8317211794599932200}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &801292614 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2568847525403329001, guid: 682c010939366214abd1a817be0ee614,
-    type: 3}
-  m_PrefabInstance: {fileID: 7162765542946376627}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &810787898 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3832351850761965283, guid: 55e2127d3980f23488d22e30a947c680,
@@ -3129,6 +3120,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5770536157069764483, guid: 55e2127d3980f23488d22e30a947c680,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerDisplayNameText
+      objectReference: {fileID: 0}
+    - target: {fileID: 6613602018282776988, guid: 55e2127d3980f23488d22e30a947c680,
+        type: 3}
+      propertyPath: m_Name
+      value: JusticeCoinValueText
+      objectReference: {fileID: 0}
     - target: {fileID: 7068157033133777888, guid: 55e2127d3980f23488d22e30a947c680,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -3148,6 +3149,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: FadeInFriends
+      objectReference: {fileID: 0}
+    - target: {fileID: 7202265613292886237, guid: 55e2127d3980f23488d22e30a947c680,
+        type: 3}
+      propertyPath: m_Name
+      value: JusticeCoinCurrentIcon
       objectReference: {fileID: 0}
     - target: {fileID: 8012825399457371786, guid: 55e2127d3980f23488d22e30a947c680,
         type: 3}
@@ -3258,6 +3264,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35ad82a4e711cf04690a5759a230aa5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3345507616181488152 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5244545566647075311, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3345507616181488153 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5624214067579566334, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &3345507616181488154 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3668481965953699240, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 3345507616181488150}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4112399621743088272
 PrefabInstance:
   m_ObjectHideFlags: 0

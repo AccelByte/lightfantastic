@@ -199,9 +199,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             
             SetupLobbyUI();
 
-            //AccelByteManager.Instance.UserProfileLogic.UpdatePlayerProfileUI();
-            //AccelByteManager.Instance.UserStaticticLogic.UpdatePlayerStatisticUI();
-
             isActionPhaseOver = false;
         }
     }
@@ -316,6 +313,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupMatchmakingCallbacks();
         SetupChatCallbacks();
         GetPartyInfo();
+        SetupPlayerInfoBox();
+    }
+
+    private void SetupPlayerInfoBox()
+    {
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        UIHandlerLobbyComponent.PlayerDisplayNameText.GetComponent<TMPro.TextMeshProUGUI>().text = data.displayName;
     }
 
     private void SetupGeneralCallbacks()

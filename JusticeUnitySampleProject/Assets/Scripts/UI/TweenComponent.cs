@@ -22,6 +22,11 @@ public class TweenComponent : MonoBehaviour
     /// </summary>
     public float TranslationOffset = 20.0f;
 
+    /// <summary>
+    /// Scale The gameobject uniformly by AnimateScaleUp
+    /// </summary>
+    public float ScaleUniformPersentage = 1.5f;
+
     private bool isJustAnimatedSwipeRight;
     private float localX_OriginalValue;
 
@@ -45,7 +50,7 @@ public class TweenComponent : MonoBehaviour
 
     public void AnimateSwipeRight()
     {
-        gameObject.transform.DOLocalMoveX(gameObject.transform.localPosition.x + TranslationOffset, AnimationDuration);
+        gameObject.transform.DOLocalMoveX(localX_OriginalValue + TranslationOffset, AnimationDuration);
         AudioManager.Instance.PlaySoundFX(selectedSoundFX);
     }
 
@@ -58,7 +63,7 @@ public class TweenComponent : MonoBehaviour
 
     public void AnimateScaleUp()
     {
-        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f) * 1.5f, AnimationDuration);
+        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f) * ScaleUniformPersentage, AnimationDuration);
         AudioManager.Instance.PlaySoundFX(selectedSoundFX);
     }
 
@@ -67,5 +72,12 @@ public class TweenComponent : MonoBehaviour
         // scaleback tp 100%
         Debug.Log("TweenComponent OnAnimateSwipeRight!");
         gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f) , AnimationDuration);
+    }
+
+    public void AnimateScaleY_ToZero()
+    {
+        // scaleback tp 100%
+        Debug.Log("TweenComponent OnAnimateSwipeRight!");
+        gameObject.transform.DOScaleY(0.0f, AnimationDuration);
     }
 }

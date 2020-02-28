@@ -65,6 +65,11 @@ public class UILobbyLogicComponent : MonoBehaviour
     [Tooltip("MainMenu's MUTLIPAYER Button")]
     public GameObject mainMenuMultiplayerButton;
     
+	[Header("Player Icon")]
+    public Transform PlayerDisplayNameText;
+    public Text JusticeCoinValueText;
+    public Text PhotonsValueText;
+	
     [Header("Input Fields")]
     [Tooltip("It can be found under the SETTING menu")]
     public InputField localMatch_IP_inputFields;
