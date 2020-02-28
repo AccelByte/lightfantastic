@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UILobbyLogicComponent : MonoBehaviour
@@ -66,12 +65,28 @@ public class UILobbyLogicComponent : MonoBehaviour
     [Tooltip("MainMenu's MUTLIPAYER Button")]
     public GameObject mainMenuMultiplayerButton;
     
-    [Header("Input Fields")]
-    public InputField localMatch_IP_inputFields;
-    public InputField localMatch_Port_inputFields;
-
-    [Header("Player Icon")]
+	[Header("Player Icon")]
     public Transform PlayerDisplayNameText;
     public Text JusticeCoinValueText;
     public Text PhotonsValueText;
+	
+    [Header("Input Fields")]
+    [Tooltip("It can be found under the SETTING menu")]
+    public InputField localMatch_IP_inputFields;
+    //public InputField localMatch_Port_inputFields; // TODO handle port changing for local match 
+    
+    [Header("Drop Down")]
+    public TMP_Dropdown gameModeDropDown;
+
+    private void Start()
+    {
+        gameModeDropDown.value = 0;
+        var dropDownOptions = new List<TMP_Dropdown.OptionData>();
+        foreach (LightFantasticConfig.GAME_MODES e in System.Enum.GetValues(typeof(LightFantasticConfig.GAME_MODES)))
+        {
+            dropDownOptions.Add(new TMP_Dropdown.OptionData(LightFantasticConfig.GAME_MODES_VERBOSE[e]));
+        }
+        gameModeDropDown.ClearOptions();
+        gameModeDropDown.AddOptions(dropDownOptions);
+    }
 }

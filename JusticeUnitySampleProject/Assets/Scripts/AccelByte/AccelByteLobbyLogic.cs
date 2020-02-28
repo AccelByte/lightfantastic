@@ -27,6 +27,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
     private bool connectToLocal;
+    private string ipConnectToLocal = "127.0.0.1";
     
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
     private string gameMode = gameModeEnum.ToString();
@@ -227,6 +228,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
+        // Bind Game Play / matchmaking request configuration
+        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GamePlay_LocalIP_Set);
+        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.AddListener(GamePlay_GameMode_Set);
     }
 
     void RemoveListeners()
@@ -249,6 +253,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
+        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GamePlay_LocalIP_Set);
     }
     #endregion // UI Listeners
 
@@ -320,6 +325,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void SetupGeneralCallbacks()
     {
         abLobby.OnNotification += result => OnNotificationReceived(result);
+        abLobby.Disconnected += OnDisconnectNotificationReceived;
     }
 
     private void SetupFriendCallbacks()
@@ -349,6 +355,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void UnsubscribeAllCallbacks()
     {
+        abLobby.Disconnected -= OnDisconnectNotificationReceived;
         abLobby.InvitedToParty -= OnInvitedToParty;
         abLobby.JoinedParty -= OnMemberJoinedParty;
         abLobby.MatchmakingCompleted -= OnFindMatchCompleted;
@@ -358,13 +365,39 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.KickedFromParty -= OnKickedFromParty;
         abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
-	
+
+    #region GAMEPLAY CONFIGURATION SETTER
+
+    public void GamePlay_GameMode_Set(int gameModeEnumIndex)
+    {
+        var gameMode_ = (LightFantasticConfig.GAME_MODES) gameModeEnumIndex;
+        gameModeEnum = gameMode_;
+        gameMode = gameMode_.ToString();
+    }
+    
+    public void GamePlay_IsLocal_Set(bool isLocal)
+    {
+        connectToLocal = isLocal;
+    }
+
+    public void GamePlay_LocalIP_Set(string ip)
+    {
+        ipConnectToLocal = ip;
+    }
+    
+    #endregion
+    
     #region AccelByte Notification Callbacks
     private void OnNotificationReceived(Result<Notification> result)
     {
         UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
         UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
         UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+    }
+
+    private void OnDisconnectNotificationReceived()
+    {
+        UIHandlerLobbyComponent.logoutButton.onClick.Invoke();
     }
     #endregion
 
@@ -421,6 +454,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         while (isActive)
         {
             yield return new WaitForSecondsRealtime(1.0f);
+            if (connectToLocal) { ip = ipConnectToLocal; }
             multiplayerConnect.SetIPAddressPort(ip, port);
             multiplayerConnect.Connect();
             isActive = false;
@@ -513,8 +547,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
             WriteInDebugBox("Searching a match game mode " + gameMode);
             ShowMatchmakingBoard(true);
-            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch, 
-                delegate { OnFailedMatchmaking("Matchmaking timed out"); });
+            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
+                delegate
+                {
+                    if (abMatchmakingNotif?.matchId != null)
+                    {
+                        abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
+                        UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
+                        delegate
+                        {
+                            OnFailedMatchmaking("Timeout to confirm matchmaking");
+                        });
+                    }
+                    else
+                    {
+                        OnFailedMatchmaking("Timeout to finding match");
+                    }
+                });
             UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
         }
     }
@@ -566,8 +615,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abMatchmakingNotif = result.Value;
             if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
-                // Auto comfirm ready consent
-                abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
                 WriteInDebugBox(" Match Found: " + result.Value.matchId);
             }
             // if in a party and party leader start a matchmaking

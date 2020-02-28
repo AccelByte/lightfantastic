@@ -116,7 +116,7 @@ namespace Game
             // Set mine and other player's displayName and Platform
             if (!networkObject.IsServer)
             {
-                networkObject.SendRpc(RPC_SET_DISPLAY_NAME_AND_PLATFORM, Receivers.All, new object[]
+                networkObject.SendRpc(RPC_SET_DISPLAY_NAME_AND_PLATFORM, Receivers.AllBuffered, new object[]
                 {
                     ud.displayName, (uint) LightFantasticConfig.GetPlatform()
                 });
