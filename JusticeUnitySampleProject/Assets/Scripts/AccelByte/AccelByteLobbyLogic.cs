@@ -229,8 +229,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
         // Bind Game Play / matchmaking request configuration
-        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GamePlay_LocalIP_Set);
-        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.AddListener(GamePlay_GameMode_Set);
+        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GameplaySetLocalIP);
+        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.AddListener(GameplaySetGameMode);
     }
 
     void RemoveListeners()
@@ -253,7 +253,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
-        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GamePlay_LocalIP_Set);
+        UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GameplaySetLocalIP);
+        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.RemoveListener(GameplaySetGameMode);
     }
     #endregion // UI Listeners
 
@@ -368,19 +369,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     #region GAMEPLAY CONFIGURATION SETTER
 
-    public void GamePlay_GameMode_Set(int gameModeEnumIndex)
+    public void GameplaySetGameMode(int gameModeEnumIndex)
     {
         var gameMode_ = (LightFantasticConfig.GAME_MODES) gameModeEnumIndex;
         gameModeEnum = gameMode_;
         gameMode = gameMode_.ToString();
     }
     
-    public void GamePlay_IsLocal_Set(bool isLocal)
+    public void GameplaySetIsLocal(bool isLocal)
     {
         connectToLocal = isLocal;
     }
 
-    public void GamePlay_LocalIP_Set(string ip)
+    public void GameplaySetLocalIP(string ip)
     {
         ipConnectToLocal = ip;
     }
@@ -416,7 +417,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void FindMatchButtonClicked(bool isLocal)
     {
-        connectToLocal = isLocal;
+        GameplaySetIsLocal(isLocal);
         if (!isLocalPlayerInParty)
         {
             abLobby.CreateParty(OnPartyCreatedFindMatch);
