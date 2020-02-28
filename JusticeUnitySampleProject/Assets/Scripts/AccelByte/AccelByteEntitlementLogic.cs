@@ -261,6 +261,9 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
         UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
         UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
+        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.AddListener(UploadEquipment);
+        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.AddListener(HidePromptPanel);
+        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(HidePromptPanel);
     }
 
     void RemoveListeners()
@@ -270,6 +273,8 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
+        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.RemoveAllListeners();
     }
     #endregion // UI Listeners
 

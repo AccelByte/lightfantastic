@@ -14,6 +14,11 @@ namespace Game
         private bool gameAlreadyStarted = false;
         private void Awake()
         {
+            var originalPosition = gameObject.transform.position;
+            MainThreadTaskRunner.Instance.Run(() =>
+            {
+                gameObject.transform.position = new Vector3(originalPosition.x + LightFantasticConfig.FINISH_LINE_DISTANCE, originalPosition.y, originalPosition.z);
+            });
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
             gameMgr.onGameStart += () => { gameAlreadyStarted = true; };
             col2d = GetComponent<Collider2D>();
@@ -33,6 +38,7 @@ namespace Game
                 {
                     Debug.Log("Player " + finishedPawn.networkObject.playerNum + " finished");
                     networkObject.SendRpc(RPC_PLAYER_FINISHED, Receivers.Server, finishedPawn.networkObject.OwnerNetId);
+                    finishedPawn.FreezePlayerOnFinish();
                 }
             }
         }

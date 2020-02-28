@@ -145,7 +145,7 @@ MonoBehaviour:
   - mesh: {fileID: 2384892164457119540}
     speedModifier: 144
   - mesh: {fileID: 2384892163764572939}
-    speedModifier: 55
+    speedModifier: 40
   - mesh: {fileID: 2384892165732311672}
     speedModifier: 21
   - mesh: {fileID: 2384892164860772026}
@@ -153,7 +153,7 @@ MonoBehaviour:
   - mesh: {fileID: 2384892164096628230}
     speedModifier: 5
   globalParallaxSpeedModifier: 0
-  finalSpeedMultiplier: 0.0005
+  finalSpeedMultiplier: 0.00015
 --- !u!1 &2384892164096628225
 GameObject:
   m_ObjectHideFlags: 0

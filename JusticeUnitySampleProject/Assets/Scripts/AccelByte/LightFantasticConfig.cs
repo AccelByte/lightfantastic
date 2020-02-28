@@ -59,4 +59,6 @@ public static class LightFantasticConfig
     /// GAMEPLAY STUFF
     public static readonly uint COUNT_TO_START_RACE_SECOND = 4; // [ "GO", "1", "2", "3"]
     public static readonly uint RACE_LENGTH_SECOND = 30;
+
+    public static readonly uint FINISH_LINE_DISTANCE = 30;
 }
