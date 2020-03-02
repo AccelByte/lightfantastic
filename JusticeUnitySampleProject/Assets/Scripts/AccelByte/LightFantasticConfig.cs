@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
@@ -61,4 +62,18 @@ public static class LightFantasticConfig
     public static readonly uint RACE_LENGTH_SECOND = 30;
 
     public static readonly uint FINISH_LINE_DISTANCE = 30;
+
+    public static string GetPlayerPortalURL()
+    {
+        string baseUrl = AccelBytePlugin.Config.BaseUrl;
+        if (!baseUrl.StartsWith("http"))
+        {
+            baseUrl = "https://" + baseUrl;
+        }
+        if (baseUrl.Contains("//api."))
+        {
+            baseUrl = baseUrl.Replace("//api.", "//");
+        }
+        return baseUrl;
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
 public class UIAuthLogicComponent : MonoBehaviour
 {
     #region Register UI Fields
@@ -35,6 +36,7 @@ public class UIAuthLogicComponent : MonoBehaviour
     #region Buttons
     public Button loginButton;
 
+    public Button signUpButton;
     public Button registerButton;
     public Button verifyButton;
     public Button resendVerificationButton;
