@@ -175,15 +175,10 @@ namespace Game
         {
             Vector3 newPos = transform.position;
 
-            // restrain the player from moving
-            if (isGameStarted)
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
             {
-                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-                {
-                    IncreaseCurrSpeed();
-                }
+                IncreaseCurrSpeed();
             }
-            
             currSpeed = LinearDecay(currSpeed, dt);
             newPos.x = transform.position.x + currSpeed;
 
@@ -199,7 +194,11 @@ namespace Game
 
         private void IncreaseCurrSpeed()
         {
-            currSpeed += speedIncreaseConst;
+            // restrain the player from moving
+            if (isGameStarted)
+            {
+                currSpeed += speedIncreaseConst;
+            }
         }
 
         /// <summary>
