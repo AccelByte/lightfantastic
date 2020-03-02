@@ -100,7 +100,7 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
             UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
-            UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUpButtonClicked);
+            UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUp);
         }
 
         void RemoveListeners()
@@ -111,7 +111,7 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.verifyButton.onClick.RemoveListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
-            UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUpButtonClicked);
+            UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUp);
         }
         #endregion // UI Listeners
 
@@ -135,7 +135,7 @@ namespace ABRuntimeLogic
             }
         }
 
-        public void SignUpButtonClicked()
+        public void SignUp()
         {
             Application.OpenURL(LightFantasticConfig.GetPlayerPortalURL());
         }
