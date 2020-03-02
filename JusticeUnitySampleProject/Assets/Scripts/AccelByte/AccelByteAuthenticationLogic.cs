@@ -100,6 +100,7 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
             UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
+            UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUp);
         }
 
         void RemoveListeners()
@@ -110,6 +111,7 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.verifyButton.onClick.RemoveListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+            UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUp);
         }
         #endregion // UI Listeners
 
@@ -133,9 +135,18 @@ namespace ABRuntimeLogic
             }
         }
 
+        public void SignUp()
+        {
+            Application.OpenURL(LightFantasticConfig.GetPlayerPortalURL());
+        }
+
         #region AccelByte Authentication Functions
-        //Register's a new user with the information from the UIInputs
-        //Uses RegionInfo to get the two letter ISO Region Name
+        
+        /// <summary>
+        /// Register's a new user with the information from the UIInputs
+        /// Uses RegionInfo to get the two letter ISO Region Name
+        /// DEPRECATED: user created within game namespace can't have publisher namespace entitlement 
+        /// </summary>
         public void Register()
         {
             System.DateTime dob = new System.DateTime(int.Parse(UIHandlerAuthComponent.registerDobYear.text), 

@@ -296,6 +296,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+            ShowMatchmakingBoard(false);
             UnsubscribeAllCallbacks();
             abLobby.Disconnect();
         }
