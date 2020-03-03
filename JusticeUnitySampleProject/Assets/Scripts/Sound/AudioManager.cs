@@ -72,6 +72,7 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogError("[AudioManager] BackgroundMusicSetup There is no sound source to play!");
         }
+        PlayBackgroundMusic(E_BackgroundMusic.BackgroundMusic01);
     }
 
     public void PlaySoundFX(E_SoundFX name)

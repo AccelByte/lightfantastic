@@ -124,6 +124,7 @@ namespace ABRuntimeLogic
                 Debug.Log("Valid Steam Auth:" + steamAuth.isActiveAndEnabled);
                 abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
                 Debug.Log("USE STEAM");
+                UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
             }
             else 
             {

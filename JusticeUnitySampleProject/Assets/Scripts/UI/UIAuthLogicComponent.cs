@@ -41,5 +41,6 @@ public class UIAuthLogicComponent : MonoBehaviour
     public Button verifyButton;
     public Button resendVerificationButton;
     public Button logoutButton;
+    public Button mainMenuLogoutButton;
     #endregion
 }
