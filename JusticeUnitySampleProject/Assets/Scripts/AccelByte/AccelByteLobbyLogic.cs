@@ -124,7 +124,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             isFriendStatusChanged = false;
             string friendName = friendList[friendsStatusNotif.userID].DisplayName;
             friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
-            Debug.Log(friendName + " " + friendsStatusNotif.lastSeenAt + " " + DateTimeOffset.Now);
             RefreshFriendsUI();
         }
         if (isFriendAcceptRequest)
