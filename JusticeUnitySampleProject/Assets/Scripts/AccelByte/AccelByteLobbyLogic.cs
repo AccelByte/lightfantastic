@@ -156,11 +156,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
                     {
                         abLobby.Disconnect();
+                        onComplete.Invoke();
                     });
                 });
             });
         }
-        onComplete.Invoke();
     }
 
     #region UI Listeners
@@ -227,8 +227,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         Debug.Log("ABLobby AddEventListeners!");
         // Bind Buttons
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
+        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(OnLogoutButtonClicked);
         UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(false); });
         UIHandlerLobbyComponent.findLocalMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(true); });
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
@@ -310,7 +309,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void DisconnectFromLobby()
+    public void OnLogoutButtonClicked()
     {
         if (abLobby.IsConnected)
         {
@@ -319,7 +318,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             ShowMatchmakingBoard(false);
             HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
-            abLobby.Disconnect();
+            OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
         }
         else
         {
