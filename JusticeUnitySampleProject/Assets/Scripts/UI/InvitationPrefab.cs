@@ -35,7 +35,10 @@ public class InvitationPrefab : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            usernameText.text = result.Value.displayName;
+            if (!usernameText.IsDestroyed())
+            {
+                usernameText.text = result.Value.displayName;
+            }
         }
     }
 

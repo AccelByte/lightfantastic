@@ -28,6 +28,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private DsNotif abDSNotif;
     private bool connectToLocal;
     private string ipConnectToLocal = "127.0.0.1";
+    private string lastFriendUserId;
     
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
     private string gameMode = gameModeEnum.ToString();
@@ -132,14 +133,34 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    // On quit set user status to offline
     private void OnApplicationQuit()
+    {
+        OnExitFromLobby(null);
+    }
+    
+    /// <summary>
+    /// On quit:
+    /// - set user status to offline
+    /// - leave party
+    /// - cancel matchmaking
+    /// - disconnect 
+    /// </summary>
+    public void OnExitFromLobby(Action onComplete)
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
         if (abLobby.IsConnected)
         {
-            abLobby.LeaveParty(OnLeaveParty);
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+            abLobby.CancelMatchmaking(gameMode, cancelResult =>
+            {
+                abLobby.LeaveParty(leaveResult =>
+                {
+                    abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
+                    {
+                        abLobby.Disconnect();
+                        onComplete.Invoke();
+                    });
+                });
+            });
         }
     }
 
@@ -207,8 +228,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         Debug.Log("ABLobby AddEventListeners!");
         // Bind Buttons
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
+        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(OnLogoutButtonClicked);
         UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(false); });
         UIHandlerLobbyComponent.findLocalMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(true); });
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
@@ -290,15 +310,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void DisconnectFromLobby()
+    public void OnLogoutButtonClicked()
     {
         if (abLobby.IsConnected)
         {
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             ShowMatchmakingBoard(false);
+            HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
-            abLobby.Disconnect();
+            OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
         }
         else
         {
@@ -314,6 +335,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupFriendCallbacks();
         SetupMatchmakingCallbacks();
         SetupChatCallbacks();
+        ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
     }
@@ -368,7 +390,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
 
-    #region GAMEPLAY CONFIGURATION SETTER
+    #region Gameplay Configuration Setter
 
     public void GameplaySetGameMode(int gameModeEnumIndex)
     {
@@ -787,11 +809,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Debug.Log(result.Value.friendsId[i]);
                 if (!friendList.ContainsKey(result.Value.friendsId[i]))
                 {
-                    friendList.Add(result.Value.friendsId[i], new FriendData(result.Value.friendsId[i], "Loading...", new DateTime(1970, 12, 30), "1"));
+                    friendList.Add(result.Value.friendsId[i], new FriendData(result.Value.friendsId[i], "Loading...", new DateTime(2000, 12, 30), "0"));
+                    lastFriendUserId = result.Value.friendsId[i];
                 }
             }
             isLoadFriendDisplayName = true;
-            ListFriendsStatus();
         }
     }
 
@@ -812,7 +834,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
                 for (int i = 0; i < result.Value.friendsId.Length; i++)
                 {
-                    friendList[result.Value.friendsId[i]] = new FriendData(result.Value.friendsId[i], friendList[result.Value.friendsId[i]].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
+                    string friendUserId = result.Value.friendsId[i];
+                    friendList[friendUserId] = new FriendData(friendUserId, friendList[friendUserId].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
                 }
                 RefreshFriendsUI();
             }
@@ -824,13 +847,25 @@ public class AccelByteLobbyLogic : MonoBehaviour
         ClearFriendsUIPrefabs();
         foreach (KeyValuePair<string, FriendData> friend in friendList)
         {
-            int daysInactive = System.DateTime.Now.Subtract(friend.Value.LastSeen).Days;
+            int lastSeen = System.DateTimeOffset.Now.Subtract(friend.Value.LastSeen).Days;
+            string timeInfo = " days ago";
+            if (lastSeen == 0)
+            {
+                lastSeen = System.DateTimeOffset.Now.Subtract(friend.Value.LastSeen).Hours;
+                timeInfo = " hours ago";
+            }
+            if (lastSeen == 0)
+            {
+                lastSeen = System.DateTimeOffset.Now.Subtract(friend.Value.LastSeen).Minutes;
+                timeInfo = " minutes ago";
+            }
+
             FriendPrefab friendPrefab = Instantiate(UIHandlerLobbyComponent.friendPrefab, Vector3.zero, Quaternion.identity).GetComponent<FriendPrefab>();
             friendPrefab.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
 
             if (friend.Value.IsOnline == "0")
             {
-                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, daysInactive.ToString() + " days ago", friend.Value.UserId);
+                friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, lastSeen.ToString() + timeInfo, friend.Value.UserId);
                 friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
             }
             else
@@ -869,7 +904,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
-            friendList[result.Value.userId] = new FriendData(result.Value.userId, result.Value.displayName, new DateTime(1970, 12, 30), "1");
+            string friendUserId = result.Value.userId;
+            friendList[friendUserId] = new FriendData(friendUserId, result.Value.displayName, friendList[friendUserId].LastSeen, friendList[friendUserId].IsOnline);
+            if (lastFriendUserId == friendUserId)
+            {
+                ListFriendsStatus();
+            }
         }
     }
 
