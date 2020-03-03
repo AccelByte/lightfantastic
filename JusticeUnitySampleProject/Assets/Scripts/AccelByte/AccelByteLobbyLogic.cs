@@ -229,8 +229,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         Debug.Log("ABLobby AddEventListeners!");
         // Bind Buttons
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(OnLogoutButtonClicked);
-        UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(false); });
-        UIHandlerLobbyComponent.findLocalMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(true); });
+        
+        UIHandlerLobbyComponent.matchmakingButtonCollection.On1VS1ButtonClicked.AddListener(delegate
+        {
+            GameplaySetGameMode(LightFantasticConfig.GAME_MODES.unitytest);
+            FindMatchButtonClicked(connectToLocal);
+            UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
+        });
+        UIHandlerLobbyComponent.matchmakingButtonCollection.On4FFAButtonClicked.AddListener(delegate
+        {
+            GameplaySetGameMode(LightFantasticConfig.GAME_MODES.upto4player);
+            FindMatchButtonClicked(connectToLocal);
+            UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
+        });
+        UIHandlerLobbyComponent.matchmakingButtonCollection.OnLocalButtonClicked.AddListener(delegate { GameplaySetIsLocal(true); });
+        UIHandlerLobbyComponent.matchmakingButtonCollection.OnOnlineButtonClicked.AddListener(delegate { GameplaySetIsLocal(false); });
+        
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(LoadFriendsList);
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetIncomingFriendsRequest);
@@ -250,15 +264,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
         // Bind Game Play / matchmaking request configuration
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GameplaySetLocalIP);
-        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.AddListener(GameplaySetGameMode);
     }
 
     void RemoveListeners()
     {
         Debug.Log("ABLobby RemoveListeners!");
         UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.findMatchButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.findLocalMatchButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.matchmakingButtonCollection.DeregisterAllButton();
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
@@ -274,7 +286,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GameplaySetLocalIP);
-        UIHandlerLobbyComponent.gameModeDropDown.onValueChanged.RemoveListener(GameplaySetGameMode);
     }
     #endregion // UI Listeners
 
@@ -392,9 +403,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     #region Gameplay Configuration Setter
 
-    public void GameplaySetGameMode(int gameModeEnumIndex)
+    public void GameplaySetGameMode(LightFantasticConfig.GAME_MODES gameMode_)
     {
-        var gameMode_ = (LightFantasticConfig.GAME_MODES) gameModeEnumIndex;
         gameModeEnum = gameMode_;
         gameMode = gameMode_.ToString();
     }
@@ -487,9 +497,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
-        // If there's matchmaking board shown, disable the [Multiplayer] button 
-        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<Button>().interactable = !show;
-        UIHandlerLobbyComponent.mainMenuMultiplayerButton.GetComponent<EventTrigger>().enabled = !show;
+        // If there's matchmaking board shown, disable the [ONLINE] and [LOCAL] button
+        UIHandlerLobbyComponent.matchmakingButtonCollection.SetInteractable(PlayMatchButtonsScript.ButtonList.OnlineButton, !show);
+        UIHandlerLobbyComponent.matchmakingButtonCollection.SetInteractable(PlayMatchButtonsScript.ButtonList.LocalButton, !show);
         
         UIHandlerLobbyComponent.matchmakingBoard.waitingTimerLayout.gameObject.SetActive(false);
         UIHandlerLobbyComponent.matchmakingBoard.gameObject.SetActive(show);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UILobbyLogicComponent : MonoBehaviour
@@ -36,11 +37,11 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Text incomingFriendNotificationTitle;
     public InvitationPrefab invite;
 
+    [FormerlySerializedAs("matchButtonCollection")] [Header("MatchmakingUiSetter")] 
+    public PlayMatchButtonsScript matchmakingButtonCollection;
+    
     [Header("Buttons")]
     public Button logoutButton;
-    
-    public Button findMatchButton;
-    public Button findLocalMatchButton;
 
     public Button friendsTabButton;
     public Button invitesTabButton;
@@ -62,9 +63,6 @@ public class UILobbyLogicComponent : MonoBehaviour
 
     public Button cancelMatchmakingButton;
     
-    [Tooltip("MainMenu's MUTLIPAYER Button")]
-    public GameObject mainMenuMultiplayerButton;
-    
 	[Header("Player Icon")]
     public Transform PlayerDisplayNameText;
     public Text JusticeCoinValueText;
@@ -74,19 +72,4 @@ public class UILobbyLogicComponent : MonoBehaviour
     [Tooltip("It can be found under the SETTING menu")]
     public InputField localMatch_IP_inputFields;
     //public InputField localMatch_Port_inputFields; // TODO handle port changing for local match 
-    
-    [Header("Drop Down")]
-    public TMP_Dropdown gameModeDropDown;
-
-    private void Start()
-    {
-        gameModeDropDown.value = 0;
-        var dropDownOptions = new List<TMP_Dropdown.OptionData>();
-        foreach (LightFantasticConfig.GAME_MODES e in System.Enum.GetValues(typeof(LightFantasticConfig.GAME_MODES)))
-        {
-            dropDownOptions.Add(new TMP_Dropdown.OptionData(LightFantasticConfig.GAME_MODES_VERBOSE[e]));
-        }
-        gameModeDropDown.ClearOptions();
-        gameModeDropDown.AddOptions(dropDownOptions);
-    }
 }

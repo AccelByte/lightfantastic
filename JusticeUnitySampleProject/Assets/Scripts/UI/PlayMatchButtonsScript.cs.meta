@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9cfa3fd78b0d4e8498f45d9622fd3350
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - header: {instanceID: 0}
+  - glowFontMaterial: {fileID: 11400000, guid: 322686e3d01e7e4449b07a6563a706d6, type: 2}
+  - normalFontMaterial: {fileID: 11400000, guid: b5933af8751913d4f93fef5f0ed0e5b3,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

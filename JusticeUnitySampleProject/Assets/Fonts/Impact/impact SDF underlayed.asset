@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: impact SDF
+  m_Name: impact SDF underlayed
   m_EditorClassIdentifier: 
-  hashCode: 1241411571
+  hashCode: 2003244302
   material: {fileID: 7873844168752103025}
   materialHashCode: -714957800
   m_Version: 1.1.0
