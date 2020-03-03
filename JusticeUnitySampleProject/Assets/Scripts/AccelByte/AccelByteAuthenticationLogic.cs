@@ -203,7 +203,10 @@ namespace ABRuntimeLogic
         //Logs the user out
         public void Logout()
         {
-            abUser.Logout(OnLogout);
+            abLobbyLogic.OnExitFromLobby(() =>
+            {
+                abUser.Logout(OnLogout);
+            });
         }
 
         public UserData GetUserData()

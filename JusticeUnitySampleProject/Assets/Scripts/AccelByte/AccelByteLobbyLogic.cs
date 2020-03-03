@@ -132,15 +132,35 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    // On quit set user status to offline
     private void OnApplicationQuit()
+    {
+        OnExitFromLobby(null);
+    }
+    
+    /// <summary>
+    /// On quit:
+    /// - set user status to offline
+    /// - leave party
+    /// - cancel matchmaking
+    /// - disconnect 
+    /// </summary>
+    public void OnExitFromLobby(Action onComplete)
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
         if (abLobby.IsConnected)
         {
-            abLobby.LeaveParty(OnLeaveParty);
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+            abLobby.CancelMatchmaking(gameMode, cancelResult =>
+            {
+                abLobby.LeaveParty(leaveResult =>
+                {
+                    abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
+                    {
+                        abLobby.Disconnect();
+                    });
+                });
+            });
         }
+        onComplete.Invoke();
     }
 
     #region UI Listeners
@@ -297,6 +317,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             ShowMatchmakingBoard(false);
+            HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
             abLobby.Disconnect();
         }
@@ -314,6 +335,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupFriendCallbacks();
         SetupMatchmakingCallbacks();
         SetupChatCallbacks();
+        ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
     }
