@@ -132,14 +132,34 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    // On quit set user status to offline
     private void OnApplicationQuit()
+    {
+        OnExitFromLobby(null);
+    }
+    
+    /// <summary>
+    /// On quit:
+    /// - set user status to offline
+    /// - leave party
+    /// - cancel matchmaking
+    /// - disconnect 
+    /// </summary>
+    public void OnExitFromLobby(Action onComplete)
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
         if (abLobby.IsConnected)
         {
-            abLobby.LeaveParty(OnLeaveParty);
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
+            abLobby.CancelMatchmaking(gameMode, cancelResult =>
+            {
+                abLobby.LeaveParty(leaveResult =>
+                {
+                    abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
+                    {
+                        abLobby.Disconnect();
+                        onComplete.Invoke();
+                    });
+                });
+            });
         }
     }
 
@@ -207,8 +227,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         Debug.Log("ABLobby AddEventListeners!");
         // Bind Buttons
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(DisconnectFromLobby);
-        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(AccelByteManager.Instance.AuthLogic.Logout);
+        UIHandlerLobbyComponent.logoutButton.onClick.AddListener(OnLogoutButtonClicked);
         UIHandlerLobbyComponent.findMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(false); });
         UIHandlerLobbyComponent.findLocalMatchButton.onClick.AddListener(delegate { FindMatchButtonClicked(true); });
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
@@ -290,15 +309,16 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void DisconnectFromLobby()
+    public void OnLogoutButtonClicked()
     {
         if (abLobby.IsConnected)
         {
             Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             ShowMatchmakingBoard(false);
+            HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
-            abLobby.Disconnect();
+            OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
         }
         else
         {
@@ -314,6 +334,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupFriendCallbacks();
         SetupMatchmakingCallbacks();
         SetupChatCallbacks();
+        ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
     }
