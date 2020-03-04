@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6119556626126155126}
   - component: {fileID: 6119556626126155127}
   - component: {fileID: 6119556626126155124}
+  - component: {fileID: 1996700152}
   m_Layer: 5
   m_Name: LoadingPanel
   m_TagString: Untagged
@@ -88,6 +89,23 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1996700152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119556626126155122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 0
+  AnimationDuration: 0.2
+  ScalePersentage: 0.9
+  TranslationOffset: 20
+  ScaleUniformPersentage: 1.5
 --- !u!1 &6119556626858879316
 GameObject:
   m_ObjectHideFlags: 0

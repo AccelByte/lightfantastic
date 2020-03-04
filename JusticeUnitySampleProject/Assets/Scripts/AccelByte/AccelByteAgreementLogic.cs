@@ -92,7 +92,7 @@ public class AccelByteAgreementLogic : MonoBehaviour
 
     public void FulfillEligibility()
     {
-        uiElementHandler.FadeLoading(); //Show
+        uiElementHandler.ShowLoadingPanel();
         List<AcceptAgreementRequest> requests = new List<AcceptAgreementRequest>(policies.Count);
         foreach (var policyInfo in policies)
         {
@@ -106,7 +106,6 @@ public class AccelByteAgreementLogic : MonoBehaviour
         if (agreementResult.IsError)
         {
             uiAgreement.ShowPanel(false);
-            uiElementHandler.FadeLoading(); //hide
         }
         else
         {
@@ -116,8 +115,8 @@ public class AccelByteAgreementLogic : MonoBehaviour
             
             // Need to re-login to refresh sesion.
             // New session required to obtain latest user data. Then, the user is eligible.
-            uiElementHandler.FadeLoading(); //hide
             gameObject.GetComponent<AccelByteAuthenticationLogic>().Login();
         }
+        uiElementHandler.HideLoadingPanel();
     }
 }

@@ -207,6 +207,24 @@ namespace UITools
             }
         }
 
+        public void ShowLoadingPanel()
+        {
+            TweenComponent loadingTweenAnimator = loadingPanel.gameObject.GetComponent<TweenComponent>();
+            if (loadingTweenAnimator != null)
+            {
+                loadingTweenAnimator.AnimateFadeIn();
+            }
+        }
+
+        public void HideLoadingPanel()
+        {
+            TweenComponent loadingTweenAnimator = loadingPanel.gameObject.GetComponent<TweenComponent>();
+            if (loadingTweenAnimator != null)
+            {
+                loadingTweenAnimator.AnimateFadeOut();
+            }
+        }
+
         public void FadePlayerProfile()
         {
             if (playerProfilePanel.alpha == MAX_ALPHA)

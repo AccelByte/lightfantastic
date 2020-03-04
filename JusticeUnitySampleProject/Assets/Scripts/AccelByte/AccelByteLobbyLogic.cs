@@ -334,6 +334,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
             OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
+
+            UIElementHandler.ShowLoadingPanel();
         }
         else
         {
@@ -352,12 +354,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
-
-        // hide loading panel
-        if (UIElementHandler.loadingPanel.gameObject.activeSelf)
-        {
-            UIElementHandler.FadeLoading();
-        }
     }
 
     private void SetupPlayerInfoBox()
