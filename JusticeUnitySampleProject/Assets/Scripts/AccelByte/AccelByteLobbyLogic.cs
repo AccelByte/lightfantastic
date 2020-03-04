@@ -352,6 +352,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
+
+        // hide loading panel
+        if (UIElementHandler.loadingPanel.gameObject.activeSelf)
+        {
+            UIElementHandler.FadeLoading();
+        }
     }
 
     private void SetupPlayerInfoBox()

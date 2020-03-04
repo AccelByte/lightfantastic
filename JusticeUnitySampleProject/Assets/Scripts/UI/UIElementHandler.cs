@@ -29,7 +29,7 @@ namespace UITools
         [SerializeField]
         private CanvasGroup inventoryPanel;
         [SerializeField]
-        private CanvasGroup loadingPanel;
+        public CanvasGroup loadingPanel;
         [SerializeField]
         private CanvasGroup playerProfilePanel;
         [SerializeField]
