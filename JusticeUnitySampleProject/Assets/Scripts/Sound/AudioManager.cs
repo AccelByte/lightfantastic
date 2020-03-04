@@ -2,7 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using AccelByte.Core;
 using UnityEngine.Audio;
+
+public struct AudioManagerState
+{
+    public bool BGM_On;
+    public bool SFX_On;
+}
 
 public class AudioManager : MonoBehaviour
 {
@@ -16,6 +23,8 @@ public class AudioManager : MonoBehaviour
     [Header("Background Music")]
     [SerializeField]
     private BackgroundMusic[] backgroundMusics;
+
+    private AudioManagerState currentState = new AudioManagerState{BGM_On = true, SFX_On = true};
 
     private void Awake()
     {
@@ -32,6 +41,9 @@ public class AudioManager : MonoBehaviour
 
         SoundFXSetup();
         BackgroundMusicSetup();
+        
+        ToggleSFXVolume(true);
+        ToggleBGMVolume(true);
     }
 
     private void SoundFXSetup()
@@ -179,5 +191,33 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogError("[AudioManager] StopAllBackgroundMusics There is no sound source to stop!");
         }
+    }
+
+    public void ToggleSFXVolume(bool ON)
+    {
+        foreach (var sfx in soundFXes)
+        {
+            sfx.Source.volume = ON ? 1 : 0;
+        }
+        currentState.SFX_On = ON;
+    }
+
+    public void ToggleBGMVolume(bool ON)
+    {
+        foreach (var bgm in backgroundMusics)
+        {
+            bgm.Source.volume = ON ? 1 : 0;
+        }
+        currentState.BGM_On = ON;
+    }
+
+    public AudioManagerState GetAudioState()
+    {
+        var out_ = new AudioManagerState()
+        {
+            BGM_On = currentState.BGM_On,
+            SFX_On = currentState.SFX_On
+        };
+        return out_;
     }
 }

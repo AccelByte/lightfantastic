@@ -28,6 +28,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private DsNotif abDSNotif;
     private bool connectToLocal;
     private string ipConnectToLocal = "127.0.0.1";
+    private string portConnectToLocal = "15937";
     private string lastFriendUserId;
     
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
@@ -233,13 +234,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.matchmakingButtonCollection.On1VS1ButtonClicked.AddListener(delegate
         {
             GameplaySetGameMode(LightFantasticConfig.GAME_MODES.unitytest);
-            FindMatchButtonClicked(connectToLocal);
+            FindMatchButtonClicked();
             UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
         });
         UIHandlerLobbyComponent.matchmakingButtonCollection.On4FFAButtonClicked.AddListener(delegate
         {
             GameplaySetGameMode(LightFantasticConfig.GAME_MODES.upto4player);
-            FindMatchButtonClicked(connectToLocal);
+            FindMatchButtonClicked();
             UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
         });
         UIHandlerLobbyComponent.matchmakingButtonCollection.OnLocalButtonClicked.AddListener(delegate { GameplaySetIsLocal(true); });
@@ -264,6 +265,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
         // Bind Game Play / matchmaking request configuration
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GameplaySetLocalIP);
+        UIHandlerLobbyComponent.localMatch_Port_inputFields.onValueChanged.AddListener(GameplaySetLocalPort);
     }
 
     void RemoveListeners()
@@ -286,6 +288,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GameplaySetLocalIP);
+        UIHandlerLobbyComponent.localMatch_Port_inputFields.onValueChanged.RemoveListener(GameplaySetLocalPort);
     }
     #endregion // UI Listeners
 
@@ -418,6 +421,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         ipConnectToLocal = ip;
     }
+
+    public void GameplaySetLocalPort(string port)
+    {
+        portConnectToLocal = port;
+    }
     
     #endregion
     
@@ -448,9 +456,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    public void FindMatchButtonClicked(bool isLocal)
+    public void FindMatchButtonClicked()
     {
-        GameplaySetIsLocal(isLocal);
         if (!isLocalPlayerInParty)
         {
             abLobby.CreateParty(OnPartyCreatedFindMatch);
@@ -488,7 +495,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         while (isActive)
         {
             yield return new WaitForSecondsRealtime(1.0f);
-            if (connectToLocal) { ip = ipConnectToLocal; }
+            if (connectToLocal)
+            { 
+                ip = ipConnectToLocal;
+                port = portConnectToLocal;
+            }
             multiplayerConnect.SetIPAddressPort(ip, port);
             multiplayerConnect.Connect();
             isActive = false;

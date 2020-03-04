@@ -71,5 +71,7 @@ public class UILobbyLogicComponent : MonoBehaviour
     [Header("Input Fields")]
     [Tooltip("It can be found under the SETTING menu")]
     public InputField localMatch_IP_inputFields;
+    [Tooltip("It can be found under the SETTING menu")]
+    public InputField localMatch_Port_inputFields;
     //public InputField localMatch_Port_inputFields; // TODO handle port changing for local match 
 }

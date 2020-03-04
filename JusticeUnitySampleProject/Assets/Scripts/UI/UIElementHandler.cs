@@ -32,6 +32,8 @@ namespace UITools
         private CanvasGroup loadingPanel;
         [SerializeField]
         private CanvasGroup playerProfilePanel;
+        [SerializeField]
+        private CanvasGroup settingsPanel;
 
         private CanvasGroup currentPanel;
 
@@ -177,6 +179,18 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(inventoryPanel));
+            }
+        }
+
+        public void FadeSettings()
+        {
+            if (settingsPanel.alpha == MAX_ALPHA)
+            {
+                StartCoroutine(FadeOut(settingsPanel));
+            }
+            else
+            {
+                StartCoroutine(FadeIn(settingsPanel));
             }
         }
 
