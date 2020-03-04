@@ -84,4 +84,6 @@ public static class LightFantasticConfig
         }
         return baseUrl;
     }
+    
+    public static readonly string LEADERBOARD_CODE = "WNLDB";
 }

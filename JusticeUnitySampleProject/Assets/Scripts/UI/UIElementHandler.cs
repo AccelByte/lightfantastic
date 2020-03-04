@@ -19,7 +19,8 @@ namespace UITools
         SEARCH_FRIEND,
         INVENTORY,
         PLAYER_PROFILE,
-        SETTINGS
+        SETTINGS,
+        LEADERBOARD
     }
 
     [Serializable]
@@ -99,6 +100,7 @@ namespace UITools
         {
             settingsButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.SETTINGS); });
             profileButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.PLAYER_PROFILE); });
+            leaderboardButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.LEADERBOARD); });
             foreach (var partyButton in partyButtons)
             {
                 partyButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.FRIENDS); });

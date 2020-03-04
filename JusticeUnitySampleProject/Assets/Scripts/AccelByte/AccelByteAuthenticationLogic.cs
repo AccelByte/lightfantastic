@@ -32,6 +32,7 @@ namespace ABRuntimeLogic
         private AccelByteGameProfileLogic abGameProfileLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
         private AccelByteStatisticLogic abUserStatisticLogic;
+        private AccelByteLeaderboardLogic abLeaderboardLogic;
 
         private E_LoginType loginType;
 
@@ -43,6 +44,7 @@ namespace ABRuntimeLogic
             abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
             abUserStatisticLogic = GetComponent<AccelByteStatisticLogic>();
+            abLeaderboardLogic = GetComponent<AccelByteLeaderboardLogic>();
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -296,6 +298,7 @@ namespace ABRuntimeLogic
                 UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
 
                 abUserProfileLogic.Init();
+                abLeaderboardLogic.Init();
                 abUserStatisticLogic.UpdatePlayerStatisticUI();
                 abLobbyLogic.ConnectToLobby();
             }
@@ -391,6 +394,7 @@ namespace ABRuntimeLogic
                     UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
                     
                     abUserProfileLogic.Init();
+                    abLeaderboardLogic.Init();
                     abUserStatisticLogic.UpdatePlayerStatisticUI();
                     abLobbyLogic.ConnectToLobby();
                 }
