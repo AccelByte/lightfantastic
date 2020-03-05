@@ -51,7 +51,7 @@ namespace UITools
         //Fade In/Out the Login UI Panel
         public void FadeLogin()
         {
-            if (loginPanel.alpha == MAX_ALPHA)
+            if (loginPanel.interactable)
             {
                 StartCoroutine(FadeOut(loginPanel));
             }
@@ -64,7 +64,7 @@ namespace UITools
         //Fade In/Out the Register UI Panel
         public void FadeRegister()
         {
-            if (registerPanel.alpha == MAX_ALPHA)
+            if (registerPanel.interactable)
             {
                 StartCoroutine(FadeOut(registerPanel));
             }
@@ -77,7 +77,7 @@ namespace UITools
         //Fade In/Out the Verify UI Panel
         public void FadeVerify()
         {
-            if (verifyPanel.alpha == MAX_ALPHA)
+            if (verifyPanel.interactable)
             {
                 StartCoroutine(FadeOut(verifyPanel));
             }
@@ -90,7 +90,7 @@ namespace UITools
         //Fade In/Out the Verify UI Panel
         public void FadeMenu()
         {
-            if (menuPanel.alpha == MAX_ALPHA)
+            if (menuPanel.interactable)
             {
                 StartCoroutine(FadeOut(menuPanel));
             }
@@ -102,7 +102,7 @@ namespace UITools
 
         public void FadePersistentFriends()
         {
-            if (persistentFriendsPanel.alpha == MAX_ALPHA)
+            if (persistentFriendsPanel.interactable)
             {
                 StartCoroutine(FadeOut(persistentFriendsPanel));
             }
@@ -114,7 +114,7 @@ namespace UITools
 
         public void FadeFriends()
         {
-            if (friendPanel.alpha == MAX_ALPHA)
+            if (friendPanel.interactable)
             {
                 StartCoroutine(FadeOut(friendPanel));
             }
@@ -135,7 +135,7 @@ namespace UITools
 
         public void FadeSearchFriends()
         {
-            if (searchFriendPanel.alpha == MAX_ALPHA)
+            if (searchFriendPanel.interactable)
             {
                 StartCoroutine(FadeOut(searchFriendPanel));
             }
@@ -147,7 +147,7 @@ namespace UITools
 
         public void FadeMatchmaking()
         {
-            if (matchmakingPanel.alpha == MAX_ALPHA)
+            if (matchmakingPanel.interactable)
             {
                 StartCoroutine(FadeOut(matchmakingPanel));
             }
@@ -159,7 +159,7 @@ namespace UITools
 
         public void FadeMultiplayerOption()
         {
-            if (multiplayerOptionPanel.alpha == MAX_ALPHA)
+            if (multiplayerOptionPanel.interactable)
             {
                 StartCoroutine(FadeOut(multiplayerOptionPanel));
                 currentPanel = menuPanel;
@@ -172,7 +172,7 @@ namespace UITools
 
         public void FadeInventory()
         {
-            if (inventoryPanel.alpha == MAX_ALPHA)
+            if (inventoryPanel.interactable)
             {
                 StartCoroutine(FadeOut(inventoryPanel));
             }
@@ -184,7 +184,7 @@ namespace UITools
 
         public void FadeSettings()
         {
-            if (settingsPanel.alpha == MAX_ALPHA)
+            if (settingsPanel.interactable)
             {
                 StartCoroutine(FadeOut(settingsPanel));
             }
@@ -196,7 +196,7 @@ namespace UITools
 
         public void FadeLoading()
         {
-            if (loadingPanel.alpha == MAX_ALPHA)
+            if (loadingPanel.interactable)
             {
                 StartCoroutine(FadeOut(loadingPanel));
                 currentPanel = menuPanel;
@@ -227,7 +227,7 @@ namespace UITools
 
         public void FadePlayerProfile()
         {
-            if (playerProfilePanel.alpha == MAX_ALPHA)
+            if (playerProfilePanel.interactable)
             {
                 StartCoroutine(FadeOut(playerProfilePanel));
             }
@@ -246,6 +246,7 @@ namespace UITools
         //Lerp the target panel's alpha down to 0 and disable the gameObject
         public IEnumerator FadeOut(CanvasGroup panelToFade)
         {
+            panelToFade.interactable = false;
             panelToFade.alpha = MAX_ALPHA;
             float startTime = Time.time;
             float amountToFade = 0 + panelToFade.alpha;
@@ -263,6 +264,7 @@ namespace UITools
         //Enable the gameObject and lerp the target panel's alpha up to 1
         public IEnumerator FadeIn(CanvasGroup panelToFade)
         {
+            panelToFade.interactable = true;
             panelToFade.alpha = MIN_ALPHA;
             panelToFade.gameObject.SetActive(true);
             float startTime = Time.time;
