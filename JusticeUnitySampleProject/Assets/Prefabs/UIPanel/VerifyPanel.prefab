@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 853526268756186426}
   - component: {fileID: 853526268756186427}
   - component: {fileID: 853526268756186425}
+  - component: {fileID: 674068322}
   m_Layer: 5
   m_Name: VerificationCodeInput
   m_TagString: Untagged
@@ -140,6 +141,23 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &674068322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853526268756186421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5daafd17c6900c64c9bb7b1429c3127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedSoundFX: 3
+  AnimationDuration: 0.2
+  ScalePersentage: 0.9
+  TranslationOffset: 20
+  ScaleUniformPersentage: 1.5
 --- !u!1 &853526268857869606
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +441,7 @@ GameObject:
   - component: {fileID: 853526269399669625}
   - component: {fileID: 853526269399669631}
   - component: {fileID: 853526269399669624}
+  - component: {fileID: 465388004}
   m_Layer: 5
   m_Name: VerifyPanel
   m_TagString: Untagged
@@ -474,6 +493,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &465388004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853526269399669626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4323fc43b9c681408162e09fc289ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputFields:
+  - {fileID: 853526268756186425}
+  currentInput: 0
+  continueButton: {fileID: 853526269433239894}
 --- !u!1 &853526269433239888
 GameObject:
   m_ObjectHideFlags: 0

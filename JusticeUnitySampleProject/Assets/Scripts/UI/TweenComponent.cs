@@ -37,7 +37,7 @@ public class TweenComponent : MonoBehaviour
     public void OnButtonClicked()
     {
         // scale to 80 %
-        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f)* ScalePersentage, AnimationDuration).OnComplete(OnButtonClickedComplete);
+        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f) * ScalePersentage, AnimationDuration).OnComplete(OnButtonClickedComplete);
         AudioManager.Instance.PlaySoundFX(selectedSoundFX);
     }
 
@@ -71,7 +71,7 @@ public class TweenComponent : MonoBehaviour
     {
         // scaleback tp 100%
         Debug.Log("TweenComponent OnAnimateSwipeRight!");
-        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f) , AnimationDuration);
+        gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), AnimationDuration);
     }
 
     public void AnimateScaleY_ToZero()
@@ -80,4 +80,29 @@ public class TweenComponent : MonoBehaviour
         Debug.Log("TweenComponent OnAnimateSwipeRight!");
         gameObject.transform.DOScaleY(0.0f, AnimationDuration);
     }
+
+    public void AnimateFadeIn()
+    {
+        Debug.Log("TweenComponent AnimateFadeIn!");
+        gameObject.transform.GetComponent<CanvasGroup>().DOFade(1, AnimationDuration).OnComplete(AnimateFadeInComplete);
+    }
+
+    private void AnimateFadeInComplete()
+    {
+        Debug.Log("TweenComponent AnimateFadeInComplete!");
+        gameObject.SetActive(true);
+    }
+
+    public void AnimateFadeOut()
+    {
+        Debug.Log("TweenComponent AnimateFadeOut!");
+        gameObject.transform.GetComponent<CanvasGroup>().DOFade(0, AnimationDuration).OnComplete(AnimateFadeOutComplete);
+    }
+
+    private void AnimateFadeOutComplete()
+    {
+        Debug.Log("TweenComponent AnimateFadeOutComplete!");
+        gameObject.SetActive(false);
+    }
+
 }

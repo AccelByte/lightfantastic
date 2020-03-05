@@ -334,6 +334,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             HidePopUpPartyControl();
             UnsubscribeAllCallbacks();
             OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
+
+            UIElementHandler.ShowLoadingPanel();
         }
         else
         {

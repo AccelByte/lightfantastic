@@ -174,7 +174,7 @@ namespace ABRuntimeLogic
         {
             abUser.LoginWithUsername(UIHandlerAuthComponent.loginEmail.text, UIHandlerAuthComponent.loginPassword.text, OnLogin);
 
-            UIElementHandler.FadeLoading();
+            UIElementHandler.ShowLoadingPanel();
         }
 
         //Attempts to login with launcher
@@ -186,7 +186,7 @@ namespace ABRuntimeLogic
             if (authCode != null)
             {
                 abUser.LoginWithLauncher(OnLogin);
-                UIElementHandler.FadeLoading();
+                UIElementHandler.ShowLoadingPanel();
             }
             else
             {
@@ -259,7 +259,7 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
-                UIElementHandler.FadeLoading();
+                UIElementHandler.HideLoadingPanel();
 
                 Debug.Log("Resend Verification failed:" + result.Error.Message);
                 Debug.Log("Resend Verification Response Code: " + result.Error.Code);
@@ -278,7 +278,7 @@ namespace ABRuntimeLogic
             {
                 if (!useSteam)
                 {
-                    UIElementHandler.FadeLoading();
+                    UIElementHandler.HideLoadingPanel();
                 }
 
                 Debug.Log("Login failed:" + result.Error.Message);
@@ -305,7 +305,7 @@ namespace ABRuntimeLogic
             }
             else if (!result.Value.eligible)
             {
-                UIElementHandler.FadeLoading();// hide
+                UIElementHandler.HideLoadingPanel();
                 gameObject.GetComponent<AccelByteAgreementLogic>().GetUserPolicy();
             }
             else
@@ -317,7 +317,7 @@ namespace ABRuntimeLogic
 
                 if (!abUserData.emailVerified && !useSteam)
                 {
-                    UIElementHandler.FadeLoading();// hide
+                    UIElementHandler.HideLoadingPanel();
                     UIElementHandler.FadeVerify();
                 }
                 else
@@ -325,7 +325,7 @@ namespace ABRuntimeLogic
                     //Progress to Main Menu
                     if (!useSteam)
                     {
-                        UIElementHandler.FadeLoading();
+                        UIElementHandler.HideLoadingPanel();
                     }
                     UIElementHandler.FadeLogin();
                     UIElementHandler.FadePersistentFriends();
@@ -353,6 +353,8 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.loginEmail.text = string.Empty;
                 UIHandlerAuthComponent.loginPassword.text = string.Empty;
             }
+
+            UIElementHandler.HideLoadingPanel();
         }
         #endregion
 
