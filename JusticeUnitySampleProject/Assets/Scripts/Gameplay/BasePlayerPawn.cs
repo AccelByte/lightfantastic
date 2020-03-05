@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AccelByte.Core;
 
 namespace Game
 {
@@ -31,11 +32,8 @@ namespace Game
         private CharacterParticleSetter particleSetter;
         private CharacterPlatformSpriteSetter platformSetter;
         private ParallaxSetter parallaxSetter;
-        [SerializeField]
-        private float speedDecayConst = 0.1f;
-        [SerializeField]
-        private float speedIncreaseConst = 0.1f;
-        [SerializeField]
+        private float speedDecayConst = LightFantasticConfig.PLAYER_SPEED_DECAY;
+        private float speedIncreaseConst = LightFantasticConfig.PLAYER_SPEED_INCREASE;
         private float maxSpeed_ = 0.1f;
         private float currSpeed;
         public float MaxSpeed { get { return maxSpeed_; } }
@@ -50,7 +48,7 @@ namespace Game
         #endregion //Field and Properties
 
         private BaseGameManager gameMgr = null;
-        private bool isGameStarted = false;
+        private bool allowInput = false;
 
         private void Awake()
         {
@@ -195,7 +193,7 @@ namespace Game
         private void IncreaseCurrSpeed()
         {
             // restrain the player from moving
-            if (isGameStarted)
+            if (allowInput)
             {
                 currSpeed += speedIncreaseConst;
             }
@@ -218,8 +216,20 @@ namespace Game
 
         public void FreezePlayerOnFinish()
         {
-            isGameStarted = false;
+            IEnumerator IncreaseSpeedDecayOnFinish()
+            {
+                while (currSpeed > 0)
+                {
+                    speedDecayConst *= LightFantasticConfig.PLAYER_SPEED_DECAY_MULTIPLIER_ONFINISH;
+                    yield return null;
+                }
+            }
+            
+            // Block player input & decelerate player
+            allowInput = false;
+            StartCoroutine(IncreaseSpeedDecayOnFinish());
         }
+
 
         #region RPCs
         public override void UpdatePosition(RpcArgs args)
@@ -346,7 +356,7 @@ namespace Game
         private void OnGameStart()
         {
             Debug.Log("BasePlayerPawn OnGameStart unlock player input");
-            isGameStarted = true;
+            allowInput = true;
         }
         #endregion //Events
     }
