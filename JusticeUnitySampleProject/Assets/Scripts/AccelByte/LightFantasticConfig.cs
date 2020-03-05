@@ -11,8 +11,6 @@ public static class LightFantasticConfig
         public const string hat = "hat";
         public const string effect = "effect";
     }
-
-    public const float CURR_SPEED_MULTIPLIER_ANIMATION = 200.0f;
     public const bool DEVELOPER_CONSOLE_VISIBLE = false;
     public const string DS_LOCALMODE_CMD_ARG = "localds"; // Arguments passed to set this server behavior as local DS
     
@@ -61,7 +59,14 @@ public static class LightFantasticConfig
     public static readonly uint COUNT_TO_START_RACE_SECOND = 4; // [ "GO", "1", "2", "3"]
     public static readonly uint RACE_LENGTH_SECOND = 30;
 
-    public static readonly uint FINISH_LINE_DISTANCE = 30;
+    public static readonly uint FINISH_LINE_DISTANCE = 500;
+    
+    public static readonly float PLAYER_SPEED_INCREASE = 0.015f;
+    public static readonly float PLAYER_SPEED_DECAY = 0.1f;
+    public static readonly float PLAYER_SPEED_DECAY_MULTIPLIER_ONFINISH = 1.02f;
+    
+
+    public const float CURR_SPEED_MULTIPLIER_ANIMATION = 200.0f;
 
     public static string GetPlayerPortalURL()
     {

@@ -69,28 +69,33 @@ public class PlayMatchButtonsScript : MonoBehaviour
 
     private void RegisterButtonUIEvent()
     {
-        onlineButton.button.onClick.RemoveAllListeners();
-        onlineButton.button.onClick.AddListener(() =>
-        {
-            GlowHeader();
-            HideMatchmakingPanel();
-            ShowMatchmakingPanel();
-            GlowTextMesh(onlineButton);
-            DimTextMesh(localButton);
-        });
         
-        localButton.button.onClick.RemoveAllListeners();
-        localButton.button.onClick.AddListener(() =>
-        {
-            GlowHeader();
-            HideMatchmakingPanel();
-            ShowMatchmakingPanel();
-            GlowTextMesh(localButton);
-            DimTextMesh(onlineButton);
-        });
+        onlineButton.button.onClick.RemoveListener(_OnOnlineButtonClicked);
+        onlineButton.button.onClick.AddListener(_OnOnlineButtonClicked);
+        
+        localButton.button.onClick.RemoveListener(_OnLocalButtonClicked);
+        localButton.button.onClick.AddListener(_OnLocalButtonClicked);
         
         matchmakingPanelUiComponent.ClosePanelButton.onClick.RemoveAllListeners();
         matchmakingPanelUiComponent.ClosePanelButton.onClick.AddListener(UnselectAll);
+    }
+
+    private void _OnOnlineButtonClicked()
+    {
+        GlowHeader();
+        HideMatchmakingPanel();
+        ShowMatchmakingPanel();
+        GlowTextMesh(onlineButton);
+        DimTextMesh(localButton);
+    }
+    
+    private void _OnLocalButtonClicked()
+    {
+        GlowHeader();
+        HideMatchmakingPanel();
+        ShowMatchmakingPanel();
+        GlowTextMesh(localButton);
+        DimTextMesh(onlineButton);
     }
 
     /// <summary>
