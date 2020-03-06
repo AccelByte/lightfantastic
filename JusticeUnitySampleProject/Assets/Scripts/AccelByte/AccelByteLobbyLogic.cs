@@ -157,7 +157,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 {
                     abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
                     {
-                        abLobby.Disconnect();
                         onComplete.Invoke();
                     });
                 });
@@ -331,7 +330,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         // Clean lobby state
         if (abLobby.IsConnected)
         {
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
             OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
         }
         else
