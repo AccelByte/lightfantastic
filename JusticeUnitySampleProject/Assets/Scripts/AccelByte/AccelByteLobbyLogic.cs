@@ -326,8 +326,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void OnLogoutButtonClicked()
     {
-        // Clean lobby state
         UIElementHandler.ShowLoadingPanel();
+        
+        // Clean lobby state
         if (abLobby.IsConnected)
         {
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
@@ -337,7 +338,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             AccelByteManager.Instance.AuthLogic.Logout();
         }
-        
+        CleanupLobbyUI();
+    }
+
+    private void CleanupLobbyUI()
+    {
         // Clean lobby UI
         ShowMatchmakingBoard(false);
         HidePopUpPartyControl();
@@ -442,7 +447,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnDisconnectNotificationReceived()
     {
-        UIHandlerLobbyComponent.logoutButton.onClick.Invoke();
+        UIElementHandler.ShowLoadingPanel();
+        CleanupLobbyUI();
+        AccelByteManager.Instance.AuthLogic.Logout();
     }
     #endregion
 
