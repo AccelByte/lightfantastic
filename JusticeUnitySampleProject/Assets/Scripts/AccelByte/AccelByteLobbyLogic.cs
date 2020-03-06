@@ -326,21 +326,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void OnLogoutButtonClicked()
     {
+        // Clean lobby state
+        UIElementHandler.ShowLoadingPanel();
         if (abLobby.IsConnected)
         {
-            Debug.Log("Disconnect from lobby");
             abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
-            ShowMatchmakingBoard(false);
-            HidePopUpPartyControl();
-            UnsubscribeAllCallbacks();
             OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
-
-            UIElementHandler.ShowLoadingPanel();
         }
         else
         {
-            Debug.Log("There is no Connection to lobby");
+            AccelByteManager.Instance.AuthLogic.Logout();
         }
+        
+        // Clean lobby UI
+        ShowMatchmakingBoard(false);
+        HidePopUpPartyControl();
+        UnsubscribeAllCallbacks();
     }
 
     private void SetupLobbyUI()
