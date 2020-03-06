@@ -157,7 +157,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 {
                     abLobby.SetUserStatus(UserStatus.Offline, "Offline", setStatusResult =>
                     {
-                        abLobby.Disconnect();
                         onComplete.Invoke();
                     });
                 });
@@ -326,21 +325,26 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void OnLogoutButtonClicked()
     {
+        UIElementHandler.ShowLoadingPanel();
+        
+        // Clean lobby state
         if (abLobby.IsConnected)
         {
-            Debug.Log("Disconnect from lobby");
-            abLobby.SetUserStatus(UserStatus.Offline, "Offline", OnSetUserStatus);
-            ShowMatchmakingBoard(false);
-            HidePopUpPartyControl();
-            UnsubscribeAllCallbacks();
             OnExitFromLobby(AccelByteManager.Instance.AuthLogic.Logout);
-
-            UIElementHandler.ShowLoadingPanel();
         }
         else
         {
-            Debug.Log("There is no Connection to lobby");
+            AccelByteManager.Instance.AuthLogic.Logout();
         }
+        CleanupLobbyUI();
+    }
+
+    private void CleanupLobbyUI()
+    {
+        // Clean lobby UI
+        ShowMatchmakingBoard(false);
+        HidePopUpPartyControl();
+        UnsubscribeAllCallbacks();
     }
 
     private void SetupLobbyUI()
@@ -441,7 +445,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnDisconnectNotificationReceived()
     {
-        UIHandlerLobbyComponent.logoutButton.onClick.Invoke();
+        UIElementHandler.ShowLoadingPanel();
+        CleanupLobbyUI();
+        AccelByteManager.Instance.AuthLogic.Logout();
     }
     #endregion
 
