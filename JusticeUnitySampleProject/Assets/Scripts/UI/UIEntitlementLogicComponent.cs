@@ -13,7 +13,6 @@ public class UIEntitlementLogicComponent : MonoBehaviour
     public InventoryGridLayout gridLayoutEffects;
     public AccelByteButtonScriptStyle buttonHat;
     public AccelByteButtonScriptStyle buttonEffect;
-    public CanvasGroup promptPanel;
     public AccelByteUserProfileLogic abUserProfileLogic; // Held by GameLogic, need to be refreshed on scene loaded
     public SpriteResolver hatSpriteResolver;
     #endregion
@@ -25,4 +24,5 @@ public class UIEntitlementLogicComponent : MonoBehaviour
     public Button backButton;
     public Button promptPanelSaveButton;
     public Button promptPanelDontSaveButton;
+    public Button promptPanelCloseButton;
 }

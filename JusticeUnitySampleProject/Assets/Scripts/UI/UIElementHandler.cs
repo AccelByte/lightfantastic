@@ -1,19 +1,74 @@
-﻿//Disables the warning messages generated from private [SerializeField]
-#pragma warning disable 0649
+﻿#pragma warning disable 0649
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using Object = System.Object;
 
 namespace UITools
 {
+    [Serializable]
+    public enum ExclusivePanelType
+    {
+        _empty_, // none
+        REGISTER,
+        VERIFY,
+        LOGIN,
+        MAIN_MENU,
+        FRIENDS,
+        SEARCH_FRIEND,
+        INVENTORY,
+        PLAYER_PROFILE,
+        SETTINGS
+    }
+
+    [Serializable]
+    public enum NonExclusivePanelType
+    {
+        _empty_, // none
+        PARENT_OF_OVERLAY_PANELS, // Held tons of overlay panel
+        MATCHMAKING, // Matchamaking mode selection panel
+        LOADING,
+        EQUIPMENT_BACK_PROMPT_PANEL
+    }
+    
+    [Serializable]
+    public struct ExclusivePanel
+    {
+        public CanvasGroup canvasGroup;
+        public ExclusivePanelType type;
+    }
+
+    [Serializable]
+    public struct NonExclusivePanel
+    {
+        public CanvasGroup canvasGroup;
+        public NonExclusivePanelType type;
+    }
+    
     public class UIElementHandler : MonoBehaviour
     {
+#region MainMenuButtons
+        [Header("Main Menu Buttons")] 
+        [SerializeField] public Button onlineButton;
+        [SerializeField] public Button localButton;
+        [SerializeField] public Button inventoryButton;
+        [SerializeField] public Button leaderboardButton;
+        [SerializeField] public Button settingsButton;
+        [SerializeField] public Button logoutButton;
+        [SerializeField] public Button exitButton;
+        [SerializeField] public Button chatButton;
+        [SerializeField] public Button profileButton;
+        [SerializeField] public Button[] partyButtons;
+#endregion
+
         #region UIPanels
-        [SerializeField]
-        private CanvasGroup registerPanel;
-        [SerializeField]
-        private CanvasGroup verifyPanel;
-        [SerializeField]
-        private CanvasGroup loginPanel;
+
+        [SerializeField] [Header("Exclusive Panels")]
+        private ExclusivePanel[] exclusivePanels;
+        [SerializeField] [Header("Non Exclusive Panels")]
+        private NonExclusivePanel[] nonExclusivePanels;
+
         [SerializeField]
         private CanvasGroup menuPanel;
         [SerializeField]
@@ -23,15 +78,9 @@ namespace UITools
         [SerializeField]
         private CanvasGroup searchFriendPanel;
         [SerializeField]
-        private CanvasGroup matchmakingPanel;
-        [SerializeField]
-        private CanvasGroup inventoryPanel;
-        [SerializeField]
         public CanvasGroup loadingPanel;
         [SerializeField]
         private CanvasGroup playerProfilePanel;
-        [SerializeField]
-        private CanvasGroup settingsPanel;
 
         private CanvasGroup currentPanel;
 
@@ -46,44 +95,70 @@ namespace UITools
         private const float TRIGGER_ZERO_ALPHA = 0.1f;
         private const float TRANSITION_SPEED = 80f;
 
-        //Fade In/Out the Login UI Panel
-        public void FadeLogin()
+        private void Start()
         {
-            if (loginPanel.interactable)
+            settingsButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.SETTINGS); });
+            profileButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.PLAYER_PROFILE); });
+            foreach (var partyButton in partyButtons)
             {
-                StartCoroutine(FadeOut(loginPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(loginPanel));
+                partyButton.onClick.AddListener(delegate { ShowExclusivePanel(ExclusivePanelType.FRIENDS); });
             }
         }
 
-        //Fade In/Out the Register UI Panel
-        public void FadeRegister()
+        public void ShowExclusivePanel(ExclusivePanelType param)
         {
-            if (registerPanel.interactable)
+            foreach (var panel in exclusivePanels)
             {
-                StartCoroutine(FadeOut(registerPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(registerPanel));
+                if (panel.type == param)
+                {
+                    StartCoroutine(FadeIn(panel.canvasGroup));
+                }
+                else
+                {
+                    StartCoroutine(FadeOut(panel.canvasGroup));
+                }
             }
         }
 
-        //Fade In/Out the Verify UI Panel
-        public void FadeVerify()
+        public void HideAllExclusivePanel()
         {
-            if (verifyPanel.interactable)
+            foreach (var panel in exclusivePanels)
             {
-                StartCoroutine(FadeOut(verifyPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(verifyPanel));
+                StartCoroutine(FadeOut(panel.canvasGroup));
             }
         }
+
+        public void ShowNonExclusivePanel(NonExclusivePanelType param)
+        {
+            foreach (var panel in nonExclusivePanels)
+            {
+                if (panel.type == param)
+                {
+                    StartCoroutine(FadeIn(panel.canvasGroup));
+                }
+            }
+        }
+
+        public void HideNonExclusivePanel(NonExclusivePanelType param)
+        {
+            foreach (var panel in nonExclusivePanels)
+            {
+                if (panel.type == param)
+                {
+                    StartCoroutine(FadeOut(panel.canvasGroup));
+                }
+            }
+        }
+        
+        public void HideAllNonExclusivePanel()
+        {
+            foreach (var panel in nonExclusivePanels)
+            {
+                StartCoroutine(FadeOut(panel.canvasGroup));
+            }
+        }
+
+        public void BackToMainMenu(){ ShowExclusivePanel(ExclusivePanelType.MAIN_MENU); }
         
         //Fade In/Out the Verify UI Panel
         public void FadeMenu()
@@ -122,15 +197,6 @@ namespace UITools
             }
         }
 
-        public void FadeInFriends()
-        {
-            if (friendPanel.alpha != MAX_ALPHA)
-            {
-                StartCoroutine(FadeOut(currentPanel));
-                StartCoroutine(FadeIn(friendPanel));
-            }
-        }
-
         public void FadeSearchFriends()
         {
             if (searchFriendPanel.interactable)
@@ -140,55 +206,6 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(searchFriendPanel));
-            }
-        }
-
-        public void FadeMatchmaking()
-        {
-            if (matchmakingPanel.interactable)
-            {
-                StartCoroutine(FadeOut(matchmakingPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(matchmakingPanel));
-            }
-        }
-
-        public void FadeInventory()
-        {
-            if (inventoryPanel.interactable)
-            {
-                StartCoroutine(FadeOut(inventoryPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(inventoryPanel));
-            }
-        }
-
-        public void FadeSettings()
-        {
-            if (settingsPanel.interactable)
-            {
-                StartCoroutine(FadeOut(settingsPanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(settingsPanel));
-            }
-        }
-
-        public void FadeLoading()
-        {
-            if (loadingPanel.interactable)
-            {
-                StartCoroutine(FadeOut(loadingPanel));
-                currentPanel = menuPanel;
-            }
-            else
-            {
-                StartCoroutine(FadeIn(loadingPanel));
             }
         }
 
@@ -207,18 +224,6 @@ namespace UITools
             if (loadingTweenAnimator != null)
             {
                 loadingTweenAnimator.AnimateFadeOut();
-            }
-        }
-
-        public void FadePlayerProfile()
-        {
-            if (playerProfilePanel.interactable)
-            {
-                StartCoroutine(FadeOut(playerProfilePanel));
-            }
-            else
-            {
-                StartCoroutine(FadeIn(playerProfilePanel));
             }
         }
 
@@ -249,9 +254,9 @@ namespace UITools
         //Enable the gameObject and lerp the target panel's alpha up to 1
         public IEnumerator FadeIn(CanvasGroup panelToFade)
         {
+            panelToFade.gameObject.SetActive(true);
             panelToFade.interactable = true;
             panelToFade.alpha = MIN_ALPHA;
-            panelToFade.gameObject.SetActive(true);
             float startTime = Time.time;
             float amountToFade = MAX_ALPHA - panelToFade.alpha;
             while (panelToFade.alpha < TRIGGER_MAX_ALPHA)

@@ -251,7 +251,12 @@ public class AccelByteEntitlementLogic : MonoBehaviour
     {
         Debug.Log("ABEntitlement AddEventListeners!");
         // Bind Buttons
-        UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(() => GetEntitlement(true));
+        UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(delegate
+        {
+            GetEntitlement(true);
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.INVENTORY);
+        });
+        
         UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowHatInventories(true));
         UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => ShowEffectInventories(false));
         UIHandlerEntitlementComponent.hatTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(false));
@@ -261,9 +266,24 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonHat.SetEnable(true));
         UIHandlerEntitlementComponent.effectTabButton.onClick.AddListener(() => UIHandlerEntitlementComponent.buttonEffect.SetEnable(false));
         UIHandlerEntitlementComponent.backButton.onClick.AddListener(ShowPromptPanel);
-        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.AddListener(UploadEquipment);
-        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.AddListener(HidePromptPanel);
-        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(HidePromptPanel);
+        
+        UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.AddListener(delegate
+        {
+            UploadEquipment();
+            HidePromptPanel();
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+        });
+        
+        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(delegate
+        {
+            HidePromptPanel();
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+        });
+        
+        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(delegate
+        {
+            HidePromptPanel();
+        });
     }
 
     void RemoveListeners()
@@ -280,13 +300,11 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 
     public void GetEntitlement(bool inMenu)
     {
-        //TODO: fix FadeLoadingIn
-        //uiHandler.FadeLoading();
-
         activeEquipmentList = null;
         originalEquipmentList = null;
         if (inMenu)
         {
+            UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.LOADING);
             HidePromptPanel();
         }
         if (allItemInfo.data == null)
@@ -372,7 +390,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
     private void OnGetEntitlement(Result<EntitlementPagingSlicedResult> result)
     {
         //TODO: fix FadeLoadingOut
-        //uiHandler.FadeLoading();
+        UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.LOADING);
         if (result.IsError)
         {
             // handle
@@ -583,16 +601,14 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         });
     }
 
-    public void ShowPromptPanel()
+    private void ShowPromptPanel()
     {
-        UIHandlerEntitlementComponent.promptPanel.alpha = 1;
-        UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(true);
+        UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.EQUIPMENT_BACK_PROMPT_PANEL);
     }
 
-    public void HidePromptPanel()
+    private void HidePromptPanel()
     {
-        UIHandlerEntitlementComponent.promptPanel.alpha = 0;
-        UIHandlerEntitlementComponent.promptPanel.gameObject.SetActive(false);
+        UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.EQUIPMENT_BACK_PROMPT_PANEL);
     }
 
     public void ShowHatInventories(bool show)
