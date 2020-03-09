@@ -54,7 +54,7 @@ public class PopupManager : MonoBehaviour
             popup.primaryButtonAction = popupData.primaryButtonAction;
             popup.secondaryButtonText = popupData.SecondaryButtonText;
             popup.secondaryButtonAction = popupData.secondaryButtonAction;
-            popup.showExitButton = true;
+            popup.showExitButton = false;
         }
     }
 
@@ -77,7 +77,7 @@ public class PopupManager : MonoBehaviour
             popup.primaryButtonAction = btnCallback01;
             popup.secondaryButtonText = btnText02;
             popup.secondaryButtonAction = btnCallback02;
-            popup.showExitButton = true;
+            popup.showExitButton = false;
         }
     }
 

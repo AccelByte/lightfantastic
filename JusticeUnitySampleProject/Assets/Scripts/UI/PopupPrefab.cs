@@ -42,7 +42,7 @@ public class PopupPrefab : MonoBehaviour
         component.primaryButton.getButton().onClick.AddListener(primaryButtonAction);
 
         component.secondaryButton.text = secondaryButtonText;
-        component.secondaryButton.getButton().onClick.AddListener(secondaryButtonAction.Invoke);
+        component.secondaryButton.getButton().onClick.AddListener(secondaryButtonAction);
 
         component.closeButton.getButton().onClick.AddListener(onExitButtonClicked.Invoke);
 

@@ -1373,11 +1373,20 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnInviteParty failed:" + result.Error.Message);
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
+
+            // if the player already in party then notify the user
+            PopupManager.Instance.InitPopup("Invite Party Failed", " " + result.Error.Message, "OK", "", OnInvitePartyFailed, null);
+            PopupManager.Instance.ShowPopup();
         }
         else
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party");
         }
+    }
+
+    private void OnInvitePartyFailed()
+    {
+        PopupManager.Instance.HidePopup();
     }
 
     private void OnGetUserOnInvite(Result<UserData> result)
