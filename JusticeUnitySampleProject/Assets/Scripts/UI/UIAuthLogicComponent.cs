@@ -23,6 +23,9 @@ public class UIAuthLogicComponent : MonoBehaviour
     #region Login UI Fields
     public InputField loginEmail;
     public InputField loginPassword;
+
+    public GameObject errorPanel;
+    public Text errorMessageText;
     #endregion
 
     #region Debug UI Fields
