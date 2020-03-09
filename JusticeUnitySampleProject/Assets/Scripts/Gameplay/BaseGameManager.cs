@@ -15,7 +15,7 @@ namespace Game
         public delegate void GameManagerInitCompletion();
         public event GameManagerInitCompletion onInitCompleted;
         public delegate void OnAllPlayerConnectedEvent();
-        public event OnAllPlayerConnectedEvent onAllplayerConnected;
+        public event OnAllPlayerConnectedEvent onAllplayerReady;
         public delegate void OnGameStartEvent();
         public event OnGameStartEvent onGameStart;
         public delegate void OnGameEndEvent();
@@ -91,7 +91,8 @@ namespace Game
 
         public int PlayerConnected = 0;
         public int PlayerMatched = 0;
-
+        private int PlayerReady = 0; // Players that already send RPC_SETUP
+        private Coroutine forceStartRaceCountdownCoroutine;
 
         #endregion
 
@@ -358,9 +359,10 @@ namespace Game
         private void onServerMatched(int playerCount)
         {
             PlayerMatched = playerCount;
-            onAllplayerConnected?.Invoke();
+            CheckPlayerReady();
+            ForceStartRaceCountdown(LightFantasticConfig.DEADLINE_TO_FORCE_START_MATCH_COUNTDOWN);
             Debug.Log("GameManager onServerMatched! player count: " + PlayerMatched);
-            
+                
             // unsubscribe once get the info
             AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest -= onServerMatched;
         }
@@ -402,5 +404,43 @@ namespace Game
             }
         }
         #endregion //Events
+
+        public void PlayerSetReady()
+        {
+            PlayerReady++;
+            CheckPlayerReady();
+        }
+
+        private void CheckPlayerReady()
+        {
+            if (PlayerMatched == PlayerReady)
+            {
+                ForceStartRaceCountdown(0);
+            }
+        }
+        
+        /// <summary>
+        /// If player ready count is not same with the connected player. Force to start.
+        /// We won't wait all player to be ready for eternity.
+        /// Just in case a player is disconnected in the process of joining server.
+        /// </summary>
+        /// <param name="second">Duration to force start match countdown 3,2,1</param>
+        /// <returns></returns>
+        private void ForceStartRaceCountdown(uint second)
+        {
+            IEnumerator ienumerator()
+            {
+                yield return new WaitForSeconds(second);
+                OnAllplayerConnectedInvoke();
+            }
+
+            forceStartRaceCountdownCoroutine = StartCoroutine(ienumerator());
+        }
+
+        private void OnAllplayerConnectedInvoke()
+        {
+            onAllplayerReady?.Invoke();
+            StopCoroutine(forceStartRaceCountdownCoroutine);
+        }
     }
 }
