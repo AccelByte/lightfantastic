@@ -1241,13 +1241,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
         }
 
-        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
+        //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
+
+        PopupManager.Instance.HidePopup();
     }
 
     public void OnDeclinePartyClicked()
     {
-        UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
+        //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
         Debug.Log("OnDeclinePartyClicked Join party failed");
+
+        PopupManager.Instance.HidePopup();
     }
 
     public void OnPlayerPartyProfileClicked()
@@ -1386,8 +1390,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + result.Value.displayName;
-            UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
+            //change this to new popup system
+            //UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + result.Value.displayName;
+            //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
+
+            PopupManager.Instance.InitPopup("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
+            PopupManager.Instance.ShowPopup();
         }
     }
 
