@@ -941,6 +941,8 @@ MonoBehaviour:
   verificationCode: {fileID: 1718567786}
   loginEmail: {fileID: 9058917506772681724}
   loginPassword: {fileID: 9058917505056471732}
+  errorPanel: {fileID: 1090673508}
+  errorMessageText: {fileID: 1650081568}
   displayName: {fileID: 179234588}
   userId: {fileID: 2002304438}
   sessionId: {fileID: 1568697294}
@@ -1444,6 +1446,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ee11deea45e7b4fabc9f30bf67a9f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1090673508 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6334164692225595098, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7093256565074485972}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1104556715 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4112399620689403963, guid: a2c8ba75690d1c74c955a83d1ec99150,
@@ -2026,6 +2034,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0315f5832782c143bf1f0b1ec80e571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1650081568 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8472766580215691073, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7093256565074485972}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1650182766 stripped

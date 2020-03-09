@@ -33,6 +33,8 @@ namespace ABRuntimeLogic
         private AccelByteUserProfileLogic abUserProfileLogic;
         private AccelByteStatisticLogic abUserStatisticLogic;
 
+        private E_LoginType loginType;
+
         private const string AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE = "JUSTICE_AUTHORIZATION_CODE";
 
         void Awake()
@@ -125,6 +127,7 @@ namespace ABRuntimeLogic
         {
             if (useSteam)
             {
+                loginType = E_LoginType.Steam;
                 UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 Debug.Log("Valid ABUSER:"+abUser.Session.IsValid());
                 Debug.Log("Valid Steam Auth:" + steamAuth.isActiveAndEnabled);
@@ -178,9 +181,24 @@ namespace ABRuntimeLogic
         //Attempts to log the user in
         public void Login()
         {
-            abUser.LoginWithUsername(UIHandlerAuthComponent.loginEmail.text, UIHandlerAuthComponent.loginPassword.text, OnLogin);
+            if (string.IsNullOrEmpty(UIHandlerAuthComponent.loginEmail.text))
+            {
+                if (string.IsNullOrEmpty(UIHandlerAuthComponent.loginPassword.text))
+                    ShowErrorMessage(true, "Please fill your email address and password");
+                else
+                    ShowErrorMessage(true, "Please fill your email address");
+            }
+            else if (string.IsNullOrEmpty(UIHandlerAuthComponent.loginPassword.text))
+            {
+                ShowErrorMessage(true, "Please fill your password");
+            }
+            else
+            {
+                loginType = E_LoginType.Username;
 
-            UIElementHandler.ShowLoadingPanel();
+                abUser.LoginWithUsername(UIHandlerAuthComponent.loginEmail.text, UIHandlerAuthComponent.loginPassword.text, OnLogin);
+                UIElementHandler.ShowLoadingPanel();
+            }
         }
 
         //Attempts to login with launcher
@@ -191,6 +209,8 @@ namespace ABRuntimeLogic
 
             if (authCode != null)
             {
+                loginType = E_LoginType.Launcher;
+
                 abUser.LoginWithLauncher(OnLogin);
                 UIElementHandler.ShowLoadingPanel();
             }
@@ -215,6 +235,19 @@ namespace ABRuntimeLogic
         public UserData GetUserData()
         {
             return abUserData;
+        }
+
+        private void ShowErrorMessage(bool isEnable, string message = "")
+        {
+            if (isEnable)
+            {
+                UIHandlerAuthComponent.errorPanel.SetActive(true);
+                UIHandlerAuthComponent.errorMessageText.text = message;
+            }
+            else
+            {
+                UIHandlerAuthComponent.errorPanel.SetActive(false);
+            }
         }
         #endregion
 
@@ -290,6 +323,18 @@ namespace ABRuntimeLogic
                 Debug.Log("Login failed:" + result.Error.Message);
                 Debug.Log("Login Response Code: " + result.Error.Code);
                 //Show Error Message
+                if (loginType == E_LoginType.Launcher)
+                {
+                    ShowErrorMessage(true, "Can't login from launcher.");
+                }
+                else if (loginType == E_LoginType.Username)
+                {
+                    ShowErrorMessage(true, "Incorrect email address or password.");
+                }
+                else if (loginType == E_LoginType.Steam)
+                {
+                    ShowErrorMessage(true, "Can't login from steam");
+                }
             }
             else
             {
@@ -297,6 +342,7 @@ namespace ABRuntimeLogic
                 //Show Login Successful
                 //Show "Getting User Details"
                 GetUserDetails();
+                ShowErrorMessage(false);
             }
         }
 
