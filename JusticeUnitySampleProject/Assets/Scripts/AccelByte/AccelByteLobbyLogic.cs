@@ -245,6 +245,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.matchmakingButtonCollection.OnLocalButtonClicked.AddListener(delegate { GameplaySetIsLocal(true); });
         UIHandlerLobbyComponent.matchmakingButtonCollection.OnOnlineButtonClicked.AddListener(delegate { GameplaySetIsLocal(false); });
         
+        UIHandlerLobbyComponent.matchmakingFailedPromptPanel.primaryButtonAction.AddListener(delegate { FindMatch(); });
+        
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(ListFriendsStatus);
         UIHandlerLobbyComponent.friendsTabButton.onClick.AddListener(LoadFriendsList);
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetIncomingFriendsRequest);
@@ -603,7 +605,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
                 delegate
                 {
-                    if (abMatchmakingNotif?.matchId != null)
+                    if (abMatchmakingNotif?.status == MatchmakingNotifStatus.done.ToString())
                     {
                         abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
                         UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
@@ -638,6 +640,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     private void OnReadyForMatchConfirmation(Result result)
     {
+        abMatchmakingNotif = null;
         if (result.IsError)
         {
             Debug.Log("OnReadyForMatchConfirmation failed:" + result.Error.Message);

@@ -12,17 +12,17 @@ public class PromptPanel : MonoBehaviour
     [SerializeField][Tooltip("Primary (Suggested) button text")]
     private string primaryButtonText;
     [SerializeField][Tooltip("Action from the primary button")]
-    private UnityEvent primaryButtonAction;
+    public UnityEvent primaryButtonAction;
     
     [SerializeField][Tooltip("Secondary button text")]
     private string secondaryButtonText;
     [SerializeField][Tooltip("Action from the secondary button")]
-    private UnityEvent secondaryButtonAction;
+    public UnityEvent secondaryButtonAction;
     
     [SerializeField][Tooltip("Set true if you want to show a small close icon")]
     private bool showExitButton;
     [SerializeField][Tooltip("Called when close button is clicked. SUGGESTION: use this to hide the prompt panel")]
-    private UnityEvent onExitButtonClicked;
+    public UnityEvent onExitButtonClicked;
     
     [SerializeField]
     private PromptPanelComponent component;
