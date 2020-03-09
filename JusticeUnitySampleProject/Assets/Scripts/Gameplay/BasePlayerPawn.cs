@@ -269,6 +269,7 @@ namespace Game
                 {
                     gameMgr.RegisterCharacter(newOwnerNetId, this);
                     networkObject.Banable = false;
+                    networkObject.SendRpc(RPC_SET_READY, Receivers.Server);
                 });
             }
             else
@@ -308,6 +309,16 @@ namespace Game
             hoveringText.ChangeTextLabel(args.GetAt<string>(0));
             platformSetter.SetSprite((LightFantasticConfig.Platform) args.GetAt<uint>(1));
         }
+
+        
+        public override void RPCSetReady(RpcArgs args)
+        {
+            if (networkObject.IsServer)
+            {
+                gameMgr.PlayerSetReady();
+            }
+        }
+
         #endregion //RPCs
 
         #region Events

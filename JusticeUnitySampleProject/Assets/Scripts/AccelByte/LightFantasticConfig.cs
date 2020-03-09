@@ -3,6 +3,8 @@ using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
+    public const string GAME_VERSION = "0.0.5";
+    public const string DS_TARGET_VERSION = "v0.0.5.4";
     public const string DEFAULT_LANGUAGE = "en";
     public const string IMAGE_AS = "product-cover";
 
@@ -58,6 +60,7 @@ public static class LightFantasticConfig
     /// GAMEPLAY STUFF
     public static readonly uint COUNT_TO_START_RACE_SECOND = 4; // [ "GO", "1", "2", "3"]
     public static readonly uint RACE_LENGTH_SECOND = 30;
+    public static readonly uint DEADLINE_TO_FORCE_START_MATCH_COUNTDOWN = 12 /*sec*/; // Start the race even though the player isn't ready
 
     public static readonly uint FINISH_LINE_DISTANCE = 500;
     
