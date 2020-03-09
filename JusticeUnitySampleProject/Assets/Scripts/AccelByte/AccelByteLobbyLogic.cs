@@ -460,7 +460,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            abLobby.StartMatchmaking(gameMode, OnFindMatch);
+            abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, OnFindMatch);
         }
     }
 

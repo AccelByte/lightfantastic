@@ -52,7 +52,7 @@ public class MainHUD : BaseHUD
     protected override void AddListeners()
     {
         pauseButton_.onClick.AddListener(ShowPauseScreen);
-        gameMgr.onAllplayerConnected += OnAllPlayerConnected;
+        gameMgr.onAllplayerReady += OnAllPlayerConnected;
         gameMgr.onGameStart += OnGameStart;
         gameMgr.onGameEnd += OnGameEnd;
     }
@@ -63,7 +63,7 @@ public class MainHUD : BaseHUD
 
         if (gameMgr != null)
         {
-            gameMgr.onAllplayerConnected -= OnAllPlayerConnected;
+            gameMgr.onAllplayerReady -= OnAllPlayerConnected;
             gameMgr.onGameStart -= OnGameStart;
             gameMgr.onGameEnd -= OnGameEnd;
         }
@@ -154,7 +154,7 @@ public class MainHUD : BaseHUD
     {
         if (gameMgr != null)
         {
-            gameMgr.onAllplayerConnected -= OnAllPlayerConnected;
+            gameMgr.onAllplayerReady -= OnAllPlayerConnected;
         }
 
         if (gameTimer_ != null)

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][][\"string\"][\"string\", \"string\"][\"float\"][\"string\", \"uint\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][][\"newUserId\"][\"newHatTitle\", \"newEffectTitle\"][\"CurrentSpeed\"][\"displayName\", \"platform\"]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][\"uint\", \"uint\", \"Vector3\"][][\"string\"][\"string\", \"string\"][\"float\"][\"string\", \"uint\"][]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"newPos\"][\"newPlayerNum\", \"newOwnerId\", \"initialPos\"][][\"newUserId\"][\"newHatTitle\", \"newEffectTitle\"][\"CurrentSpeed\"][\"displayName\", \"platform\"][]]")]
 	public abstract partial class MovePlayerPawnBehavior : NetworkBehavior
 	{
 		public const byte RPC_UPDATE_POSITION = 0 + 5;
@@ -15,6 +15,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public const byte RPC_SET_ACTIVE_EQUIPMENT = 4 + 5;
 		public const byte RPC_SET_CURRENT_SPEED = 5 + 5;
 		public const byte RPC_SET_DISPLAY_NAME_AND_PLATFORM = 6 + 5;
+		public const byte RPC_SET_READY = 7 + 5;
 		
 		public MovePlayerPawnNetworkObject networkObject = null;
 
@@ -35,6 +36,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("RPCSetActiveEquipment", RPCSetActiveEquipment, typeof(string), typeof(string));
 			networkObject.RegisterRpc("RPCSetCurrentSpeed", RPCSetCurrentSpeed, typeof(float));
 			networkObject.RegisterRpc("RPCSetDisplayNameAndPlatform", RPCSetDisplayNameAndPlatform, typeof(string), typeof(uint));
+			networkObject.RegisterRpc("RPCSetReady", RPCSetReady);
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -143,6 +145,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// </summary>
 		public abstract void RPCSetDisplayNameAndPlatform(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void RPCSetReady(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}
