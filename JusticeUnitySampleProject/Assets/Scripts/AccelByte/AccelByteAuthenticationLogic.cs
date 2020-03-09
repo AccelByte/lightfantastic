@@ -100,10 +100,10 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
             
-            // Already handled by AccelByteLobbyLogic
-            //UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
+            UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
             
-            UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUp);
+            // Remove url link
+            //UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUp);
         }
 
         void RemoveListeners()
@@ -113,11 +113,11 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.registerButton.onClick.RemoveListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.RemoveListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
-            
-            // Already handled by AccelByteLobbyLogic
-            //UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
-            
-            UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUp);
+
+            UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+
+            // Remove url link
+            //UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUp);
         }
         #endregion // UI Listeners
 
