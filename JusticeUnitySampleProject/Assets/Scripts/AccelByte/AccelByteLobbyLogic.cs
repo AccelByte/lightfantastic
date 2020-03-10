@@ -462,7 +462,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, OnFindMatch);
+            var latencies = AccelByteQosLogic.Instance.GetLatencies();
+            if (latencies != null)
+            {
+                abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
+            }
+            else
+            {
+                abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, OnFindMatch);
+            }
         }
     }
 
