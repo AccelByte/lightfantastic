@@ -462,7 +462,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, OnFindMatch);
+            var latencies = AccelByteQosLogic.Instance.GetLatencies();
+            if (latencies != null)
+            {
+                abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
+            }
+            else
+            {
+                abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, OnFindMatch);
+            }
         }
     }
 
@@ -499,20 +507,25 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
+    private bool allowToConnectServer = true;
     IEnumerator WaitForGameServerReady(string ip, string port)
     {
-        bool isActive = true;
-        while (isActive)
+        if (allowToConnectServer)
         {
-            yield return new WaitForSecondsRealtime(1.0f);
-            if (connectToLocal)
-            { 
-                ip = ipConnectToLocal;
-                port = portConnectToLocal;
+            allowToConnectServer = false;
+            bool isActive = true;
+            while (isActive)
+            {
+                yield return new WaitForSecondsRealtime(1.0f);
+                if (connectToLocal)
+                { 
+                    ip = ipConnectToLocal;
+                    port = portConnectToLocal;
+                }
+                multiplayerConnect.SetIPAddressPort(ip, port);
+                multiplayerConnect.Connect();
+                isActive = false;
             }
-            multiplayerConnect.SetIPAddressPort(ip, port);
-            multiplayerConnect.Connect();
-            isActive = false;
         }
     }
 
@@ -599,6 +612,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
+            allowToConnectServer = true;
+            
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
             WriteInDebugBox("Searching a match game mode " + gameMode);
             ShowMatchmakingBoard(true);
