@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AccelByte.Api;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AccelByteQosLogic : MonoBehaviour
 {
@@ -13,15 +14,24 @@ public class AccelByteQosLogic : MonoBehaviour
     private void Start()
     {
         qos = AccelBytePlugin.GetQos();
-        qos.GetServerLatencies(result =>
+        RefreshQosLatencies();
+        SceneManager.sceneLoaded += (scene, mode) =>
         {
-            latencies = new Dictionary<string, int>(result.Value.Count);
-            latencies = result.Value;
-        });
+            RefreshQosLatencies();
+        };
     }
 
     public Dictionary<string, int> GetLatencies()
     {
         return latencies;
+    }
+
+    public void RefreshQosLatencies()
+    {
+        qos.GetServerLatencies(result =>
+        {
+            latencies = new Dictionary<string, int>(result.Value.Count);
+            latencies = result.Value;
+        });
     }
 }
