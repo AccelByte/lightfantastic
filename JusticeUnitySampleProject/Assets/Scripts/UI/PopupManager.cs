@@ -50,10 +50,23 @@ public class PopupManager : MonoBehaviour
         {
             popup.header = popupData.TittleText;
             popup.description = popupData.DescriptionText;
-            popup.primaryButtonText = popupData.PrimaryButtonText;
-            popup.primaryButtonAction = popupData.primaryButtonAction;
-            popup.secondaryButtonText = popupData.SecondaryButtonText;
-            popup.secondaryButtonAction = popupData.secondaryButtonAction;
+            switch (popupData.PopupType)
+            {
+                case E_PopupType.Popup01:
+                    popup.primaryButtonText = popupData.PrimaryButtonText;
+                    popup.primaryButtonAction = popupData.primaryButtonAction;
+                    popup.secondaryButtonText = popupData.SecondaryButtonText;
+                    popup.secondaryButtonAction = popupData.secondaryButtonAction;
+                    break;
+                case E_PopupType.Popup02:
+                    popup.primarySingleButtonText = popupData.PrimaryButtonText;
+                    popup.primarySingleButtonAction = popupData.primaryButtonAction;
+                    break;
+                default:
+                    Debug.Log("PopupManager InitPopup there is no popuptype of "+ popupData.PopupType);
+                    break;
+            }
+            popup.SelectPopupType(popupData.PopupType);
             popup.showExitButton = false;
         }
     }
@@ -78,6 +91,29 @@ public class PopupManager : MonoBehaviour
             popup.secondaryButtonText = btnText02;
             popup.secondaryButtonAction = btnCallback02;
             popup.showExitButton = false;
+            popup.SelectPopupType(E_PopupType.Popup01);
+        }
+    }
+
+    public void InitPopupWarning(string header, string desc, string btnText01, UnityAction btnCallback01)
+    {
+        Debug.Log("Popupmanager InitPopup Header: " + header);
+        PopupPrefab popup = null;
+
+        if (currentPopup == null)
+        {
+            currentPopup = Instantiate(prefabPopup, popupRoot);
+        }
+        
+        popup = currentPopup.GetComponent<PopupPrefab>();
+        if (popup != null)
+        {
+            popup.header = header;
+            popup.description = desc;
+            popup.primarySingleButtonText = btnText01;
+            popup.primarySingleButtonAction = btnCallback01;
+            popup.showExitButton = false;
+            popup.SelectPopupType(E_PopupType.Popup02);
         }
     }
 
@@ -112,6 +148,8 @@ public class PopupManager : MonoBehaviour
             popup.primaryButtonAction = null;
             popup.secondaryButtonText = "";
             popup.secondaryButtonAction = null;
+            popup.primarySingleButtonText = "";
+            popup.primarySingleButtonAction = null;
             popup.showExitButton = false;
         }
     }

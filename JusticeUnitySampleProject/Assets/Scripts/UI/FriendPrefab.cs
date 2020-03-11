@@ -68,7 +68,7 @@ public class FriendPrefab : MonoBehaviour
         {
             Debug.Log("OnInviteParty failed:" + result.Error.Message);
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
-            PopupManager.Instance.InitPopup("Invite Party Failed", " " + result.Error.Message, "OK", "", OnInvitePartyFailed, null);
+            PopupManager.Instance.InitPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK", OnInvitePartyFailed);
             PopupManager.Instance.ShowPopup();
         }
         else
