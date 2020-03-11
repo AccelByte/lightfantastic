@@ -1416,12 +1416,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            //change this to new popup system
-            //UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + result.Value.displayName;
-            //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
-
             PopupManager.Instance.ShowPopupDefault("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
-            //PopupManager.Instance.ShowPopup();
         }
     }
 
