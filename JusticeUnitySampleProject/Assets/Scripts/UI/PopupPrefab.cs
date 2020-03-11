@@ -91,12 +91,12 @@ public class PopupPrefab : MonoBehaviour
     {
         switch (type)
         {
-            case E_PopupType.Popup01:
+            case E_PopupType.Popup_Default:
                 component.primaryButton.gameObject.SetActive(true);
                 component.secondaryButton.gameObject.SetActive(true);
                 component.primarySingleButton.gameObject.SetActive(false);
                 break;
-            case E_PopupType.Popup02:
+            case E_PopupType.Popup_SingleButton:
                 component.primarySingleButton.gameObject.SetActive(true);
                 component.primaryButton.gameObject.SetActive(false);
                 component.secondaryButton.gameObject.SetActive(false);
