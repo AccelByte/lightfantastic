@@ -25,8 +25,6 @@ namespace UITools
         [SerializeField]
         private CanvasGroup matchmakingPanel;
         [SerializeField]
-        private CanvasGroup multiplayerOptionPanel;
-        [SerializeField]
         private CanvasGroup inventoryPanel;
         [SerializeField]
         public CanvasGroup loadingPanel;
@@ -154,19 +152,6 @@ namespace UITools
             else
             {
                 StartCoroutine(FadeIn(matchmakingPanel));
-            }
-        }
-
-        public void FadeMultiplayerOption()
-        {
-            if (multiplayerOptionPanel.interactable)
-            {
-                StartCoroutine(FadeOut(multiplayerOptionPanel));
-                currentPanel = menuPanel;
-            }
-            else
-            {
-                StartCoroutine(FadeIn(multiplayerOptionPanel));
             }
         }
 

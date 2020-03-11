@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//#define _DEBUG_TWEEN
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -44,7 +45,9 @@ public class TweenComponent : MonoBehaviour
     private void OnButtonClickedComplete()
     {
         // scaleback tp 100%
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent OnButtonClickedComplete!");
+#endif
         gameObject.transform.DOScale(new Vector3(1f, 1f, 1f), AnimationDuration);
     }
 
@@ -56,7 +59,9 @@ public class TweenComponent : MonoBehaviour
 
     public void AnimateSwipeToOriginalLocation()
     {
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent AnimateSwipeLeft!");
+#endif
         gameObject.transform.DOLocalMoveX(localX_OriginalValue, AnimationDuration);
         isJustAnimatedSwipeRight = false;
     }
@@ -70,38 +75,50 @@ public class TweenComponent : MonoBehaviour
     public void AnimateScaleToNormal()
     {
         // scaleback tp 100%
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent OnAnimateSwipeRight!");
+#endif
         gameObject.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), AnimationDuration);
     }
 
     public void AnimateScaleY_ToZero()
     {
         // scaleback tp 100%
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent OnAnimateSwipeRight!");
+#endif
         gameObject.transform.DOScaleY(0.0f, AnimationDuration);
     }
 
     public void AnimateFadeIn()
     {
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent AnimateFadeIn!");
+#endif
         gameObject.transform.GetComponent<CanvasGroup>().DOFade(1, AnimationDuration).OnComplete(AnimateFadeInComplete);
     }
 
     private void AnimateFadeInComplete()
     {
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent AnimateFadeInComplete!");
+#endif
         gameObject.SetActive(true);
     }
 
     public void AnimateFadeOut()
     {
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent AnimateFadeOut!");
+#endif
         gameObject.transform.GetComponent<CanvasGroup>().DOFade(0, AnimationDuration).OnComplete(AnimateFadeOutComplete);
     }
 
     private void AnimateFadeOutComplete()
     {
+#if _DEBUG_TWEEN
         Debug.Log("TweenComponent AnimateFadeOutComplete!");
+#endif
         gameObject.SetActive(false);
     }
 
