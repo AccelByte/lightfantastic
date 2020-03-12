@@ -1393,8 +1393,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
 
             // if the player already in party then notify the user
-            PopupManager.Instance.InitPopup("Invite Party Failed", " " + result.Error.Message, "OK", "", OnInvitePartyFailed, null);
-            PopupManager.Instance.ShowPopup();
+            PopupManager.Instance.ShowPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK", OnInvitePartyFailed);
         }
         else
         {
@@ -1417,12 +1416,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            //change this to new popup system
-            //UIHandlerLobbyComponent.popupPartyInvitation.Find("PopupTittle").GetComponent<Text>().text = "Received Invitation From " + result.Value.displayName;
-            //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(true);
-
-            PopupManager.Instance.InitPopup("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
-            PopupManager.Instance.ShowPopup();
+            PopupManager.Instance.ShowPopupDefault("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
         }
     }
 
