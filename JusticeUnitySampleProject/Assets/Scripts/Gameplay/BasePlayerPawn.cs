@@ -48,7 +48,10 @@ namespace Game
         #endregion //Field and Properties
 
         private BaseGameManager gameMgr = null;
+        private InGameHudManager hudMgr = null;
         private bool allowInput = false;
+
+        private string playerName = "Player One";
 
         private void Awake()
         {
@@ -58,6 +61,7 @@ namespace Game
             currSpeed = 0.0f;
             networkStarted += OnNetworkStarted;
             gameMgr = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGameManager>();
+            hudMgr = GameObject.FindGameObjectWithTag("HUDManager").GetComponent<InGameHudManager>();
             speedSetter = GetComponent<CharacterSpeedSetter>();
             hatSetter = GetComponent<CharacterHatSetter>();
             particleSetter = GetComponent<CharacterParticleSetter>();
@@ -164,9 +168,11 @@ namespace Game
             if (!networkObject.IsOwner)
             {
                 transform.position = networkObject.Position;
+                UpdateMinimap();
                 return;
             }
             ReceiveInput(Time.deltaTime);
+            UpdateMinimap();
         }
 
         public void ReceiveInput(float dt)
@@ -187,6 +193,27 @@ namespace Game
                 networkObject.SendRpc(RPC_SET_CURRENT_SPEED, Receivers.Others, currSpeed);
                 transform.position = networkObject.Position = newPos;
                 parallaxSetter.SetSpeed(currSpeed);
+            }
+        }
+
+        private void UpdateMinimap()
+        {
+            if (hudMgr != null)
+            {
+                MainHUD hud = (MainHUD)hudMgr.GetPanel(PanelTypes.MainHud);
+                if (hud != null)
+                {
+                    //Debug.Log("BasePlayerPawn Update update position player: " + playerName + " position: " + (uint)transform.position.x);
+                    hud.UpdateMinimap(playerName, (uint)transform.position.x);
+                }
+                else
+                {
+                    Debug.LogError("BasePlayerPawn Update MainHUD is null");
+                }
+            }
+            else
+            {
+                Debug.LogError("BasePlayerPawn Update hudMgr is null");
             }
         }
 
@@ -308,6 +335,13 @@ namespace Game
         {
             hoveringText.ChangeTextLabel(args.GetAt<string>(0));
             platformSetter.SetSprite((LightFantasticConfig.Platform) args.GetAt<uint>(1));
+
+            //TODO: init minimap here!
+            if (hudMgr != null)
+            {
+                playerName = args.GetAt<string>(0);
+                ((MainHUD)hudMgr.GetPanel(PanelTypes.MainHud)).SetupMinimap(playerName);
+            }
         }
 
         
