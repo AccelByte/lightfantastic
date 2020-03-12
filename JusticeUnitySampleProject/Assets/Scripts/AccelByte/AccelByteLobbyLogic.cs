@@ -9,6 +9,7 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UITools;
 using System;
+using HybridWebSocket;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
@@ -214,9 +215,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("AbLogic SetIsActionPhaseOver called");
             // move to main menu screen
             // TODO: after from action pahse all the main menu stuff has tobe refreshed (player profile and statistic)
-            UIElementHandler.FadeLogin();
-            UIElementHandler.FadePersistentFriends();
-            UIElementHandler.FadeMenu();
+            
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+            UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
             
             SetupLobbyUI();
 
@@ -306,6 +307,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void ConnectToLobby()
     {
+        // Reset lobby to prevent dual session callback
+        // Each time user connect to lobby after login, it needs to renew the lobby.
+        abLobby = new Lobby(AccelBytePlugin.Config.LobbyServerUrl, new WebSocket(), AccelBytePlugin.GetUser().Session, new CoroutineRunner());
+        
         //Establish connection to the lobby service
         abLobby.Connect();
         if (abLobby.IsConnected)

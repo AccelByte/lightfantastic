@@ -1,6 +1,7 @@
 ﻿using System;
 using Button = UnityEngine.UI.Button;
 using TMPro;
+using UITools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,9 +24,12 @@ public class PlayMatchButtonsScript : MonoBehaviour
     public Button.ButtonClickedEvent OnLocalButtonClicked => localButton.button.onClick;
     public Button.ButtonClickedEvent On1VS1ButtonClicked => matchmakingPanelUiComponent.Mode1VS1Button.onClick;
     public Button.ButtonClickedEvent On4FFAButtonClicked => matchmakingPanelUiComponent.Mode4FFAButton.onClick;
+    
+    private UIElementHandler uiElementHandler;
 
     private void Start()
     {
+        uiElementHandler = GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIElementHandler>();
         UnselectAll();
         RegisterButtonUIEvent();
     }
@@ -78,12 +82,18 @@ public class PlayMatchButtonsScript : MonoBehaviour
         
         matchmakingPanelUiComponent.ClosePanelButton.onClick.RemoveAllListeners();
         matchmakingPanelUiComponent.ClosePanelButton.onClick.AddListener(UnselectAll);
+        
+        uiElementHandler.inventoryButton.onClick.AddListener(UnselectAll);
+        uiElementHandler.leaderboardButton.onClick.AddListener(UnselectAll);
+        uiElementHandler.settingsButton.onClick.AddListener(UnselectAll);
+        uiElementHandler.logoutButton.onClick.AddListener(UnselectAll);
+        uiElementHandler.exitButton.onClick.AddListener(UnselectAll);
+        uiElementHandler.chatButton.onClick.AddListener(UnselectAll);
     }
 
     private void _OnOnlineButtonClicked()
     {
         GlowHeader();
-        HideMatchmakingPanel();
         ShowMatchmakingPanel();
         GlowTextMesh(onlineButton);
         DimTextMesh(localButton);
@@ -92,7 +102,6 @@ public class PlayMatchButtonsScript : MonoBehaviour
     private void _OnLocalButtonClicked()
     {
         GlowHeader();
-        HideMatchmakingPanel();
         ShowMatchmakingPanel();
         GlowTextMesh(localButton);
         DimTextMesh(onlineButton);
@@ -138,10 +147,8 @@ public class PlayMatchButtonsScript : MonoBehaviour
     {
         MainThreadTaskRunner.Instance.Run(() =>
         {
-            matchmakingPanelUiComponent.gameObject.GetComponent<TweenComponent>()?.AnimateSwipeRight();
-            matchmakingPanelUiComponent.canvasGroup.alpha = 1;
-            matchmakingPanelUiComponent.canvasGroup.interactable = true;
-            matchmakingPanelUiComponent.canvasGroup.blocksRaycasts = true;
+            uiElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.MATCHMAKING);
+            matchmakingPanelUiComponent.gameObject.GetComponent<TweenComponent>().AnimateSwipeRight();
         });
     }
 
@@ -149,10 +156,8 @@ public class PlayMatchButtonsScript : MonoBehaviour
     {
         MainThreadTaskRunner.Instance.Run(() =>
         {
+            uiElementHandler.HideNonExclusivePanel(NonExclusivePanelType.MATCHMAKING);
             matchmakingPanelUiComponent.gameObject.GetComponent<TweenComponent>().AnimateSwipeToOriginalLocation();
-            matchmakingPanelUiComponent.canvasGroup.alpha = 0;
-            matchmakingPanelUiComponent.canvasGroup.interactable = false;
-            matchmakingPanelUiComponent.canvasGroup.blocksRaycasts = false;
         });
     }
 }
