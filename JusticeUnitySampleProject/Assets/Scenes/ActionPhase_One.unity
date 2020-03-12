@@ -1111,6 +1111,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1606376116}
     m_Modifications:
+    - target: {fileID: 2384892163764572933, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2384892163925825424, guid: f654d597fdfcb664bb46018cf3e77ee0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1170,6 +1175,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrackFieldParalaxComponents
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164096628224, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164457119542, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164860772020, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892165732311674, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f654d597fdfcb664bb46018cf3e77ee0, type: 3}
