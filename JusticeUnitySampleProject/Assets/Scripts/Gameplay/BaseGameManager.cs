@@ -236,6 +236,7 @@ namespace Game
                 var isWinner = player.Key == winnerNetId;
                 AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
             }
+            onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
         }
 
@@ -306,6 +307,7 @@ namespace Game
             var isWinner = networkObject.MyPlayerId == args.GetAt<uint>(0);
             if (!networkObject.IsServer)
             {
+                onGameEnd?.Invoke();
                 hudMgr_.ShowRaceOverScreen(isWinner);
             }
         }

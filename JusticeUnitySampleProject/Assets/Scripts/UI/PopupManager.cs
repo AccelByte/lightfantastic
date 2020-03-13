@@ -32,8 +32,6 @@ public class PopupManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
-        //popupRoot = this.transform;
     }
 
     private void InitPopup()
@@ -71,7 +69,7 @@ public class PopupManager : MonoBehaviour
         }
     }
 
-    public void ShowPopupDefault(string header, string desc, string btnText01, string btnText02, UnityAction btnCallback01, UnityAction btnCallback02)
+    public void ShowPopup(string header, string desc, string btnText01, string btnText02, UnityAction btnCallback01 = null, UnityAction btnCallback02 = null)
     {
         Debug.Log("Popupmanager InitPopup Header: " + header);
         PopupPrefab popup = null;
@@ -97,7 +95,7 @@ public class PopupManager : MonoBehaviour
         }
     }
 
-    public void ShowPopupWarning(string header, string desc, string btnText01, UnityAction btnCallback01)
+    public void ShowPopupWarning(string header, string desc, string btnText01, UnityAction btnCallback01 = null)
     {
         Debug.Log("Popupmanager InitPopup Header: " + header);
         PopupPrefab popup = null;

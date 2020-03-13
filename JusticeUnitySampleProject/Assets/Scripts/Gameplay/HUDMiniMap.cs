@@ -60,13 +60,10 @@ public class HUDMiniMap : MonoBehaviour
         {
             for (int i = 0; i < positionIndicators.Count; i++)
             {
-                Debug.Log("HUDMinimap Update update position player: " + playerName + " position: " + position);
-
                 if (positionIndicators[i].GetComponent<MinimapSliderPrefab>().PlayerName.Contains(playerName))
                 {
                     // update position
                     positionIndicators[i].GetComponent<Slider>().value = position;
-                    Debug.Log("HUDMinimap Update update position player: " + positionIndicators[i].GetComponent<Slider>().maxValue + " position: " + positionIndicators[i].GetComponent<Slider>().value);
                 }
             }
         }

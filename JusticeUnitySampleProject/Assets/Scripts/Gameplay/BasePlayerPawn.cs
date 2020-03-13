@@ -67,6 +67,23 @@ namespace Game
             particleSetter = GetComponent<CharacterParticleSetter>();
             platformSetter = GetComponent<CharacterPlatformSpriteSetter>();
             parallaxSetter = gameMgr.parallaxSetter;
+
+            AddListeners();
+        }
+
+        private void AddListeners()
+        {
+            if (gameMgr != null)
+            {
+                gameMgr.onGameEnd += OnEndGame;
+            }
+        }
+
+        private void OnEndGame()
+        {
+            Debug.Log("BasePlayerPawn OnEndGame");
+
+            allowInput = false;
         }
 
         private void PrepareTouchButton()
@@ -223,6 +240,9 @@ namespace Game
             if (allowInput)
             {
                 currSpeed += speedIncreaseConst;
+
+                // play sfx for each button call
+                AudioManager.Instance.PlaySoundFX(E_SoundFX.ButtonClick02);
             }
         }
 
