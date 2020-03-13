@@ -32,6 +32,7 @@ namespace ABRuntimeLogic
         private AccelByteGameProfileLogic abGameProfileLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
         private AccelByteStatisticLogic abUserStatisticLogic;
+        private AccelByteLeaderboardLogic abLeaderboardLogic;
 
         private E_LoginType loginType;
 
@@ -43,6 +44,7 @@ namespace ABRuntimeLogic
             abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
             abUserStatisticLogic = GetComponent<AccelByteStatisticLogic>();
+            abLeaderboardLogic = GetComponent<AccelByteLeaderboardLogic>();
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -101,11 +103,18 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
+
+            UIHandlerAuthComponent.fromRegister_BackToLoginButton.onClick.AddListener(delegate
+            {
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.LOGIN);
+            });
             
             UIHandlerAuthComponent.logoutButton.onClick.AddListener(Logout);
             
-            // Remove url link
-            //UIHandlerAuthComponent.signUpButton.onClick.AddListener(SignUp);
+            UIHandlerAuthComponent.signUpButton.onClick.AddListener(delegate
+            {
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.REGISTER);
+            });
         }
 
         void RemoveListeners()
@@ -229,6 +238,7 @@ namespace ABRuntimeLogic
         //Logs the user out
         public void Logout()
         {
+            AccelBytePlugin.GetLobby().Disconnect();
             abUser.Logout(OnLogout);
         }
 
@@ -268,7 +278,7 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.loginPassword.text = UIHandlerAuthComponent.registerPassword.text;
                 Login();
                 //Show Verification Panel
-                UIElementHandler.FadeRegister();
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.REGISTER);
             }
         }
 
@@ -284,10 +294,11 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("Verification successful.");
-                UIElementHandler.FadeVerify();
-                UIElementHandler.FadePersistentFriends();
-                UIElementHandler.FadeMenu();
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+                UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
+
                 abUserProfileLogic.Init();
+                abLeaderboardLogic.Init();
                 abUserStatisticLogic.UpdatePlayerStatisticUI();
                 abLobbyLogic.ConnectToLobby();
             }
@@ -369,8 +380,8 @@ namespace ABRuntimeLogic
 
                 if (!abUserData.emailVerified && !useSteam)
                 {
-                    UIElementHandler.HideLoadingPanel();
-                    UIElementHandler.FadeVerify();
+                    UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.LOADING);
+                    UIElementHandler.ShowExclusivePanel(ExclusivePanelType.VERIFY);
                 }
                 else
                 {
@@ -379,10 +390,11 @@ namespace ABRuntimeLogic
                     {
                         UIElementHandler.HideLoadingPanel();
                     }
-                    UIElementHandler.FadeLogin();
-                    UIElementHandler.FadePersistentFriends();
-                    UIElementHandler.FadeMenu();
+                    UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+                    UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
+                    
                     abUserProfileLogic.Init();
+                    abLeaderboardLogic.Init();
                     abUserStatisticLogic.UpdatePlayerStatisticUI();
                     abLobbyLogic.ConnectToLobby();
                 }
@@ -399,9 +411,8 @@ namespace ABRuntimeLogic
             }
             else
             {
-                UIElementHandler.FadeCurrent();
-                UIElementHandler.FadeLogin();
-                UIElementHandler.FadePersistentFriends();
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.LOGIN);
+                UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
                 UIHandlerAuthComponent.loginEmail.text = string.Empty;
                 UIHandlerAuthComponent.loginPassword.text = string.Empty;
             }

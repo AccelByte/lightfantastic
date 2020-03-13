@@ -41,6 +41,7 @@ public class UIAuthLogicComponent : MonoBehaviour
 
     public Button signUpButton;
     public Button registerButton;
+    public Button fromRegister_BackToLoginButton;
     public Button verifyButton;
     public Button resendVerificationButton;
     public Button logoutButton;

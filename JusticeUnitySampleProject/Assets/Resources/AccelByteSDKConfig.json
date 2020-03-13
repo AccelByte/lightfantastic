@@ -12,6 +12,8 @@
     "TelemetryServerUrl": "https://api.demo.accelbyte.io/telemetry",
     "GameProfileServerUrl": "https://api.demo.accelbyte.io/soc-profile",
     "StatisticServerUrl": "https://api.demo.accelbyte.io/statistic",
+    "LeaderboardServerUrl": "https://api.demo.accelbyte.io/leaderboard",
+	"AgreementServerUrl": "https://api.demo.accelbyte.io/agreement",
     "ClientId": "check_lastpass",
     "ClientSecret": "check_lastpass",
     "RedirectUri": "http://127.0.0.1"
