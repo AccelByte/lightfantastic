@@ -42,7 +42,7 @@ public class HUDMiniMap : MonoBehaviour
             }
 
             // arage top or bottom side
-            if (positionIndicators.Count + 1 / 2 != 0)
+            if ((positionIndicators.Count + 1) % 2 == 0)
             {
                 obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName);
             }
@@ -57,7 +57,7 @@ public class HUDMiniMap : MonoBehaviour
         }
     }
 
-    public void UpdatePlayersPositionIndicator(string playerName, uint position)
+    public void UpdatePlayerPositionIndicator(string playerName, uint position)
     {
         if (positionIndicators.Count > 0)
         {
@@ -67,6 +67,27 @@ public class HUDMiniMap : MonoBehaviour
                 {
                     // update position
                     positionIndicators[i].GetComponent<Slider>().value = position;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("HUDMinimap UpdatePlayersPositionIndicator positionIndicators is empty");
+        }
+    }
+
+    public void RemovePlayerPositionIndicator(string playerName)
+    {
+        if (positionIndicators.Count > 0)
+        {
+            for (int i = 0; i < positionIndicators.Count; i++)
+            {
+                if (positionIndicators[i].GetComponent<MinimapSliderPrefab>().PlayerName.Contains(playerName))
+                {
+                    // Remove from list and destroy the object
+                    GameObject obj =  positionIndicators[i].gameObject;
+                    positionIndicators.RemoveAt(i);
+                    Destroy(obj);
                 }
             }
         }

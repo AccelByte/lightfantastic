@@ -154,7 +154,7 @@ namespace Game
             }
             if (error != null)
             {
-                Debug.LogError("[" + error.Code + "] " + error.Message);
+                Debug.Log("[" + error.Code + "] " + error.Message);
                 isInitialized = true;
                 return;
             }

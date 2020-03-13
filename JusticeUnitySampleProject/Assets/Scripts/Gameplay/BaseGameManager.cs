@@ -371,6 +371,7 @@ namespace Game
 
         private void OnPlayerDisconnected(NetworkingPlayer player, NetWorker sender)
         {
+            //TODO: check if any player disconnected when the game is not ended yet
             MainThreadManager.Run(() =>
             {
                 MovePlayerPawnBehavior p = players[player.NetworkId].Character;

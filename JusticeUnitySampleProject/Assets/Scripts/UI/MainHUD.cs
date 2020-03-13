@@ -114,7 +114,19 @@ public class MainHUD : BaseHUD
     {
         if (hudMiniMap_ != null)
         {
-            hudMiniMap_.UpdatePlayersPositionIndicator(playerName, position);
+            hudMiniMap_.UpdatePlayerPositionIndicator(playerName, position);
+        }
+        else
+        {
+            Debug.Log("MainHUD UpdateMinimap hudMiniMap_ is null");
+        }
+    }
+
+    public void RemoveMinimap(string playerName)
+    {
+        if (hudMiniMap_ != null)
+        {
+            hudMiniMap_.RemovePlayerPositionIndicator(playerName);
         }
         else
         {
