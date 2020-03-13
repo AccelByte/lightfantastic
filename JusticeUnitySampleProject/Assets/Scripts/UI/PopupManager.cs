@@ -84,10 +84,21 @@ public class PopupManager : MonoBehaviour
         {
             popup.header = header;
             popup.description = desc;
+
             popup.primaryButtonText = btnText01;
-            popup.primaryButtonAction = btnCallback01;
+            popup.secondaryButtonAction = PopupClosed;
+            if (btnCallback01 != null)
+            {
+                popup.primaryButtonAction = btnCallback01;
+            }
+            
             popup.secondaryButtonText = btnText02;
-            popup.secondaryButtonAction = btnCallback02;
+            popup.secondaryButtonAction = PopupClosed;
+            if (btnCallback02 != null)
+            {
+                popup.secondaryButtonAction = btnCallback02;
+            }
+
             popup.showExitButton = false;
             popup.SelectPopupType(E_PopupType.Popup_Default);
 
@@ -110,8 +121,13 @@ public class PopupManager : MonoBehaviour
         {
             popup.header = header;
             popup.description = desc;
+
             popup.primarySingleButtonText = btnText01;
-            popup.primarySingleButtonAction = btnCallback01;
+            popup.primarySingleButtonAction = PopupClosed;
+            if (btnCallback01 != null)
+            {
+                popup.primarySingleButtonAction = btnCallback01;
+            }
             popup.showExitButton = false;
             popup.SelectPopupType(E_PopupType.Popup_SingleButton);
 
@@ -154,5 +170,10 @@ public class PopupManager : MonoBehaviour
             popup.primarySingleButtonAction = null;
             popup.showExitButton = false;
         }
+    }
+
+    private void PopupClosed()
+    {
+        Debug.Log("Popupmanager PopupClosed");
     }
 }
