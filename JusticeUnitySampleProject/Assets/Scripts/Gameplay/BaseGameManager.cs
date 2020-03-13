@@ -236,6 +236,7 @@ namespace Game
                 var isWinner = player.Key == winnerNetId;
                 AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
             }
+            onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
         }
 
@@ -306,6 +307,7 @@ namespace Game
             var isWinner = networkObject.MyPlayerId == args.GetAt<uint>(0);
             if (!networkObject.IsServer)
             {
+                onGameEnd?.Invoke();
                 hudMgr_.ShowRaceOverScreen(isWinner);
             }
         }
@@ -369,6 +371,7 @@ namespace Game
 
         private void OnPlayerDisconnected(NetworkingPlayer player, NetWorker sender)
         {
+            //TODO: check if any player disconnected when the game is not ended yet
             MainThreadManager.Run(() =>
             {
                 MovePlayerPawnBehavior p = players[player.NetworkId].Character;

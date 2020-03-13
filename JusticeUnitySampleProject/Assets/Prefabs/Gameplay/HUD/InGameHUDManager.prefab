@@ -123,20 +123,6 @@ MonoBehaviour:
   - {fileID: 3192768694982939689}
   distanceBetweenPanels: 0.1
   initialPanel: 2
---- !u!114 &3192768694982939689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236238257914367897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9355319c4cef6e42906bb4c447aac3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  backButton_: {fileID: 7628030174558501495}
-  disconnectButton_: {fileID: 71194029189713705}
 --- !u!223 &2741528058693295045
 Canvas:
   m_ObjectHideFlags: 0
@@ -158,6 +144,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &3192768694982939689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6236238257914367897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9355319c4cef6e42906bb4c447aac3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backButton_: {fileID: 7628030174558501495}
+  disconnectButton_: {fileID: 71194029189713705}
 --- !u!114 &7367729520716643166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +297,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameOverPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 5978506816358386982, guid: e297cbd40e70c5445af554fb87df67b7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8331546317081876579, guid: e297cbd40e70c5445af554fb87df67b7,
         type: 3}
       propertyPath: m_fontSize
@@ -334,15 +339,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885716678053571237}
     m_Modifications:
+    - target: {fileID: 652165831399957177, guid: 2f352dda09da8d34eb4dd240c6a41a63,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 826130214512022373, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
       propertyPath: m_fontSize
-      value: 38.4
+      value: 32.25
       objectReference: {fileID: 0}
     - target: {fileID: 1347609267925623037, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
       propertyPath: m_Name
       value: MainHUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981314721562367533, guid: 2f352dda09da8d34eb4dd240c6a41a63,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2228138328400140662, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
@@ -462,12 +477,17 @@ PrefabInstance:
     - target: {fileID: 4809990398188604327, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
       propertyPath: m_fontSize
-      value: 19.2
+      value: 16.1
       objectReference: {fileID: 0}
+    - target: {fileID: 6857642433752767805, guid: 2f352dda09da8d34eb4dd240c6a41a63,
+        type: 3}
+      propertyPath: hudMiniMap_
+      value: 
+      objectReference: {fileID: 2160608696189398173}
     - target: {fileID: 7016557849379674695, guid: 2f352dda09da8d34eb4dd240c6a41a63,
         type: 3}
       propertyPath: m_fontSize
-      value: 47.85
+      value: 40.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f352dda09da8d34eb4dd240c6a41a63, type: 3}
@@ -487,6 +507,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d2e7207c9b718a4ba83f0a021203a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2160608696189398173 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2782935775153326179, guid: 2f352dda09da8d34eb4dd240c6a41a63,
+    type: 3}
+  m_PrefabInstance: {fileID: 4279263515476272382}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d10c1e94d24e34b8009169e148e1bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5706942429807919305
@@ -765,6 +797,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Pause_PromptPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2534319129041332873, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2534319129041332874, guid: 9c1c8cfa14544d24e92e6c93f0dedee0,
         type: 3}

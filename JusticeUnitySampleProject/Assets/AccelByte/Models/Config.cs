@@ -23,6 +23,7 @@ namespace AccelByte.Models
         [DataMember] public string StatisticServerUrl { get; set; }
         [DataMember] public string QosManagerServerUrl { get; set; }
         [DataMember] public string AgreementServerUrl { get; set; }
+        [DataMember] public string LeaderboardServerUrl { get; set; }
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
         [DataMember] public string RedirectUri { get; set; }
@@ -51,6 +52,7 @@ namespace AccelByte.Models
                 this.StatisticServerUrl == anotherConfig.StatisticServerUrl &&
                 this.QosManagerServerUrl == anotherConfig.QosManagerServerUrl &&
                 this.AgreementServerUrl == anotherConfig.AgreementServerUrl &&
+                this.LeaderboardServerUrl == anotherConfig.LeaderboardServerUrl &&
                 this.ClientId == anotherConfig.ClientId &&
                 this.ClientSecret == anotherConfig.ClientSecret &&
                 this.RedirectUri == anotherConfig.RedirectUri)
@@ -96,6 +98,8 @@ namespace AccelByte.Models
                 if (this.QosManagerServerUrl == null) this.QosManagerServerUrl = httpsBaseUrl + "/qosm";
 
                 if (this.AgreementServerUrl == null) this.AgreementServerUrl = httpsBaseUrl + "/agreement";
+
+                if (this.LeaderboardServerUrl == null) this.LeaderboardServerUrl = wssBaseUrl + "/leaderboard/";
             }
         }
 
@@ -130,6 +134,10 @@ namespace AccelByte.Models
                 if (this.StatisticServerUrl == httpsBaseUrl + "/statistic") this.StatisticServerUrl = null;
 
                 if (this.QosManagerServerUrl == httpsBaseUrl + "/qosm") this.QosManagerServerUrl = null;
+
+                if (this.AgreementServerUrl == httpsBaseUrl + "/agreement") this.AgreementServerUrl = null;
+
+                if (this.LeaderboardServerUrl == httpsBaseUrl + "/leaderboard") this.LeaderboardServerUrl = null;
             }
         }
     }

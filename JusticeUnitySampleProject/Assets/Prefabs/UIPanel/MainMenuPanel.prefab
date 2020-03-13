@@ -318,17 +318,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5636196917128350906}
-        m_MethodName: UnselectAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6262890460365765260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,17 +534,6 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_MethodName: SetAlpha
         m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5636196917128350906}
-        m_MethodName: UnselectAll
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -856,6 +834,7 @@ GameObject:
   - component: {fileID: 2732412263074823344}
   - component: {fileID: 6262890460365765258}
   - component: {fileID: 6262890460365765285}
+  - component: {fileID: 1473459751099629509}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -973,17 +952,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5636196917128350906}
-        m_MethodName: UnselectAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6262890460365765258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1044,6 +1012,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1473459751099629509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2732412263074823350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f936e128482a9b744a308cd63156c4cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2732412263185579546
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,17 +1144,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5636196917128350906}
-        m_MethodName: UnselectAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 0}
         m_MethodName: 
         m_Mode: 1
@@ -2867,17 +2836,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5636196917128350906}
-        m_MethodName: UnselectAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &7857547130407540714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2948,7 +2906,7 @@ PrefabInstance:
     - target: {fileID: 1804847125022256423, guid: d8f4d921ed8a9d04d89238b46b083b46,
         type: 3}
       propertyPath: m_fontSize
-      value: 62.45
+      value: 54.45
       objectReference: {fileID: 0}
     - target: {fileID: 1804847125022256423, guid: d8f4d921ed8a9d04d89238b46b083b46,
         type: 3}
@@ -2958,7 +2916,7 @@ PrefabInstance:
     - target: {fileID: 3363273167614090627, guid: d8f4d921ed8a9d04d89238b46b083b46,
         type: 3}
       propertyPath: m_fontSize
-      value: 56.75
+      value: 49.8
       objectReference: {fileID: 0}
     - target: {fileID: 3363273167614090627, guid: d8f4d921ed8a9d04d89238b46b083b46,
         type: 3}
@@ -3093,18 +3051,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3457257902327712586}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5636196917128350906 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7047410510835320816, guid: d8f4d921ed8a9d04d89238b46b083b46,
-    type: 3}
-  m_PrefabInstance: {fileID: 3457257902327712586}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cfa3fd78b0d4e8498f45d9622fd3350, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &6262890460751939100
 PrefabInstance:
   m_ObjectHideFlags: 0

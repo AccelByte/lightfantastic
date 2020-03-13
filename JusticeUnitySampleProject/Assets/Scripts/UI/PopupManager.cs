@@ -32,8 +32,6 @@ public class PopupManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
-        //popupRoot = this.transform;
     }
 
     private void InitPopup()
@@ -50,15 +48,28 @@ public class PopupManager : MonoBehaviour
         {
             popup.header = popupData.TittleText;
             popup.description = popupData.DescriptionText;
-            popup.primaryButtonText = popupData.PrimaryButtonText;
-            popup.primaryButtonAction = popupData.primaryButtonAction;
-            popup.secondaryButtonText = popupData.SecondaryButtonText;
-            popup.secondaryButtonAction = popupData.secondaryButtonAction;
+            switch (popupData.PopupType)
+            {
+                case E_PopupType.Popup_Default:
+                    popup.primaryButtonText = popupData.PrimaryButtonText;
+                    popup.primaryButtonAction = popupData.primaryButtonAction;
+                    popup.secondaryButtonText = popupData.SecondaryButtonText;
+                    popup.secondaryButtonAction = popupData.secondaryButtonAction;
+                    break;
+                case E_PopupType.Popup_SingleButton:
+                    popup.primarySingleButtonText = popupData.PrimaryButtonText;
+                    popup.primarySingleButtonAction = popupData.primaryButtonAction;
+                    break;
+                default:
+                    Debug.Log("PopupManager InitPopup there is no popuptype of "+ popupData.PopupType);
+                    break;
+            }
+            popup.SelectPopupType(popupData.PopupType);
             popup.showExitButton = false;
         }
     }
 
-    public void InitPopup(string header, string desc, string btnText01, string btnText02, UnityAction btnCallback01, UnityAction btnCallback02)
+    public void ShowPopup(string header, string desc, string btnText01, string btnText02, UnityAction btnCallback01 = null, UnityAction btnCallback02 = null)
     {
         Debug.Log("Popupmanager InitPopup Header: " + header);
         PopupPrefab popup = null;
@@ -73,11 +84,54 @@ public class PopupManager : MonoBehaviour
         {
             popup.header = header;
             popup.description = desc;
+
             popup.primaryButtonText = btnText01;
-            popup.primaryButtonAction = btnCallback01;
+            popup.secondaryButtonAction = PopupClosed;
+            if (btnCallback01 != null)
+            {
+                popup.primaryButtonAction = btnCallback01;
+            }
+            
             popup.secondaryButtonText = btnText02;
-            popup.secondaryButtonAction = btnCallback02;
+            popup.secondaryButtonAction = PopupClosed;
+            if (btnCallback02 != null)
+            {
+                popup.secondaryButtonAction = btnCallback02;
+            }
+
             popup.showExitButton = false;
+            popup.SelectPopupType(E_PopupType.Popup_Default);
+
+            currentPopup.GetComponent<PopupPrefab>().Show();
+        }
+    }
+
+    public void ShowPopupWarning(string header, string desc, string btnText01, UnityAction btnCallback01 = null)
+    {
+        Debug.Log("Popupmanager InitPopup Header: " + header);
+        PopupPrefab popup = null;
+
+        if (currentPopup == null)
+        {
+            currentPopup = Instantiate(prefabPopup, popupRoot);
+        }
+        
+        popup = currentPopup.GetComponent<PopupPrefab>();
+        if (popup != null)
+        {
+            popup.header = header;
+            popup.description = desc;
+
+            popup.primarySingleButtonText = btnText01;
+            popup.primarySingleButtonAction = PopupClosed;
+            if (btnCallback01 != null)
+            {
+                popup.primarySingleButtonAction = btnCallback01;
+            }
+            popup.showExitButton = false;
+            popup.SelectPopupType(E_PopupType.Popup_SingleButton);
+
+            currentPopup.GetComponent<PopupPrefab>().Show();
         }
     }
 
@@ -86,7 +140,7 @@ public class PopupManager : MonoBehaviour
         Debug.Log("Popupmanager ShowPopup");
         if (currentPopup != null)
         {
-            currentPopup.GetComponent<PopupPrefab>().Show();        
+            currentPopup.GetComponent<PopupPrefab>().Show();
         }
     }
 
@@ -112,7 +166,14 @@ public class PopupManager : MonoBehaviour
             popup.primaryButtonAction = null;
             popup.secondaryButtonText = "";
             popup.secondaryButtonAction = null;
+            popup.primarySingleButtonText = "";
+            popup.primarySingleButtonAction = null;
             popup.showExitButton = false;
         }
+    }
+
+    private void PopupClosed()
+    {
+        Debug.Log("Popupmanager PopupClosed");
     }
 }

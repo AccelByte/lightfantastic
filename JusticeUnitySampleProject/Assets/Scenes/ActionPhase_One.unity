@@ -214,15 +214,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2160608696189398173, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: minimapSliderPrefab
+      value: 
+      objectReference: {fileID: 6398924136210443739, guid: 225045acc707e494f9a44871673bb96b,
+        type: 3}
+    - target: {fileID: 2314274353392038611, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2350576572324542031, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_Name
+      value: MinimapSliderPrefab
+      objectReference: {fileID: 0}
     - target: {fileID: 2704710091679579528, guid: 7943412d6ac99b64d95fa7c5e8eee206,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3633853085773547079, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773223812158924868, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4885716678053571233, guid: 7943412d6ac99b64d95fa7c5e8eee206,
         type: 3}
       propertyPath: m_Name
       value: InGameHUDManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885716678053571233, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4885716678053571236, guid: 7943412d6ac99b64d95fa7c5e8eee206,
         type: 3}
@@ -333,6 +364,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6236238257914367897, guid: 7943412d6ac99b64d95fa7c5e8eee206,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7943412d6ac99b64d95fa7c5e8eee206, type: 3}
@@ -1111,6 +1147,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1606376116}
     m_Modifications:
+    - target: {fileID: 2384892163764572933, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2384892163925825424, guid: f654d597fdfcb664bb46018cf3e77ee0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1170,6 +1211,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrackFieldParalaxComponents
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164096628224, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164457119542, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892164860772020, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384892165732311674, guid: f654d597fdfcb664bb46018cf3e77ee0,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f654d597fdfcb664bb46018cf3e77ee0, type: 3}

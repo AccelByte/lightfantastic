@@ -5,6 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public enum E_PopupType
 {
-    Popup01,
-    Popup02
+    Popup_Default,
+    Popup_SingleButton
 }
