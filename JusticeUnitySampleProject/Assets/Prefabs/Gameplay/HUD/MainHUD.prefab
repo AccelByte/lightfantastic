@@ -38,6 +38,7 @@ RectTransform:
   - {fileID: 2479684779288894393}
   - {fileID: 289925105685240540}
   - {fileID: 8547894376679704357}
+  - {fileID: 4411223988446820863}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -137,6 +138,7 @@ MonoBehaviour:
   rightRunButton_: {fileID: 1180783814764623041}
   raceTimerPrefab_: {fileID: 7998808379850184896}
   countDownText_: {fileID: 7016557849379674695}
+  hudMiniMap_: {fileID: 0}
 --- !u!1 &2805693262519342515
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,6 +515,55 @@ MonoBehaviour:
     platform: 2
   - gameObject: {fileID: 5319659110720298857}
     platform: 1
+--- !u!1 &5221106517791353476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4411223988446820863}
+  - component: {fileID: 2782935775153326179}
+  m_Layer: 5
+  m_Name: MiniMap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4411223988446820863
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5221106517791353476}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4111554096759323970}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2782935775153326179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5221106517791353476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d10c1e94d24e34b8009169e148e1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionIndicators: []
 --- !u!1 &5319659110720298857
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +860,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 47.85
+  m_fontSize: 40.2
   m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1000,7 +1051,7 @@ PrefabInstance:
     - target: {fileID: 495107216240533119, guid: e3c08636cb1b68947a18ca1d2d97b89f,
         type: 3}
       propertyPath: m_fontSize
-      value: 38.4
+      value: 32.25
       objectReference: {fileID: 0}
     - target: {fileID: 4860259148202854529, guid: e3c08636cb1b68947a18ca1d2d97b89f,
         type: 3}
@@ -1110,7 +1161,7 @@ PrefabInstance:
     - target: {fileID: 5722241854537811645, guid: e3c08636cb1b68947a18ca1d2d97b89f,
         type: 3}
       propertyPath: m_fontSize
-      value: 19.2
+      value: 16.1
       objectReference: {fileID: 0}
     - target: {fileID: 6040186791537880487, guid: e3c08636cb1b68947a18ca1d2d97b89f,
         type: 3}

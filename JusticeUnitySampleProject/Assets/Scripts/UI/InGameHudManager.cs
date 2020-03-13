@@ -18,6 +18,8 @@ namespace Game
         [SerializeField]
         private PanelTypes initialPanel = PanelTypes.MainHud;
 
+        private bool isRaceOver;
+
         protected override void Awake()
         {
             base.Awake();
@@ -43,6 +45,7 @@ namespace Game
         public void ShowRaceOverScreen(bool isWinner)
         {
             ShowPanel(PanelTypes.RaceOver, new object[] { isWinner });
+            isRaceOver = true;
         }
 
         public void HideRaceOverScreen()

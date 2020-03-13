@@ -22,6 +22,9 @@ public class MainHUD : BaseHUD
     private GameTimer gameTimer_;
     private CountDown countDownTimer_;
 
+    [SerializeField]
+    private HUDMiniMap hudMiniMap_;
+
     protected override void Awake()
     {
         base.Awake();
@@ -94,6 +97,41 @@ public class MainHUD : BaseHUD
         countDownTimer_ = countDownTimer;
         countDownTimer.timerUpdated += OnCountDownUpdated;
         countDownTimer.onTimerExpired += OnCountDownStartExpired;
+    }
+
+    public void SetupMinimap(string playerName)
+    {
+        if (hudMiniMap_ != null)
+        {
+            hudMiniMap_.SetupMinimap(playerName);
+        }
+        else
+        {
+            Debug.Log("MainHUD SetupMinimap hudMiniMap_ is null");
+        }
+    }
+    public void UpdateMinimap(string playerName, uint position)
+    {
+        if (hudMiniMap_ != null)
+        {
+            hudMiniMap_.UpdatePlayerPositionIndicator(playerName, position);
+        }
+        else
+        {
+            Debug.Log("MainHUD UpdateMinimap hudMiniMap_ is null");
+        }
+    }
+
+    public void RemoveMinimap(string playerName)
+    {
+        if (hudMiniMap_ != null)
+        {
+            hudMiniMap_.RemovePlayerPositionIndicator(playerName);
+        }
+        else
+        {
+            Debug.Log("MainHUD UpdateMinimap hudMiniMap_ is null");
+        }
     }
 
     private void OnTimerUpdated(int newValue)

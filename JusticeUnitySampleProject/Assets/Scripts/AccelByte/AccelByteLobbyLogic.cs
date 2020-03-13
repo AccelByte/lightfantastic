@@ -1264,17 +1264,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
         }
 
-        //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
-
-        PopupManager.Instance.HidePopup();
+        //PopupManager.Instance.HidePopup();
     }
 
     public void OnDeclinePartyClicked()
     {
-        //UIHandlerLobbyComponent.popupPartyInvitation.gameObject.SetActive(false);
         Debug.Log("OnDeclinePartyClicked Join party failed");
 
-        PopupManager.Instance.HidePopup();
+        //PopupManager.Instance.HidePopup();
     }
 
     public void OnPlayerPartyProfileClicked()
@@ -1398,17 +1395,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
 
             // if the player already in party then notify the user
-            PopupManager.Instance.ShowPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK", OnInvitePartyFailed);
+            PopupManager.Instance.ShowPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK");
         }
         else
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party");
         }
-    }
-
-    private void OnInvitePartyFailed()
-    {
-        PopupManager.Instance.HidePopup();
     }
 
     private void OnGetUserOnInvite(Result<UserData> result)
@@ -1421,7 +1413,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            PopupManager.Instance.ShowPopupDefault("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
+            PopupManager.Instance.ShowPopup("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
         }
     }
 

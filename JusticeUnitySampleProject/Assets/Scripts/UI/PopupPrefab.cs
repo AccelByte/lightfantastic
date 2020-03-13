@@ -47,14 +47,18 @@ public class PopupPrefab : MonoBehaviour
     {
         component.primaryButton.text = primaryButtonText;
         component.primaryButton.getButton().onClick.AddListener(primaryButtonAction);
+        component.primaryButton.getButton().onClick.AddListener(Hide);
 
         component.secondaryButton.text = secondaryButtonText;
         component.secondaryButton.getButton().onClick.AddListener(secondaryButtonAction);
+        component.secondaryButton.getButton().onClick.AddListener(Hide);
 
         component.primarySingleButton.text = primarySingleButtonText;
         component.primarySingleButton.getButton().onClick.AddListener(primarySingleButtonAction);
+        component.primarySingleButton.getButton().onClick.AddListener(Hide);
 
         component.closeButton.getButton().onClick.AddListener(onExitButtonClicked.Invoke);
+        component.closeButton.getButton().onClick.AddListener(Hide);
 
         component.closeButtonGameObject.SetActive(showExitButton);
         component.headerText.text = header;

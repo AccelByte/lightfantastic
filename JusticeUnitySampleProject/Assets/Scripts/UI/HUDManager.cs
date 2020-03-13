@@ -169,4 +169,17 @@ public class HUDManager<EnumT> : MonoBehaviour where EnumT : System.Enum
         panelStack.RemoveAt(stackHeight - 1);
         Debug.Log("Stack count: " + panelStack.Count);
     }
+
+    public BaseHUD GetPanel(EnumT type)
+    {
+        BaseHUD tgtPanel = null;
+        if (!panelsPopulated_)
+        {
+            Debug.LogError("Misconfiguration in HUDManager, cannot continue");
+            return tgtPanel;
+        }
+
+        tgtPanel = panels[type];
+        return tgtPanel;
+    }
 }
