@@ -16,6 +16,8 @@ public class MinimapSliderPrefab : MonoBehaviour
     public string PlayerName;
     public TextMeshProUGUI PlayerNameText;
 
+    private const float NAMETAG_VERTICAL_OFFSET = 25.0f;
+
     public void SetupSliderUI(string playerName, E_MinimapSliderPosition e_MinimapSlider = E_MinimapSliderPosition.MiniMapSliderBottom)
     {
         PlayerName = playerName;
@@ -24,13 +26,13 @@ public class MinimapSliderPrefab : MonoBehaviour
         switch (e_MinimapSlider)
         {
             case E_MinimapSliderPosition.MiniMapSliderTop:
-                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x,25, PlayerNameText.transform.localPosition.z);
+                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x, NAMETAG_VERTICAL_OFFSET, PlayerNameText.transform.localPosition.z);
                 break;
             case E_MinimapSliderPosition.MiniMapSliderBottom:
-                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x, -25, PlayerNameText.transform.localPosition.z);
+                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x, -(NAMETAG_VERTICAL_OFFSET), PlayerNameText.transform.localPosition.z);
                 break;
             default:
-                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x, 25, PlayerNameText.transform.localPosition.z);
+                PlayerNameText.transform.localPosition = new Vector3(PlayerNameText.transform.localPosition.x, NAMETAG_VERTICAL_OFFSET, PlayerNameText.transform.localPosition.z);
                 break;
         }
     }

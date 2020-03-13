@@ -10,6 +10,8 @@ public class HUDMiniMap : MonoBehaviour
 
     private List<GameObject> positionIndicators;
 
+    private const uint SLIDER_HORIZONTAL_OFFSET = 40;
+
     private void Awake()
     {
         positionIndicators = new List<GameObject>();
@@ -48,8 +50,9 @@ public class HUDMiniMap : MonoBehaviour
             {
                 obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName,E_MinimapSliderPosition.MiniMapSliderTop);
             }
-            
-            obj.GetComponent<Slider>().maxValue = LightFantasticConfig.FINISH_LINE_DISTANCE;
+
+            obj.GetComponent<Slider>().minValue = SLIDER_HORIZONTAL_OFFSET;
+            obj.GetComponent<Slider>().maxValue = LightFantasticConfig.FINISH_LINE_DISTANCE + SLIDER_HORIZONTAL_OFFSET;
             positionIndicators.Add(obj);
         }
     }
