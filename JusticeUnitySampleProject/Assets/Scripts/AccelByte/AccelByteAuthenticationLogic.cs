@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UITools;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 namespace ABRuntimeLogic
@@ -92,6 +93,32 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent = UIHandler.GetComponent<UIAuthLogicComponent>();
             UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
+            List<Dropdown.OptionData> CountryObjectCacheToDropdown(CountryObject[] result)
+            {
+                var options = new List<Dropdown.OptionData>();
+                foreach (var countryObject in result)
+                {
+                    options.Add(new Dropdown.OptionData(countryObject.name));
+                }
+                return options;
+            }
+
+            // Get list of countries cache
+            if (AccelByteManager.Instance.countryObjectsCache == null)
+            {
+                var accelByteUserProfileLogic = AccelBytePlugin.GetUserProfiles();
+                accelByteUserProfileLogic.GetCountries(result =>
+                    {
+                        AccelByteManager.Instance.countryObjectsCache = result.Value;
+                        UIHandlerAuthComponent.registerCountryDropdown.options = CountryObjectCacheToDropdown(result.Value);
+                    }
+                );
+            }
+            else
+            {
+                UIHandlerAuthComponent.registerCountryDropdown.options = CountryObjectCacheToDropdown(AccelByteManager.Instance.countryObjectsCache);
+            }
+            
             AddEventListeners();
         }
 
@@ -171,8 +198,10 @@ namespace ABRuntimeLogic
             System.DateTime dob = new System.DateTime(int.Parse(UIHandlerAuthComponent.registerDobYear.text), 
                 int.Parse(UIHandlerAuthComponent.registerDobMonth.text), int.Parse(UIHandlerAuthComponent.registerDobDay.text));
 
+            string country = AccelByteManager.Instance.countryObjectsCache[UIHandlerAuthComponent.registerCountryDropdown.value].code;
+            UIHandlerAuthComponent.registerErrorText.text = " ";
             abUser.Register(UIHandlerAuthComponent.registerEmail.text, UIHandlerAuthComponent.registerPassword.text, UIHandlerAuthComponent.registerDisplayName.text, 
-                RegionInfo.CurrentRegion.TwoLetterISORegionName, dob, OnRegister);
+                country, dob, OnRegister);
         }
 
         //Sends the verification code to the backend server
@@ -267,6 +296,7 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                UIHandlerAuthComponent.registerErrorText.text = result.Error.Message;
                 Debug.Log("Register failed:" + result.Error.Message);
                 Debug.Log("Register Response Code: " + result.Error.Code);
                 //Show Error Message

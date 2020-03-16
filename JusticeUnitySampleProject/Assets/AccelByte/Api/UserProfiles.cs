@@ -173,5 +173,21 @@ namespace AccelByte.Api
                     userIds,
                     callback));
         }
+
+        /// <summary>
+        /// Get list of country
+        /// </summary>
+        /// <param name="language">Translated country names to specified language</param>
+        /// <param name="callback">Return a result that contain an array of CountryObject via callback when completed</param>
+        public void GetCountries(ResultCallback<CountryObject[]> callback, string language = "en")
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            this.coroutineRunner.Run(
+                this.api.GetCountries(
+                    this.@namespace,
+                    language,
+                    callback));
+        }
     }
 }
