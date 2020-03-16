@@ -47,6 +47,7 @@ public class PartyPrefab : MonoBehaviour
         }
 
         isInitiated = true;
+        gameObject.GetComponent<Button>().onClick.AddListener(OnProfileButtonClicked);
     }
 
     public void OnProfileButtonClicked()
@@ -80,6 +81,8 @@ public class PartyPrefab : MonoBehaviour
             partyLeaderID = "";
 
             isInitiated = false;
+
+            gameObject.GetComponent<Button>().onClick.RemoveListener(OnProfileButtonClicked);
         }
     }
 }

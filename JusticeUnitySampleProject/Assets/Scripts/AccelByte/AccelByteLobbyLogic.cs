@@ -256,8 +256,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.searchFriendButton.onClick.AddListener(FindFriendByEmail);
         UIHandlerLobbyComponent.localPlayerButton.onClick.AddListener(OnLocalPlayerProfileButtonClicked);
         UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.AddListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.AddListener(OnDeclinePartyClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnPlayerPartyProfileClicked);
@@ -278,9 +281,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
-        UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.localPlayerButton.onClick.RemoveListener(OnLocalPlayerProfileButtonClicked);
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.RemoveListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.RemoveListener(OnDeclinePartyClicked);
@@ -1170,6 +1173,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         for (int i = 0; i < UIHandlerLobbyComponent.partyMemberButtons.Length; i++)
         {
             UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
+            UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<Button>().onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         }
 
         partyMemberList.Clear();
@@ -1183,6 +1187,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
+                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<Button>().onClick.RemoveAllListeners();
                 UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().OnClearProfileButton();
                 UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
@@ -1366,6 +1371,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             ClearPartySlots();
             isLocalPlayerInParty = false;
             RefreshFriendsUI();
+
+            PopupManager.Instance.ShowPopupWarning("Leave The Party", "You are just left the party!", "OK");
         }
     }
 
@@ -1384,6 +1391,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abPartyInfo = result.Value;
             ClearPartySlots();
             GetPartyInfo();
+
+            PopupManager.Instance.ShowPopupWarning("Join a Party", "You are just joined a party!", "OK");
         }
     }
 
@@ -1395,11 +1404,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
 
             // if the player already in party then notify the user
-            PopupManager.Instance.ShowPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK");
+            PopupManager.Instance.ShowPopupWarning("Invite to Party Failed", " " + result.Error.Message, "OK");
         }
         else
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party");
+            PopupManager.Instance.ShowPopupWarning("Invite to Party Success", "Waiting for invitee acceptance", "OK");
         }
     }
 
@@ -1488,6 +1498,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnKickPartyMember Retrieved successfully");
             ClearPartySlots();
             GetPartyInfo();
+
+            PopupManager.Instance.ShowPopupWarning("Kick a Party Member", "You are just kicked one of the party member!", "OK");
         }
     }
     #endregion
@@ -1519,6 +1531,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnMemberJoinedParty Retrieved successfully");
             isMemberJoinedParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate
+            {
+                PopupManager.Instance.ShowPopupWarning("A New Party Member", "A new member just joined the party!", "OK");
+            });
         }
     }
 
@@ -1533,6 +1549,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
             isMemberLeftParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate
+            {
+                PopupManager.Instance.ShowPopupWarning("A Member Left The Party", "A member just left the party!", "OK");
+            });
         }
     }
 
@@ -1547,6 +1567,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
             isMemberKickedParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate 
+            {
+                PopupManager.Instance.ShowPopupWarning("Kicked from The Party", "You are just kicked from the party!", "OK");
+            });
         }
     }
     #endregion
