@@ -733,11 +733,24 @@ public class AccelByteLobbyLogic : MonoBehaviour
             // if in a party and party leader start a matchmaking
             else if (result.Value.status == MatchmakingNotifStatus.start.ToString())
             {
-                ShowMatchmakingBoard(true);
+                MainThreadTaskRunner.Instance.Run(delegate 
+                {
+                    ShowMatchmakingBoard(true);
+                });
+
+                UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
+                delegate
+                {
+                    OnFailedMatchmaking("Timeout to finding match");
+                });
+                UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
             }
             else if (result.Value.status == MatchmakingNotifStatus.cancel.ToString())
             {
-                ShowMatchmakingBoard(false);
+                MainThreadTaskRunner.Instance.Run(delegate
+                {
+                    ShowMatchmakingBoard(false);
+                });
             }
         }
     }
