@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,15 @@ public class SettingTabAndCanvas
 
 public class SettingPanelLogic : MonoBehaviour
 {
+    private Tuple<uint, uint>[] videoResolutionList = new[]
+    {
+        new Tuple<uint, uint>( 1024, 576 ),
+        new Tuple<uint, uint>( 1280, 720 ),
+        new Tuple<uint, uint>( 1366, 768 ),
+        new Tuple<uint, uint>( 1600, 900 ),
+        new Tuple<uint, uint>( 1920, 1080 ),
+    };
+    
     [SerializeField] private SettingTabAndCanvas audio;
     [SerializeField] private SettingTabAndCanvas video;
     [SerializeField] private SettingTabAndCanvas network;
@@ -23,11 +33,17 @@ public class SettingPanelLogic : MonoBehaviour
     [SerializeField] private SettingComponentBoolean settingAudioBGMVolume;
     [SerializeField] private SettingComponentBoolean settingAudioSFXVolume;
 
+    [Header("Video")]
+    [SerializeField] private SettingComponentFromList settingVideoResolution;
+
     private SettingTabAndCanvas[] tabAndCanvases;
 
     private void Start()
     {
         tabAndCanvases = new []{audio, video, network};
+        
+        settingVideoResolution.Init(
+            VideoResolutionTupleToList(videoResolutionList), OnVideoResolutionSelected, GetCurrentResolutionIndex());
         
         RegisterTabButtonsOnSelectEvent();
         RegisterAudioSettingComponentEvents();
@@ -88,5 +104,36 @@ public class SettingPanelLogic : MonoBehaviour
             settingTabAndCanvas.tabButton.interactable = !active;
             settingTabAndCanvas.tabText.color = active ? Color.white : new Color((float) 119/255, (float) 36/255, (float)206/255);
         });
+    }
+
+    private string[] VideoResolutionTupleToList(Tuple<uint, uint>[] tuples)
+    {
+        List<string> output = new List<string>(); 
+
+        foreach (var entry in tuples)
+        {
+            output.Add($"{entry.Item1} X {entry.Item2}");
+        }
+
+        return output.ToArray();
+    }
+
+    private void OnVideoResolutionSelected(uint index)
+    {
+        Screen.SetResolution((int) videoResolutionList[index].Item1, (int) videoResolutionList[index].Item2, false);
+    }
+
+    private uint GetCurrentResolutionIndex()
+    {
+        for (uint i = 0; i < videoResolutionList.Length; i++)
+        {
+            var list = videoResolutionList[i];
+            if (Screen.currentResolution.width == list.Item1)
+            {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

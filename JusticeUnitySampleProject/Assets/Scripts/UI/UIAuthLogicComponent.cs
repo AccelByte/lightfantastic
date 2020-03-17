@@ -14,6 +14,8 @@ public class UIAuthLogicComponent : MonoBehaviour
     public InputField registerDobDay;
     public InputField registerDobMonth;
     public InputField registerDobYear;
+    public Dropdown registerCountryDropdown;
+    public Text registerErrorText;
     #endregion
 
     #region Verify UI Fields

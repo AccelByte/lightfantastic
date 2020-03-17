@@ -64,4 +64,11 @@ namespace AccelByte.Models
         [DataMember] public string dateOfBirth { get; set; }
         [DataMember] public object customAttributes { get; set; }
     }
+
+    [DataContract]
+    public class CountryObject
+    {
+        [DataMember] public string code { get; set; }
+        [DataMember] public string name { get; set; }
+    }
 }

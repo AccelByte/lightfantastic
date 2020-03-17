@@ -666,19 +666,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
                 delegate
                 {
-                    if (abMatchmakingNotif?.status == MatchmakingNotifStatus.done.ToString())
-                    {
-                        abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
-                        UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
-                        delegate
-                        {
-                            OnFailedMatchmaking("Timeout to confirm matchmaking");
-                        });
-                    }
-                    else
-                    {
-                        OnFailedMatchmaking("Timeout to finding match");
-                    }
+                    OnFailedMatchmaking("Timeout to finding match");
                 });
             UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
         }
@@ -729,7 +717,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
             Debug.Log(" Match status: " + result.Value.status);
             Debug.Log(" Expected match status: " + MatchmakingNotifStatus.done.ToString());
+
             abMatchmakingNotif = result.Value;
+            abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
+            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
+            delegate
+            {
+                OnFailedMatchmaking("Timeout to confirm matchmaking");
+            });
+            
             if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
                 WriteInDebugBox(" Match Found: " + result.Value.matchId);
