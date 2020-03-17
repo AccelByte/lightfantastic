@@ -9,6 +9,7 @@ using BeardedManStudios.Forge.Networking.Lobby;
 using AccelByte.Server;
 using AccelByte.Core;
 using AccelByte.Models;
+using System.Collections.Generic;
 
 public class AccelByteServerLogic : MonoBehaviour
 {
@@ -222,25 +223,31 @@ public class AccelByteServerLogic : MonoBehaviour
         return currentMatchmakingRequest;
     }
 
-    public void UpdateUserStatItem(string userId, bool isWinner)
+    public void UpdateUserStatItem(float distance, string userId, bool isWinner)
     {
         if (playerStatUpdatedCount < playerCount)
         {
-            var createStatItemRequest = new CreateStatItemRequest[3];
-            createStatItemRequest[0] = new CreateStatItemRequest() { statCode = "total-match" };
-            createStatItemRequest[1] = new CreateStatItemRequest() { statCode = "total-win" };
-            createStatItemRequest[2] = new CreateStatItemRequest() { statCode = "total-lose" };
+            if (distance > LightFantasticConfig.FINISH_LINE_DISTANCE)
+            {
+                distance = LightFantasticConfig.FINISH_LINE_DISTANCE;
+            }
+
+            var createStatItemRequest = new CreateStatItemRequest[4];
+            createStatItemRequest[0] = new CreateStatItemRequest() { statCode = LightFantasticConfig.StatisticCode.total };
+            createStatItemRequest[1] = new CreateStatItemRequest() { statCode = LightFantasticConfig.StatisticCode.win };
+            createStatItemRequest[2] = new CreateStatItemRequest() { statCode = LightFantasticConfig.StatisticCode.lose };
+            createStatItemRequest[3] = new CreateStatItemRequest() { statCode = LightFantasticConfig.StatisticCode.distance };
 
             abServerStatistic.CreateUserStatItems(userId, createStatItemRequest, OnCreateUserStatItems);
 
-            var statItemOperationResult = new StatItemIncrement[2];
-            //Update TOTAL_MATCH
+            var statItemOperationResult = new StatItemIncrement[3];
+            //Update total-match
             statItemOperationResult[0] = new StatItemIncrement()
             {
                 statCode = createStatItemRequest[0].statCode,
                 inc = 1
             };
-            //Update TOTAL_LOSE or TOTAL_WIN
+            //Update total-lose or total-win
             if (isWinner)
             {
                 statItemOperationResult[1] = new StatItemIncrement()
@@ -257,6 +264,12 @@ public class AccelByteServerLogic : MonoBehaviour
                     inc = 1
                 };
             }
+            //Update total-distance
+            statItemOperationResult[2] = new StatItemIncrement()
+            {
+                statCode = createStatItemRequest[3].statCode,
+                inc = distance
+            };
 
             abServerStatistic.IncrementUserStatItems(userId, statItemOperationResult, OnIncrementUserStatItems);
             playerStatUpdatedCount += 1;

@@ -9,5 +9,6 @@ public class UIStatisticsLogicComponent : MonoBehaviour
     public Text totalWinText;
     public Text totalLoseText;
     public Text totalMatchText;
+    public Text totalDistanceText;
     #endregion
 }
