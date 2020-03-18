@@ -24,9 +24,10 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
         playerStatistic = new List<string>
         {
-            "total-win",
-            "total-lose",
-            "total-match"
+            LightFantasticConfig.StatisticCode.win,
+            LightFantasticConfig.StatisticCode.lose,
+            LightFantasticConfig.StatisticCode.total,
+            LightFantasticConfig.StatisticCode.distance
         };
     }
 
@@ -117,17 +118,21 @@ public class AccelByteStatisticLogic : MonoBehaviour
             Debug.Log("Get Statistic successful.");
             foreach (var data in result.Value.data)
             {
-                if (data.statCode == "total-win")
+                if (data.statCode == LightFantasticConfig.StatisticCode.win)
                 {
                     UIHandlerStatisticsComponent.totalWinText.text = data.value.ToString();
                 }
-                else if (data.statCode == "total-lose")
+                else if (data.statCode == LightFantasticConfig.StatisticCode.lose)
                 {
                     UIHandlerStatisticsComponent.totalLoseText.text = data.value.ToString();
                 }
-                else if (data.statCode == "total-match")
+                else if (data.statCode == LightFantasticConfig.StatisticCode.total)
                 {
                     UIHandlerStatisticsComponent.totalMatchText.text = data.value.ToString();
+                }
+                else if (data.statCode == LightFantasticConfig.StatisticCode.distance)
+                {
+                    UIHandlerStatisticsComponent.totalDistanceText.text = data.value.ToString();
                 }
             }
         }

@@ -25,6 +25,14 @@ public static class LightFantasticConfig
         upto4player = 1
     }
 
+    public static class StatisticCode
+    {
+        public const string win = "total-win";
+        public const string lose = "total-lose";
+        public const string total = "total-match";
+        public const string distance = "total-distance";
+    }
+
     public readonly static Dictionary<GAME_MODES, string> GAME_MODES_VERBOSE = new Dictionary<GAME_MODES,string>()
     {
         {GAME_MODES.upto4player, "4 Players FFA"},
