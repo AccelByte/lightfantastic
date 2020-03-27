@@ -224,5 +224,25 @@ namespace AccelByte.Api
             var result = response.TryParseJson<string[]>();
             callback.Try(result);
         }
+
+        public IEnumerator GetCountries(string @namespace, string language, ResultCallback<CountryObject[]> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(@namespace, "Can't get countries! Namespace parameter is null!");
+
+            var request = HttpRequestBuilder
+                .CreateGet(this.baseUrl + "/v1/public/namespaces/{namespace}/misc/countries")
+                .WithPathParam("namespace", @namespace)
+                .WithQueryParam("lang", language)
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<CountryObject[]>();
+            callback.Try(result);
+        }
     }
 }

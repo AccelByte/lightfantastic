@@ -3,10 +3,13 @@ using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
-    public const string GAME_VERSION = "0.0.6";
-    public const string DS_TARGET_VERSION = "v0.0.6";
+    public const string GAME_VERSION = "0.0.5";
+    public const string DS_TARGET_VERSION = "v0.0.5.5";
+    public const string SDK_VERSION = "2.0.0";
+    
     public const string DEFAULT_LANGUAGE = "en";
     public const string IMAGE_AS = "product-cover";
+    public const string PARTY_CHAT = "party";
 
     public static class ItemTags
     {
@@ -20,6 +23,14 @@ public static class LightFantasticConfig
     {
         unitytest = 0,
         upto4player = 1
+    }
+
+    public static class StatisticCode
+    {
+        public const string win = "total-win";
+        public const string lose = "total-lose";
+        public const string total = "total-match";
+        public const string distance = "total-distance";
     }
 
     public readonly static Dictionary<GAME_MODES, string> GAME_MODES_VERBOSE = new Dictionary<GAME_MODES,string>()

@@ -222,7 +222,7 @@ namespace Game
             foreach (var player in players)
             {
                 var isWinner = player.Key == winnerNetId;
-                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner);
             }
             onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
@@ -234,7 +234,7 @@ namespace Game
             foreach (var player in players)
             {
                 var isWinner = player.Key == winnerNetId;
-                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.UserId, isWinner);
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner);
             }
             onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);

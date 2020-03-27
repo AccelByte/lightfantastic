@@ -27,9 +27,18 @@ public class UILobbyLogicComponent : MonoBehaviour
     public PromptPanel matchmakingFailedPromptPanel;
 
     [Header("Chat")]
-    public InputField playerNameInputField;
+    public ScrollRect playerChatScrollView;
+    public Transform playerChatScrollContent;
+    public Transform playerChatPrefab;
+    public ScrollRect chatBoxScrollView;
+    public Transform chatBoxScrollContent;
+    public Transform chatBoxPrefab;
+    public Button enterToChatButton;
+    public Button backChatButton;
+    public Button privateChatButton;
+    public Button partyChatButton;
+    public Button sendMessageButton;
     public InputField messageInputField;
-    public Text chatMessageText;
 
     [Header("Notification")]
     public Text generalNotificationTitle;

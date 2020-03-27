@@ -1,6 +1,8 @@
 ﻿using ABRuntimeLogic;
 using System.Collections;
 using System.Collections.Generic;
+using AccelByte.Api;
+using AccelByte.Models;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -48,6 +50,8 @@ public class AccelByteManager : MonoBehaviour
     public AccelByteServerLogic ServerLogic { get { return serverLogic; } }
     private AccelByteServerLogic serverLogic;
 
+    public CountryObject[] countryObjectsCache = null;
+    
     private void Awake()
     {
         if (instance != null && instance != this)

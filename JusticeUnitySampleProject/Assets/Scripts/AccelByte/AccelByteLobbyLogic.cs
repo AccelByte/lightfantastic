@@ -21,8 +21,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private UILobbyLogicComponent UIHandlerLobbyComponent;
     private UIElementHandler UIElementHandler;
 
-    private IDictionary<string, FriendData> friendList;
-    private IDictionary<string, PartyData> partyMemberList;
+    private static IDictionary<string, FriendData> friendList;
+    private static IDictionary<string, PartyData> partyMemberList;
+    private static IDictionary<string, ChatData> chatBoxList;
     private PartyInvitation abPartyInvitation;
     private PartyInfo abPartyInfo;
     private MatchmakingNotif abMatchmakingNotif;
@@ -31,22 +32,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
     private string lastFriendUserId;
-    
+    private string activePlayerChatUserId;
+
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
+    private static string partyUserId = LightFantasticConfig.PARTY_CHAT;
     private string gameMode = gameModeEnum.ToString();
     
     static bool isLocalPlayerInParty;
     static bool isReadyToInviteToParty;
     private List<string> chatList;
-    private List<string> chatBoxList;
-    private ChatMesssage receivedPersonalMessage;
+    private ChatMesssage receivedPrivateMessage;
     private ChatMesssage receivedPartyMessage;
     private FriendsStatusNotif friendsStatusNotif;
     private MultiplayerMenu multiplayerConnect;
     private AccelByteManager accelByteManager;
     private bool isActionPhaseOver = false;
 
-    static bool isReceivedPersonalMessage = false;
+    static bool isReceivedPrivateMessage = false;
     static bool isReceivedPartyMessage = false;
     static bool isRecevedPartyInvitation = false;
     static bool isMemberJoinedParty = false;
@@ -73,22 +75,43 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
         partyMemberList = new Dictionary<string, PartyData>();
+        chatBoxList = new Dictionary<string, ChatData>();
         chatList = new List<string>();
-        chatBoxList = new List<string>();
         multiplayerConnect = gameObject.GetComponent<MultiplayerMenu>();
     }
 
     private void Update()
     {
-        if (isReceivedPersonalMessage)
+        if (isReceivedPrivateMessage)
         {
-            isReceivedPersonalMessage = false;
-            AccelBytePlugin.GetUser().GetUserByUserId(receivedPersonalMessage.from, OnGetPersonalChatDisplayNamebyUserId);
+            isReceivedPrivateMessage = false;
+            if (!chatBoxList.ContainsKey(receivedPrivateMessage.from))
+            {
+                chatBoxList.Add(receivedPrivateMessage.from, new ChatData(receivedPrivateMessage.from, new List<string>(), new List<string>()));
+            }
+            chatBoxList[receivedPrivateMessage.from].sender.Add(receivedPrivateMessage.from);
+            chatBoxList[receivedPrivateMessage.from].message.Add(receivedPrivateMessage.payload);
+
+            if (receivedPrivateMessage.from == activePlayerChatUserId)
+            {
+                RefreshChatBoxUI();
+            }
         }
         if (isReceivedPartyMessage)
         {
             isReceivedPartyMessage = false;
-            AccelBytePlugin.GetUser().GetUserByUserId(receivedPartyMessage.from, OnGetPartyChatDisplayNamebyUserId);
+            
+            if (!chatBoxList.ContainsKey(partyUserId))
+            {
+                chatBoxList.Add(partyUserId, new ChatData(partyUserId, new List<string>(), new List<string>()));
+            }
+            chatBoxList[partyUserId].sender.Add(receivedPartyMessage.from);
+            chatBoxList[partyUserId].message.Add(receivedPartyMessage.payload);
+
+            if (partyUserId == activePlayerChatUserId)
+            {
+                RefreshChatBoxUI();
+            }
         }
         if (isRecevedPartyInvitation)
         {
@@ -127,6 +150,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
             string friendName = friendList[friendsStatusNotif.userID].DisplayName;
             friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
             RefreshFriendsUI();
+            if (activePlayerChatUserId == partyUserId)
+                RefreshDisplayNamPartyChatListUI();
+            else
+                RefreshDisplayNamPrivateChatListUI();
         }
         if (isFriendAcceptRequest)
         {
@@ -255,13 +282,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(ClearFriendsUIPrefabs);
         UIHandlerLobbyComponent.searchFriendButton.onClick.AddListener(FindFriendByEmail);
         UIHandlerLobbyComponent.localPlayerButton.onClick.AddListener(OnLocalPlayerProfileButtonClicked);
-        UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(LoadFriendsList);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(LoadFriendsList);
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(LoadFriendsList);
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.AddListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.AddListener(OnDeclinePartyClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnPlayerPartyProfileClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnClosePartyInfoButtonClicked);
+        UIHandlerLobbyComponent.enterToChatButton.onClick.AddListener(OpenEmptyChatBox);
+        UIHandlerLobbyComponent.sendMessageButton.onClick.AddListener(SendChatMessage);
+        UIHandlerLobbyComponent.backChatButton.onClick.AddListener(ClearActivePlayerChat);
+        UIHandlerLobbyComponent.partyChatButton.onClick.AddListener(OpenPartyChatBox);
+        UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(ClearActivePlayerChat);
+        UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(OpenEmptyChatBox);
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
@@ -278,14 +314,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
-        UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveListener(ListFriendsStatus);
-        UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveListener(ListFriendsStatus);
+        UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.localPlayerButton.onClick.RemoveListener(OnLocalPlayerProfileButtonClicked);
         UIHandlerLobbyComponent.acceptPartyInvitation.onClick.RemoveListener(OnAcceptPartyClicked);
         UIHandlerLobbyComponent.declinePartyInvitation.onClick.RemoveListener(OnDeclinePartyClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnPlayerPartyProfileClicked);
         UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnClosePartyInfoButtonClicked);
+        UIHandlerLobbyComponent.enterToChatButton.onClick.RemoveListener(OpenEmptyChatBox);
+        UIHandlerLobbyComponent.sendMessageButton.onClick.RemoveListener(SendChatMessage);
+        UIHandlerLobbyComponent.backChatButton.onClick.RemoveListener(ClearActivePlayerChat);
+        UIHandlerLobbyComponent.partyChatButton.onClick.RemoveListener(OpenPartyChatBox);
+        UIHandlerLobbyComponent.privateChatButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
@@ -625,19 +666,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
                 delegate
                 {
-                    if (abMatchmakingNotif?.status == MatchmakingNotifStatus.done.ToString())
-                    {
-                        abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
-                        UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
-                        delegate
-                        {
-                            OnFailedMatchmaking("Timeout to confirm matchmaking");
-                        });
-                    }
-                    else
-                    {
-                        OnFailedMatchmaking("Timeout to finding match");
-                    }
+                    OnFailedMatchmaking("Timeout to finding match");
                 });
             UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
         }
@@ -688,7 +717,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnFindMatchCompleted Match Found: " + result.Value.matchId);
             Debug.Log(" Match status: " + result.Value.status);
             Debug.Log(" Expected match status: " + MatchmakingNotifStatus.done.ToString());
+
             abMatchmakingNotif = result.Value;
+            abLobby.ConfirmReadyForMatch(abMatchmakingNotif.matchId, OnReadyForMatchConfirmation);
+            UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.ConfirmingMatch,
+            delegate
+            {
+                OnFailedMatchmaking("Timeout to confirm matchmaking");
+            });
+            
             if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
                 WriteInDebugBox(" Match Found: " + result.Value.matchId);
@@ -696,11 +733,24 @@ public class AccelByteLobbyLogic : MonoBehaviour
             // if in a party and party leader start a matchmaking
             else if (result.Value.status == MatchmakingNotifStatus.start.ToString())
             {
-                ShowMatchmakingBoard(true);
+                MainThreadTaskRunner.Instance.Run(delegate 
+                {
+                    ShowMatchmakingBoard(true);
+                });
+
+                UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
+                delegate
+                {
+                    OnFailedMatchmaking("Timeout to finding match");
+                });
+                UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
             }
             else if (result.Value.status == MatchmakingNotifStatus.cancel.ToString())
             {
-                ShowMatchmakingBoard(false);
+                MainThreadTaskRunner.Instance.Run(delegate
+                {
+                    ShowMatchmakingBoard(false);
+                });
             }
         }
     }
@@ -890,6 +940,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     friendList[friendUserId] = new FriendData(friendUserId, friendList[friendUserId].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
                 }
                 RefreshFriendsUI();
+                if (activePlayerChatUserId == partyUserId)
+                {
+                    RefreshDisplayNamPartyChatListUI();
+                }
+                else
+                {
+                    RefreshDisplayNamPrivateChatListUI();
+                }
             }
         }
     }
@@ -1152,6 +1210,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         abLobby.LeaveParty(OnLeaveParty);
         HidePopUpPartyControl();
+        ClearActivePlayerChat();
+        OpenEmptyChatBox();
     }
 
     public void GetPartyInfo()
@@ -1170,6 +1230,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         for (int i = 0; i < UIHandlerLobbyComponent.partyMemberButtons.Length; i++)
         {
             UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
+            UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<Button>().onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         }
 
         partyMemberList.Clear();
@@ -1183,11 +1244,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (KeyValuePair<string, PartyData> member in partyMemberList)
             {
                 Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
+                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<Button>().onClick.RemoveAllListeners();
                 UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().OnClearProfileButton();
                 UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
                 j++;
             }
+
+            if (activePlayerChatUserId == partyUserId)
+            {
+                RefreshDisplayNamPartyChatListUI();
+            }
         }
+
         RefreshFriendsUI();
     }
 
@@ -1366,6 +1434,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             ClearPartySlots();
             isLocalPlayerInParty = false;
             RefreshFriendsUI();
+
+            PopupManager.Instance.ShowPopupWarning("Leave The Party", "You are just left the party!", "OK");
         }
     }
 
@@ -1384,6 +1454,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             abPartyInfo = result.Value;
             ClearPartySlots();
             GetPartyInfo();
+
+            PopupManager.Instance.ShowPopupWarning("Join a Party", "You are just joined a party!", "OK");
         }
     }
 
@@ -1395,11 +1467,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
 
             // if the player already in party then notify the user
-            PopupManager.Instance.ShowPopupWarning("Invite Party Failed", " " + result.Error.Message, "OK");
+            PopupManager.Instance.ShowPopupWarning("Invite to Party Failed", " " + result.Error.Message, "OK");
         }
         else
         {
             Debug.Log("OnInviteParty Succeded on Inviting player to party");
+            PopupManager.Instance.ShowPopupWarning("Invite to Party Success", "Waiting for invitee acceptance", "OK");
         }
     }
 
@@ -1427,6 +1500,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             {
                 isLocalPlayerInParty = false;
                 RefreshFriendsUI();
+                ClearActivePlayerChat();
+                OpenEmptyChatBox();
             }
         }
         else
@@ -1440,6 +1515,13 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 // Get member info
                 GetPartyMemberInfo(result.Value.members[i]);
             }
+
+            if (result.Value.members.Length == 1)
+            {
+                ClearActivePlayerChat();
+                OpenEmptyChatBox();
+            }
+
             isLocalPlayerInParty = true;
         }
     }
@@ -1466,6 +1548,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.userId + " DisplayName: " + result.Value.displayName);
                 partyMemberList.Add(result.Value.userId, new PartyData(result.Value.userId, result.Value.displayName, result.Value.emailAddress));
             }
+            
             RefreshPartySlots();
         }
     }
@@ -1488,6 +1571,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnKickPartyMember Retrieved successfully");
             ClearPartySlots();
             GetPartyInfo();
+
+            PopupManager.Instance.ShowPopupWarning("Kick a Party Member", "You are just kicked one of the party member!", "OK");
         }
     }
     #endregion
@@ -1519,6 +1604,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnMemberJoinedParty Retrieved successfully");
             isMemberJoinedParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate
+            {
+                PopupManager.Instance.ShowPopupWarning("A New Party Member", "A new member just joined the party!", "OK");
+            });
         }
     }
 
@@ -1533,6 +1622,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
             isMemberLeftParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate
+            {
+                PopupManager.Instance.ShowPopupWarning("A Member Left The Party", "A member just left the party!", "OK");
+            });
         }
     }
 
@@ -1547,6 +1640,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
             isMemberKickedParty = true;
+            MainThreadTaskRunner.Instance.Run(delegate 
+            {
+                PopupManager.Instance.ShowPopupWarning("Kicked from The Party", "You are just kicked from the party!", "OK");
+            });
         }
     }
     #endregion
@@ -1555,12 +1652,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
     public void SendChatMessage()
     {
         if (string.IsNullOrEmpty(UIHandlerLobbyComponent.messageInputField.text))
-            Debug.Log("Please fill the chat message");
-        else if (string.IsNullOrEmpty(UIHandlerLobbyComponent.playerNameInputField.text))
+            WriteWarningInChatBox("Please enter write your message");
+        else if (string.IsNullOrEmpty(activePlayerChatUserId))
+            WriteWarningInChatBox("Please select player or party to chat");
+        else if (!UIHandlerLobbyComponent.partyChatButton.interactable)
             SendPartyChat();
         else
         {
-            AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.playerNameInputField.text, OnSearchUsers);
+            SendPersonalChat(activePlayerChatUserId);
         }
     }
 
@@ -1574,22 +1673,173 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.SendPersonalChat(userId, UIHandlerLobbyComponent.messageInputField.text, OnSendPersonalChat);
     }
 
-    private void WriteChatBoxText(string chat)
+    public void ClearChatBoxUIPrefabs()
     {
-        string textChat = "";
-
-        if (chatList.Count >= 5)
+        if (UIHandlerLobbyComponent.chatBoxScrollContent.childCount > 0)
         {
-            chatList.RemoveAt(0);
+            for (int i = 0; i < UIHandlerLobbyComponent.chatBoxScrollContent.childCount; i++)
+            {
+                Destroy(UIHandlerLobbyComponent.chatBoxScrollContent.GetChild(i).gameObject);
+            }
         }
-        chatList.Add(chat);
+    }
 
-        foreach (var s in chatList)
+    public void ClearPlayerChatListUIPrefabs()
+    {
+        if (UIHandlerLobbyComponent.playerChatScrollContent.childCount > 0)
         {
-            textChat += s + "\n";
+            for (int i = 0; i < UIHandlerLobbyComponent.playerChatScrollContent.childCount; i++)
+            {
+                Destroy(UIHandlerLobbyComponent.playerChatScrollContent.GetChild(i).gameObject);
+            }
+        }
+    }
+
+    private void RefreshDisplayNamPrivateChatListUI()
+    {
+        ClearPlayerChatListUIPrefabs();
+        foreach (var friend in friendList)
+        {
+            PlayerChatPrefab playerChatPrefab = Instantiate(UIHandlerLobbyComponent.playerChatPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerChatPrefab>();
+            playerChatPrefab.transform.SetParent(UIHandlerLobbyComponent.playerChatScrollContent, false);
+
+            playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(friend.Value.DisplayName, friend.Value.UserId, friend.Value.IsOnline == "1");
+            playerChatPrefab.GetComponent<PlayerChatPrefab>().activePlayerButton.onClick.AddListener(() => OpenPrivateChatBox(friend.Value.UserId));
+
+            if (!string.IsNullOrEmpty(activePlayerChatUserId) && friend.Value.UserId == activePlayerChatUserId)
+            {
+                playerChatPrefab.GetComponent<PlayerChatPrefab>().backgroundImage.SetActive(true);
+            }
+
+            UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+        }
+    }
+
+    private void RefreshDisplayNamPartyChatListUI()
+    {
+        ClearPlayerChatListUIPrefabs();
+        foreach (var partyMember in abPartyInfo.members)
+        {
+            var myUserData = accelByteManager.AuthLogic.GetUserData();
+            if (partyMemberList.ContainsKey(partyMember) || partyMember == myUserData.userId)
+            {
+                PlayerChatPrefab playerChatPrefab = Instantiate(UIHandlerLobbyComponent.playerChatPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerChatPrefab>();
+                playerChatPrefab.transform.SetParent(UIHandlerLobbyComponent.playerChatScrollContent, false);
+
+
+                if (partyMember != myUserData.userId && !string.IsNullOrEmpty(partyMemberList[partyMember].PlayerName))
+                {
+                    playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(partyMemberList[partyMember].PlayerName, partyMember, true);
+                    playerChatPrefab.GetComponent<PlayerChatPrefab>().activePlayerButton.interactable = false;
+                    if (partyMember == abPartyInfo.leaderID)
+                    {
+                        playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPartyLeader(partyMemberList[partyMember].PlayerName);
+                    }
+                }
+                else if (partyMember == myUserData.userId)
+                {
+                    playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(myUserData.displayName, myUserData.userId, true);
+                    playerChatPrefab.GetComponent<PlayerChatPrefab>().activePlayerButton.interactable = false;
+                    if (partyMember == abPartyInfo.leaderID)
+                    {
+                        playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPartyLeader(myUserData.displayName);
+                    }
+                }
+
+                UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+            }
+        }
+    }
+
+    private void RefreshChatBoxUI()
+    {
+        ClearChatBoxUIPrefabs();
+
+        if (chatBoxList[activePlayerChatUserId].message.Count > 0)
+        {
+            for (int i = 0; i < chatBoxList[activePlayerChatUserId].message.Count; i++)
+            {
+                ChatMessagePrefab chatPrefab = Instantiate(UIHandlerLobbyComponent.chatBoxPrefab, Vector3.zero, Quaternion.identity).GetComponent<ChatMessagePrefab>();
+                chatPrefab.transform.SetParent(UIHandlerLobbyComponent.chatBoxScrollContent, false);
+
+                bool isMe = chatBoxList[activePlayerChatUserId].sender[i] == accelByteManager.AuthLogic.GetUserData().userId;
+
+                if (isMe)
+                {
+                    chatPrefab.GetComponent<ChatMessagePrefab>().WriteMessage("You", chatBoxList[activePlayerChatUserId].message[i], isMe);
+                }
+                else
+                {
+                    string playerChatName = friendList[chatBoxList[activePlayerChatUserId].sender[i]].DisplayName;
+                    chatPrefab.GetComponent<ChatMessagePrefab>().WriteMessage(playerChatName, chatBoxList[activePlayerChatUserId].message[i], isMe);
+                }
+                UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+            }
+        }
+    }
+
+    private void WriteWarningInChatBox(string message)
+    {
+        ChatMessagePrefab chatPrefab = Instantiate(UIHandlerLobbyComponent.chatBoxPrefab, Vector3.zero, Quaternion.identity).GetComponent<ChatMessagePrefab>();
+        chatPrefab.transform.SetParent(UIHandlerLobbyComponent.chatBoxScrollContent, false);
+
+        chatPrefab.GetComponent<ChatMessagePrefab>().WriteWarning(message);
+
+        UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
+    }
+
+    public void OpenEmptyChatBox()
+    {
+        ClearChatBoxUIPrefabs();
+        ClearPlayerChatListUIPrefabs();
+        UIHandlerLobbyComponent.privateChatButton.interactable = false;
+        UIHandlerLobbyComponent.partyChatButton.interactable = true;
+        LoadFriendsList();
+    }
+
+    public void OpenPrivateChatBox(string userId)
+    {
+        activePlayerChatUserId = userId;
+        if (!chatBoxList.ContainsKey(activePlayerChatUserId))
+        {
+            chatBoxList.Add(activePlayerChatUserId, new ChatData(activePlayerChatUserId, new List<string>(), new List<string>()));
         }
 
-        UIHandlerLobbyComponent.chatMessageText.text = textChat;
+        RefreshDisplayNamPrivateChatListUI();
+        RefreshChatBoxUI();
+    }
+
+    public void OpenPartyChatBox()
+    {
+        if (partyMemberList.Count > 0)
+        {
+            activePlayerChatUserId = "party";
+            if (!chatBoxList.ContainsKey(activePlayerChatUserId))
+            {
+                chatBoxList.Add(activePlayerChatUserId, new ChatData(activePlayerChatUserId, new List<string>(), new List<string>()));
+            }
+
+            RefreshChatBoxUI();
+            RefreshDisplayNamPartyChatListUI();
+        }
+        else
+        {
+            UIHandlerLobbyComponent.privateChatButton.interactable = false;
+            UIHandlerLobbyComponent.partyChatButton.interactable = true;
+            if (isLocalPlayerInParty)
+            {
+                WriteWarningInChatBox("You don't have any party member");
+            }
+            else
+            {
+                WriteWarningInChatBox("You don't have any party");
+            }
+        }
+    }
+
+    public void ClearActivePlayerChat()
+    {
+        activePlayerChatUserId = null;
     }
     #endregion
 
@@ -1603,15 +1853,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
             //Show Error Message
             if (result.Error.Code == ErrorCode.ReceiverNotFound)
             {
-                WriteChatBoxText("Player is offline");
+                WriteWarningInChatBox("Player is offline");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
             }
         }
         else
         {
             Debug.Log("Send personal chat successful");
-            WriteChatBoxText(AccelByteManager.Instance.AuthLogic.GetUserData().displayName + " : " + UIHandlerLobbyComponent.messageInputField.text);
+
+            chatBoxList[activePlayerChatUserId].sender.Add(accelByteManager.AuthLogic.GetUserData().userId);
+            chatBoxList[activePlayerChatUserId].message.Add(UIHandlerLobbyComponent.messageInputField.text);
             UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+
+            RefreshChatBoxUI();
         }
     }
 
@@ -1623,75 +1877,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("Send party chat Response Code: " + result.Error.Code);
             if (result.Error.Code == ErrorCode.PartyNotFound)
             {
-                WriteChatBoxText("Party is not found");
+                WriteWarningInChatBox("Party is not found");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
             }
         }
         else
         {
             Debug.Log("Send party chat successful");
-            WriteChatBoxText("<party>" + AccelByteManager.Instance.AuthLogic.GetUserData().displayName + " : " + UIHandlerLobbyComponent.messageInputField.text);
+            chatBoxList[activePlayerChatUserId].sender.Add(accelByteManager.AuthLogic.GetUserData().userId);
+            chatBoxList[activePlayerChatUserId].message.Add(UIHandlerLobbyComponent.messageInputField.text);
             UIHandlerLobbyComponent.messageInputField.text = string.Empty;
-        }
-    }
 
-    private void OnGetPersonalChatDisplayNamebyUserId(Result<UserData> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("Get display name failed:" + result.Error.Message);
-            Debug.Log("Get display name Response Code: " + result.Error.Code);
-        }
-        else
-        {
-            WriteChatBoxText(result.Value.displayName + " : " + receivedPersonalMessage.payload);
-        }
-    }
-
-    private void OnGetPartyChatDisplayNamebyUserId(Result<UserData> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("Get display name failed:" + result.Error.Message);
-            Debug.Log("Get display name Response Code: " + result.Error.Code);
-        }
-        else
-        {
-            WriteChatBoxText("<party>" + result.Value.displayName + " : " + receivedPartyMessage.payload);
-        }
-    }
-
-    private void OnSearchUsers(Result<PagedPublicUsersInfo> result)
-    {
-        string notValidText = "Player is not exist";
-        if (result.IsError)
-        {
-            Debug.Log("Search user failed:" + result.Error.Message);
-            Debug.Log("Search user Response Code: " + result.Error.Code);
-            WriteChatBoxText(notValidText);
-        }
-        else
-        {
-            bool isValid = false;
-            foreach (var data in result.Value.data)
-            {
-                if (data.displayName == AccelByteManager.Instance.AuthLogic.GetUserData().displayName && data.displayName == UIHandlerLobbyComponent.playerNameInputField.text)
-                {
-                    isValid = true;
-                    UIHandlerLobbyComponent.messageInputField.text = string.Empty;
-                    Debug.Log("You can't chat with yourself");
-                }
-                else if (data.displayName == UIHandlerLobbyComponent.playerNameInputField.text)
-                {
-                    isValid = true;
-                    SendPersonalChat(data.userId);
-                }
-            }
-            if (!isValid)
-            {
-                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
-                WriteChatBoxText(notValidText);
-            }
+            RefreshChatBoxUI();
         }
     }
     #endregion
@@ -1706,8 +1903,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
         else
         {
-            receivedPersonalMessage = result.Value;
-            isReceivedPersonalMessage = true;
+            receivedPrivateMessage = result.Value;
+            isReceivedPrivateMessage = true;
         }
     }
 
