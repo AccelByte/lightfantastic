@@ -45,19 +45,12 @@ public class AccelByteStatisticLogic : MonoBehaviour
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABStatistics OnEnable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnDisable()
     {
-        Debug.Log("ABStatistics OnDisable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
-
         if (UIHandler != null)
         {
             RemoveListeners();
@@ -66,8 +59,6 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABStatistics OnSceneLoaded level loaded!");
-
         RefreshUIHandler();
     }
 
@@ -94,17 +85,21 @@ public class AccelByteStatisticLogic : MonoBehaviour
 
     void AddEventListeners()
     {
-        Debug.Log("ABStatistics AddEventListeners!");
-        // Bind Buttons
+        // Bind the Buttons here
     }
 
     void RemoveListeners()
     {
-        Debug.Log("ABStatistics RemoveListeners!");
+        // Unbind the Buttons here
     }
     #endregion // UI Listeners
 
     #region AccelByte Statistic Callback
+
+    /// <summary>
+    /// Callback from statistics service then update the UI
+    /// </summary>
+    /// <param name="result"> Callback result from statistics service, use the statCode to get the value of it </param>
     public void GetStatisticCallback(Result<PagedStatItems> result)
     {
         if (result.IsError)

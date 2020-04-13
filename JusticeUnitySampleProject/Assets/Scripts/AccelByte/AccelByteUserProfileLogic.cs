@@ -33,49 +33,27 @@ public class AccelByteUserProfileLogic : MonoBehaviour
 
     public void Init()
     {
+        // Create default user profile
         var defaultUserProfile = new CreateUserProfileRequest{language = LightFantasticConfig.DEFAULT_LANGUAGE};
         abUserProfiles.CreateUserProfile(defaultUserProfile, OnCreateUserProfile);
 
-        // Update player profile info
-        UIHandlerUserProfileComponent.PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
-    }
-    
-    public void GetMine(ResultCallback<UserProfile> onGetProfile)
-    {
-        abUserProfiles.GetUserProfile(onGetProfile);
-    }
-
-    public void UpdatePlayerProfileUI()
-    {
+        // Update player profile info UI
         UIHandlerUserProfileComponent.PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
     }
 
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABUserProfile OnEnable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnDisable()
     {
-        Debug.Log("ABUserProfile OnDisable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        if (UIHandler != null)
-        {
-            RemoveListeners();
-        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABUserProfile OnSceneLoaded level loaded!");
-
         RefreshUIHandler();
     }
 
@@ -91,26 +69,28 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         UIHandlerUserProfileComponent = UIHandler.GetComponent<UIUserProfileLogicComponent>();
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
-        AddEventListeners();
-
         if (isActionPhaseOver)
         {
             UpdatePlayerProfileUI();
             isActionPhaseOver = false;
         }
     }
-
-    void AddEventListeners()
-    {
-        Debug.Log("ABUserProfile AddEventListeners!");
-        // Bind Buttons
-    }
-
-    void RemoveListeners()
-    {
-        Debug.Log("ABUserProfile RemoveListeners!");
-    }
     #endregion // UI Listeners
+
+    #region AccelByte User Profile Functions
+    /// <summary>
+    /// Get user profile of the current user that logged in
+    /// </summary>
+    /// <param name="onGetProfile"> Result callback function that has userprofile param </param>
+    public void GetMine(ResultCallback<UserProfile> onGetProfile)
+    {
+        abUserProfiles.GetUserProfile(onGetProfile);
+    }
+
+    public void UpdatePlayerProfileUI()
+    {
+        UIHandlerUserProfileComponent.PlayerProfilePrefab.GetComponent<PlayerStatusPrefab>().UpdatePlayerProfile();
+    }
 
     public UserProfile Get(string userId)
     {
@@ -123,18 +103,24 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         }
 
         return null;
-        //TODO: Get it from backend and then store it in the userProfilesCache
-        //abUserProfiles.GetUserProfileById(userId, result =>
-        //{
-        //    
-        //});
     }
 
+    /// <summary>
+    /// Update call to user profile service
+    /// </summary>
+    /// <param name="request"> contains attributes that will need to be updated </param>
+    /// <param name="callback"> result callback that will return the updated userprofile data </param>
     public void UpdateMine(UpdateUserProfileRequest request, ResultCallback<UserProfile> callback)
     {
         abUserProfiles.UpdateUserProfile(request, callback);
     }
+    #endregion // AccelByte User Profile Callbacks
 
+    #region AccelByte User Profile Callbacks
+    /// <summary>
+    /// Callback from get user profile
+    /// </summary>
+    /// <param name="result"></param>
     private void OnGetMyProfile(Result<UserProfile> result)
     {
         if (!result.IsError)
@@ -143,6 +129,11 @@ public class AccelByteUserProfileLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on create user profile
+    /// If exist already, then use the one that already exist
+    /// </summary>
+    /// <param name="result"></param>
     private void OnCreateUserProfile(Result<UserProfile> result)
     {
         if (!result.IsError)
@@ -154,9 +145,5 @@ public class AccelByteUserProfileLogic : MonoBehaviour
             abUserProfiles.GetUserProfile(OnGetMyProfile);
         }
     }
-
-    private void UpdatePlayerProfile()
-    {
-        //TODO: update player profile status
-    }
+    #endregion // AccelByte User Profile Callbacks
 }

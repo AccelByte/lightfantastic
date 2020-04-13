@@ -10,7 +10,6 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(AccelByteAuthenticationLogic))]
 [RequireComponent(typeof(AccelByteLobbyLogic))]
 [RequireComponent(typeof(AccelByteWalletLogic))]
-[RequireComponent(typeof(AccelByteGameProfileLogic))]
 [RequireComponent(typeof(AccelByteUserProfileLogic))]
 [RequireComponent(typeof(AccelByteStatisticLogic))]
 [RequireComponent(typeof(AccelByteServerLogic))]
@@ -27,9 +26,6 @@ public class AccelByteManager : MonoBehaviour
     public AccelByteLobbyLogic LobbyLogic { get { return lobbyLogic; } }
     private AccelByteWalletLogic walletLogic;
     public AccelByteWalletLogic WalletLogic { get { return walletLogic; } }
-
-    private AccelByteGameProfileLogic gameprofileLogic;
-    public AccelByteGameProfileLogic GameProfileLogic { get { return gameprofileLogic; } }
     private AccelByteUserProfileLogic userProfileLogic;
     public AccelByteUserProfileLogic UserProfileLogic { get { return userProfileLogic; } }
     private AccelByteStatisticLogic userStaticticLogic;
@@ -66,7 +62,6 @@ public class AccelByteManager : MonoBehaviour
         authLogic = gameObject.GetComponent<AccelByteAuthenticationLogic>();
         lobbyLogic = gameObject.GetComponent<AccelByteLobbyLogic>();
         walletLogic = gameObject.GetComponent<AccelByteWalletLogic>();
-        gameprofileLogic = gameObject.GetComponent<AccelByteGameProfileLogic>();
         userProfileLogic = gameObject.GetComponent<AccelByteUserProfileLogic>();
         userStaticticLogic = gameObject.GetComponent<AccelByteStatisticLogic>();
         multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
