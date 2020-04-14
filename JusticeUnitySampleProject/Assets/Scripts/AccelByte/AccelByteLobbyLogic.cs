@@ -10,7 +10,6 @@ using AccelByte.Core;
 using UITools;
 using System;
 using HybridWebSocket;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class AccelByteLobbyLogic : MonoBehaviour
@@ -151,9 +150,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
             friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
             RefreshFriendsUI();
             if (activePlayerChatUserId == partyUserId)
-                RefreshDisplayNamPartyChatListUI();
+                RefreshDisplayNamePartyChatListUI();
             else
-                RefreshDisplayNamPrivateChatListUI();
+                RefreshDisplayNamePrivateChatListUI();
         }
         if (isFriendAcceptRequest)
         {
@@ -195,30 +194,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABLobby OnEnable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnDisable()
     {
-        Debug.Log("ABLobby OnDisable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         if (UIHandler != null)
         {
-            Debug.Log("ABLobby OnDisable remove all listeners!");
             RemoveListeners();
         }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABLobby OnSceneLoaded level loaded!");
-
         RefreshUIHandler();
     }
 
@@ -227,7 +217,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
         if (UIHandler == null)
         {
-            Debug.Log("ABLobby RefreshUIHandler no reference to UI Handler!");
             return;
         }
         UIHandlerLobbyComponent = UIHandler.GetComponent<UILobbyLogicComponent>();
@@ -239,7 +228,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         
         if (isActionPhaseOver)
         {
-            Debug.Log("AbLogic SetIsActionPhaseOver called");
             // move to main menu screen
             // TODO: after from action pahse all the main menu stuff has tobe refreshed (player profile and statistic)
             
@@ -247,14 +235,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.PARENT_OF_OVERLAY_PANELS);
             
             SetupLobbyUI();
-
             isActionPhaseOver = false;
         }
     }
 
     void AddEventListeners()
     {
-        Debug.Log("ABLobby AddEventListeners!");
         // Bind Buttons
         UIHandlerLobbyComponent.logoutButton.onClick.AddListener(OnLogoutButtonClicked);
         
@@ -280,7 +266,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetIncomingFriendsRequest);
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(GetOutgoingFriendsRequest);
         UIHandlerLobbyComponent.invitesTabButton.onClick.AddListener(ClearFriendsUIPrefabs);
-        UIHandlerLobbyComponent.searchFriendButton.onClick.AddListener(FindFriendByEmail);
+        UIHandlerLobbyComponent.searchFriendButton.onClick.AddListener(FindAFriendRequest);
         UIHandlerLobbyComponent.localPlayerButton.onClick.AddListener(OnLocalPlayerProfileButtonClicked);
         UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(LoadFriendsList);
         UIHandlerLobbyComponent.partyMember1stButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
@@ -308,12 +294,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     void RemoveListeners()
     {
-        Debug.Log("ABLobby RemoveListeners!");
         UIHandlerLobbyComponent.logoutButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.matchmakingButtonCollection.DeregisterAllButton();
         UIHandlerLobbyComponent.friendsTabButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.invitesTabButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindFriendByEmail);
+        UIHandlerLobbyComponent.searchFriendButton.onClick.RemoveListener(FindAFriendRequest);
         UIHandlerLobbyComponent.partyMember1stButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveAllListeners();
@@ -335,6 +320,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     }
     #endregion // UI Listeners
 
+    #region AccelByte Lobby Functions
     private void SetupPopupPartyControl()
     {
         localLeaderCommand = UIHandlerLobbyComponent.popupPartyControl.Find("LocalLeaderCommand");
@@ -457,6 +443,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.KickedFromParty -= OnKickedFromParty;
         abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
+    #endregion // AccelByte Lobby Functions
 
     #region Gameplay Configuration Setter
 
@@ -484,6 +471,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
     
     #region AccelByte Notification Callbacks
+    /// <summary>
+    /// Callback from lobby service
+    /// </summary>
+    /// <param name="result"> Result callback to show on game lobby </param>
     private void OnNotificationReceived(Result<Notification> result)
     {
         UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
@@ -491,6 +482,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
     }
 
+    /// <summary>
+    /// Callback when disconnected from lobby service
+    /// Clean up the lobby menu and logout from IAM
+    /// </summary>
     private void OnDisconnectNotificationReceived()
     {
         UIElementHandler.ShowLoadingPanel();
@@ -500,6 +495,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte MatchMaking Functions
+    /// <summary>
+    /// Find match function by calling lobby matchmaking
+    /// Get latencies from available game server regions from Quality of Service
+    /// Latencies can be used for matchmaking to determine which region has the lowest latency
+    /// </summary>
     public void FindMatch()
     {
         if (connectToLocal)
@@ -520,6 +520,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Matchmaking required the player to a party
+    /// When the player does not included in a party yet, then create a party first
+    /// </summary>
     public void FindMatchButtonClicked()
     {
         if (!isLocalPlayerInParty)
@@ -532,11 +536,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Cancel matchmaking bound on cancel matchmaking button
+    /// </summary>
     public void FindMatchCancelClicked()
     {
         abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
     }
 
+    /// <summary>
+    /// The game is using auto accept then ready consent callback thrown from lobby service
+    /// This function can be used for accepting ready consent by bind it to accept popup button
+    /// abMatchmakingNotif.MatchID will be filled when the match has been found
+    /// </summary>
     public void OnAcceptReadyForMatchClicked()
     {
         if (abMatchmakingNotif != null)
@@ -547,12 +559,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// The game is using auto accept then ready consent callback thrown from lobby service
+    /// This function can be used for decline ready consent by bind it to decline popup button
+    /// </summary>
     public void OnDeclineReadyForMatchClicked()
     {
         abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
         UIHandlerLobbyComponent.popupMatchConfirmation.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Connect to game server once the game client knows once the game server is ready
+    /// </summary>
     private bool allowToConnectServer = true;
     IEnumerator WaitForGameServerReady(string ip, string port)
     {
@@ -575,6 +594,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Show matchmaking board once the callback from find match triggered
+    /// </summary>
+    /// <param name="show"> switch either to show and hide UI </param>
+    /// <param name="gameFound"> show the state of the match has been found </param>
     public void ShowMatchmakingBoard(bool show, bool gameFound = false)
     {
         // If there's matchmaking board shown, disable the [ONLINE] and [LOCAL] button
@@ -615,16 +639,28 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.ChatTextbox.GetComponentInChildren<Text>().text = textChat;
     }
 
+    /// <summary>
+    /// Game server using this function to host a game match
+    /// multiplayerConnect referenced multiplayer menu from Forge Networking
+    /// </summary>
     public void HostingGameServer()
     {
         multiplayerConnect.Host();
     }
 
+    /// <summary>
+    /// Game client function to connect to game server
+    /// multiplayerConnect referenced multiplayer menu from Forge Networking
+    /// </summary>
     public void ConnecttoGameServer()
     {
         multiplayerConnect.Connect();
     }
 
+    /// <summary>
+    /// Triggered when the match is over
+    /// </summary>
+    /// <param name="isOver"> flag after the game is over </param>
     public void SetIsActionPhaseOver(bool isOver)
     {
         isActionPhaseOver = isOver;
@@ -648,6 +684,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte MatchMaking Callbacks
+    /// <summary>
+    /// Callback from start matchmaking 
+    /// </summary>
+    /// <param name="result"></param>
     private void OnFindMatch(Result<MatchmakingCode> result)
     {
         if (result.IsError)
@@ -662,16 +702,24 @@ public class AccelByteLobbyLogic : MonoBehaviour
             
             Debug.Log("OnFindMatch Finding matchmaking with gameMode: " + gameMode + " . . .");
             WriteInDebugBox("Searching a match game mode " + gameMode);
+
+            // show matchmaking board and start count down on finding match
             ShowMatchmakingBoard(true);
             UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.FindMatch,
                 delegate
                 {
                     OnFailedMatchmaking("Timeout to finding match");
                 });
+
+            // setup current game mode based on player's selected game mode
             UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
         }
     }
 
+    /// <summary>
+    /// Callback from cancel find match
+    /// </summary>
+    /// <param name="result"></param>
     private void OnFindMatchCanceled(Result<MatchmakingCode> result)
     {
         if (result.IsError)
@@ -687,6 +735,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from ready consent match accepted
+    /// </summary>
+    /// <param name="result"></param>
     private void OnReadyForMatchConfirmation(Result result)
     {
         abMatchmakingNotif = null;
@@ -704,6 +756,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte MatchMaking Notification Callbacks
+    /// <summary>
+    /// Callback from MatchmakingCompleted event of Lobby service
+    /// This will be triggered if the player is in a party and the party leader do matchmaking
+    /// </summary>
+    /// <param name="result"> callback result that consist of a match id and matchmaking status </param>
     private void OnFindMatchCompleted(Result<MatchmakingNotif> result)
     {
         if (result.IsError)
@@ -725,12 +782,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
             {
                 OnFailedMatchmaking("Timeout to confirm matchmaking");
             });
-            
+            // if the player is in a party and the match is complete
             if (result.Value.status == MatchmakingNotifStatus.done.ToString())
             {
                 WriteInDebugBox(" Match Found: " + result.Value.matchId);
             }
-            // if in a party and party leader start a matchmaking
+            // if the player is in a party and the party leader start a matchmaking
             else if (result.Value.status == MatchmakingNotifStatus.start.ToString())
             {
                 MainThreadTaskRunner.Instance.Run(delegate 
@@ -745,6 +802,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 });
                 UIHandlerLobbyComponent.matchmakingBoard.SetGameMode(gameModeEnum);
             }
+            // if the player is in a party and the party leader cancel the current matchmaking
             else if (result.Value.status == MatchmakingNotifStatus.cancel.ToString())
             {
                 MainThreadTaskRunner.Instance.Run(delegate
@@ -755,6 +813,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback event from DSUpdated of Lobby service
+    /// The data is retrieved from DSM containing the current status of game server that being spawned
+    /// Will be triggered multiple times each time will be udpated with the most current status
+    /// CREATING : The DS is being spawned by DSM
+    /// READY : The DS is ready to use, the game client can start to jump in to the game server
+    /// BUSY : The DS is currently being used
+    /// </summary>
+    /// <param name="result"> Callback result of the current DS status </param>
     private void OnSuccessMatch(Result<DsNotif> result)
     {
         if (result.IsError)
@@ -800,7 +867,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
                 Debug.Log("Lobby OnSuccessMatch Connect");
                 Debug.Log("ip: " + result.Value.ip + "port: " + result.Value.port);
-                //StartStartCoroutine(result.Value.ip, result.Value.port.ToString());
                 MainThreadTaskRunner.Instance.Run(() => { StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString())); });
             }
 
@@ -812,6 +878,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from Lobby service event when the player is banned
+    /// Because the player does not accept ready consent within the time limit
+    /// and continue to rematchmaking after banned
+    /// </summary>
+    /// <param name="result"></param>
     private void OnRematchmaking(Result<RematchmakingNotification> result)
     {
         if (result.IsError)
@@ -826,6 +898,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from lobby event when the other user that matched together have accepted the ready consent
+    /// </summary>
+    /// <param name="result"> callback result showing off match id and user id of the user confirming the ready consent </param>
     private void OnGetReadyConfirmationStatus(Result<ReadyForMatchConfirmation> result)
     {
         if (result.IsError)
@@ -843,6 +919,9 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Friend Functions
+    /// <summary>
+    /// Load friendlist from lobby social service
+    /// </summary>
     public void LoadFriendsList()
     {
         abLobby.LoadFriendsList(OnLoadFriendsListRequest);
@@ -850,42 +929,74 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.invitesTabButton.interactable = true;
     }
 
-    //Doesn't return any display names so needs to be married to an array of usernames or a dictionary of online user data.
+    /// <summary>
+    /// Getting the list of friend status
+    /// Returns availability, last seen at and their activity
+    /// </summary>
     public void ListFriendsStatus()
     {
         abLobby.ListFriendsStatus(OnListFriendsStatusRequest);
     }
 
+    /// <summary>
+    /// Getting the friend public userdata from lobby service
+    /// </summary>
+    /// <param name="friendId"> required friend id </param>
+    /// <param name="callback"> result callback that contains public user data </param>
     public void GetFriendInfo(string friendId, ResultCallback<UserData> callback)
     {
         AccelBytePlugin.GetUser().GetUserByUserId(friendId, callback);
     }
 
-    public void FindFriendByEmail()
+    /// <summary>
+    /// Search a friend using their email or their display name
+    /// </summary>
+    public void FindAFriendRequest()
     {
-        AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.emailToFind.text, OnFindFriendByEmailRequest);
+        AccelBytePlugin.GetUser().SearchUsers(UIHandlerLobbyComponent.emailToFind.text, OnFindAFriendRequest);
     }
 
+    /// <summary>
+    /// Send a friend request
+    /// </summary>
+    /// <param name="friendId"> required friend id </param>
+    /// <param name="callback"> result callback to be bound to a button onclick event </param>
     public void SendFriendRequest(string friendId, ResultCallback callback)
     {
         abLobby.RequestFriend(friendId, callback);
     }
 
+    /// <summary>
+    /// Accept a friend request 
+    /// </summary>
+    /// <param name="friendId"> required friend id </param>
+    /// <param name="callback"> result callback to be bound to a button onclick event </param>
     public void AcceptFriendRequest(string friendId, ResultCallback callback)
     {
         abLobby.AcceptFriend(friendId, callback);
     }
 
+    /// <summary>
+    /// Decline a friend request
+    /// </summary>
+    /// <param name="friendId"> required friend id </param>
+    /// <param name="callback"> result callback to be bound to a button onclick event </param>
     public void DeclineFriendRequest(string friendId, ResultCallback callback)
     {
         abLobby.RejectFriend(friendId, callback);
     }
 
+    /// <summary>
+    /// Getting the incoming friend request(s)
+    /// </summary>
     public void GetIncomingFriendsRequest()
     {
         abLobby.ListIncomingFriends(OnGetIncomingFriendsRequest);
     }
 
+    /// <summary>
+    /// Getting sent friend request(s)
+    /// </summary>
     public void GetOutgoingFriendsRequest()
     {
         abLobby.ListOutgoingFriends(OnGetOutgoingFriendsRequest);
@@ -894,6 +1005,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Friend Callbacks
+    /// <summary>
+    /// Callback from load friend list
+    /// on success, need to getting the display name of each friend
+    /// that will be handled by OnGetFriendInfoRequest on update
+    /// </summary>
+    /// <param name="result"></param>
     private void OnLoadFriendsListRequest(Result<Friends> result)
     {
         if (result.IsError)
@@ -919,7 +1036,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    //THIS REALLY NEEDS TO RETURN THE DISPLAY NAME
+    /// <summary>
+    /// Callback from ListFriendStatus
+    /// Update the displayname last seen at and availability and update the friend list UI
+    /// </summary>
+    /// <param name="result"></param>
     private void OnListFriendsStatusRequest(Result<FriendsStatus> result)
     {
         if (result.IsError)
@@ -940,13 +1061,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
                     friendList[friendUserId] = new FriendData(friendUserId, friendList[friendUserId].DisplayName, result.Value.lastSeenAt[i], result.Value.availability[i]);
                 }
                 RefreshFriendsUI();
+
+                // Update chat list UI
                 if (activePlayerChatUserId == partyUserId)
                 {
-                    RefreshDisplayNamPartyChatListUI();
+                    RefreshDisplayNamePartyChatListUI();
                 }
                 else
                 {
-                    RefreshDisplayNamPrivateChatListUI();
+                    RefreshDisplayNamePrivateChatListUI();
                 }
             }
         }
@@ -1003,6 +1126,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from getFriendInfo request
+    /// Update the friend list data with display name
+    /// </summary>
+    /// <param name="result"> callback result contains the userdata we are using only the display name in this case </param>
     private void OnGetFriendInfoRequest(Result<UserData> result)
     {
         if (result.IsError)
@@ -1016,6 +1144,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnGetFriendInfoRequest sent successfully.");
             string friendUserId = result.Value.userId;
             friendList[friendUserId] = new FriendData(friendUserId, result.Value.displayName, friendList[friendUserId].LastSeen, friendList[friendUserId].IsOnline);
+
+            // if this is the last friend id, then continue to get friend status
             if (lastFriendUserId == friendUserId)
             {
                 ListFriendsStatus();
@@ -1023,6 +1153,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from GetIncomeingFriendRequest
+    /// Instantiate invitation prefab and add to the scroll list
+    /// </summary>
+    /// <param name="result"> result callback that has friend id on it </param>
     private void OnGetIncomingFriendsRequest(Result<Friends> result)
     {
         if (result.IsError)
@@ -1038,7 +1173,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
             foreach (string friendId in result.Value.friendsId)
             {
                 Debug.Log("Incoming Friend Id: " + friendId);
-                //Get person's name, picture, etc
 
                 Transform friend = Instantiate(UIHandlerLobbyComponent.friendInvitePrefab, Vector3.zero, Quaternion.identity);
                 friend.transform.SetParent(UIHandlerLobbyComponent.friendScrollContent, false);
@@ -1049,6 +1183,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
+    /// <summary>
+    /// Callback from GetIncomingFriendRequest
+    /// Instantiate invitation prefab and add to the scroll list
+    /// </summary>
+    /// <param name="result"></param>
     private void OnGetOutgoingFriendsRequest(Result<Friends> result)
     {
         if (result.IsError)
@@ -1076,7 +1215,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
     }
 
-    private void OnFindFriendByEmailRequest(Result<PagedPublicUsersInfo> result)
+    /// <summary>
+    /// Callback from FindAFriend request
+    /// </summary>
+    /// <param name="result"> callback result that returns paging of user search result </param>
+    private void OnFindAFriendRequest(Result<PagedPublicUsersInfo> result)
     {
         for (int i = 0; i < UIHandlerLobbyComponent.friendSearchScrollContent.childCount; i++)
         {
@@ -1098,6 +1241,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
                 SearchFriendPrefab friend = Instantiate(UIHandlerLobbyComponent.friendSearchPrefab, Vector3.zero, Quaternion.identity).GetComponent<SearchFriendPrefab>();
                 friend.transform.SetParent(UIHandlerLobbyComponent.friendSearchScrollContent, false);
+                // Get only the first user
+                // TODO: display all the user search result on the list
                 friend.GetComponent<SearchFriendPrefab>().SetupFriendPrefab(result.Value.data[0].displayName, result.Value.data[0].userId);
                 UIHandlerLobbyComponent.friendSearchScrollView.Rebuild(CanvasUpdate.Layout);
             }
@@ -1108,6 +1253,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on SetUserStatus
+    /// Could be used for various status other than Online or Offline
+    /// </summary>
+    /// <param name="result"></param>
     private void OnSetUserStatus(Result result)
     {
         if (result.IsError)
@@ -1125,24 +1275,44 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     #region AccelByte Friend Notification Callbacks
     //This is for updating your friends list with up to date player information
+    /// <summary>
+    /// Callback from FriendsStatusChanged event
+    /// If the friend status changed this event  will be triggered
+    /// The friend list also need to be updated
+    /// </summary>
+    /// <param name="result"> result callback that contains friend id </param>
     private void OnFriendsStatusChanged(Result<FriendsStatusNotif> result)
     {
         friendsStatusNotif = result.Value;
         isFriendStatusChanged = true;
     }
 
-    //Updating your friends list if someone accepts your friend request
+    /// <summary>
+    /// Callback from FriendRequestAccepted event
+    /// triggered when the invitation is accepted by your friend
+    /// The friend list also need to be updated
+    /// </summary>
+    /// <param name="result"> result callback that contains friend id </param>
     private void OnFriendRequestAccepted(Result<Friend> result)
     {
         isFriendAcceptRequest = true;
     }
 
-    //You have a new friend invite!
+    /// <summary>
+    /// Callback from OnIncomingFriendRequest event
+    /// Get displayname of the friend right after
+    /// </summary>
+    /// <param name="result"> result callback that contains friend id </param>
     private void OnIncomingFriendsRequest(Result<Friend> result)
     {
         GetFriendInfo(result.Value.friendId, OnGetFriendInfoIncomingFriendRequest);
     }
 
+    /// <summary>
+    /// Callback from GetFriendInfoIncomingFriendRequest
+    /// update the invitation with a display name of the inviter
+    /// </summary>
+    /// <param name="result"> result callback that contains friend id </param>
     private void OnGetFriendInfoIncomingFriendRequest(Result<UserData> result)
     {
         if (result.IsError)
@@ -1252,7 +1422,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
             if (activePlayerChatUserId == partyUserId)
             {
-                RefreshDisplayNamPartyChatListUI();
+                RefreshDisplayNamePartyChatListUI();
             }
         }
 
@@ -1695,7 +1865,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void RefreshDisplayNamPrivateChatListUI()
+    private void RefreshDisplayNamePrivateChatListUI()
     {
         ClearPlayerChatListUIPrefabs();
         foreach (var friend in friendList)
@@ -1715,7 +1885,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void RefreshDisplayNamPartyChatListUI()
+    private void RefreshDisplayNamePartyChatListUI()
     {
         ClearPlayerChatListUIPrefabs();
         foreach (var partyMember in abPartyInfo.members)
@@ -1805,7 +1975,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             chatBoxList.Add(activePlayerChatUserId, new ChatData(activePlayerChatUserId, new List<string>(), new List<string>()));
         }
 
-        RefreshDisplayNamPrivateChatListUI();
+        RefreshDisplayNamePrivateChatListUI();
         RefreshChatBoxUI();
     }
 
@@ -1820,7 +1990,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             }
 
             RefreshChatBoxUI();
-            RefreshDisplayNamPartyChatListUI();
+            RefreshDisplayNamePartyChatListUI();
         }
         else
         {
