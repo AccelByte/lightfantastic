@@ -1334,19 +1334,32 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Party Functions
+    /// <summary>
+    /// Create party lobby service
+    /// </summary>
+    /// <param name="callback"> callback result that includes party info </param>
     public void CreateParty(ResultCallback<PartyInfo> callback)
     {
         abLobby.CreateParty(callback);
     }
 
+    /// <summary>
+    /// Create party if not in a party yet
+    /// then invite a friend to the party
+    /// </summary>
+    /// <param name="userId"> required userid from the friend list </param>
     public void CreateAndInvitePlayer(string userId)
     {
         if (!isLocalPlayerInParty)
+        {
             abLobby.CreateParty(OnPartyCreated);
+        }
         else
+        {
             isReadyToInviteToParty = true;
-        StartCoroutine(WaitForInviteToParty(userId));
+        }
 
+        StartCoroutine(WaitForInviteToParty(userId));
     }
 
     IEnumerator WaitForInviteToParty(string userID)
@@ -1357,13 +1370,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             yield return new WaitForSecondsRealtime(1.0f);
             if (isReadyToInviteToParty)
             {
-                Debug.Log("WaitForInviteToParty InviteToParty is ready");
                 InviteToParty(userID, OnInviteParty);
                 isReadyToInviteToParty = isActive = false;
             }
         }
     }
 
+    /// <summary>
+    /// Invite a friend to a party
+    /// </summary>
+    /// <param name="id"> required userid to invite </param>
+    /// <param name="callback"> callback result </param>
     public void InviteToParty(string id, ResultCallback callback)
     {
         string invitedPlayerId = id;
@@ -1371,11 +1388,21 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.InviteToParty(invitedPlayerId, callback);
     }
 
+    /// <summary>
+    /// Kick party member from a party
+    /// hide popup party UI
+    /// </summary>
+    /// <param name="id"> required userid to kick </param>
     public void KickPartyMember(string id)
     {
         abLobby.KickPartyMember(id, OnKickPartyMember);
         HidePopUpPartyControl();
     }
+
+    /// <summary>
+    /// Leave a party
+    /// hide popup party UI clear UI chat
+    /// </summary>
     public void LeaveParty()
     {
         abLobby.LeaveParty(OnLeaveParty);
@@ -1384,11 +1411,19 @@ public class AccelByteLobbyLogic : MonoBehaviour
         OpenEmptyChatBox();
     }
 
+    /// <summary>
+    /// Get party info that has party id
+    /// Party info holding the party leader user id and the members userid
+    /// </summary>
     public void GetPartyInfo()
     {
         abLobby.GetPartyInfo(OnGetPartyInfo);
     }
 
+    /// <summary>
+    /// Get party member info to get the display name
+    /// </summary>
+    /// <param name="friendId"></param>
     public void GetPartyMemberInfo(string friendId)
     {
         AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetPartyMemberInfo);
@@ -1434,6 +1469,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Get user local player/ self userdata
+    /// and setup the party UI
+    /// </summary>
     public void OnLocalPlayerProfileButtonClicked()
     {
         // If in a party then show the party control menu party leader can invite, kick and leave the party.
@@ -1445,6 +1484,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Do setup show player profile in party UI based on selected party slot button
+    /// </summary>
+    /// <param name="memberData"> required selected party member's data </param>
+    /// <param name="isLocalPlayerButton"> flag of is the selected button is local player's slot (the most left) </param>
     // TODO: Add more player info here player name, email, image, stats ingame
     public void ShowPlayerProfile(PartyData memberData, bool isLocalPlayerButton = false)
     {
@@ -1491,6 +1535,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         HidePopUpPartyControl();
     }
 
+    /// <summary>
+    /// Accept party invitation by calling join party
+    /// require abPartyInvitation from callback party invitation event
+    /// </summary>
     public void OnAcceptPartyClicked()
     {
         if (abPartyInvitation != null)
@@ -1501,15 +1549,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
         }
-
-        //PopupManager.Instance.HidePopup();
     }
 
     public void OnDeclinePartyClicked()
     {
         Debug.Log("OnDeclinePartyClicked Join party failed");
-
-        //PopupManager.Instance.HidePopup();
     }
 
     public void OnPlayerPartyProfileClicked()
