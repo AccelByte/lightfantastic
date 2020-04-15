@@ -77,8 +77,8 @@ public class PlayerStatusPrefab : MonoBehaviour
         playerEmailText.text = playerEmail;
 
         // TODO: create player level and exp
-        //playerLevelText.GetComponent<TextMeshProUGUI>().text = playerLevel.ToString();
-        //playerLevelExpText.GetComponent<TextMeshProUGUI>().text = playerLevelExp.ToString();
+        //playerLevelText.GetComponent<Text>().text = playerLevel.ToString();
+        //playerLevelExpText.GetComponent<Text>().text = playerLevelExp.ToString();
 
         playerCollectionHeadGear.GetComponent<CollectionPrefab>().UpdateInfo(COLLECTION_HEADGEAR, 2, 5);
         playerCollectionTrails.GetComponent<CollectionPrefab>().UpdateInfo(COLLECTION_TRAILS, 1, 3);
