@@ -1154,7 +1154,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     }
 
     /// <summary>
-    /// Callback from GetIncomeingFriendRequest
+    /// Callback from GetIncomingFriendRequest
     /// Instantiate invitation prefab and add to the scroll list
     /// </summary>
     /// <param name="result"> result callback that has friend id on it </param>
