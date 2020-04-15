@@ -1951,11 +1951,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Send a party chat if the player is in a party
+    /// </summary>
     private void SendPartyChat()
     {
         abLobby.SendPartyChat(UIHandlerLobbyComponent.messageInputField.text, OnSendPartyChat);
     }
 
+    /// <summary>
+    /// Send a personal chat to a friend
+    /// </summary>
+    /// <param name="userId"> required user id to chat with </param>
     private void SendPersonalChat(string userId)
     {
         abLobby.SendPersonalChat(userId, UIHandlerLobbyComponent.messageInputField.text, OnSendPersonalChat);
@@ -2132,6 +2139,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Chat Callbacks
+    /// <summary>
+    /// Callback on SendPersonalChat
+    /// Refresh chat UI on success, notify if the recipient player is offline
+    /// </summary>
+    /// <param name="result"> result callback </param>
     private void OnSendPersonalChat(Result result)
     {
         if (result.IsError)
@@ -2157,6 +2169,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on SendPartyChat
+    /// Refresh UI chat on success
+    /// </summary>
+    /// <param name="result"> result callback </param>
     private void OnSendPartyChat(Result result)
     {
         if (result.IsError)
@@ -2182,6 +2199,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Chat Notification Callbacks
+    /// <summary>
+    /// Callback from PersonalChatReceived event
+    /// Triggered if the player recieved a personal chat message
+    /// Update the chat UI on success
+    /// </summary>
+    /// <param name="result"> result callback </param>
     private void OnPersonalChatReceived(Result<ChatMesssage> result)
     {
         if (result.IsError)
@@ -2196,6 +2219,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from PartyChatReceived event
+    /// Triggered if the player is in a party and received a party cchat message
+    /// Update UI chat on success
+    /// </summary>
+    /// <param name="result"> result callback that contains message id, sender, timestamp, and the message </param>
     private void OnPartyChatReceived(Result<ChatMesssage> result)
     {
         if (result.IsError)
