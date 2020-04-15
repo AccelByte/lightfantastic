@@ -1,4 +1,8 @@
-﻿﻿using AccelByte.Api;
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+﻿using AccelByte.Api;
 using AccelByte.Core;
 using AccelByte.Models;
 using System.Collections.Generic;

@@ -1,4 +1,8 @@
-﻿//Disables the warning messages generated from private [SerializeField]
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+//Disables the warning messages generated from private [SerializeField]
 #pragma warning disable 0649
 using System.Globalization;
 using UnityEngine;
