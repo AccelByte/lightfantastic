@@ -38,7 +38,7 @@ public class AccelByteAgreementLogic : MonoBehaviour
 
     #region AccelByte Agreement Functions
     /// <summary>
-    /// Use this function to get the user agreements thah are available
+    /// Use this function to get the user agreements that are available
     /// both mandatory and optional user agreements are included
     /// </summary>
     public void GetUserPolicy()
@@ -112,9 +112,9 @@ public class AccelByteAgreementLogic : MonoBehaviour
 
     #region AccelByte Agreement Callbacks
     /// <summary>
-    /// Use callback from accept aggrement response to re-login to the game
+    /// Use callback from accept agreement response to re-login to the game
     /// </summary>
-    /// <param name="agreementResult"> Callback result from accept aggrement response </param>
+    /// <param name="agreementResult"> Callback result from accept agreement response </param>
     private void OnFulfillEligibility(Result<AcceptAgreementResponse> agreementResult)
     {
         if (agreementResult.IsError)

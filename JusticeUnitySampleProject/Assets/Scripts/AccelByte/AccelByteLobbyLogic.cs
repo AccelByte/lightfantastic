@@ -815,7 +815,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     /// <summary>
     /// Callback event from DSUpdated of Lobby service
-    /// The data is retrieved from DSM containing the current status of game server that being spawned
+    /// The data are retrieved from DSM containing the current status of game server that being spawned
     /// Will be triggered multiple times each time will be udpated with the most current status
     /// CREATING : The DS is being spawned by DSM
     /// READY : The DS is ready to use, the game client can start to jump in to the game server
@@ -1413,7 +1413,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     /// <summary>
     /// Get party info that has party id
-    /// Party info holding the party leader user id and the members userid
+    /// Party info holds the party leader user id and the members user id
     /// </summary>
     public void GetPartyInfo()
     {
