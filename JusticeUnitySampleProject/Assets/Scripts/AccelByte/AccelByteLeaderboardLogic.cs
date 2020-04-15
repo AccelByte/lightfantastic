@@ -264,7 +264,7 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
     }
 
     /// <summary>
-    /// Callback from Get user display name after gettingthe userID then apply it to the UI
+    /// Callback from Get user display name after getting the user id then apply it to the UI
     /// </summary>
     /// <param name="result"> Result callback userdata then get only the display name</param>
     private void OnGetUserDisplayName(Result<UserData> result)
