@@ -1051,7 +1051,7 @@ MonoBehaviour:
   localLeavePartyButton: {fileID: 1972041862}
   memberKickPartyButton: {fileID: 1313438042054228311}
   cancelMatchmakingButton: {fileID: 1964306967189439733}
-  PlayerDisplayNameText: {fileID: 2054962608230123454}
+  PlayerDisplayNameText: {fileID: 1105008958129693895}
   JusticeCoinValueText: {fileID: 7396598426194267129}
   PhotonsValueText: {fileID: 6944719499107578600}
   localMatch_IP_inputFields: {fileID: 5416252456975520904}
@@ -3574,6 +3574,12 @@ CanvasGroup:
     type: 3}
   m_PrefabInstance: {fileID: 1105008958129693892}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1105008958129693895 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7552388062588173421, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 1105008958129693892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1146170077468842302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4287,12 +4293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &2054962608230123454 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1428052643706938234, guid: 55e2127d3980f23488d22e30a947c680,
-    type: 3}
-  m_PrefabInstance: {fileID: 1105008958129693892}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3052673549066328381 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 301995268864791339, guid: 55e2127d3980f23488d22e30a947c680,

@@ -397,7 +397,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void SetupPlayerInfoBox()
     {
         UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-        UIHandlerLobbyComponent.PlayerDisplayNameText.GetComponent<TMPro.TextMeshProUGUI>().text = data.displayName;
+        UIHandlerLobbyComponent.PlayerDisplayNameText.GetComponent<Text>().text = data.displayName;
     }
 
     private void SetupGeneralCallbacks()
