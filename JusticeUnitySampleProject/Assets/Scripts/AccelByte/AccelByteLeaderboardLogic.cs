@@ -65,6 +65,9 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
         isActionPhaseOver = true;
     }
 
+    /// <summary>
+    /// Get leaderboard service reference & setup UI.
+    /// </summary>
     public void Init()
     {
         if (abLeaderboard == null) abLeaderboard = AccelBytePlugin.GetLeaderboard();
@@ -73,6 +76,9 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
         RefreshUIHandler();
     }
 
+    /// <summary>
+    /// Refresh Leaderboard service reference from leaderboard service.
+    /// </summary>
     private void UpdateLeaderboardUI()
     {
         if (abLeaderboard == null) abLeaderboard = AccelBytePlugin.GetLeaderboard();
@@ -145,6 +151,10 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
     #endregion // UI Listeners
 
     #region AccelByte Leaderboard Functions
+
+    /// <summary>
+    /// Get user personal rank, top 10 ranks on the leaderboard.
+    /// </summary>
     public void GetLeaderboard()
     {
         UIHandlerLeaderboardComponent.myUsernameText.text = AccelByteManager.Instance.AuthLogic.GetUserData().displayName;
@@ -196,6 +206,10 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Leaderboard Callbacks
+    /// <summary>
+    /// Callback from get user personal rank and update the UI
+    /// </summary>
+    /// <param name="result"> Result callback by get personal rank method, it returns alltime daily weekly monthly rank</param>
     private void OnGetMyRanking(Result<UserRankingData> result)
     {
         if (result.IsError)
@@ -215,6 +229,10 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from get top 10 ranks and update the UI
+    /// </summary>
+    /// <param name="result"></param>
     private void OnGetTopTenRanking(Result<LeaderboardRankingResult> result)
     {
         if (result.IsError)
@@ -245,6 +263,10 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from Get user display name after getting the user id then apply it to the UI
+    /// </summary>
+    /// <param name="result"> Result callback userdata then get only the display name</param>
     private void OnGetUserDisplayName(Result<UserData> result)
     {
         if (result.IsError)

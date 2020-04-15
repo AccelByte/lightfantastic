@@ -120,6 +120,9 @@ namespace Game
             GetCloudData();
         }
 
+        /// <summary>
+        /// Get Player's displayname and entitlement data from Accelbyte's Service
+        /// </summary>
         private void GetCloudData()
         {
             if (!networkObject.IsOwner)
@@ -146,6 +149,12 @@ namespace Game
             abEntitlement.GetEntitlement(false);
         }
 
+        /// <summary>
+        /// Callback on OnGetEntitlementCompleted event
+        /// On success, setup the character's equipments based on the entitlement data
+        /// </summary>
+        /// <param name="inMenu"> determine is this ingameplay scene or in main menu </param>
+        /// <param name="error"> accelbyte's error parameter </param>
         private void OnGetSelfEntitlementCompleted(bool inMenu, AccelByte.Core.Error error)
         {
             if (inMenu)
@@ -220,7 +229,6 @@ namespace Game
                 MainHUD hud = (MainHUD)hudMgr.GetPanel(PanelTypes.MainHud);
                 if (hud != null)
                 {
-                    //Debug.Log("BasePlayerPawn Update update position player: " + playerName + " position: " + (uint)transform.position.x);
                     hud.UpdateMinimap(playerName, (uint)transform.position.x);
                 }
                 else

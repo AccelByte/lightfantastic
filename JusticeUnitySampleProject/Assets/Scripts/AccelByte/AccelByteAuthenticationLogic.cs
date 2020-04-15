@@ -30,7 +30,6 @@ namespace ABRuntimeLogic
         private CommandLineArgs cmdLine;
 
         private AccelByteLobbyLogic abLobbyLogic;
-        private AccelByteGameProfileLogic abGameProfileLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
         private AccelByteStatisticLogic abUserStatisticLogic;
         private AccelByteLeaderboardLogic abLeaderboardLogic;
@@ -42,7 +41,6 @@ namespace ABRuntimeLogic
         void Awake()
         {
             abLobbyLogic = GetComponent<AccelByteLobbyLogic>();
-            abGameProfileLogic = GetComponent<AccelByteGameProfileLogic>();
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
             abUserStatisticLogic = GetComponent<AccelByteStatisticLogic>();
             abLeaderboardLogic = GetComponent<AccelByteLeaderboardLogic>();
@@ -56,17 +54,11 @@ namespace ABRuntimeLogic
         #region UI Listeners
         void OnEnable()
         {
-            Debug.Log("ABAuth OnEnable called!");
-
-            // Register to onsceneloaded
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         void OnDisable()
         {
-            Debug.Log("ABAuth OnDisable called!");
-
-            // Register to onsceneloaded
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
             if (UIHandler != null)
@@ -77,8 +69,6 @@ namespace ABRuntimeLogic
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log("ABAuth OnSceneLoaded level loaded!");
-
             RefreshUIHandler();
         }
 
@@ -87,7 +77,7 @@ namespace ABRuntimeLogic
             UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
             if (UIHandler == null)
             {
-                Debug.Log("ABAuth RefreshUIHandler no reference to UI Handler!");
+                Debug.LogError("ABAuth RefreshUIHandler no reference to UI Handler!");
                 return;
             }
             UIHandlerAuthComponent = UIHandler.GetComponent<UIAuthLogicComponent>();
@@ -124,7 +114,6 @@ namespace ABRuntimeLogic
 
         void AddEventListeners()
         {
-            Debug.Log("ABAuth AddEventListeners!");
             // Bind Buttons
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
@@ -146,16 +135,12 @@ namespace ABRuntimeLogic
 
         void RemoveListeners()
         {
-            Debug.Log("ABAuth RemoveListeners!");
             UIHandlerAuthComponent.loginButton.onClick.RemoveListener(Login);
             UIHandlerAuthComponent.registerButton.onClick.RemoveListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.RemoveListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
 
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
-
-            // Remove url link
-            //UIHandlerAuthComponent.signUpButton.onClick.RemoveListener(SignUp);
         }
         #endregion // UI Listeners
 
@@ -181,17 +166,11 @@ namespace ABRuntimeLogic
             }
         }
 
-        public void SignUp()
-        {
-            Application.OpenURL(LightFantasticConfig.GetPlayerPortalURL());
-        }
-
         #region AccelByte Authentication Functions
         
         /// <summary>
         /// Register's a new user with the information from the UIInputs
         /// Uses RegionInfo to get the two letter ISO Region Name
-        /// DEPRECATED: user created within game namespace can't have publisher namespace entitlement 
         /// </summary>
         public void Register()
         {
