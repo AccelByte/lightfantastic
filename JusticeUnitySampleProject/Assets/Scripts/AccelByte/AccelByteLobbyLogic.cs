@@ -467,12 +467,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         portConnectToLocal = port;
     }
-    
+
     #endregion
-    
+
     #region AccelByte Notification Callbacks
     /// <summary>
-    /// Callback from lobby service
+    /// Callback from OnNotificationReceived lobby event
     /// </summary>
     /// <param name="result"> Result callback to show on game lobby </param>
     private void OnNotificationReceived(Result<Notification> result)
@@ -1602,6 +1602,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Party Callbacks
+    /// <summary>
+    /// Callback on create party and invite a friend
+    /// Once the party created toogle the flag to trigger invite to party action
+    /// </summary>
+    /// <param name="result"> callback result that contains various party info </param>
     private void OnPartyCreated(Result<PartyInfo> result)
     {
         if (result.IsError)
@@ -1619,6 +1624,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on find match button if the player is not in a party yet
+    /// </summary>
+    /// <param name="result"> callback result that contains various party info </param>
     private void OnPartyCreatedFindMatch(Result<PartyInfo> result)
     {
         if (result.IsError)
@@ -1635,6 +1644,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on leave party
+    /// clearing the UI related to party
+    /// </summary>
+    /// <param name="result"> Callback result </param>
     private void OnLeaveParty(Result result)
     {
         if (result.IsError)
@@ -1653,6 +1667,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from JoinedParty event lobby service
+    /// triggered when user accept the party invitation
+    /// fill in the UI with current party info
+    /// </summary>
+    /// <param name="result"> callback result that contains various party info </param>
     private void OnJoinedParty(Result<PartyInfo> result)
     {
         if (result.IsError)
@@ -1673,6 +1693,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on InviteParty action after a party created
+    /// Notify the player if there is any error and when the invitation is successfuly sent
+    /// </summary>
+    /// <param name="result"> callback result </param>
     private void OnInviteParty(Result result)
     {
         if (result.IsError)
@@ -1680,7 +1705,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             Debug.Log("OnInviteParty failed:" + result.Error.Message);
             Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
 
-            // if the player already in party then notify the user
+            // If the player already in party then notify the user
             PopupManager.Instance.ShowPopupWarning("Invite to Party Failed", " " + result.Error.Message, "OK");
         }
         else
@@ -1690,6 +1715,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from get user invite
+    /// Show popup invitation on success
+    /// </summary>
+    /// <param name="result"> callback result contains the userdata we are using only the display name in this case </param>
     private void OnGetUserOnInvite(Result<UserData> result)
     {
         if (result.IsError)
@@ -1704,6 +1734,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on GetPartyInfo
+    /// Update each party member info on success
+    /// </summary>
+    /// <param name="result"> callback result that contains various party info </param>
     private void OnGetPartyInfo(Result<PartyInfo> result)
     {
         if (result.IsError)
@@ -1740,6 +1775,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback on GetPartyMemberInfo
+    /// Shorting party member info then update the UI
+    /// </summary>
+    /// <param name="result"> callback result contains the userdata we are using only the display name in this case </param>
     private void OnGetPartyMemberInfo(Result<UserData> result)
     {
         // add party member to party member list
@@ -1767,12 +1807,22 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kick a party member from the party
+    /// Bound to kick from party button on party control UI
+    /// </summary>
+    /// <param name="userId"></param>
     private void OnKickFromPartyClicked(string userId)
     {
         Debug.Log("OnKickFromPartyClicked Usertokick userId");
         KickPartyMember(userId);
     }
 
+    /// <summary>
+    /// Callback from KickPartyMember
+    /// Refresh the related UI with current party info
+    /// </summary>
+    /// <param name="result"></param>
     private void OnKickPartyMember(Result result)
     {
         if (result.IsError)
@@ -1792,6 +1842,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     #endregion
 
     #region AccelByte Party Notification Callbacks
+    /// <summary>
+    /// Callback InvitedToParty event
+    /// Triggered if a friend invite the player to a party
+    /// </summary>
+    /// <param name="result"> callback result that holding party invitation token </param>
     private void OnInvitedToParty(Result<PartyInvitation> result)
     {
         if (result.IsError)
@@ -1802,11 +1857,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
         else
         {
             Debug.Log("OnInvitedToParty Received Invitation from " + result.Value.from);
+
+            // Party invitation will be used for accepting the invitation
             abPartyInvitation = result.Value;
             isRecevedPartyInvitation = true;
         }
     }
 
+    /// <summary>
+    /// Callback from MemberJoinedParty Event
+    /// Triggered if there is a new party member that accepting the invitation
+    /// </summary>
+    /// <param name="result"> callback result </param>
     private void OnMemberJoinedParty(Result<JoinNotification> result)
     {
         if (result.IsError)
@@ -1818,6 +1880,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             Debug.Log("OnMemberJoinedParty Retrieved successfully");
             isMemberJoinedParty = true;
+
+            // let the player knows that ther is a new party member joined in
             MainThreadTaskRunner.Instance.Run(delegate
             {
                 PopupManager.Instance.ShowPopupWarning("A New Party Member", "A new member just joined the party!", "OK");
@@ -1825,6 +1889,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from MemberLeftParty Event
+    /// Triggered if a party member just left the party
+    /// </summary>
+    /// <param name="result"> callback result </param>
     private void OnMemberLeftParty(Result<LeaveNotification> result)
     {
         if (result.IsError)
@@ -1843,6 +1912,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Callback from KickedFromParty
+    /// Triggered if the player kicked out from party by the party leader
+    /// </summary>
+    /// <param name="result"> callback result </param>
     private void OnKickedFromParty(Result<KickNotification> result)
     {
         if (result.IsError)
