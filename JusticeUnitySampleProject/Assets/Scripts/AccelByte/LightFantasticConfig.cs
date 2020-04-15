@@ -1,14 +1,10 @@
-﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
-// This is licensed software from AccelByte Inc, for limitations
-// and restrictions contact your company contract manager.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
-    public const string GAME_VERSION = "0.0.5";
-    public const string DS_TARGET_VERSION = "v0.0.5.5";
+    public const string GAME_VERSION = "0.0.7";
+    public const string DS_TARGET_VERSION = "v0.0.6";
     public const string SDK_VERSION = "2.0.0";
     
     public const string DEFAULT_LANGUAGE = "en";
