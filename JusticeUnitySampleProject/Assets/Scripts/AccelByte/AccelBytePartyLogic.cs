@@ -31,7 +31,7 @@ public class AccelBytePartyLogic : MonoBehaviour
     
     public bool GetIsLocalPlayerInParty(){return isLocalPlayerInParty;}
     public PartyInfo GetAbPartyInfo(){ return abPartyInfo; }
-    public IDictionary<string, PartyData> GetPartyMemberList(){ return GetPartyMemberList(); }
+    public IDictionary<string, PartyData> GetPartyMemberList(){ return partyMemberList; }
     public string GetPartyUserId(){ return partyUserId; }
     
     public void SetIsLocalPlayerInParty(bool value){isLocalPlayerInParty = value;}
