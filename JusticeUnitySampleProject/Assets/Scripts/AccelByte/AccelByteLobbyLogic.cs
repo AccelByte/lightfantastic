@@ -20,7 +20,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 {
     public Lobby abLobby;
     
-    private AccelByteMatchmakingLogic abMatchmakingLogic;
+    private AccelByteMatchmakingLogic matchmakingLogic;
     //TODO another child/sub lobby logic
 
     private GameObject UIHandler;
@@ -81,7 +81,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         chatBoxList = new Dictionary<string, ChatData>();
         chatList = new List<string>();
 
-        abMatchmakingLogic = gameObject.GetComponent<AccelByteMatchmakingLogic>();
+        matchmakingLogic = gameObject.GetComponent<AccelByteMatchmakingLogic>();
     }
 
     private void Update()
@@ -227,7 +227,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent = UIHandler.GetComponent<UILobbyLogicComponent>();
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
-        abMatchmakingLogic.Init(UIHandlerLobbyComponent, this);
+        matchmakingLogic.Init(UIHandlerLobbyComponent, this);
         
         AddEventListeners();
 
@@ -277,7 +277,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
 
-        abMatchmakingLogic.AddEventListener();
+        matchmakingLogic.AddEventListener();
     }
 
     void RemoveListeners()
@@ -303,7 +303,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
         UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
 
-        abMatchmakingLogic.RemoveListener();
+        matchmakingLogic.RemoveListener();
     }
     #endregion // UI Listeners
 
@@ -363,7 +363,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void CleanupLobbyUI()
     {
         // Clean lobby UI
-        abMatchmakingLogic.CleanupMatchmakingUI();
+        matchmakingLogic.CleanupMatchmakingUI();
         HidePopUpPartyControl();
         UnsubscribeAllCallbacks();
     }
@@ -376,7 +376,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         SetupFriendCallbacks();
         SetupPartyCallbacks();
         SetupChatCallbacks();
-        abMatchmakingLogic.SetupMatchmakingCallbacks();
+        matchmakingLogic.SetupMatchmakingCallbacks();
         ClearPartySlots();
         GetPartyInfo();
         SetupPlayerInfoBox();
@@ -420,7 +420,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.Disconnected -= OnDisconnectNotificationReceived;
         abLobby.InvitedToParty -= OnInvitedToParty;
         abLobby.JoinedParty -= OnMemberJoinedParty;
-        abMatchmakingLogic.UnsubscribeAllCallbacks();
+        matchmakingLogic.UnsubscribeAllCallbacks();
         abLobby.KickedFromParty -= OnKickedFromParty;
         abLobby.LeaveFromParty -= OnMemberLeftParty;
     }
