@@ -20,7 +20,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
-    private string gameMode = gameModeEnum.ToString();
+    internal string gameMode = gameModeEnum.ToString();
 
     private MultiplayerMenu multiplayerConnect;
     
@@ -116,7 +116,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     /// </summary>
     private void FindMatchButtonClicked()
     {
-        if (!lobbyLogic.GetIsLocalPlayerInParty())
+        if (!lobbyLogic.partyLogic.GetIsLocalPlayerInParty())
         {
             lobbyLogic.abLobby.CreateParty(OnPartyCreatedFindMatch);
         }
@@ -515,8 +515,8 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         else
         {
             Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
-            lobbyLogic.abPartyInfo = result.Value;
-            lobbyLogic.SetIsLocalPlayerInParty(true);
+            lobbyLogic.partyLogic.SetAbPartyInfo(result.Value);
+            lobbyLogic.partyLogic.SetIsLocalPlayerInParty(true);
             FindMatch();
         }
     }

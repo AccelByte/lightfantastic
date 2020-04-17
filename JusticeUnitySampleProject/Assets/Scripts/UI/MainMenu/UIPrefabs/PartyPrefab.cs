@@ -70,7 +70,7 @@ public class PartyPrefab : MonoBehaviour
 
     public void OnKickButtonClicked()
     {
-        AccelByteManager.Instance.LobbyLogic.KickPartyMember(partyData.UserID);
+        AccelByteManager.Instance.LobbyLogic.partyLogic.KickPartyMember(partyData.UserID);
         Debug.Log("PartyPrefab OnKickButtonClicked Popup is not yet setup");
     }
 

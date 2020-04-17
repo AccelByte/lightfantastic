@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -21,29 +21,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
     public Lobby abLobby;
     
     private AccelByteMatchmakingLogic matchmakingLogic;
+    public AccelBytePartyLogic partyLogic;
     //TODO another child/sub lobby logic
 
     private GameObject UIHandler;
     private UILobbyLogicComponent UIHandlerLobbyComponent;
-    private UIElementHandler UIElementHandler;
+    internal UIElementHandler UIElementHandler;
 
     private static IDictionary<string, FriendData> friendList;
-    private static IDictionary<string, PartyData> partyMemberList;
     private static IDictionary<string, ChatData> chatBoxList;
-    private PartyInvitation abPartyInvitation;
-    public PartyInfo abPartyInfo;
     private string lastFriendUserId;
-    private string activePlayerChatUserId;
-    private static string partyUserId = LightFantasticConfig.PARTY_CHAT;
+    internal string activePlayerChatUserId;
 
-    private static LightFantasticConfig.GAME_MODES gameModeEnum     = LightFantasticConfig.GAME_MODES.unitytest;
-    private string gameMode = gameModeEnum.ToString();
-
-    private static bool isLocalPlayerInParty;
-    public void SetIsLocalPlayerInParty(bool value){isLocalPlayerInParty = value;}
-    public bool GetIsLocalPlayerInParty(){return isLocalPlayerInParty;}
-    
-    static bool isReadyToInviteToParty;
     private List<string> chatList;
     private ChatMesssage receivedPrivateMessage;
     private ChatMesssage receivedPartyMessage;
@@ -53,17 +42,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     static bool isReceivedPrivateMessage = false;
     static bool isReceivedPartyMessage = false;
-    static bool isRecevedPartyInvitation = false;
-    static bool isMemberJoinedParty = false;
-    static bool isMemberLeftParty = false;
-    static bool isMemberKickedParty = false;
+
     static bool isLoadFriendDisplayName = false;
     static bool isFriendStatusChanged = false;
     static bool isFriendAcceptRequest = false;
     #region UI Fields
-    private Transform localLeaderCommand;
-    private Transform localmemberCommand;
-    private Transform memberCommand;
+
+    internal Transform localLeaderCommand;
+    internal Transform localmemberCommand;
+    internal Transform memberCommand;
     private Transform PlayerNameText;
     private Transform playerEmailText;
     #endregion
@@ -77,11 +64,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
         //Initialize our Lobby object
         abLobby = AccelBytePlugin.GetLobby();
         friendList = new Dictionary<string, FriendData>();
-        partyMemberList = new Dictionary<string, PartyData>();
         chatBoxList = new Dictionary<string, ChatData>();
         chatList = new List<string>();
 
         matchmakingLogic = gameObject.GetComponent<AccelByteMatchmakingLogic>();
+        partyLogic = gameObject.GetComponent<AccelBytePartyLogic>();
     }
 
     private void Update()
@@ -105,40 +92,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             isReceivedPartyMessage = false;
             
-            if (!chatBoxList.ContainsKey(partyUserId))
+            if (!chatBoxList.ContainsKey(partyLogic.GetPartyUserId()))
             {
-                chatBoxList.Add(partyUserId, new ChatData(partyUserId, new List<string>(), new List<string>()));
+                chatBoxList.Add(partyLogic.GetPartyUserId(), new ChatData(partyLogic.GetPartyUserId(), new List<string>(), new List<string>()));
             }
-            chatBoxList[partyUserId].sender.Add(receivedPartyMessage.from);
-            chatBoxList[partyUserId].message.Add(receivedPartyMessage.payload);
+            chatBoxList[partyLogic.GetPartyUserId()].sender.Add(receivedPartyMessage.from);
+            chatBoxList[partyLogic.GetPartyUserId()].message.Add(receivedPartyMessage.payload);
 
-            if (partyUserId == activePlayerChatUserId)
+            if (partyLogic.GetPartyUserId() == activePlayerChatUserId)
             {
                 RefreshChatBoxUI();
             }
-        }
-        if (isRecevedPartyInvitation)
-        {
-            isRecevedPartyInvitation = false;
-            AccelBytePlugin.GetUser().GetUserByUserId(abPartyInvitation.from, OnGetUserOnInvite);
-        }
-        if (isMemberJoinedParty)
-        {
-            isMemberJoinedParty = false;
-            ClearPartySlots();
-            GetPartyInfo();
-        }
-        if (isMemberLeftParty)
-        {
-            isMemberLeftParty = false;
-            ClearPartySlots();
-            GetPartyInfo();
-        }
-        if (isMemberKickedParty)
-        {
-            isMemberKickedParty = false;
-            ClearPartySlots();
-            GetPartyInfo();
         }
         if (isLoadFriendDisplayName)
         {
@@ -154,7 +118,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             string friendName = friendList[friendsStatusNotif.userID].DisplayName;
             friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
             RefreshFriendsUI();
-            if (activePlayerChatUserId == partyUserId)
+            if (activePlayerChatUserId == partyLogic.GetPartyUserId())
                 RefreshDisplayNamePartyChatListUI();
             else
                 RefreshDisplayNamePrivateChatListUI();
@@ -183,7 +147,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         Debug.Log("Application ending after " + Time.time + " seconds");
         if (abLobby.IsConnected)
         {
-            abLobby.CancelMatchmaking(gameMode, cancelResult =>
+            abLobby.CancelMatchmaking(matchmakingLogic.gameMode, cancelResult =>
             {
                 abLobby.LeaveParty(leaveResult =>
                 {
@@ -228,6 +192,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIElementHandler = UIHandler.GetComponent<UIElementHandler>();
 
         matchmakingLogic.Init(UIHandlerLobbyComponent, this);
+        partyLogic.Init(UIHandlerLobbyComponent, this);
         
         AddEventListeners();
 
@@ -264,20 +229,15 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.partyMember2ndButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
         UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(LoadFriendsList);
         UIHandlerLobbyComponent.partyMember3rdButton.onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
-        UIHandlerLobbyComponent.acceptPartyInvitation.onClick.AddListener(OnAcceptPartyClicked);
-        UIHandlerLobbyComponent.declinePartyInvitation.onClick.AddListener(OnDeclinePartyClicked);
-        UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnPlayerPartyProfileClicked);
-        UIHandlerLobbyComponent.closePopupPartyButton.onClick.AddListener(OnClosePartyInfoButtonClicked);
         UIHandlerLobbyComponent.enterToChatButton.onClick.AddListener(OpenEmptyChatBox);
         UIHandlerLobbyComponent.sendMessageButton.onClick.AddListener(SendChatMessage);
         UIHandlerLobbyComponent.backChatButton.onClick.AddListener(ClearActivePlayerChat);
         UIHandlerLobbyComponent.partyChatButton.onClick.AddListener(OpenPartyChatBox);
         UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(ClearActivePlayerChat);
         UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(OpenEmptyChatBox);
-        UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
-        UIHandlerLobbyComponent.localLeavePartyButton.onClick.AddListener(OnLeavePartyButtonClicked);
 
         matchmakingLogic.AddEventListener();
+        partyLogic.AddEventListener();
     }
 
     void RemoveListeners()
@@ -291,19 +251,14 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UIHandlerLobbyComponent.partyMember2ndButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.partyMember3rdButton.onClick.RemoveAllListeners();
         UIHandlerLobbyComponent.localPlayerButton.onClick.RemoveListener(OnLocalPlayerProfileButtonClicked);
-        UIHandlerLobbyComponent.acceptPartyInvitation.onClick.RemoveListener(OnAcceptPartyClicked);
-        UIHandlerLobbyComponent.declinePartyInvitation.onClick.RemoveListener(OnDeclinePartyClicked);
-        UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnPlayerPartyProfileClicked);
-        UIHandlerLobbyComponent.closePopupPartyButton.onClick.RemoveListener(OnClosePartyInfoButtonClicked);
         UIHandlerLobbyComponent.enterToChatButton.onClick.RemoveListener(OpenEmptyChatBox);
         UIHandlerLobbyComponent.sendMessageButton.onClick.RemoveListener(SendChatMessage);
         UIHandlerLobbyComponent.backChatButton.onClick.RemoveListener(ClearActivePlayerChat);
         UIHandlerLobbyComponent.partyChatButton.onClick.RemoveListener(OpenPartyChatBox);
         UIHandlerLobbyComponent.privateChatButton.onClick.RemoveAllListeners();
-        UIHandlerLobbyComponent.leaderLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
-        UIHandlerLobbyComponent.localLeavePartyButton.onClick.RemoveListener(OnLeavePartyButtonClicked);
 
         matchmakingLogic.RemoveListener();
+        partyLogic.RemoveListener();
     }
     #endregion // UI Listeners
 
@@ -364,7 +319,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         // Clean lobby UI
         matchmakingLogic.CleanupMatchmakingUI();
-        HidePopUpPartyControl();
+        partyLogic.CleanupPartyUI();
         UnsubscribeAllCallbacks();
     }
 
@@ -374,11 +329,10 @@ public class AccelByteLobbyLogic : MonoBehaviour
         LoadFriendsList();
         SetupGeneralCallbacks();
         SetupFriendCallbacks();
-        SetupPartyCallbacks();
         SetupChatCallbacks();
         matchmakingLogic.SetupMatchmakingCallbacks();
-        ClearPartySlots();
-        GetPartyInfo();
+        partyLogic.SetupPartyCallbacks();
+        partyLogic.SetupPartyUI();
         SetupPlayerInfoBox();
     }
 
@@ -401,14 +355,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.FriendsStatusChanged += result => OnFriendsStatusChanged(result);
     }
 
-    private void SetupPartyCallbacks()
-    {
-        abLobby.InvitedToParty += result => OnInvitedToParty(result);
-        abLobby.JoinedParty += result => OnMemberJoinedParty(result);
-        abLobby.KickedFromParty += result => OnKickedFromParty(result);
-        abLobby.LeaveFromParty += result => OnMemberLeftParty(result);
-    }
-
     private void SetupChatCallbacks()
     {
         abLobby.PersonalChatReceived += result => OnPersonalChatReceived(result);
@@ -418,11 +364,8 @@ public class AccelByteLobbyLogic : MonoBehaviour
     private void UnsubscribeAllCallbacks()
     {
         abLobby.Disconnected -= OnDisconnectNotificationReceived;
-        abLobby.InvitedToParty -= OnInvitedToParty;
-        abLobby.JoinedParty -= OnMemberJoinedParty;
         matchmakingLogic.UnsubscribeAllCallbacks();
-        abLobby.KickedFromParty -= OnKickedFromParty;
-        abLobby.LeaveFromParty -= OnMemberLeftParty;
+        partyLogic.UnsubscribeAllCallbacks();
     }
     #endregion // AccelByte Lobby Functions
 
@@ -627,7 +570,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 RefreshFriendsUI();
 
                 // Update chat list UI
-                if (activePlayerChatUserId == partyUserId)
+                if (activePlayerChatUserId == partyLogic.GetPartyUserId())
                 {
                     RefreshDisplayNamePartyChatListUI();
                 }
@@ -639,7 +582,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void RefreshFriendsUI()
+    internal void RefreshFriendsUI()
     {
         ClearFriendsUIPrefabs();
         foreach (KeyValuePair<string, FriendData> friend in friendList)
@@ -663,17 +606,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             if (friend.Value.IsOnline == "0")
             {
                 friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, lastSeen.ToString() + timeInfo, friend.Value.UserId);
-                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(partyLogic.GetIsLocalPlayerInParty());
             }
             else
             {
                 bool isNotInParty = true;
-                if (partyMemberList.ContainsKey(friend.Value.UserId))
+                if (partyLogic.GetPartyMemberList().ContainsKey(friend.Value.UserId))
                 {
                     isNotInParty = false;
                 }
                 friendPrefab.GetComponent<FriendPrefab>().SetupFriendUI(friend.Value.DisplayName, "Online", friend.Value.UserId, isNotInParty);
-                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(isLocalPlayerInParty);
+                friendPrefab.GetComponent<FriendPrefab>().SetInviterPartyStatus(partyLogic.GetIsLocalPlayerInParty());
             }
             UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
         }
@@ -897,142 +840,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
     }
     #endregion
 
-    #region AccelByte Party Functions
-    /// <summary>
-    /// Create party lobby service
-    /// </summary>
-    /// <param name="callback"> callback result that includes party info </param>
-    public void CreateParty(ResultCallback<PartyInfo> callback)
-    {
-        abLobby.CreateParty(callback);
-    }
-
-    /// <summary>
-    /// Create party if not in a party yet
-    /// then invite a friend to the party
-    /// </summary>
-    /// <param name="userId"> required userid from the friend list </param>
-    public void CreateAndInvitePlayer(string userId)
-    {
-        if (!isLocalPlayerInParty)
-        {
-            abLobby.CreateParty(OnPartyCreated);
-        }
-        else
-        {
-            isReadyToInviteToParty = true;
-        }
-
-        StartCoroutine(WaitForInviteToParty(userId));
-    }
-
-    IEnumerator WaitForInviteToParty(string userID)
-    {
-        bool isActive = true;
-        while (isActive)
-        {
-            yield return new WaitForSecondsRealtime(1.0f);
-            if (isReadyToInviteToParty)
-            {
-                InviteToParty(userID, OnInviteParty);
-                isReadyToInviteToParty = isActive = false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Invite a friend to a party
-    /// </summary>
-    /// <param name="id"> required userid to invite </param>
-    /// <param name="callback"> callback result </param>
-    public void InviteToParty(string id, ResultCallback callback)
-    {
-        string invitedPlayerId = id;
-
-        abLobby.InviteToParty(invitedPlayerId, callback);
-    }
-
-    /// <summary>
-    /// Kick party member from a party
-    /// hide popup party UI
-    /// </summary>
-    /// <param name="id"> required userid to kick </param>
-    public void KickPartyMember(string id)
-    {
-        abLobby.KickPartyMember(id, OnKickPartyMember);
-        HidePopUpPartyControl();
-    }
-
-    /// <summary>
-    /// Leave a party
-    /// hide popup party UI clear UI chat
-    /// </summary>
-    public void LeaveParty()
-    {
-        abLobby.LeaveParty(OnLeaveParty);
-        HidePopUpPartyControl();
-        ClearActivePlayerChat();
-        OpenEmptyChatBox();
-    }
-
-    /// <summary>
-    /// Get party info that has party id
-    /// Party info holds the party leader user id and the members user id
-    /// </summary>
-    public void GetPartyInfo()
-    {
-        abLobby.GetPartyInfo(OnGetPartyInfo);
-    }
-
-    /// <summary>
-    /// Get party member info to get the display name
-    /// </summary>
-    /// <param name="friendId"></param>
-    public void GetPartyMemberInfo(string friendId)
-    {
-        AccelBytePlugin.GetUser().GetUserByUserId(friendId, OnGetPartyMemberInfo);
-    }
-
-    private void ClearPartySlots()
-    {
-        // Clear the party slot buttons
-        for (int i = 0; i < UIHandlerLobbyComponent.partyMemberButtons.Length; i++)
-        {
-            UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<PartyPrefab>().OnClearProfileButton();
-            UIHandlerLobbyComponent.partyMemberButtons[i].GetComponent<Button>().onClick.AddListener(() => UIElementHandler.ShowExclusivePanel(ExclusivePanelType.FRIENDS));
-        }
-
-        partyMemberList.Clear();
-    }
-
-    private void RefreshPartySlots()
-    {
-        if (partyMemberList.Count > 0)
-        {
-            int j = 0;
-            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
-            {
-                Debug.Log("RefreshPartySlots Member names entered: " + member.Value.PlayerName);
-                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<Button>().onClick.RemoveAllListeners();
-                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().OnClearProfileButton();
-                UIHandlerLobbyComponent.partyMemberButtons[j].GetComponent<PartyPrefab>().SetupPlayerProfile(member.Value, abPartyInfo.leaderID);
-                j++;
-            }
-
-            if (activePlayerChatUserId == partyUserId)
-            {
-                RefreshDisplayNamePartyChatListUI();
-            }
-        }
-
-        RefreshFriendsUI();
-    }
-
-    private void HidePopUpPartyControl()
-    {
-        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
-    }
-
     /// <summary>
     /// Get user local player/ self userdata
     /// and setup the party UI
@@ -1041,7 +848,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         // If in a party then show the party control menu party leader can invite, kick and leave the party.
         // party member only able to leave the party.
-        if (isLocalPlayerInParty)
+        if (partyLogic.GetIsLocalPlayerInParty())
         {
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
             ShowPlayerProfile(new PartyData(data.userId, data.displayName, data.emailAddress), true);
@@ -1063,7 +870,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         }
 
-        if (isLocalPlayerInParty)
+        if (partyLogic.GetIsLocalPlayerInParty())
         {
             localLeaderCommand.gameObject.SetActive(false);
             localmemberCommand.gameObject.SetActive(false);
@@ -1072,7 +879,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
             playerEmailText.GetComponent<Text>().text = memberData.PlayerEmail;
 
             UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            bool isPartyLeader = data.userId == abPartyInfo.leaderID;
+            bool isPartyLeader = data.userId == partyLogic.GetAbPartyInfo().leaderID;
 
             if (isPartyLeader && isLocalPlayerButton)
             {
@@ -1087,398 +894,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
                 memberCommand.gameObject.SetActive(true);
             }
 
-            memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => OnKickFromPartyClicked(memberData.UserID));
+            memberCommand.GetComponentInChildren<Button>().onClick.AddListener(() => partyLogic.OnKickFromPartyClicked(memberData.UserID));
 
             // Show the popup
             UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
         }
     }
-
-    public void OnClosePartyInfoButtonClicked()
-    {
-        HidePopUpPartyControl();
-    }
-
-    /// <summary>
-    /// Accept party invitation by calling join party
-    /// require abPartyInvitation from callback party invitation event
-    /// </summary>
-    public void OnAcceptPartyClicked()
-    {
-        if (abPartyInvitation != null)
-        {
-            abLobby.JoinParty(abPartyInvitation.partyID, abPartyInvitation.invitationToken, OnJoinedParty);
-        }
-        else
-        {
-            Debug.Log("OnJoinPartyClicked Join party failed abPartyInvitation is null");
-        }
-    }
-
-    public void OnDeclinePartyClicked()
-    {
-        Debug.Log("OnDeclinePartyClicked Join party failed");
-    }
-
-    public void OnPlayerPartyProfileClicked()
-    {
-        // If in a party then show the party control menu party leader can invite, kick and leave the party.
-        // party member only able to leave the party.
-        if (isLocalPlayerInParty)
-        {
-            // Remove listerner before closing
-            if (UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf)
-            {
-                memberCommand.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
-            }
-            UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
-        }
-    }
-
-    public List<PartyData> GetMemberPartyData()
-    {
-        List<PartyData> partyMemberData = new List<PartyData>();
-
-        if (partyMemberList.Count > 0)
-        {
-            foreach (KeyValuePair<string, PartyData> member in partyMemberList)
-            {
-                partyMemberData.Add(member.Value);
-            }
-        }
-
-        return partyMemberData;
-    }
-
-    public void OnLeavePartyButtonClicked()
-    {
-        if (accelByteManager.AuthLogic.GetUserData().userId == abPartyInfo.leaderID)
-        {
-            localLeaderCommand.gameObject.SetActive(false);
-        }
-        else
-        {
-            localmemberCommand.gameObject.SetActive(false);
-        }
-        UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(false);
-        LeaveParty();
-    }
-    #endregion
-
-    #region AccelByte Party Callbacks
-    /// <summary>
-    /// Callback on create party and invite a friend
-    /// Once the party created toogle the flag to trigger invite to party action
-    /// </summary>
-    /// <param name="result"> callback result that contains various party info </param>
-    private void OnPartyCreated(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnPartyCreated failed:" + result.Error.Message);
-            Debug.Log("OnPartyCreated Response Code::" + result.Error.Code);
-
-        }
-        else
-        {
-            Debug.Log("OnPartyCreated Party successfully created with party ID: " + result.Value.partyID);
-            abPartyInfo = result.Value;
-            isLocalPlayerInParty = true;
-            isReadyToInviteToParty = true;
-        }
-    }
-
-    /// <summary>
-    /// Callback on leave party
-    /// clearing the UI related to party
-    /// </summary>
-    /// <param name="result"> Callback result </param>
-    private void OnLeaveParty(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnLeaveParty failed:" + result.Error.Message);
-            Debug.Log("OnLeaveParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnLeaveParty Left a party");
-            ClearPartySlots();
-            isLocalPlayerInParty = false;
-            RefreshFriendsUI();
-
-            PopupManager.Instance.ShowPopupWarning("Leave The Party", "You are just left the party!", "OK");
-        }
-    }
-
-    /// <summary>
-    /// Callback from JoinedParty event lobby service
-    /// triggered when user accept the party invitation
-    /// fill in the UI with current party info
-    /// </summary>
-    /// <param name="result"> callback result that contains various party info </param>
-    private void OnJoinedParty(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnJoinedParty failed:" + result.Error.Message);
-            Debug.Log("OnJoinedParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            // On joined should change the party slot with newer players info
-            Debug.Log("OnJoinedParty Joined party with ID: " + result.Value.partyID + result.Value.leaderID);
-            isLocalPlayerInParty = true;
-            abPartyInfo = result.Value;
-            ClearPartySlots();
-            GetPartyInfo();
-
-            PopupManager.Instance.ShowPopupWarning("Join a Party", "You are just joined a party!", "OK");
-        }
-    }
-
-    /// <summary>
-    /// Callback on InviteParty action after a party created
-    /// Notify the player if there is any error and when the invitation is successfuly sent
-    /// </summary>
-    /// <param name="result"> callback result </param>
-    private void OnInviteParty(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnInviteParty failed:" + result.Error.Message);
-            Debug.Log("OnInviteParty Response Code::" + result.Error.Code);
-
-            // If the player already in party then notify the user
-            PopupManager.Instance.ShowPopupWarning("Invite to Party Failed", " " + result.Error.Message, "OK");
-        }
-        else
-        {
-            Debug.Log("OnInviteParty Succeded on Inviting player to party");
-            PopupManager.Instance.ShowPopupWarning("Invite to Party Success", "Waiting for invitee acceptance", "OK");
-        }
-    }
-
-    /// <summary>
-    /// Callback from get user invite
-    /// Show popup invitation on success
-    /// </summary>
-    /// <param name="result"> callback result contains the userdata we are using only the display name in this case </param>
-    private void OnGetUserOnInvite(Result<UserData> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetUserOnInvite failed:" + result.Error.Message);
-            Debug.Log("OnGetUserOnInvite Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnGetUserOnInvite UserData retrieved: " + result.Value.displayName);
-            PopupManager.Instance.ShowPopup("Party Invitation", "Received Invitation From " + result.Value.displayName, "Accept", "Decline", OnAcceptPartyClicked, OnDeclinePartyClicked);
-        }
-    }
-
-    /// <summary>
-    /// Callback on GetPartyInfo
-    /// Update each party member info on success
-    /// </summary>
-    /// <param name="result"> callback result that contains various party info </param>
-    private void OnGetPartyInfo(Result<PartyInfo> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnGetPartyInfo failed:" + result.Error.Message);
-            Debug.Log("OnGetPartyInfo Response Code::" + result.Error.Code);
-            if (result.Error.Code == ErrorCode.PartyInfoSuccessGetUserPartyInfoEmpty)
-            {
-                isLocalPlayerInParty = false;
-                RefreshFriendsUI();
-                ClearActivePlayerChat();
-                OpenEmptyChatBox();
-            }
-        }
-        else
-        {
-            Debug.Log("OnGetPartyInfo Retrieved successfully");
-            abPartyInfo = result.Value;
-
-            for (int i = 0; i < result.Value.members.Length; i++)
-            {
-                Debug.Log("OnGetPartyInfo adding new party member: " + result.Value.members[i]);
-                // Get member info
-                GetPartyMemberInfo(result.Value.members[i]);
-            }
-
-            if (result.Value.members.Length == 1)
-            {
-                ClearActivePlayerChat();
-                OpenEmptyChatBox();
-            }
-
-            isLocalPlayerInParty = true;
-        }
-    }
-
-    /// <summary>
-    /// Callback on GetPartyMemberInfo
-    /// Shorting party member info then update the UI
-    /// </summary>
-    /// <param name="result"> callback result contains the userdata we are using only the display name in this case </param>
-    private void OnGetPartyMemberInfo(Result<UserData> result)
-    {
-        // add party member to party member list
-        if (result.IsError)
-        {
-            Debug.Log("OnGetPartyMemberInfo failed:" + result.Error.Message);
-            Debug.Log("OnGetPartyMemberInfo Response Code: " + result.Error.Code);
-            //Show Error Message
-        }
-        else
-        {
-            Debug.Log("OnGetPartyMemberInfo sent successfully.");
-
-            // TODO: store userdata locally
-            // Add the member info to partymemberlist
-            UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
-            string ownId = data.userId;
-            if (!partyMemberList.ContainsKey(result.Value.userId) && (result.Value.userId != ownId))
-            {
-                Debug.Log("OnGetPartyMemberInfo member with id: " + result.Value.userId + " DisplayName: " + result.Value.displayName);
-                partyMemberList.Add(result.Value.userId, new PartyData(result.Value.userId, result.Value.displayName, result.Value.emailAddress));
-            }
-            
-            RefreshPartySlots();
-        }
-    }
-
-    /// <summary>
-    /// Kick a party member from the party
-    /// Bound to kick from party button on party control UI
-    /// </summary>
-    /// <param name="userId"></param>
-    private void OnKickFromPartyClicked(string userId)
-    {
-        Debug.Log("OnKickFromPartyClicked Usertokick userId");
-        KickPartyMember(userId);
-    }
-
-    /// <summary>
-    /// Callback from KickPartyMember
-    /// Refresh the related UI with current party info
-    /// </summary>
-    /// <param name="result"></param>
-    private void OnKickPartyMember(Result result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnKickPartyMember failed:" + result.Error.Message);
-            Debug.Log("OnKickPartyMember Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnKickPartyMember Retrieved successfully");
-            ClearPartySlots();
-            GetPartyInfo();
-
-            PopupManager.Instance.ShowPopupWarning("Kick a Party Member", "You are just kicked one of the party member!", "OK");
-        }
-    }
-    #endregion
-
-    #region AccelByte Party Notification Callbacks
-    /// <summary>
-    /// Callback InvitedToParty event
-    /// Triggered if a friend invite the player to a party
-    /// </summary>
-    /// <param name="result"> callback result that holding party invitation token </param>
-    private void OnInvitedToParty(Result<PartyInvitation> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnInvitedToParty failed:" + result.Error.Message);
-            Debug.Log("OnInvitedToParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnInvitedToParty Received Invitation from " + result.Value.from);
-
-            // Party invitation will be used for accepting the invitation
-            abPartyInvitation = result.Value;
-            isRecevedPartyInvitation = true;
-        }
-    }
-
-    /// <summary>
-    /// Callback from MemberJoinedParty Event
-    /// Triggered if there is a new party member that accepting the invitation
-    /// </summary>
-    /// <param name="result"> callback result </param>
-    private void OnMemberJoinedParty(Result<JoinNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnMemberJoinedParty failed:" + result.Error.Message);
-            Debug.Log("OnMemberJoinedParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnMemberJoinedParty Retrieved successfully");
-            isMemberJoinedParty = true;
-
-            // let the player knows that ther is a new party member joined in
-            MainThreadTaskRunner.Instance.Run(delegate
-            {
-                PopupManager.Instance.ShowPopupWarning("A New Party Member", "A new member just joined the party!", "OK");
-            });
-        }
-    }
-
-    /// <summary>
-    /// Callback from MemberLeftParty Event
-    /// Triggered if a party member just left the party
-    /// </summary>
-    /// <param name="result"> callback result </param>
-    private void OnMemberLeftParty(Result<LeaveNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnMemberLeftParty failed:" + result.Error.Message);
-            Debug.Log("OnMemberLeftParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnMemberLeftParty a party member has left the party" + result.Value.userID);
-            isMemberLeftParty = true;
-            MainThreadTaskRunner.Instance.Run(delegate
-            {
-                PopupManager.Instance.ShowPopupWarning("A Member Left The Party", "A member just left the party!", "OK");
-            });
-        }
-    }
-
-    /// <summary>
-    /// Callback from KickedFromParty
-    /// Triggered if the player kicked out from party by the party leader
-    /// </summary>
-    /// <param name="result"> callback result </param>
-    private void OnKickedFromParty(Result<KickNotification> result)
-    {
-        if (result.IsError)
-        {
-            Debug.Log("OnKickedFromParty failed:" + result.Error.Message);
-            Debug.Log("OnKickedFromParty Response Code::" + result.Error.Code);
-        }
-        else
-        {
-            Debug.Log("OnKickedFromParty party with ID: " + result.Value.partyID);
-            isMemberKickedParty = true;
-            MainThreadTaskRunner.Instance.Run(delegate 
-            {
-                PopupManager.Instance.ShowPopupWarning("Kicked from The Party", "You are just kicked from the party!", "OK");
-            });
-        }
-    }
-    #endregion
 
     #region AccelByte Chat Functions
     public void SendChatMessage()
@@ -1554,32 +975,32 @@ public class AccelByteLobbyLogic : MonoBehaviour
         }
     }
 
-    private void RefreshDisplayNamePartyChatListUI()
+    internal void RefreshDisplayNamePartyChatListUI()
     {
         ClearPlayerChatListUIPrefabs();
-        foreach (var partyMember in abPartyInfo.members)
+        foreach (var partyMember in partyLogic.GetAbPartyInfo().members)
         {
             var myUserData = accelByteManager.AuthLogic.GetUserData();
-            if (partyMemberList.ContainsKey(partyMember) || partyMember == myUserData.userId)
+            if (partyLogic.GetPartyMemberList().ContainsKey(partyMember) || partyMember == myUserData.userId)
             {
                 PlayerChatPrefab playerChatPrefab = Instantiate(UIHandlerLobbyComponent.playerChatPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerChatPrefab>();
                 playerChatPrefab.transform.SetParent(UIHandlerLobbyComponent.playerChatScrollContent, false);
 
 
-                if (partyMember != myUserData.userId && !string.IsNullOrEmpty(partyMemberList[partyMember].PlayerName))
+                if (partyMember != myUserData.userId && !string.IsNullOrEmpty(partyLogic.GetPartyMemberList()[partyMember].PlayerName))
                 {
-                    playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(partyMemberList[partyMember].PlayerName, partyMember, true);
+                    playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(partyLogic.GetPartyMemberList()[partyMember].PlayerName, partyMember, true);
                     playerChatPrefab.GetComponent<PlayerChatPrefab>().activePlayerButton.interactable = false;
-                    if (partyMember == abPartyInfo.leaderID)
+                    if (partyMember == partyLogic.GetAbPartyInfo().leaderID)
                     {
-                        playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPartyLeader(partyMemberList[partyMember].PlayerName);
+                        playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPartyLeader(partyLogic.GetPartyMemberList()[partyMember].PlayerName);
                     }
                 }
                 else if (partyMember == myUserData.userId)
                 {
                     playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPlayerChatUI(myUserData.displayName, myUserData.userId, true);
                     playerChatPrefab.GetComponent<PlayerChatPrefab>().activePlayerButton.interactable = false;
-                    if (partyMember == abPartyInfo.leaderID)
+                    if (partyMember == partyLogic.GetAbPartyInfo().leaderID)
                     {
                         playerChatPrefab.GetComponent<PlayerChatPrefab>().SetupPartyLeader(myUserData.displayName);
                     }
@@ -1650,7 +1071,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
 
     public void OpenPartyChatBox()
     {
-        if (partyMemberList.Count > 0)
+        if (partyLogic.GetPartyMemberList().Count > 0)
         {
             activePlayerChatUserId = "party";
             if (!chatBoxList.ContainsKey(activePlayerChatUserId))
@@ -1665,7 +1086,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             UIHandlerLobbyComponent.privateChatButton.interactable = false;
             UIHandlerLobbyComponent.partyChatButton.interactable = true;
-            if (isLocalPlayerInParty)
+            if (partyLogic.GetIsLocalPlayerInParty())
             {
                 WriteWarningInChatBox("You don't have any party member");
             }
