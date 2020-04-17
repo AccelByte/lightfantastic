@@ -3,6 +3,9 @@
 // and restrictions contact your company contract manager.
 
 using System;
+#if !UNITY_EDITOR 
+    using System.Linq;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using AccelByte.Server;
