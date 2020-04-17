@@ -31,7 +31,7 @@ public class AccelBytePartyLogic : MonoBehaviour
     
     public bool GetIsLocalPlayerInParty(){return isLocalPlayerInParty;}
     public PartyInfo GetAbPartyInfo(){ return abPartyInfo; }
-    public IDictionary<string, PartyData> GetPartyMemberList(){ return GetPartyMemberList(); }
+    public IDictionary<string, PartyData> GetPartyMemberList(){ return partyMemberList; }
     public string GetPartyUserId(){ return partyUserId; }
     
     public void SetIsLocalPlayerInParty(bool value){isLocalPlayerInParty = value;}
@@ -197,8 +197,8 @@ public class AccelBytePartyLogic : MonoBehaviour
     {
         lobbyLogic.abLobby.LeaveParty(OnLeaveParty);
         HidePopUpPartyControl();
-        lobbyLogic.ClearActivePlayerChat();
-        lobbyLogic.OpenEmptyChatBox();
+        lobbyLogic.chatLogic.ClearActivePlayerChat();
+        lobbyLogic.chatLogic.OpenEmptyChatBox();
     }
 
     /// <summary>
@@ -245,9 +245,9 @@ public class AccelBytePartyLogic : MonoBehaviour
                 j++;
             }
 
-            if (lobbyLogic.activePlayerChatUserId == partyUserId)
+            if (lobbyLogic.chatLogic.activePlayerChatUserId == partyUserId)
             {
-                lobbyLogic.RefreshDisplayNamePartyChatListUI();
+                lobbyLogic.chatLogic.RefreshDisplayNamePartyChatListUI();
             }
         }
 
@@ -458,8 +458,8 @@ public class AccelBytePartyLogic : MonoBehaviour
             {
                 SetIsLocalPlayerInParty(false);
                 lobbyLogic.friendsLogic.RefreshFriendsUI();
-                lobbyLogic.ClearActivePlayerChat();
-                lobbyLogic.OpenEmptyChatBox();
+                lobbyLogic.chatLogic.ClearActivePlayerChat();
+                lobbyLogic.chatLogic.OpenEmptyChatBox();
             }
         }
         else
@@ -476,8 +476,8 @@ public class AccelBytePartyLogic : MonoBehaviour
 
             if (result.Value.members.Length == 1)
             {
-                lobbyLogic.ClearActivePlayerChat();
-                lobbyLogic.OpenEmptyChatBox();
+                lobbyLogic.chatLogic.ClearActivePlayerChat();
+                lobbyLogic.chatLogic.OpenEmptyChatBox();
             }
 
             SetIsLocalPlayerInParty(true);
