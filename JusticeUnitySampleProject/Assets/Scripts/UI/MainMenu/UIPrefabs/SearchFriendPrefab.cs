@@ -26,7 +26,7 @@ public class SearchFriendPrefab : MonoBehaviour
 
     public void AddFriend()
     {
-        AccelByteManager.Instance.LobbyLogic.SendFriendRequest(userId, SendFriendRequestCallback);
+        AccelByteManager.Instance.LobbyLogic.friendsLogic.SendFriendRequest(userId, SendFriendRequestCallback);
     }
 
     private void SendFriendRequestCallback(AccelByte.Core.Result result)

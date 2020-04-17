@@ -251,7 +251,7 @@ public class AccelBytePartyLogic : MonoBehaviour
             }
         }
 
-        lobbyLogic.RefreshFriendsUI();
+        lobbyLogic.friendsLogic.RefreshFriendsUI();
     }
 
     private void HidePopUpPartyControl()
@@ -370,7 +370,7 @@ public class AccelBytePartyLogic : MonoBehaviour
             Debug.Log("OnLeaveParty Left a party");
             ClearPartySlots();
             SetIsLocalPlayerInParty(false);
-            lobbyLogic.RefreshFriendsUI();
+            lobbyLogic.friendsLogic.RefreshFriendsUI();
 
             PopupManager.Instance.ShowPopupWarning("Leave The Party", "You are just left the party!", "OK");
         }
@@ -457,7 +457,7 @@ public class AccelBytePartyLogic : MonoBehaviour
             if (result.Error.Code == ErrorCode.PartyInfoSuccessGetUserPartyInfoEmpty)
             {
                 SetIsLocalPlayerInParty(false);
-                lobbyLogic.RefreshFriendsUI();
+                lobbyLogic.friendsLogic.RefreshFriendsUI();
                 lobbyLogic.ClearActivePlayerChat();
                 lobbyLogic.OpenEmptyChatBox();
             }

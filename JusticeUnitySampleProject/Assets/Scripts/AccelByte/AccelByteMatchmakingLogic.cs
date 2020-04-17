@@ -58,6 +58,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
 
     public void RemoveListener()
     {
+        UIHandlerLobbyComponent.matchmakingButtonCollection.DeregisterAllButton();
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GameplaySetLocalIP);
         UIHandlerLobbyComponent.localMatch_Port_inputFields.onValueChanged.RemoveListener(GameplaySetLocalPort);

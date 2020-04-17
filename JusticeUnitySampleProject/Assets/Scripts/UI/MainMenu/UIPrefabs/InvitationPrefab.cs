@@ -23,7 +23,7 @@ public class InvitationPrefab : MonoBehaviour
     private string userId;
     public void SetupInvitationPrefab(string id)
     {
-        AccelByteManager.Instance.LobbyLogic.GetFriendInfo(id, OnGetFriendInfoRequest);
+        AccelByteManager.Instance.LobbyLogic.friendsLogic.GetFriendInfo(id, OnGetFriendInfoRequest);
         
         userId = id;
     }
@@ -48,11 +48,11 @@ public class InvitationPrefab : MonoBehaviour
 
     public void AcceptInvite()
     {
-        AccelByteManager.Instance.LobbyLogic.AcceptFriendRequest(userId, OnAcceptFriendRequest);
+        AccelByteManager.Instance.LobbyLogic.friendsLogic.AcceptFriendRequest(userId, OnAcceptFriendRequest);
     }
     public void DeclineInvite()
     {
-        AccelByteManager.Instance.LobbyLogic.DeclineFriendRequest(userId, OnAcceptFriendRequest);
+        AccelByteManager.Instance.LobbyLogic.friendsLogic.DeclineFriendRequest(userId, OnAcceptFriendRequest);
     }
 
     private void OnAcceptFriendRequest(Result result)
@@ -66,7 +66,7 @@ public class InvitationPrefab : MonoBehaviour
         else
         {
             Debug.Log("AcceptFriendRequest sent successfully.");
-            AccelByteManager.Instance.LobbyLogic.LoadFriendsList();
+            AccelByteManager.Instance.LobbyLogic.friendsLogic.LoadFriendsList();
             Destroy(this.gameObject);
         }
     }
