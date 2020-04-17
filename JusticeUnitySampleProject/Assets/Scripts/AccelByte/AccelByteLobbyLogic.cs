@@ -313,6 +313,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.Disconnected -= OnDisconnectNotificationReceived;
         matchmakingLogic.UnsubscribeAllCallbacks();
         partyLogic.UnsubscribeAllCallbacks();
+        friendsLogic.UnsubscribeAllCallbacks();
     }
     #endregion // AccelByte Lobby Functions
 
