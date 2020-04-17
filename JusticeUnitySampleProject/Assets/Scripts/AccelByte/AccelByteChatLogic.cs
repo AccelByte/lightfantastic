@@ -2,16 +2,11 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using AccelByte.Api;
 using AccelByte.Core;
 using AccelByte.Models;
-using UITools;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class AccelByteChatLogic : MonoBehaviour
 {

@@ -59,11 +59,6 @@ public class AccelByteLobbyLogic : MonoBehaviour
         chatLogic = gameObject.GetComponent<AccelByteChatLogic>();
     }
 
-    private void Update()
-    {
-        
-    }
-
     private void OnApplicationQuit()
     {
         OnExitFromLobby(null);
@@ -262,6 +257,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
         abLobby.Disconnected -= OnDisconnectNotificationReceived;
         matchmakingLogic.UnsubscribeAllCallbacks();
         partyLogic.UnsubscribeAllCallbacks();
+        friendsLogic.UnsubscribeAllCallbacks();
         chatLogic.UnsubscribeAllCallbacks();
     }
 
