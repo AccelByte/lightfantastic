@@ -79,7 +79,7 @@ public class AccelByteFriendsLogic : MonoBehaviour
         lobbyLogic.abLobby.FriendRequestAccepted -= OnFriendRequestAccepted;
         lobbyLogic.abLobby.FriendsStatusChanged -= OnFriendsStatusChanged;
     }
-
+    
     void Update()
     {
         if (isLoadFriendDisplayName)
