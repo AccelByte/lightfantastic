@@ -46,12 +46,12 @@ public class FriendPrefab : MonoBehaviour
         // If not yet have a party, create a party then to call invitetoparty
         if (!hasParty)
         {
-            AccelByteManager.Instance.LobbyLogic.CreateAndInvitePlayer(userID);
+            AccelByteManager.Instance.LobbyLogic.partyLogic.CreateAndInvitePlayer(userID);
         }
         else
         {
             // Else directly invite to party
-            AccelByteManager.Instance.LobbyLogic.InviteToParty(userID, OnInviteParty);
+            AccelByteManager.Instance.LobbyLogic.partyLogic.InviteToParty(userID, OnInviteParty);
         }
     }
 

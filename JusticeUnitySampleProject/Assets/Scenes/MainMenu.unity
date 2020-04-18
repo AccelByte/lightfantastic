@@ -2837,6 +2837,8 @@ GameObject:
   - component: {fileID: 2006644183}
   - component: {fileID: 2006644184}
   - component: {fileID: 2006644185}
+  - component: {fileID: 2006644186}
+  - component: {fileID: 2006644187}
   m_Layer: 0
   m_Name: GameLogic
   m_TagString: Untagged
@@ -2909,6 +2911,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7d4cc2b7d5e504b999cb9452f607e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  partyLogic: {fileID: 0}
+  friendsLogic: {fileID: 0}
 --- !u!114 &2006644174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3071,6 +3075,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7ad0b9a4482a3440a644dd8ec218149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f71db1688dec94c8a7049f89f2b2b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dccc8bc850881d459cfc5a1a910136e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2033149602 stripped
@@ -3604,7 +3632,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2006644173}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2249518715907817723, guid: b43e7591f7324df4aa5b1b80d9a4c7c7,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2249518716032053320, guid: b43e7591f7324df4aa5b1b80d9a4c7c7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
