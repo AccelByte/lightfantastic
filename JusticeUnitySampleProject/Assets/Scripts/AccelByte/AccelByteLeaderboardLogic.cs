@@ -218,7 +218,7 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
     {
         if (result.IsError)
         {
-            Debug.Log("Get user ranking failed:" + result.Error.Message);
+            Debug.Log("Get user ranking failed with LeaderboardCode: " + leaderboardCode + " Error : " + result.Error.Message);
         }
         else
         {
@@ -241,7 +241,7 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
     {
         if (result.IsError)
         {
-            Debug.Log("Query leaderboard failed:" + result.Error.Message);
+            Debug.Log("Query leaderboard failed with LeaderboardCode: " + leaderboardCode + " Error : " + result.Error.Message);
         }
         else
         {
