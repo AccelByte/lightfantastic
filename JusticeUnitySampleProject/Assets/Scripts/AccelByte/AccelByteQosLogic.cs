@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+using System.Collections.Generic;
 using AccelByte.Api;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,13 +11,13 @@ public class AccelByteQosLogic : MonoBehaviour
 {
     private static AccelByteQosLogic instance = new AccelByteQosLogic();
     public static AccelByteQosLogic Instance { get { return instance; } }
-    private Qos qos;
+    private Qos abQoS;
 
     private static Dictionary<string, int> latencies = null;
 
     private void Start()
     {
-        qos = AccelBytePlugin.GetQos();
+        abQoS = AccelBytePlugin.GetQos();
         RefreshQosLatencies();
         SceneManager.sceneLoaded += (scene, mode) =>
         {
@@ -26,9 +30,12 @@ public class AccelByteQosLogic : MonoBehaviour
         return latencies;
     }
 
+    /// <summary>
+    /// Get various latencies from available server regions
+    /// </summary>
     public void RefreshQosLatencies()
     {
-        qos.GetServerLatencies(result =>
+        abQoS.GetServerLatencies(result =>
         {
             latencies = new Dictionary<string, int>(result.Value.Count);
             latencies = result.Value;

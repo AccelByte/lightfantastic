@@ -92,7 +92,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 14.2
+  m_fontSize: 19.75
   m_fontSizeBase: 64
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 495107216240533119}
   - component: {fileID: 7109074646743930330}
   m_Layer: 5
-  m_Name: Timer
+  m_Name: MainHUDGameTimerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 28.4
+  m_fontSize: 39.55
   m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -326,3 +326,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49146a708c2cd6b41bf30213c2c18305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  number: {fileID: 495107216240533119}
+  sec: {fileID: 5722241854537811645}

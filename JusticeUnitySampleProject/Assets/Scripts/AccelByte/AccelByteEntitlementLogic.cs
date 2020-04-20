@@ -1,4 +1,8 @@
-﻿#pragma warning disable 0649
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+#pragma warning disable 0649
 
 using System;
 using System.Collections.Generic;
@@ -9,11 +13,17 @@ using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Experimental.U2D.Animation;
 using Utf8Json;
 using UITools;
 using UnityEngine.SceneManagement;
 
+
+#region Equipments class
+/// <summary>
+///  Equipments class related attributes. There are 2 types of equipment, Hat and trail effect
+///  the attached equipments to character will be saved as public custom attributes in userprofile service
+///  the attributes need to be public so other player can see the attached equipments.
+/// </summary>
 public static class Equipments
 {
     public enum Type
@@ -175,6 +185,7 @@ namespace EntitlementUiLogic
         }
     }
 }
+#endregion // Equipments
 
 public class AccelByteEntitlementLogic : MonoBehaviour
 {
@@ -205,17 +216,11 @@ public class AccelByteEntitlementLogic : MonoBehaviour
     #region UI Listeners
     void OnEnable()
     {
-        Debug.Log("ABEntitlement OnEnable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnDisable()
     {
-        Debug.Log("ABEntitlement OnDisable called!");
-
-        // Register to onsceneloaded
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         if (UIHandler != null)
@@ -226,8 +231,6 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("ABEntitlement OnSceneLoaded level loaded!");
-
         RefreshUIHandler();
     }
 
@@ -236,7 +239,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandler = GameObject.FindGameObjectWithTag("UIHandler");
         if (UIHandler == null)
         {
-            Debug.Log("ABEntitlement RefreshUIHandler no reference to UI Handler!");
+            Debug.LogError("ABEntitlement RefreshUIHandler no reference to UI Handler!");
             return;
         }
         UIHandlerEntitlementComponent = UIHandler.GetComponent<UIEntitlementLogicComponent>();
@@ -249,7 +252,6 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 
     void AddEventListeners()
     {
-        Debug.Log("ABEntitlement AddEventListeners!");
         // Bind Buttons
         UIHandlerEntitlementComponent.inventoryButton.onClick.AddListener(delegate
         {
@@ -288,7 +290,6 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 
     void RemoveListeners()
     {
-        Debug.Log("ABEntitlement RemoveListeners!");
         UIHandlerEntitlementComponent.inventoryButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.hatTabButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.effectTabButton.onClick.RemoveAllListeners();
@@ -298,6 +299,12 @@ public class AccelByteEntitlementLogic : MonoBehaviour
     }
     #endregion // UI Listeners
 
+    #region AccelByte Entitlement Functions
+    /// <summary>
+    /// Get user's entitlement from Ecommerce - Entitlement service
+    /// Needed on inventory menu and on gameplay to show the attached equipments
+    /// </summary>
+    /// <param name="inMenu"> Is called from main menu </param>
     public void GetEntitlement(bool inMenu)
     {
         activeEquipmentList = null;
@@ -342,6 +349,20 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         }
     }
 
+    public Equipments.EquipmentList GetActiveEquipmentList()
+    {
+        return activeEquipmentList;
+    }
+
+    #endregion //AccelByte Entitlement Functions
+
+
+    #region AccelByte Entitlement Callbacks
+    /// <summary>
+    /// Callback function from GetEntitlement
+    /// Used in gameplay to show attached equipment then using the info to makes the ingame character wears it
+    /// </summary>
+    /// <param name="result"> Callback result from Get entitlement </param>
     private void OnGetEntitlementNoMenu(Result<EntitlementPagingSlicedResult> result)
     {
         //TODO: fix FadeLoadingOut
@@ -353,11 +374,11 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         }
         else
         {
+            // Get saved custom attributes(attached equipments/ activeEquipmentList) in UserProfile
             UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
             {
                 if (!profileResult.IsError)
                 {
-                    //originalEquipmentList = null;
                     activeEquipmentList = new Equipments.EquipmentList();
 
                     if (profileResult.Value.customAttributes != null)
@@ -385,11 +406,16 @@ public class AccelByteEntitlementLogic : MonoBehaviour
                 }
             });
         }
+
     }
 
+    /// <summary>
+    /// Callback function from GetEntitlement
+    /// Used in inventory menu to show attached equipment
+    /// </summary>
+    /// <param name="result"> Callback result from Get entitlement </param>
     private void OnGetEntitlement(Result<EntitlementPagingSlicedResult> result)
     {
-        //TODO: fix FadeLoadingOut
         UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.LOADING);
         if (result.IsError)
         {
@@ -398,6 +424,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         }
         else
         {
+            // Get saved custom attributes(attached equipments/ activeEquipmentList) in UserProfile
             UIHandlerEntitlementComponent.abUserProfileLogic.GetMine(profileResult =>
             {
                 if (!profileResult.IsError)
@@ -437,12 +464,9 @@ public class AccelByteEntitlementLogic : MonoBehaviour
             });
         }
     }
+    #endregion // AccelByte Entitlement Callbacks
 
-    public Equipments.EquipmentList GetActiveEquipmentList()
-    {
-        return activeEquipmentList;
-    }
-
+    #region Inventory Menu
     private void EquipFromList(Equipments.EquipmentList list)
     {
         foreach (Equipments.Type type in Enum.GetValues(typeof(Equipments.Type)))
@@ -636,4 +660,5 @@ public class AccelByteEntitlementLogic : MonoBehaviour
             }
         }
     }
+    #endregion // Inventory Menu
 }

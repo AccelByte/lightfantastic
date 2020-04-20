@@ -1051,7 +1051,7 @@ MonoBehaviour:
   localLeavePartyButton: {fileID: 1972041862}
   memberKickPartyButton: {fileID: 1313438042054228311}
   cancelMatchmakingButton: {fileID: 1964306967189439733}
-  PlayerDisplayNameText: {fileID: 2054962608230123454}
+  PlayerDisplayNameText: {fileID: 1105008958129693895}
   JusticeCoinValueText: {fileID: 7396598426194267129}
   PhotonsValueText: {fileID: 6944719499107578600}
   localMatch_IP_inputFields: {fileID: 5416252456975520904}
@@ -2836,6 +2836,10 @@ GameObject:
   - component: {fileID: 2006644171}
   - component: {fileID: 2006644183}
   - component: {fileID: 2006644184}
+  - component: {fileID: 2006644185}
+  - component: {fileID: 2006644186}
+  - component: {fileID: 2006644187}
+  - component: {fileID: 2006644188}
   m_Layer: 0
   m_Name: GameLogic
   m_TagString: Untagged
@@ -2855,6 +2859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f62455f26600c4e9af36d0807b2c8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  steamAuth: {fileID: 2006644180}
   useSteam: 0
   cmdLine: {fileID: 2006644179}
 --- !u!4 &2006644170
@@ -2907,8 +2912,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7d4cc2b7d5e504b999cb9452f607e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectToLocal: 0
-  gameMode: testUnity
+  partyLogic: {fileID: 0}
+  friendsLogic: {fileID: 0}
+  chatLogic: {fileID: 0}
 --- !u!114 &2006644174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2921,7 +2927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f8dc46b9c602740ba73de41163e602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverLogicPrefab: {fileID: 0}
+  serverLogicPrefab: {fileID: 7407485024963274912, guid: a8fad4b41c65e8140bfaabeb36628938,
+    type: 3}
   localDSName: LocalTestDS
   asLocalDS: 1
 --- !u!114 &2006644175
@@ -3058,6 +3065,54 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac116f784ac99604bb40804160ebd94f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7ad0b9a4482a3440a644dd8ec218149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f71db1688dec94c8a7049f89f2b2b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dccc8bc850881d459cfc5a1a910136e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1046e8e7b69e5ec44af240c5ee529779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2033149602 stripped
@@ -3339,11 +3394,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 545861802}
-    - target: {fileID: 3832351850761965283, guid: 55e2127d3980f23488d22e30a947c680,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 2006644173}
     - target: {fileID: 4348196316588666560, guid: 55e2127d3980f23488d22e30a947c680,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -3574,6 +3624,12 @@ CanvasGroup:
     type: 3}
   m_PrefabInstance: {fileID: 1105008958129693892}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1105008958129693895 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7552388062588173421, guid: 55e2127d3980f23488d22e30a947c680,
+    type: 3}
+  m_PrefabInstance: {fileID: 1105008958129693892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1146170077468842302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3590,7 +3646,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2006644173}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2249518715907817723, guid: b43e7591f7324df4aa5b1b80d9a4c7c7,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2249518716032053320, guid: b43e7591f7324df4aa5b1b80d9a4c7c7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4287,12 +4348,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &2054962608230123454 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1428052643706938234, guid: 55e2127d3980f23488d22e30a947c680,
-    type: 3}
-  m_PrefabInstance: {fileID: 1105008958129693892}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3052673549066328381 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 301995268864791339, guid: 55e2127d3980f23488d22e30a947c680,
@@ -5337,7 +5392,7 @@ PrefabInstance:
     - target: {fileID: 8130929676251320405, guid: 3f5e40b02fa8ce64a8c16328990048d8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 19.59961
+      value: 19.599594
       objectReference: {fileID: 0}
     - target: {fileID: 8130929676251320405, guid: 3f5e40b02fa8ce64a8c16328990048d8,
         type: 3}

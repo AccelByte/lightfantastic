@@ -1,4 +1,8 @@
-﻿#pragma warning disable 0649
+﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+#pragma warning disable 0649
 
 using System;
 using System.Collections.Generic;
@@ -36,6 +40,11 @@ public class AccelByteAgreementLogic : MonoBehaviour
         uiAgreement.GetAcceptAllButton().onClick.AddListener(FulfillEligibility);
     }
 
+    #region AccelByte Agreement Functions
+    /// <summary>
+    /// Use this function to get the user agreements that are available
+    /// both mandatory and optional user agreements are included
+    /// </summary>
     public void GetUserPolicy()
     {
         GetUserPolicy(() =>
@@ -90,6 +99,9 @@ public class AccelByteAgreementLogic : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// Accept & sign all the user agreements available from GetUserPolicy
+    /// </summary>
     public void FulfillEligibility()
     {
         uiElementHandler.ShowLoadingPanel();
@@ -100,7 +112,13 @@ public class AccelByteAgreementLogic : MonoBehaviour
         }
         abAgreement.SignUserLegalEligibilites(requests.ToArray(), OnFulfillEligibility);
     }
+    #endregion // AccelByte Agreement Functions
 
+    #region AccelByte Agreement Callbacks
+    /// <summary>
+    /// Use callback from accept agreement response to re-login to the game
+    /// </summary>
+    /// <param name="agreementResult"> Callback result from accept agreement response </param>
     private void OnFulfillEligibility(Result<AcceptAgreementResponse> agreementResult)
     {
         if (agreementResult.IsError)
@@ -119,4 +137,5 @@ public class AccelByteAgreementLogic : MonoBehaviour
         }
         uiElementHandler.HideLoadingPanel();
     }
+    #endregion // AccelByte Agreement Callbacks
 }
