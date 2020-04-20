@@ -96,10 +96,10 @@ public class AccelByteFriendsLogic : MonoBehaviour
             string friendName = friendList[friendsStatusNotif.userID].DisplayName;
             friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
             RefreshFriendsUI();
-            if (lobbyLogic.activePlayerChatUserId == lobbyLogic.partyLogic.GetPartyUserId())
-                lobbyLogic.RefreshDisplayNamePartyChatListUI();
+            if (lobbyLogic.chatLogic.activePlayerChatUserId == lobbyLogic.partyLogic.GetPartyUserId())
+                lobbyLogic.chatLogic.RefreshDisplayNamePartyChatListUI();
             else
-                lobbyLogic.RefreshDisplayNamePrivateChatListUI();
+                lobbyLogic.chatLogic.RefreshDisplayNamePrivateChatListUI();
         }
         if (isFriendAcceptRequest)
         {
@@ -253,13 +253,13 @@ public class AccelByteFriendsLogic : MonoBehaviour
                 RefreshFriendsUI();
 
                 // Update chat list UI
-                if (lobbyLogic.activePlayerChatUserId == lobbyLogic.partyLogic.GetPartyUserId())
+                if (lobbyLogic.chatLogic.activePlayerChatUserId == lobbyLogic.partyLogic.GetPartyUserId())
                 {
-                    lobbyLogic.RefreshDisplayNamePartyChatListUI();
+                    lobbyLogic.chatLogic.RefreshDisplayNamePartyChatListUI();
                 }
                 else
                 {
-                    lobbyLogic.RefreshDisplayNamePrivateChatListUI();
+                    lobbyLogic.chatLogic.RefreshDisplayNamePrivateChatListUI();
                 }
             }
         }

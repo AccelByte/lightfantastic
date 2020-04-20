@@ -2839,6 +2839,7 @@ GameObject:
   - component: {fileID: 2006644185}
   - component: {fileID: 2006644186}
   - component: {fileID: 2006644187}
+  - component: {fileID: 2006644188}
   m_Layer: 0
   m_Name: GameLogic
   m_TagString: Untagged
@@ -2913,6 +2914,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   partyLogic: {fileID: 0}
   friendsLogic: {fileID: 0}
+  chatLogic: {fileID: 0}
 --- !u!114 &2006644174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3099,6 +3101,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0dccc8bc850881d459cfc5a1a910136e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006644188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006644168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1046e8e7b69e5ec44af240c5ee529779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2033149602 stripped
@@ -5378,7 +5392,7 @@ PrefabInstance:
     - target: {fileID: 8130929676251320405, guid: 3f5e40b02fa8ce64a8c16328990048d8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 19.59961
+      value: 19.599594
       objectReference: {fileID: 0}
     - target: {fileID: 8130929676251320405, guid: 3f5e40b02fa8ce64a8c16328990048d8,
         type: 3}
