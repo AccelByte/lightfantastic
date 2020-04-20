@@ -287,9 +287,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     /// <param name="result"> Result callback to show on game lobby </param>
     private void OnNotificationReceived(Result<Notification> result)
     {
-        UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
-        UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
-        UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            UIHandlerLobbyComponent.generalNotificationTitle.text = string.IsNullOrEmpty(result.Value.topic)? "UNTITLED" : result.Value.topic;
+            UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
+            UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+        });
     }
 
     /// <summary>
