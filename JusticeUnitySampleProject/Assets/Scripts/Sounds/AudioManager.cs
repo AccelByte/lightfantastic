@@ -20,6 +20,9 @@ public class AudioManager : MonoBehaviour
     private static AudioManager instance;
     public static AudioManager Instance { get { return instance; } }
 
+    public const string PLAYER_PREF_AUDIO_BGM = "setting_audio_bgm";
+    public const string PLAYER_PREF_AUDIO_SFX = "setting_audio_sfx";
+    
     [Header("Sound FX")]
     [SerializeField]
     private SoundFX[] soundFXes = null;
@@ -46,8 +49,11 @@ public class AudioManager : MonoBehaviour
         SoundFXSetup();
         BackgroundMusicSetup();
         
-        ToggleSFXVolume(true);
-        ToggleBGMVolume(true);
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            ToggleBGMVolume(PlayerPrefs.GetInt(PLAYER_PREF_AUDIO_BGM) == 1);
+            ToggleSFXVolume(PlayerPrefs.GetInt(PLAYER_PREF_AUDIO_SFX) == 1);
+        });
     }
 
     private void SoundFXSetup()
@@ -199,6 +205,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleSFXVolume(bool ON)
     {
+        PlayerPrefs.SetInt(PLAYER_PREF_AUDIO_SFX, ON ? 1 : 0);
         foreach (var sfx in soundFXes)
         {
             sfx.Source.volume = ON ? 1 : 0;
@@ -208,6 +215,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleBGMVolume(bool ON)
     {
+        PlayerPrefs.SetInt(PLAYER_PREF_AUDIO_BGM, ON ? 1 : 0);
         foreach (var bgm in backgroundMusics)
         {
             bgm.Source.volume = ON ? 1 : 0;
