@@ -1,10 +1,10 @@
-# Justice Unity Sample Project
+# AccelByte Unity Sample Project
 
 Unity 3D Sample Game Demo
 
 Using Unity Version 2019.2.17f1
 
-Using Accelbyte Services SDK  Version 2.6.0
+Using AccelByte Services SDK  Version 2.6.0
 
 ## Overview
 A sample implementation of our Unity SDK in a game that uses the breadth of the AccelByte features.
