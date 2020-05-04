@@ -32,7 +32,6 @@ public class SettingComponentBoolean : MonoBehaviour
     {
         falseButton.onClick.AddListener(delegate { SetState(false); });
         trueButton.onClick.AddListener(delegate { SetState(true); });
-        SetTrue();
     }
 
     private void SetState(bool state_)
