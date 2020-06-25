@@ -12,6 +12,7 @@ namespace AccelByte.Api
     internal class UserAccount : IUserAccount
     {
         private readonly string baseUrl;
+        private readonly string apiBaseUrl;
         private readonly string @namespace;
         private readonly ISession session;
         private readonly IHttpWorker httpWorker;
@@ -28,6 +29,8 @@ namespace AccelByte.Api
             this.session = session;
             this.baseUrl = baseUrl;
             this.httpWorker = httpWorker;
+
+            this.apiBaseUrl = "https://" + AccelBytePlugin.Config.ApiBaseUrl;
         }
 
         public IEnumerator Register(RegisterUserRequest registerUserRequest,
@@ -54,8 +57,6 @@ namespace AccelByte.Api
         {
             Report.GetFunctionLog(this.GetType().Name);
             var request = HttpRequestBuilder.CreateGet(this.baseUrl + "/v3/public/users/me")
-                .WithPathParam("namespace", this.@namespace)
-                .WithPathParam("userId", this.session.UserId)
                 .WithBearerAuth(this.session.AuthorizationToken)
                 .Accepts(MediaType.ApplicationJson)
                 .GetResult();
@@ -111,6 +112,26 @@ namespace AccelByte.Api
             callback.Try(result);
         }
 
+        public IEnumerator UpgradeWithPlayerPortal(string returnUrl, int ttl, ResultCallback<UpgradeUserRequest> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(returnUrl, "Upgrade failed. return url is null!");
+
+            var request = HttpRequestBuilder
+                .CreatePost(this.apiBaseUrl + "/v1/public/temporarysessions")
+                .WithBearerAuth(this.session.AuthorizationToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(string.Format("{{\"return_url\": \"{0}\", \"ttl\": {1}}}", returnUrl, ttl))
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<UpgradeUserRequest>();
+            callback.Try(result);
+        }
+
         public IEnumerator SendVerificationCode(VerificationContext context, string emailAddress,
             ResultCallback callback)
         {
@@ -120,6 +141,7 @@ namespace AccelByte.Api
             var request = HttpRequestBuilder
                 .CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/users/me/code/request")
                 .WithPathParam("namespace", this.@namespace)
+                .WithBearerAuth(this.session.AuthorizationToken)
                 .WithContentType(MediaType.ApplicationJson)
                 .WithBody(string.Format("{{\"emailAddress\": \"{0}\", \"context\": \"{1:G}\"}}", emailAddress, context))
                 .GetResult();
@@ -319,6 +341,7 @@ namespace AccelByte.Api
                 .WithPathParam("platformId", platformType.ToString().ToLower())
                 .WithPathParam("platformUserId", otherPlatformUserId)
                 .WithBearerAuth(this.session.AuthorizationToken)
+                .WithContentType(MediaType.ApplicationJson)
                 .Accepts(MediaType.ApplicationJson)
                 .GetResult();
 
@@ -327,6 +350,46 @@ namespace AccelByte.Api
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             Result<UserData> result = response.TryParseJson<UserData>();
+            callback.Try(result);
+        }
+
+        public IEnumerator BulkGetUserByOtherPlatformUserIds(PlatformType platformType, BulkPlatformUserIdRequest otherPlatformUserId,
+            ResultCallback<BulkPlatformUserIdResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(otherPlatformUserId, nameof(otherPlatformUserId) + " cannot be null.");
+
+            var request = HttpRequestBuilder
+                .CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/platforms/{platformId}/users")
+                .WithPathParam("namespace", this.@namespace)
+                .WithPathParam("platformId", platformType.ToString().ToLower())
+                .WithBearerAuth(this.session.AuthorizationToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(otherPlatformUserId.ToUtf8Json())
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            Result<BulkPlatformUserIdResponse> result = response.TryParseJson<BulkPlatformUserIdResponse>();
+            callback.Try(result);
+        }
+
+        public IEnumerator GetCountryFromIP(ResultCallback<CountryInfo> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            var request = HttpRequestBuilder
+                .CreateGet(this.apiBaseUrl + "/location/country")
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<CountryInfo>();
             callback.Try(result);
         }
     }
