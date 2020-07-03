@@ -1,10 +1,11 @@
 {
-  "PublisherNamespace": "accelbyte",
-  "Namespace": "lightfantastic",
+  "Namespace": "<YOUR-GAME-NAMESPACE>",
   "BaseUrl": "https://demo.accelbyte.io",
-  "DSMServerUrl": "http://justice-dsm-service/dsm",
   "IamServerUrl": "https://demo.accelbyte.io/iam",
-  "ClientId": "check_lastpass",
-  "ClientSecret": "check_lastpass",
+  "DSMControllerServerUrl": "https://demo.accelbyte.io/dsmcontroller",
+  "StatisticServerUrl": "https://demo.accelbyte.io/statistic",
+  "PlatformServerUrl": "https://demo.accelbyte.io/platform",
+  "ClientId": "<YOUR-DS-CLIENT-ID>",
+  "ClientSecret": "<YOUR-DS-CLIENT-SECRET>",
   "RedirectUri": "http://127.0.0.1"
 }

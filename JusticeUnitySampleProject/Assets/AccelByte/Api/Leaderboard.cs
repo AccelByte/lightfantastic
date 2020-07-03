@@ -32,10 +32,11 @@ namespace AccelByte.Api
         /// Get leaderboard ranking data from the beginning.
         /// </summary>
         /// <param name="leaderboardCode"> The id of the leaderboard </param>
+        /// <param name="timeFrame"> The time frame of leaderboard </param>
         /// <param name="offset"> Offset of the list that has been sliced based on Limit parameter (optional, default = 0) </param>
         /// <param name="limit"> The limit of item on page (optional) </param>
         /// <param name="callback"> Returns a Result that contains LeaderboardRankingResult via callback when completed </param>
-        public void QueryAllTimeLeaderboardRankingData(string leaderboardCode, int offset, int limit, ResultCallback<LeaderboardRankingResult> callback)
+        public void GetRankings(string leaderboardCode, LeaderboardTimeFrame timeFrame, int offset, int limit, ResultCallback<LeaderboardRankingResult> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(leaderboardCode, "Can't query all time leaderboard ranking data! leaderboardCode parameter is null!");
@@ -48,10 +49,11 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.QueryAllTimeLeaderboardRankingData(
+                this.api.GetRankings(
                     this.@namespace,
                     this.session.AuthorizationToken,
                     leaderboardCode,
+                    timeFrame,
                     offset,
                     limit,
                     callback));

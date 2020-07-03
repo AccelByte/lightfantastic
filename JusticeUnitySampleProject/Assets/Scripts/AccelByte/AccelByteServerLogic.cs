@@ -122,7 +122,7 @@ public class AccelByteServerLogic : MonoBehaviour
             else
             {
                 // otherwise, user register server method to notify the DSM servic that this is local server
-                abServerManager.RegisterServer(GetPodName(), ushort.Parse(port), OnRegistered);
+                abServerManager.RegisterServer(ushort.Parse(port), OnRegistered);
             }
         }
     }

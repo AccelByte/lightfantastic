@@ -23,18 +23,41 @@ namespace AccelByte.Api
             this.httpWorker = httpWorker;
         }
 
-        public IEnumerator QueryAllTimeLeaderboardRankingData(string @namespace, string accessToken, string leaderboardCode, int offset, int limit,
+        public IEnumerator GetRankings(string @namespace, string accessToken, string leaderboardCode, LeaderboardTimeFrame timeFrame, int offset, int limit,
             ResultCallback<LeaderboardRankingResult> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            Assert.IsNotNull(@namespace, "Can't get item! Namespace parameter is null!");
-            Assert.IsNotNull(accessToken, "Can't get item! AccessToken parameter is null!");
-            Assert.IsNotNull(leaderboardCode, "Can't get item! Leaderboard Code parameter is null!");
+            Assert.IsNotNull(@namespace, "Can't get ranking! Namespace parameter is null!");
+            Assert.IsNotNull(accessToken, "Can't get ranking! AccessToken parameter is null!");
+            Assert.IsNotNull(leaderboardCode, "Can't get ranking! Leaderboard Code parameter is null!");
+
+            string timeFrameString = "";
+            switch (timeFrame)
+            {
+                case LeaderboardTimeFrame.ALL_TIME:
+                    timeFrameString = "alltime";
+                    break;
+                case LeaderboardTimeFrame.CURRENT_SEASON:
+                    timeFrameString = "season";
+                    break;
+                case LeaderboardTimeFrame.CURRENT_MONTH:
+                    timeFrameString = "month";
+                    break;
+                case LeaderboardTimeFrame.CURRENT_WEEK:
+                    timeFrameString = "week";
+                    break;
+                case LeaderboardTimeFrame.TODAY:
+                    timeFrameString = "today";
+                    break;
+                default:
+                    break;
+            }
 
             var builder = HttpRequestBuilder
-                .CreateGet(this.baseUrl + "/v1/public/namespaces/{namespace}/leaderboards/{leaderboardCode}/alltime")
+                .CreateGet(this.baseUrl + "/v1/public/namespaces/{namespace}/leaderboards/{leaderboardCode}/{timeFrame}")
                 .WithPathParam("namespace", @namespace)
                 .WithPathParam("leaderboardCode", leaderboardCode)
+                .WithPathParam("timeFrame", timeFrameString)
                 .WithQueryParam("offset", (offset >= 0) ? offset.ToString() : "")
                 .WithQueryParam("limit", (limit >= 0) ? limit.ToString() : "")
                 .WithBearerAuth(accessToken)

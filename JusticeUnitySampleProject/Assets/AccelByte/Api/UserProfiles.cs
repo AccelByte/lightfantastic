@@ -36,6 +36,7 @@ namespace AccelByte.Api
         public void GetUserProfile(ResultCallback<UserProfile> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
+
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -43,7 +44,8 @@ namespace AccelByte.Api
                 return;
             }
 
-            this.coroutineRunner.Run(this.api.GetUserProfile(this.@namespace, this.session.AuthorizationToken, callback));
+            this.coroutineRunner.Run(
+                this.api.GetUserProfile(this.@namespace, this.session.AuthorizationToken, callback));
         }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace AccelByte.Api
         public void CreateUserProfile(CreateUserProfileRequest createRequest, ResultCallback<UserProfile> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
+
             if (!this.session.IsValid())
             {
                 callback.TryError(ErrorCode.IsNotLoggedIn);
@@ -61,11 +64,8 @@ namespace AccelByte.Api
                 return;
             }
 
-            this.coroutineRunner.Run(this.api.CreateUserProfile(
-                        this.@namespace,
-                        this.session.AuthorizationToken,
-                        createRequest,
-                        callback));
+            this.coroutineRunner.Run(
+                this.api.CreateUserProfile(this.@namespace, this.session.AuthorizationToken, createRequest, callback));
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace AccelByte.Api
         /// </summary>
         /// <param name="userId">Targeted users' ID</param>
         /// <param name="callback">Returns a result that contains an array of PublicUserProfile via callback when completed</param>
-        public void GetUserProfilePublicInfoByIds(string[] userIds, ResultCallback<PublicUserProfile[]> callback)
+        public void GetUserProfilePublicInfosByIds(string[] userIds, ResultCallback<PublicUserProfile[]> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
 
@@ -167,7 +167,7 @@ namespace AccelByte.Api
             }
 
             this.coroutineRunner.Run(
-                this.api.GetUserProfilePublicInfoByIds(
+                this.api.GetUserProfilePublicInfosByIds(
                     this.@namespace,
                     this.session.AuthorizationToken,
                     userIds,

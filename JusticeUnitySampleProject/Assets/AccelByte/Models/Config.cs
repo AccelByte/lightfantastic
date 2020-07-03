@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
+﻿﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -12,6 +12,8 @@ namespace AccelByte.Models
         [DataMember] public string Namespace { get; set; }
         [DataMember] public bool UseSessionManagement { get; set; }
         [DataMember] public string BaseUrl { get; set; }
+        [DataMember] public string ApiBaseUrl { get; set; }
+        [DataMember] public string NonApiBaseUrl { get; set; }
         [DataMember] public string LoginServerUrl { get; set; }
         [DataMember] public string IamServerUrl { get; set; }
         [DataMember] public string PlatformServerUrl { get; set; }
@@ -24,6 +26,7 @@ namespace AccelByte.Models
         [DataMember] public string QosManagerServerUrl { get; set; }
         [DataMember] public string AgreementServerUrl { get; set; }
         [DataMember] public string LeaderboardServerUrl { get; set; }
+        [DataMember] public string CloudSaveServerUrl { get; set; }
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
         [DataMember] public string RedirectUri { get; set; }
@@ -41,6 +44,8 @@ namespace AccelByte.Models
             if (this.Namespace == anotherConfig.Namespace &&
                 this.UseSessionManagement == anotherConfig.UseSessionManagement &&
                 this.BaseUrl == anotherConfig.BaseUrl &&
+                this.ApiBaseUrl == anotherConfig.ApiBaseUrl &&
+                this.NonApiBaseUrl == anotherConfig.NonApiBaseUrl &&
                 this.LoginServerUrl == anotherConfig.LoginServerUrl &&
                 this.IamServerUrl == anotherConfig.IamServerUrl &&
                 this.PlatformServerUrl == anotherConfig.PlatformServerUrl &&
@@ -53,6 +58,7 @@ namespace AccelByte.Models
                 this.QosManagerServerUrl == anotherConfig.QosManagerServerUrl &&
                 this.AgreementServerUrl == anotherConfig.AgreementServerUrl &&
                 this.LeaderboardServerUrl == anotherConfig.LeaderboardServerUrl &&
+                this.CloudSaveServerUrl == anotherConfig.CloudSaveServerUrl &&
                 this.ClientId == anotherConfig.ClientId &&
                 this.ClientSecret == anotherConfig.ClientSecret &&
                 this.RedirectUri == anotherConfig.RedirectUri)
@@ -71,11 +77,14 @@ namespace AccelByte.Models
             if (this.BaseUrl != null)
             {
                 int index;
-                // remove protocol 
-                if ((index = this.BaseUrl.IndexOf("://")) > 0) this.BaseUrl = this.BaseUrl.Substring(index + 3);
+                // remove protocol
+                string baseUrl = this.BaseUrl;
+                if ((index = baseUrl.IndexOf("://")) > 0) baseUrl = baseUrl.Substring(index + 3);
+                if ((index = this.NonApiBaseUrl.IndexOf("://")) > 0) this.NonApiBaseUrl = this.NonApiBaseUrl.Substring(index + 3);
+                if ((index = this.ApiBaseUrl.IndexOf("://")) > 0) this.ApiBaseUrl = this.ApiBaseUrl.Substring(index + 3);
 
-                string httpsBaseUrl = "https://" + this.BaseUrl;
-                string wssBaseUrl = "wss://" + this.BaseUrl;
+                string httpsBaseUrl = "https://" + baseUrl;
+                string wssBaseUrl = "wss://" + baseUrl;
 
                 if (this.LoginServerUrl == null) this.LoginServerUrl = httpsBaseUrl;
 
@@ -99,7 +108,9 @@ namespace AccelByte.Models
 
                 if (this.AgreementServerUrl == null) this.AgreementServerUrl = httpsBaseUrl + "/agreement";
 
-                if (this.LeaderboardServerUrl == null) this.LeaderboardServerUrl = wssBaseUrl + "/leaderboard/";
+                if (this.LeaderboardServerUrl == null) this.AgreementServerUrl = httpsBaseUrl + "/leaderboard";
+                
+                if (this.CloudSaveServerUrl == null) this.CloudSaveServerUrl = httpsBaseUrl + "/cloudsave";
             }
         }
 
@@ -110,12 +121,15 @@ namespace AccelByte.Models
         {
             int index;
             // remove protocol
-            if ((index = this.BaseUrl.IndexOf("://")) > 0) this.BaseUrl = this.BaseUrl.Substring(index + 3);
+            string baseUrl = this.BaseUrl;
+            if ((index = baseUrl.IndexOf("://")) > 0) baseUrl = baseUrl.Substring(index + 3);
+            if ((index = this.NonApiBaseUrl.IndexOf("://")) > 0) this.NonApiBaseUrl = this.NonApiBaseUrl.Substring(index + 3);
+            if ((index = this.ApiBaseUrl.IndexOf("://")) > 0) this.ApiBaseUrl = this.ApiBaseUrl.Substring(index + 3);
 
-            if (this.BaseUrl != null)
+            if (baseUrl != null)
             {
-                string httpsBaseUrl = "https://" + this.BaseUrl;
-                string wssBaseUrl = "wss://" + this.BaseUrl;
+                string httpsBaseUrl = "https://" + baseUrl;
+                string wssBaseUrl = "wss://" + baseUrl;
 
                 if (this.IamServerUrl == httpsBaseUrl + "/iam") this.IamServerUrl = null;
 
@@ -138,6 +152,8 @@ namespace AccelByte.Models
                 if (this.AgreementServerUrl == httpsBaseUrl + "/agreement") this.AgreementServerUrl = null;
 
                 if (this.LeaderboardServerUrl == httpsBaseUrl + "/leaderboard") this.LeaderboardServerUrl = null;
+                
+                if (this.CloudSaveServerUrl == httpsBaseUrl + "/cloudsave") this.CloudSaveServerUrl = null;
             }
         }
     }

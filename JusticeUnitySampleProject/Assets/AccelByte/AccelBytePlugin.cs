@@ -35,12 +35,13 @@ namespace AccelByte.Api
         private static Qos qos;
         private static Agreement agreement;
         private static Leaderboard leaderboard;
+        private static CloudSave cloudSave;
 
         public static Config Config { get { return AccelBytePlugin.config; } }
 
         static AccelBytePlugin()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if (UNITY_WEBGL || UNITY_PS4 || UNITY_XBOXONE || UNITY_SWITCH) && !UNITY_EDITOR
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 new [] {
                     Utf8Json.Formatters.PrimitiveObjectFormatter.Default
@@ -68,29 +69,14 @@ namespace AccelByte.Api
             AccelBytePlugin.config.Expand();
             AccelBytePlugin.coroutineRunner = new CoroutineRunner();
             AccelBytePlugin.httpWorker = new UnityHttpWorker();
-            ILoginSession loginSession;
-
-            if (AccelBytePlugin.config.UseSessionManagement)
-            {
-                loginSession = new ManagedLoginSession(
-                    AccelBytePlugin.config.LoginServerUrl,
-                    AccelBytePlugin.config.Namespace,
-                    AccelBytePlugin.config.ClientId,
-                    AccelBytePlugin.config.ClientSecret,
-                    AccelBytePlugin.config.RedirectUri,
-                    AccelBytePlugin.httpWorker);
-            }
-            else
-            {
-                loginSession = new OauthLoginSession(
+            ILoginSession loginSession = new LoginSession(
                     AccelBytePlugin.config.LoginServerUrl,
                     AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.config.ClientId,
                     AccelBytePlugin.config.ClientSecret,
                     AccelBytePlugin.config.RedirectUri,
                     AccelBytePlugin.httpWorker,
-                    AccelBytePlugin.coroutineRunner);
-            }
+                    AccelBytePlugin.coroutineRunner, AccelBytePlugin.config.UseSessionManagement);
 
 
             AccelBytePlugin.user = new User(
@@ -232,7 +218,9 @@ namespace AccelByte.Api
                 AccelBytePlugin.lobby = new Lobby(
                     AccelBytePlugin.config.LobbyServerUrl,
                     new WebSocket(),
+                    new LobbyApi(AccelBytePlugin.config.BaseUrl, AccelBytePlugin.httpWorker),
                     AccelBytePlugin.user.Session,
+                    AccelBytePlugin.config.Namespace,
                     AccelBytePlugin.coroutineRunner);
             }
 
@@ -266,8 +254,7 @@ namespace AccelByte.Api
 
             return AccelBytePlugin.gameProfiles;
         }
-
-        public static Entitlement GetEntitlements()
+        public static Entitlement GetEntitlement()
         {
             if (AccelBytePlugin.entitlement == null)
             {
@@ -333,6 +320,20 @@ namespace AccelByte.Api
             }
 
             return AccelBytePlugin.leaderboard;
+        }
+        
+        public static CloudSave GetCloudSave()
+        {
+            if (AccelBytePlugin.cloudSave == null)
+            {
+                AccelBytePlugin.cloudSave = new CloudSave(
+                    new CloudSaveApi(AccelBytePlugin.config.CloudSaveServerUrl, AccelBytePlugin.httpWorker),
+                    AccelBytePlugin.user.Session,
+                    AccelBytePlugin.config.Namespace,
+                    AccelBytePlugin.coroutineRunner);
+            }
+
+            return AccelBytePlugin.cloudSave;
         }
     }
 }

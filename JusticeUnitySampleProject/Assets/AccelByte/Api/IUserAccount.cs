@@ -17,11 +17,14 @@ namespace AccelByte.Api
 
         IEnumerator Upgrade(string username, string password, ResultCallback<UserData> callback);
 
+        IEnumerator UpgradeWithPlayerPortal(string returnUrl, int ttl, ResultCallback<UpgradeUserRequest> callback);
+
         IEnumerator SendVerificationCode(VerificationContext context, string username, ResultCallback callback);
 
         IEnumerator Verify(string verificationCode, string contactType, ResultCallback callback);
 
         IEnumerator SendPasswordResetCode(string username, ResultCallback callback);
+
         IEnumerator ResetPassword(string resetCode, string username, string newPassword, ResultCallback callback);
 
         IEnumerator LinkOtherPlatform(PlatformType platformType, string ticket, ResultCallback callback);
@@ -31,10 +34,15 @@ namespace AccelByte.Api
         IEnumerator GetPlatformLinks(ResultCallback<PagedPlatformLinks> callback);
 
         IEnumerator SearchUsers(string emailOrDisplayName, ResultCallback<PagedPublicUsersInfo> callback);
-        
+
         IEnumerator GetUserByUserId(string userId, ResultCallback<UserData> callback);
 
         IEnumerator GetUserByOtherPlatformUserId(PlatformType platformType, string otherPlatformUserId,
             ResultCallback<UserData> callback);
+
+        IEnumerator BulkGetUserByOtherPlatformUserIds(PlatformType platformType, BulkPlatformUserIdRequest otherPlatformUserId,
+            ResultCallback<BulkPlatformUserIdResponse> callback);
+
+        IEnumerator GetCountryFromIP(ResultCallback<CountryInfo> callback);
     }
 }

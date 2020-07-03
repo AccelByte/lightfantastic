@@ -23,9 +23,10 @@ namespace AccelByte.Api
             this.httpWorker = httpWorker;
         }
 
-        public IEnumerator GetPolicies(string @namespace, string accessToken, ResultCallback<PublicPolicy[]> callback)
+        public IEnumerator GetLegalPolicies(string @namespace, AgreementPolicyType agreementPolicyType, string[] tags, bool defaultOnEmpty, string accessToken, 
+            ResultCallback<PublicPolicy[]> callback)
         {
-            string functionName = "GetPolicies";
+            string functionName = "GetLegalPolicies";
             Report.GetFunctionLog(GetType().Name, functionName);
             Assert.IsNotNull(@namespace, "Can't " + functionName + "! Namespace parameter is null!");
             Assert.IsNotNull(accessToken, "Can't " + functionName + "! AccessToken parameter is null!");
@@ -33,6 +34,9 @@ namespace AccelByte.Api
             var request = HttpRequestBuilder
                 .CreateGet(baseUrl + "/public/policies/namespaces/{namespace}")
                 .WithPathParam("namespace", @namespace)
+                .WithQueryParam("policyType", (agreementPolicyType == AgreementPolicyType.EMPTY) ? "" : agreementPolicyType.ToString())
+                .WithQueryParam("tags", string.Join(",",tags))
+                .WithQueryParam("defaultOnEmpty", defaultOnEmpty.ToString())
                 .WithBearerAuth(accessToken)
                 .Accepts(MediaType.ApplicationJson)
                 .GetResult();
@@ -45,8 +49,34 @@ namespace AccelByte.Api
             callback.Try(result);
         }
 
-        public IEnumerator BulkAcceptPolicyVersions(string accessToken, 
-            AcceptAgreementRequest[] acceptAgreementRequests, ResultCallback<AcceptAgreementResponse> callback)
+        public IEnumerator GetLegalPoliciesByCountry(string countryCode, AgreementPolicyType agreementPolicyType, string[] tags, bool defaultOnEmpty, string accessToken, 
+            ResultCallback<PublicPolicy[]> callback)
+        {
+            string functionName = "GetLegalPoliciesByCountry";
+            Report.GetFunctionLog(GetType().Name, functionName);
+            Assert.IsNotNull(countryCode, "Can't " + functionName + "! CountryCode parameter is null!");
+            Assert.IsNotNull(accessToken, "Can't " + functionName + "! AccessToken parameter is null!");
+
+            var request = HttpRequestBuilder
+                .CreateGet(baseUrl + "/public/policies/countries/{countryCode}")
+                .WithPathParam("countryCode", countryCode)
+                .WithQueryParam("policyType", (agreementPolicyType == AgreementPolicyType.EMPTY) ? "" : agreementPolicyType.ToString())
+                .WithQueryParam("tags", string.Join(",", tags))
+                .WithQueryParam("defaultOnEmpty", defaultOnEmpty.ToString())
+                .WithBearerAuth(accessToken)
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<PublicPolicy[]>();
+            callback.Try(result);
+        }
+
+        public IEnumerator BulkAcceptPolicyVersions(string accessToken, AcceptAgreementRequest[] acceptAgreementRequests, 
+            ResultCallback<AcceptAgreementResponse> callback)
         {
             string functionName = "BulkAcceptPolicyVersions";
             Report.GetFunctionLog(GetType().Name, functionName);
@@ -65,6 +95,29 @@ namespace AccelByte.Api
             yield return httpWorker.SendRequest(request, rsp => response = rsp);
 
             var result = response.TryParseJson<AcceptAgreementResponse>();
+            callback.Try(result);
+        }
+
+        public IEnumerator AcceptPolicyVersion(string accessToken, string localizedPolicyVersionId, 
+            ResultCallback callback)
+        {
+            string functionName = "AcceptPolicyVersion";
+            Report.GetFunctionLog(GetType().Name, functionName);
+            Assert.IsNotNull(accessToken, "Can't " + functionName + "! AccessToken parameter is null!");
+
+            var request = HttpRequestBuilder
+                .CreatePost(baseUrl + "/public/agreements/localized-policy-versions/{localizedPolicyVersionId}")
+                .WithPathParam("localizedPolicyVersionId", localizedPolicyVersionId)
+                .WithBearerAuth(accessToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .Accepts(MediaType.ApplicationJson)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParse();
             callback.Try(result);
         }
     }

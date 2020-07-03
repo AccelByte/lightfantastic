@@ -62,7 +62,7 @@ namespace AccelByte.Server
                 {
                     this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 }
-                
+
                 callback.TryOk();
             }
             else
