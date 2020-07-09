@@ -37,6 +37,7 @@ namespace ABRuntimeLogic
         private AccelByteUserProfileLogic abUserProfileLogic;
         private AccelByteStatisticLogic abUserStatisticLogic;
         private AccelByteLeaderboardLogic abLeaderboardLogic;
+        private AccelByteCloudSaveLogic abCloudSaveLogic;
 
         private E_LoginType loginType;
 
@@ -48,6 +49,7 @@ namespace ABRuntimeLogic
             abUserProfileLogic = GetComponent<AccelByteUserProfileLogic>();
             abUserStatisticLogic = GetComponent<AccelByteStatisticLogic>();
             abLeaderboardLogic = GetComponent<AccelByteLeaderboardLogic>();
+            abCloudSaveLogic = GetComponent<AccelByteCloudSaveLogic>();
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
@@ -408,6 +410,7 @@ namespace ABRuntimeLogic
                     
                     abUserProfileLogic.Init();
                     abLeaderboardLogic.Init();
+                    abCloudSaveLogic.GetUserAudioSettingRecord();
                     abUserStatisticLogic.UpdatePlayerStatisticUI();
                     abLobbyLogic.ConnectToLobby();
                 }
