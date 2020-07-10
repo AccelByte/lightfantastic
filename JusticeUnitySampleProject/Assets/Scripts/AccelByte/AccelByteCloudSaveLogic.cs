@@ -68,12 +68,44 @@ public class AccelByteCloudSaveLogic : MonoBehaviour
 
     private void AddEventListeners()
     {
-        UIHandlerSettingComponent.backButton.onClick.AddListener(SaveUserAudioSettingRecord);
+        UIHandlerSettingComponent.backButton.onClick.AddListener(ShowPromptPanel);
+        UIHandlerSettingComponent.promptPanelSaveButton.onClick.AddListener(delegate
+        {
+            SaveUserAudioSettingRecord();
+            HidePromptPanel();
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+        });
+
+        UIHandlerSettingComponent.promptPanelDontSaveButton.onClick.AddListener(delegate
+        {
+            GetUserAudioSettingRecord();
+            HidePromptPanel();
+            UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
+        });
+
+        UIHandlerSettingComponent.promptPanelCloseButton.onClick.AddListener(delegate
+        {
+            HidePromptPanel();
+        });
     }
 
     private void RemoveListeners()
     {
-        UIHandlerSettingComponent.backButton.onClick.RemoveListener(SaveUserAudioSettingRecord);
+        UIHandlerSettingComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
+        UIHandlerSettingComponent.promptPanelSaveButton.onClick.RemoveAllListeners();
+        UIHandlerSettingComponent.promptPanelDontSaveButton.onClick.RemoveAllListeners();
+        UIHandlerSettingComponent.promptPanelDontSaveButton.onClick.RemoveAllListeners();
+        UIHandlerSettingComponent.promptPanelCloseButton.onClick.RemoveAllListeners();
+    }
+
+    private void ShowPromptPanel()
+    {
+        UIElementHandler.ShowNonExclusivePanel(NonExclusivePanelType.SETTING_BACK_PROMPT_PANEL);
+    }
+
+    private void HidePromptPanel()
+    {
+        UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.SETTING_BACK_PROMPT_PANEL);
     }
     #endregion
 
@@ -90,6 +122,12 @@ public class AccelByteCloudSaveLogic : MonoBehaviour
     #region AccelByte CloudSave Functions
     public void SaveUserAudioSettingRecord()
     {
+        bool isSFXON = (bool) audioSettingRecord[LightFantasticConfig.AudioSettingType.SFX];
+        bool isBGMON = (bool) audioSettingRecord[LightFantasticConfig.AudioSettingType.BGM];
+
+        PlayerPrefs.SetInt(LightFantasticConfig.AudioSettingType.SFX, isSFXON ? 1 : 0);
+        PlayerPrefs.SetInt(LightFantasticConfig.AudioSettingType.BGM, isBGMON ? 1 : 0);
+
         abCloudSave.SaveUserRecord(settingKey, audioSettingRecord, false, OnSaveUserAudioSettingRecord);
     }
 

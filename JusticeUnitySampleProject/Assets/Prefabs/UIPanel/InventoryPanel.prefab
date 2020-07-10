@@ -3698,7 +3698,7 @@ MonoBehaviour:
   button: {fileID: 3747386239765281851}
   buttonText: {fileID: 4628681650688164552}
   mouseHoverComponent: {fileID: 1808063608598026270}
-  text: DON'T SAVE & EXIT
+  text: DISCARD & EXIT
 --- !u!1 &8343651685689187106
 GameObject:
   m_ObjectHideFlags: 0

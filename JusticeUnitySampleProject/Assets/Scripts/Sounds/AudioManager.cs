@@ -218,7 +218,6 @@ public class AudioManager : MonoBehaviour
     public void ToggleSFXVolume(bool ON)
     {
         abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.SFX, ON);
-        PlayerPrefs.SetInt(LightFantasticConfig.AudioSettingType.SFX, ON ? 1 : 0);
         foreach (var sfx in soundFXes)
         {
             sfx.Source.volume = ON ? 1 : 0;
@@ -229,7 +228,6 @@ public class AudioManager : MonoBehaviour
     public void ToggleBGMVolume(bool ON)
     {
         abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.BGM, ON);
-        PlayerPrefs.SetInt(LightFantasticConfig.AudioSettingType.BGM, ON ? 1 : 0);
         foreach (var bgm in backgroundMusics)
         {
             bgm.Source.volume = ON ? 1 : 0;

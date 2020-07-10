@@ -34,7 +34,8 @@ namespace UITools
         PARENT_OF_OVERLAY_PANELS, // Held tons of overlay panel
         MATCHMAKING, // Matchamaking mode selection panel
         LOADING,
-        EQUIPMENT_BACK_PROMPT_PANEL
+        EQUIPMENT_BACK_PROMPT_PANEL,
+        SETTING_BACK_PROMPT_PANEL
     }
     
     [Serializable]

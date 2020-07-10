@@ -10,4 +10,7 @@ using UnityEngine.UI;
 public class UISettingLogicComponent : MonoBehaviour
 {
     public Button backButton;
+    public Button promptPanelSaveButton;
+    public Button promptPanelDontSaveButton;
+    public Button promptPanelCloseButton;
 }
