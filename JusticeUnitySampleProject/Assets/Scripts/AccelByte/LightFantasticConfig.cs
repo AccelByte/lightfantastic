@@ -97,4 +97,11 @@ public static class LightFantasticConfig
     }
     
     public static readonly string LEADERBOARD_CODE = "alltimetotalwin";
+
+    public static readonly string AUDIO_SETTING_KEY = "settingAudio";
+    public static class AudioSettingType
+    {
+        public const string BGM = "settingAudioBGM";
+        public const string SFX = "settingAudioSFX";
+    }
 }

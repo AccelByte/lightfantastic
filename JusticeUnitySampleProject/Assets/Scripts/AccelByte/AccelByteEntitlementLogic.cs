@@ -282,8 +282,8 @@ public class AccelByteEntitlementLogic : MonoBehaviour
             HidePromptPanel();
             UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
         });
-        
-        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(delegate
+
+        UIHandlerEntitlementComponent.promptPanelCloseButton.onClick.AddListener(delegate
         {
             HidePromptPanel();
         });
@@ -297,6 +297,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
         UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.promptPanelCloseButton.onClick.RemoveAllListeners();
     }
     #endregion // UI Listeners
 

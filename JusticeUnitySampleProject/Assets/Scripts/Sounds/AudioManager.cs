@@ -20,8 +20,8 @@ public class AudioManager : MonoBehaviour
     private static AudioManager instance;
     public static AudioManager Instance { get { return instance; } }
 
-    public const string PLAYER_PREF_AUDIO_BGM = "setting_audio_bgm";
-    public const string PLAYER_PREF_AUDIO_SFX = "setting_audio_sfx";
+    private GameObject gameLogic;
+    private AccelByteCloudSaveLogic abCloudSaveLogic;
     
     [Header("Sound FX")]
     [SerializeField]
@@ -35,6 +35,9 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
+        gameLogic = GameObject.FindGameObjectWithTag("GameLogic");
+        abCloudSaveLogic = gameLogic.GetComponent<AccelByteCloudSaveLogic>();
+
         if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
@@ -48,11 +51,20 @@ public class AudioManager : MonoBehaviour
 
         SoundFXSetup();
         BackgroundMusicSetup();
-        
+
+        if (PlayerPrefs.HasKey(LightFantasticConfig.AudioSettingType.BGM))
+        {
+            currentState.BGM_On = PlayerPrefs.GetInt(LightFantasticConfig.AudioSettingType.BGM) == 1;
+        }
+        if (PlayerPrefs.HasKey(LightFantasticConfig.AudioSettingType.SFX))
+        {
+            currentState.SFX_On = PlayerPrefs.GetInt(LightFantasticConfig.AudioSettingType.SFX) == 1;
+        }
+
         MainThreadTaskRunner.Instance.Run(() =>
         {
-            ToggleBGMVolume(PlayerPrefs.GetInt(PLAYER_PREF_AUDIO_BGM) == 1);
-            ToggleSFXVolume(PlayerPrefs.GetInt(PLAYER_PREF_AUDIO_SFX) == 1);
+            ToggleBGMVolume(currentState.BGM_On);
+            ToggleSFXVolume(currentState.SFX_On);
         });
     }
 
@@ -205,7 +217,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleSFXVolume(bool ON)
     {
-        PlayerPrefs.SetInt(PLAYER_PREF_AUDIO_SFX, ON ? 1 : 0);
+        abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.SFX, ON);
         foreach (var sfx in soundFXes)
         {
             sfx.Source.volume = ON ? 1 : 0;
@@ -215,7 +227,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleBGMVolume(bool ON)
     {
-        PlayerPrefs.SetInt(PLAYER_PREF_AUDIO_BGM, ON ? 1 : 0);
+        abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.BGM, ON);
         foreach (var bgm in backgroundMusics)
         {
             bgm.Source.volume = ON ? 1 : 0;

@@ -57,6 +57,11 @@ public class SettingPanelLogic : MonoBehaviour
         audio.tabButton.onClick.Invoke();
     }
 
+    private void OnEnable()
+    {
+        MainThreadTaskRunner.Instance.Run(InitialLoadConfig);
+    }
+
     /// Turn off all audio & load config player preference
     private void InitialLoadConfig()
     {
