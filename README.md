@@ -22,3 +22,5 @@ A sample implementation of our Unity SDK in a game that uses the breadth of the 
 * Ensure **Assets/Resources/AccelByteServerSDKConfig.json** fields are correct, especially the *ClientId* & *ClientSecret*.
 * In the Unity Editor, open `File` `>` `BuildSettings`. Select *PC, Mac & Linux Standalone* platform. Pick Linux as the server's architecture. Ensure the `Server Build` is **checked**.
 * Click `Build`.
+
+Please visit our documentation portal to see more details on [The Getting Started Unity Guide](https://docs.accelbyte.io/docs/cloud-dev-guides/sdk-guides/unity-guide)
