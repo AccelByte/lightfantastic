@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -87,12 +87,13 @@ namespace AccelByte.Core
 
 
         //AccelByte Statistic error codes
-        StatisticNotFound = 70131,
-        InvalidStatOperator = 70330,
-        StatNotDecreasable = 70334,
-        UserStatsNotFound = 70335,
-        UserStatAlreadyExist = 70336,
-        StatValueOutOfRange = 70337,
+        StatisticConfigNotFound = 12241,
+        StatisticNotFound = 12241,
+        InvalidStatOperator = 12221,
+        StatNotDecreasable = 12273,
+        UserStatsNotFound = 12242,
+        UserStatAlreadyExist = 12274,
+        StatValueOutOfRange = 12275,
 
         //Client side error codes
         GeneralClientError = 14000,

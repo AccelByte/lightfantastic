@@ -82,10 +82,10 @@ namespace Utf8Json.Resolvers
                 {typeof(global::AccelByte.Models.PublicUserProfile), 34 },
                 {typeof(global::AccelByte.Models.CreateUserProfileRequest), 35 },
                 {typeof(global::AccelByte.Models.UpdateUserProfileRequest), 36 },
-                {typeof(global::AccelByte.Models.CountryObject), 37 },
-                {typeof(global::AccelByte.Models.UserRecord), 38 },
-                {typeof(global::AccelByte.Models.GameRecord), 39 },
-                {typeof(global::AccelByte.Models.Slot), 40 },
+                {typeof(global::AccelByte.Models.UserRecord), 37 },
+                {typeof(global::AccelByte.Models.GameRecord), 38 },
+                {typeof(global::AccelByte.Models.Slot), 39 },
+                {typeof(global::AccelByte.Models.UpdateMedataRequest), 40 },
                 {typeof(global::AccelByte.Models.Config), 41 },
                 {typeof(global::AccelByte.Models.CurrencySummary), 42 },
                 {typeof(global::AccelByte.Models.BalanceInfo), 43 },
@@ -241,10 +241,10 @@ namespace Utf8Json.Resolvers
                 case 34: return new Utf8Json.Formatters.AccelByte.Models.PublicUserProfileFormatter();
                 case 35: return new Utf8Json.Formatters.AccelByte.Models.CreateUserProfileRequestFormatter();
                 case 36: return new Utf8Json.Formatters.AccelByte.Models.UpdateUserProfileRequestFormatter();
-                case 37: return new Utf8Json.Formatters.AccelByte.Models.CountryObjectFormatter();
-                case 38: return new Utf8Json.Formatters.AccelByte.Models.UserRecordFormatter();
-                case 39: return new Utf8Json.Formatters.AccelByte.Models.GameRecordFormatter();
-                case 40: return new Utf8Json.Formatters.AccelByte.Models.SlotFormatter();
+                case 37: return new Utf8Json.Formatters.AccelByte.Models.UserRecordFormatter();
+                case 38: return new Utf8Json.Formatters.AccelByte.Models.GameRecordFormatter();
+                case 39: return new Utf8Json.Formatters.AccelByte.Models.SlotFormatter();
+                case 40: return new Utf8Json.Formatters.AccelByte.Models.UpdateMedataRequestFormatter();
                 case 41: return new Utf8Json.Formatters.AccelByte.Models.ConfigFormatter();
                 case 42: return new Utf8Json.Formatters.AccelByte.Models.CurrencySummaryFormatter();
                 case 43: return new Utf8Json.Formatters.AccelByte.Models.BalanceInfoFormatter();
@@ -2012,97 +2012,6 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class CountryObjectFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.CountryObject>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public CountryObjectFormatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("code"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 1},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("code"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.CountryObject value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.code);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.name);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::AccelByte.Models.CountryObject Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var __code__ = default(string);
-            var __code__b__ = false;
-            var __name__ = default(string);
-            var __name__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        __code__ = reader.ReadString();
-                        __code__b__ = true;
-                        break;
-                    case 1:
-                        __name__ = reader.ReadString();
-                        __name__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::AccelByte.Models.CountryObject();
-            if(__code__b__) ____result.code = __code__;
-            if(__name__b__) ____result.name = __name__;
-
-            return ____result;
-        }
-    }
-
-
     public sealed class UserRecordFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.UserRecord>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
@@ -2535,6 +2444,108 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__storedName__b__) ____result.storedName = __storedName__;
             if(__tags__b__) ____result.tags = __tags__;
             if(__userId__b__) ____result.userId = __userId__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class UpdateMedataRequestFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.UpdateMedataRequest>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public UpdateMedataRequestFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("label"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tags"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("customAttribute"), 2},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("label"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tags"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("customAttribute"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.UpdateMedataRequest value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.label);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<string[]>().Serialize(ref writer, value.tags, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.customAttribute);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::AccelByte.Models.UpdateMedataRequest Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __label__ = default(string);
+            var __label__b__ = false;
+            var __tags__ = default(string[]);
+            var __tags__b__ = false;
+            var __customAttribute__ = default(string);
+            var __customAttribute__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __label__ = reader.ReadString();
+                        __label__b__ = true;
+                        break;
+                    case 1:
+                        __tags__ = formatterResolver.GetFormatterWithVerify<string[]>().Deserialize(ref reader, formatterResolver);
+                        __tags__b__ = true;
+                        break;
+                    case 2:
+                        __customAttribute__ = reader.ReadString();
+                        __customAttribute__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::AccelByte.Models.UpdateMedataRequest();
+            if(__label__b__) ____result.label = __label__;
+            if(__tags__b__) ____result.tags = __tags__;
+            if(__customAttribute__b__) ____result.customAttribute = __customAttribute__;
 
             return ____result;
         }

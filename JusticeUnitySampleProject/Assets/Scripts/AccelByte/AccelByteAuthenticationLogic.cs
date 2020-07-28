@@ -11,7 +11,9 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
+#if !DISABLESTEAMWORKS
 using Steamworks;
+#endif
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -26,9 +28,10 @@ namespace ABRuntimeLogic
         private GameObject UIHandler;
         private UIAuthLogicComponent UIHandlerAuthComponent;
         private UIElementHandler UIElementHandler;
-
+#if !DISABLESTEAMWORKS
         [SerializeField]
         private SteamAuth steamAuth;
+#endif
         public bool useSteam;
         [SerializeField]
         private CommandLineArgs cmdLine;
@@ -53,8 +56,9 @@ namespace ABRuntimeLogic
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
-
+#if !DISABLESTEAMWORKS
             useSteam = cmdLine.ParseCommandLine();
+#endif
         }
 
         #region UI Listeners
@@ -152,6 +156,7 @@ namespace ABRuntimeLogic
 
         public void Start()
         {
+#if !DISABLESTEAMWORKS
             if (useSteam)
             {
                 loginType = E_LoginType.Steam;
@@ -163,6 +168,7 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
             }
             else 
+#endif
             {
                 UIHandlerAuthComponent.gameObject.SetActive(true);
 
