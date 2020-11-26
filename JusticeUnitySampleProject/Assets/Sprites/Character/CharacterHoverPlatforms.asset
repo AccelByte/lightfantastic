@@ -22,6 +22,9 @@ MonoBehaviour:
     - m_Name: ANDROID
       m_Hash: -1376171977
       m_Sprite: {fileID: 21300000, guid: 727eb23ecfd0ff84684b13262e44dd01, type: 3}
-    - m_Name: 
-      m_Hash: 0
-      m_Sprite: {fileID: 0}
+    - m_Name: LINUX
+      m_Hash: 1699055103
+      m_Sprite: {fileID: 21300000, guid: ee9d2c7ef5009624387ca26b25187147, type: 3}
+    - m_Name: STADIA
+      m_Hash: -2112868865
+      m_Sprite: {fileID: 21300000, guid: bc69ebfea0a10944db78af0f0342453f, type: 3}
