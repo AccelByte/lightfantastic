@@ -11,8 +11,12 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
 using Steamworks;
+#endif
+#if UNITY_STADIA
+using UnityEngine.Stadia;
+using Unity.StadiaWrapper;
 #endif
 using System;
 using System.Collections.Generic;
@@ -158,7 +162,7 @@ namespace ABRuntimeLogic
         {
             if (useSteam)
             {
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
                 loginType = E_LoginType.Steam;
                 UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 Debug.Log("Valid ABUSER:"+abUser.Session.IsValid());
@@ -173,12 +177,17 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.gameObject.SetActive(true);
 
                 Debug.Log("Don't USE STEAM");
+#if UNITY_STANDALONE
                 // Try to login with launcher
                 LoginWithLauncher();
+#elif UNITY_STADIA
+                // Try to login with stadia
+                LoginWithStadia();
+#endif
             }
         }
 
-        #region AccelByte Authentication Functions
+#region AccelByte Authentication Functions
         
         /// <summary>
         /// Register's a new user with the information from the UIInputs
@@ -249,6 +258,32 @@ namespace ABRuntimeLogic
             }
         }
 
+        //Attempts to login with stadia
+        public void LoginWithStadia()
+        {
+            GgpPlayerId playerId = StadiaNativeApis.GgpGetPrimaryPlayerId();
+            float startTime = Time.realtimeSinceStartup;
+            UIElementHandler.ShowLoadingPanel();
+            while (playerId.Value == (int)GgpIdConstants.kGgpInvalidId && Time.realtimeSinceStartup - startTime < 10f)
+            {
+                new WaitForSeconds(0.5f);
+                playerId = StadiaNativeApis.GgpGetPrimaryPlayerId();
+            }
+
+            if (playerId.Value == (int)GgpIdConstants.kGgpInvalidId)
+            {
+                Debug.Log("[STADIA] Can't retrieve playerId!");
+            }
+
+            GgpStatus reqStatus;
+            GgpPlayerJwt playerJwt = StadiaNativeApis.GgpGetJwtForPlayer(playerId, 1000, new GgpJwtFields((ulong)GgpJwtFieldValues.kGgpJwtField_None)).GetResultBlocking<GgpPlayerJwt>(out reqStatus);
+
+            var user = AccelBytePlugin.GetUser();
+            loginType = E_LoginType.Stadia;
+
+            abUser.LoginWithOtherPlatform(AccelByte.Models.PlatformType.Stadia, playerJwt.jwt, OnLogin);
+        }
+
         //Gets the user's top level account details
         public void GetUserDetails()
         {
@@ -279,9 +314,9 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.errorPanel.SetActive(false);
             }
         }
-        #endregion
+#endregion
 
-        #region AccelByte Authentication Callbacks
+#region AccelByte Authentication Callbacks
         //Handles the Registration Response, continues to the Verification Panel on Success
         private void OnRegister(Result<RegisterUserResponse> result)
         {
@@ -367,6 +402,10 @@ namespace ABRuntimeLogic
                 {
                     ShowErrorMessage(true, "Can't login from steam");
                 }
+                else if(loginType == E_LoginType.Stadia)
+                {
+                    ShowErrorMessage(true, "Can't login from stadia");
+                }
             }
             else
             {
@@ -441,7 +480,7 @@ namespace ABRuntimeLogic
 
             UIElementHandler.HideLoadingPanel();
         }
-        #endregion
+#endregion
 
     }
 }

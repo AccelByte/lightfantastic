@@ -128,7 +128,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
                         availableRegion.Add(region.Key,region.Value);
                     }
                 }
-                lobbyLogic.abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, availableRegion, OnFindMatch);
+                lobbyLogic.abLobby.StartMatchmaking(gameMode, LightFantasticConfig.DS_TARGET_VERSION, availableRegion, OnFindMatch);
                 return;
 #else
                 lobbyLogic.abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);

@@ -1,0 +1,19 @@
+{
+  "name": "com.unity.stadia",
+  "displayName": "Stadia Platform Support",
+  "version": "0.2.8-preview",
+  "unity": "2019.4",
+  "description": "Provide build settings, build & run, and access to the Stadia API via p/invoke.",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "2.0.0"
+  },
+  "hideInEditor": false,
+  "upmCi": {
+    "footprint": "791bde754692a5db8084389ba6d025b2507f2e30"
+  },
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/com.unity.stadia.git",
+    "type": "git",
+    "revision": "06c328892489b2d5348813d4063a3120debcb77f"
+  }
+}

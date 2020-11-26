@@ -11,6 +11,7 @@ namespace AccelByte.Models
     {
         [DataMember] public string Namespace { get; set; }
         [DataMember] public bool UseSessionManagement { get; set; }
+        [DataMember] public bool UsePlayerPrefs { get; set; }
         [DataMember] public string BaseUrl { get; set; }
         [DataMember] public string ApiBaseUrl { get; set; }
         [DataMember] public string NonApiBaseUrl { get; set; }
@@ -20,16 +21,20 @@ namespace AccelByte.Models
         [DataMember] public string BasicServerUrl { get; set; }
         [DataMember] public string LobbyServerUrl { get; set; }
         [DataMember] public string CloudStorageServerUrl { get; set; }
-        [DataMember] public string TelemetryServerUrl { get; set; }
         [DataMember] public string GameProfileServerUrl { get; set; }
         [DataMember] public string StatisticServerUrl { get; set; }
         [DataMember] public string QosManagerServerUrl { get; set; }
         [DataMember] public string AgreementServerUrl { get; set; }
         [DataMember] public string LeaderboardServerUrl { get; set; }
         [DataMember] public string CloudSaveServerUrl { get; set; }
+        [DataMember] public string GameTelemetryServerUrl { get; set; }
+        [DataMember] public string AchievementServerUrl { get; set; }
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
+        [DataMember] public string GroupServerUrl { get; set; }
         [DataMember] public string RedirectUri { get; set; }
+        [DataMember] public string AppId { get; set; }
+        [DataMember] public string PublisherNamespace { get; set; }
 
         /// <summary>
         ///  Copy member values
@@ -43,6 +48,7 @@ namespace AccelByte.Models
         {
             if (this.Namespace == anotherConfig.Namespace &&
                 this.UseSessionManagement == anotherConfig.UseSessionManagement &&
+                this.UsePlayerPrefs == anotherConfig.UsePlayerPrefs &&
                 this.BaseUrl == anotherConfig.BaseUrl &&
                 this.ApiBaseUrl == anotherConfig.ApiBaseUrl &&
                 this.NonApiBaseUrl == anotherConfig.NonApiBaseUrl &&
@@ -52,16 +58,20 @@ namespace AccelByte.Models
                 this.BasicServerUrl == anotherConfig.BasicServerUrl &&
                 this.LobbyServerUrl == anotherConfig.LobbyServerUrl &&
                 this.CloudStorageServerUrl == anotherConfig.CloudStorageServerUrl &&
-                this.TelemetryServerUrl == anotherConfig.TelemetryServerUrl &&
                 this.GameProfileServerUrl == anotherConfig.GameProfileServerUrl &&
                 this.StatisticServerUrl == anotherConfig.StatisticServerUrl &&
                 this.QosManagerServerUrl == anotherConfig.QosManagerServerUrl &&
                 this.AgreementServerUrl == anotherConfig.AgreementServerUrl &&
                 this.LeaderboardServerUrl == anotherConfig.LeaderboardServerUrl &&
                 this.CloudSaveServerUrl == anotherConfig.CloudSaveServerUrl &&
+                this.GameTelemetryServerUrl == anotherConfig.GameTelemetryServerUrl &&
+                this.AchievementServerUrl == anotherConfig.AchievementServerUrl &&
+                this.GroupServerUrl == anotherConfig.GroupServerUrl &&
                 this.ClientId == anotherConfig.ClientId &&
                 this.ClientSecret == anotherConfig.ClientSecret &&
-                this.RedirectUri == anotherConfig.RedirectUri)
+                this.RedirectUri == anotherConfig.RedirectUri &&
+                this.AppId == anotherConfig.AppId &&
+                this.PublisherNamespace == anotherConfig.PublisherNamespace)
             {
                 return true;
             }
@@ -98,8 +108,6 @@ namespace AccelByte.Models
 
                 if (this.CloudStorageServerUrl == null) this.CloudStorageServerUrl = httpsBaseUrl + "/binary-store";
 
-                if (this.TelemetryServerUrl == null) this.TelemetryServerUrl = httpsBaseUrl + "/telemetry";
-
                 if (this.GameProfileServerUrl == null) this.GameProfileServerUrl = httpsBaseUrl + "/soc-profile";
 
                 if (this.StatisticServerUrl == null) this.StatisticServerUrl = httpsBaseUrl + "/statistic";
@@ -111,6 +119,12 @@ namespace AccelByte.Models
                 if (this.LeaderboardServerUrl == null) this.AgreementServerUrl = httpsBaseUrl + "/leaderboard";
                 
                 if (this.CloudSaveServerUrl == null) this.CloudSaveServerUrl = httpsBaseUrl + "/cloudsave";
+
+                if (this.GameTelemetryServerUrl == null) this.GameTelemetryServerUrl = httpsBaseUrl + "/game-telemetry";
+
+                if (this.AchievementServerUrl == null) this.AchievementServerUrl = httpsBaseUrl + "/achievement";
+                
+                if (this.GroupServerUrl == null) this.GroupServerUrl = httpsBaseUrl + "/group";
             }
         }
 
@@ -141,8 +155,6 @@ namespace AccelByte.Models
 
                 if (this.CloudStorageServerUrl == httpsBaseUrl + "/binary-store") this.CloudStorageServerUrl = null;
 
-                if (this.TelemetryServerUrl == httpsBaseUrl + "/telemetry") this.TelemetryServerUrl = null;
-
                 if (this.GameProfileServerUrl == httpsBaseUrl + "/soc-profile") this.GameProfileServerUrl = null;
 
                 if (this.StatisticServerUrl == httpsBaseUrl + "/statistic") this.StatisticServerUrl = null;
@@ -154,6 +166,12 @@ namespace AccelByte.Models
                 if (this.LeaderboardServerUrl == httpsBaseUrl + "/leaderboard") this.LeaderboardServerUrl = null;
                 
                 if (this.CloudSaveServerUrl == httpsBaseUrl + "/cloudsave") this.CloudSaveServerUrl = null;
+
+                if (this.GameTelemetryServerUrl == httpsBaseUrl + "/game-telemetry") this.GameTelemetryServerUrl = null;
+
+                if (this.AchievementServerUrl == httpsBaseUrl + "/achievement") this.AchievementServerUrl = null;
+                
+                if (this.GroupServerUrl == httpsBaseUrl + "/group") this.GroupServerUrl = null;
             }
         }
     }

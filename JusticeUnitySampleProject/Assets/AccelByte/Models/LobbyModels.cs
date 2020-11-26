@@ -1,8 +1,9 @@
-// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace AccelByte.Models
@@ -31,6 +32,9 @@ namespace AccelByte.Models
         partyKickRequest,
         partyKickResponse,
         partyKickNotif,
+        partyRejectRequest,
+        partyRejectResponse,
+        partyRejectNotif,
         personalChatRequest,
         personalChatResponse,
         personalChatNotif,
@@ -75,12 +79,33 @@ namespace AccelByte.Models
         setReadyConsentResponse,
         setReadyConsentNotif,
         rematchmakingNotif,
+        joinDefaultChannelRequest,
+        joinDefaultChannelResponse,
+        sendChannelChatRequest,
+        sendChannelChatResponse,
+        channelChatNotif,
+        systemComponentsStatus,
+        partyDataUpdateNotif,
+        blockPlayerRequest,
+        blockPlayerResponse,
+        unblockPlayerRequest,
+        unblockPlayerResponse,
+        blockPlayerNotif,
+        unblockPlayerNotif,
+        setSessionAttributeRequest,
+        setSessionAttributeResponse
     }
 
     [DataContract]
     public class DisconnectNotif
     {
         [DataMember] public string message;
+    }
+
+    [DataContract]
+    public class LobbySessionId
+    {
+        [DataMember] public string lobbySessionID;
     }
 
     #endregion
@@ -103,7 +128,7 @@ namespace AccelByte.Models
     #region Personal Chat
 
     [DataContract]
-    public class ChatMesssage
+    public class ChatMessage
     {
         [DataMember] public string id;
         [DataMember] public string from;
@@ -118,7 +143,33 @@ namespace AccelByte.Models
         [DataMember] public string to;
         [DataMember] public string payload;
     }
-    
+
+    #endregion
+
+    #region Global Chat
+
+    [DataContract]
+    public class ChatChannelSlug
+    {
+        [DataMember] public string channelSlug;
+    }
+
+    [DataContract]
+    public class ChannelChatRequest
+    {
+        [DataMember] public string channelSlug;
+        [DataMember] public string payload;
+    }
+
+    [DataContract]
+    public class ChannelChatMessage
+    {
+        [DataMember] public string from;
+        [DataMember] public string channelSlug;
+        [DataMember] public string payload;
+        [DataMember] public DateTime sentAt;
+    }
+
     #endregion
 
     #region Party
@@ -131,6 +182,31 @@ namespace AccelByte.Models
         [DataMember] public string[] members;
         [DataMember] public string[] invitees;
         [DataMember] public string invitationToken;
+    }
+
+    [DataContract]
+    public class PartyDataUpdateNotif
+    {
+        [DataMember] public long updatedAt;
+        [DataMember] public string partyId;
+        [DataMember] public string leader;
+        [DataMember] public string[] members;
+        [DataMember] public string[] invitees;
+        [DataMember] public Dictionary<string, object> custom_attribute;
+    }
+
+    [DataContract]
+    public class PartyDataUpdateRequest
+    {
+        [DataMember] public long updatedAt;
+        [DataMember] public Dictionary<string, object> custom_attribute;
+    }
+    
+    [DataContract]
+    public class ActivePartiesData
+    {
+        [DataMember] public PartyDataUpdateNotif[] data;
+        [DataMember] public Paging paging;
     }
 
     [DataContract]
@@ -187,6 +263,27 @@ namespace AccelByte.Models
         [DataMember] public string userID;
     }
 
+    [DataContract]
+    public class PartyRejectRequest
+    {
+        [DataMember] public string partyID;
+        [DataMember] public string invitationToken;
+    }
+
+    [DataContract]
+    public class PartyRejectResponse
+    {
+        [DataMember] public string partyID;
+    }
+
+    [DataContract]
+    public class PartyRejectNotif
+    {
+        [DataMember] public string partyID;
+        [DataMember] public string leaderID;
+        [DataMember] public string userID;
+    }
+    
     #endregion
 
     #region Matchmaking
@@ -198,6 +295,7 @@ namespace AccelByte.Models
         [DataMember] public string serverName;
         [DataMember] public string clientVersion;
         [DataMember] public string latencies;
+        [DataMember] public string partyAttributes;
     }
 
     [DataContract]
@@ -301,6 +399,14 @@ namespace AccelByte.Models
         Busy = 2,
         Invisible = 3
     }
+
+    public enum GeneralUserStatus
+    {
+        offline,
+        online,
+        busy,
+        invisible
+    }
     
     [DataContract]
     public class FriendsStatusNotif
@@ -324,5 +430,116 @@ namespace AccelByte.Models
         [DataMember] public string[] onlineFriendsId;
     }
     
+    [DataContract]
+    public class UserStatusNotif
+    {
+        [DataMember] public string userID;
+        [DataMember] public GeneralUserStatus availability;
+        [DataMember] public string activity;
+        [DataMember(Name = "namespace")] public string namespace_;
+        [DataMember] public DateTime lastSeenAt;
+    }
+
+    [DataContract]
+    public class BulkUserStatusNotif
+    {
+        [DataMember] public UserStatusNotif[] data;
+    }
+    #endregion
+
+    #region Block/Unblock
+
+    [DataContract]
+    public class BlockPlayerRequest
+    {
+        [DataMember] public string userId;
+        [DataMember(Name = "namespace")] public string Namespace;
+        [DataMember] public string blockedUserId;
+    }
+    
+    [DataContract]
+    public class BlockPlayerResponse
+    {
+        [DataMember] public string blockedUserId;
+    }
+    
+    [DataContract]
+    public class UnblockPlayerRequest
+    {
+        [DataMember] public string userId;
+        [DataMember(Name = "namespace")] public string Namespace;
+        [DataMember] public string unblockedUserId;
+    }
+    
+    [DataContract]
+    public class UnblockPlayerResponse
+    {
+        [DataMember] public string unblockedUserId;
+    }
+    
+    [DataContract]
+    public class PlayerBlockedNotif
+    {
+        [DataMember] public string userId; //ID of the blocker
+        [DataMember] public string blockedUserId; //ID of the blocked user
+    }
+    
+    [DataContract]
+    public class PlayerUnblockedNotif
+    {
+        [DataMember] public string userId; //ID of user that lift the block
+        [DataMember] public string unblockedUserId; // ID of the unblocked user
+    }
+
+    [DataContract]
+    public class BlockedData
+    {
+        [DataMember] public string blockedUserId;
+        [DataMember] public DateTime blockedAt;
+    }
+
+    [DataContract]
+    public class BlockedList
+    {
+        [DataMember] public BlockedData[] data;
+    }
+
+    [DataContract]
+    public class BlockerData
+    {
+        [DataMember] public string userId;
+        [DataMember] public DateTime blockedAt;
+    }
+
+    [DataContract]
+    public class BlockerList
+    {
+        [DataMember] public BlockerData[] data;
+    }
+
+    #endregion
+
+    #region Session Attribute
+
+    public enum SessionAttributeName
+    {
+        profanity_filtering_level
+    }
+
+    public enum ProfanityFilterLevel
+    {
+        all,
+        mandatory,
+        none
+    }
+
+    [DataContract]
+    public class SetSessionAttributeRequest
+    {
+        [DataMember(Name = "namespace")] public string Namespace;
+        [DataMember] public string key;
+        [DataMember] public string value;
+    }
+
     #endregion
 }
