@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -7,6 +7,18 @@ using System.Runtime.Serialization;
 
 namespace AccelByte.Models
 {
+
+    #region enum
+    public enum LeaderboardTimeFrame
+    {
+        ALL_TIME,
+        CURRENT_SEASON,
+        CURRENT_MONTH,
+        CURRENT_WEEK,
+        TODAY
+    }
+    #endregion enum
+
     [DataContract]
     public class UserPoint
     {

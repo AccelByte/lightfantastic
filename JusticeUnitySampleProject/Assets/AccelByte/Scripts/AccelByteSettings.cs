@@ -1,7 +1,8 @@
-// Copyright (c) 2019 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+using System.Text;
 using Utf8Json;
 using AccelByte.Models;
 
@@ -31,6 +32,18 @@ namespace AccelByte.Api
         {
             get { return AccelByteSettings.Instance.config.BaseUrl; }
             set { AccelByteSettings.Instance.config.BaseUrl = value; }
+        }
+
+        public static string ApiBaseUrl
+        {
+            get { return AccelByteSettings.Instance.config.ApiBaseUrl; }
+            set { AccelByteSettings.Instance.config.ApiBaseUrl = value; }
+        }
+
+        public static string NonApiBaseUrl
+        {
+            get { return AccelByteSettings.Instance.config.NonApiBaseUrl; }
+            set { AccelByteSettings.Instance.config.NonApiBaseUrl = value; }
         }
 
         public static string LoginServerUrl
@@ -85,6 +98,12 @@ namespace AccelByte.Api
         {
             get { return AccelByteSettings.Instance.config.StatisticServerUrl; }
             set { AccelByteSettings.Instance.config.StatisticServerUrl = value; }
+        }
+
+        public static string CloudSaveServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.CloudSaveServerUrl; }
+            set { AccelByteSettings.Instance.config.CloudSaveServerUrl = value; }
         }
 
         public static string ClientId
@@ -188,7 +207,9 @@ namespace AccelByte.Api
             string fullPath =
                 System.IO.Path.Combine(System.IO.Path.Combine("Assets", "Resources"), "AccelByteSDKConfig.json");
 
-            System.IO.File.WriteAllBytes(fullPath, JsonSerializer.Serialize(this.config));
+            byte[] notPrettyConfig = JsonSerializer.Serialize(this.config);
+            string prettyConfig = JsonSerializer.PrettyPrint(notPrettyConfig);
+            System.IO.File.WriteAllBytes(fullPath, Encoding.ASCII.GetBytes(prettyConfig));
         }
     }
 }

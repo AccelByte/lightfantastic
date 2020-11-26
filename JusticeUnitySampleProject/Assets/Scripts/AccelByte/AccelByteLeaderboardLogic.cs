@@ -175,7 +175,7 @@ public class AccelByteLeaderboardLogic : MonoBehaviour
 
     private void GetTopTenRanking()
     {
-        abLeaderboard.QueryAllTimeLeaderboardRankingData(leaderboardCode, 0, 10, OnGetTopTenRanking);
+        abLeaderboard.GetRankings(leaderboardCode, LeaderboardTimeFrame.ALL_TIME, 0, 10, OnGetTopTenRanking);
     }
 
     private void ClearLeaderboardUIPrefabs()

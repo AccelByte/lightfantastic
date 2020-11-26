@@ -52,12 +52,13 @@ public static class Equipments
         public ItemInfo effect;
 
         //TODO: proper serializer
-        public object ToCustomAttribute()
+        public Dictionary<string, object> ToCustomAttribute()
         {
-            CustomAttributes customAttributes = new CustomAttributes();
-            customAttributes.hatItemId = hat == null ? null : hat.itemId;
-            customAttributes.effectItemId = effect == null ? null : effect.itemId;
-            return customAttributes;
+            return new Dictionary<string, object>(2)
+            {
+                {"hatItemId", hat == null ? null : hat.itemId},
+                {"effectItemId", effect == null ? null : effect.itemId}
+            };
         }
 
         public ref ItemInfo GetItemInfo(Type type)
@@ -206,7 +207,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
 
     private void Start()
     {
-        abEntitlements = AccelBytePlugin.GetEntitlements();
+        abEntitlements = AccelBytePlugin.GetEntitlement();
         abItems = AccelBytePlugin.GetItems();
         ALL_ITEM_CRITERIA.offset = 0;
         ALL_ITEM_CRITERIA.language = LightFantasticConfig.DEFAULT_LANGUAGE;
@@ -281,8 +282,8 @@ public class AccelByteEntitlementLogic : MonoBehaviour
             HidePromptPanel();
             UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
         });
-        
-        UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.AddListener(delegate
+
+        UIHandlerEntitlementComponent.promptPanelCloseButton.onClick.AddListener(delegate
         {
             HidePromptPanel();
         });
@@ -296,6 +297,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         UIHandlerEntitlementComponent.backButton.onClick.RemoveListener(ShowPromptPanel);
         UIHandlerEntitlementComponent.promptPanelSaveButton.onClick.RemoveAllListeners();
         UIHandlerEntitlementComponent.promptPanelDontSaveButton.onClick.RemoveAllListeners();
+        UIHandlerEntitlementComponent.promptPanelCloseButton.onClick.RemoveAllListeners();
     }
     #endregion // UI Listeners
 

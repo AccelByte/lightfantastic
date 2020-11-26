@@ -56,7 +56,7 @@ public class AccelByteAgreementLogic : MonoBehaviour
     
     private void GetUserPolicy(Action action)
     {
-        abAgreement.GetPolicies(result =>
+        abAgreement.GetLegalPolicies(AgreementPolicyType.LEGAL_DOCUMENT_TYPE, false, result =>
         {
             if (result.IsError)
             {
@@ -110,7 +110,7 @@ public class AccelByteAgreementLogic : MonoBehaviour
         {
             requests.Add(policyInfo.info);
         }
-        abAgreement.SignUserLegalEligibilites(requests.ToArray(), OnFulfillEligibility);
+        abAgreement.BulkAcceptPolicyVersions(requests.ToArray(), OnFulfillEligibility);
     }
     #endregion // AccelByte Agreement Functions
 

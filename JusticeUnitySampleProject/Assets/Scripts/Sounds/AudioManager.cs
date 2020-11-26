@@ -20,6 +20,9 @@ public class AudioManager : MonoBehaviour
     private static AudioManager instance;
     public static AudioManager Instance { get { return instance; } }
 
+    private GameObject gameLogic;
+    private AccelByteCloudSaveLogic abCloudSaveLogic;
+    
     [Header("Sound FX")]
     [SerializeField]
     private SoundFX[] soundFXes = null;
@@ -32,9 +35,13 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
+        gameLogic = GameObject.FindGameObjectWithTag("GameLogic");
+        abCloudSaveLogic = gameLogic.GetComponent<AccelByteCloudSaveLogic>();
+
         if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
+            return;
         }
         else
         {
@@ -45,9 +52,21 @@ public class AudioManager : MonoBehaviour
 
         SoundFXSetup();
         BackgroundMusicSetup();
-        
-        ToggleSFXVolume(true);
-        ToggleBGMVolume(true);
+
+        if (PlayerPrefs.HasKey(LightFantasticConfig.AudioSettingType.BGM))
+        {
+            currentState.BGM_On = PlayerPrefs.GetInt(LightFantasticConfig.AudioSettingType.BGM) == 1;
+        }
+        if (PlayerPrefs.HasKey(LightFantasticConfig.AudioSettingType.SFX))
+        {
+            currentState.SFX_On = PlayerPrefs.GetInt(LightFantasticConfig.AudioSettingType.SFX) == 1;
+        }
+
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            ToggleBGMVolume(currentState.BGM_On);
+            ToggleSFXVolume(currentState.SFX_On);
+        });
     }
 
     private void SoundFXSetup()
@@ -199,6 +218,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleSFXVolume(bool ON)
     {
+        abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.SFX, ON);
         foreach (var sfx in soundFXes)
         {
             sfx.Source.volume = ON ? 1 : 0;
@@ -208,6 +228,7 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleBGMVolume(bool ON)
     {
+        abCloudSaveLogic.SetAudioSettingValue(LightFantasticConfig.AudioSettingType.BGM, ON);
         foreach (var bgm in backgroundMusics)
         {
             bgm.Source.volume = ON ? 1 : 0;

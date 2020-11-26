@@ -15,8 +15,14 @@ namespace AccelByte.Api
     /// </summary>
     public class User
     {
+        /// <summary>
+        /// Raised when upgrade from Player Portal is finished
+        /// </summary>
+        public event Action Upgraded;
+
         //Constants
         private const string AuthorizationCodeEnvironmentVariable = "JUSTICE_AUTHORIZATION_CODE";
+        private const int ttl = 60;
 
         //Readonly members
         private readonly ILoginSession loginSession;
@@ -162,14 +168,16 @@ namespace AccelByte.Api
         public void Logout(ResultCallback callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            this.sessionAdapter.UserId = null;
-
+            
             if (!this.sessionAdapter.IsValid())
             {
                 callback.TryOk();
 
                 return;
             }
+
+            this.sessionAdapter.UserId = null;
+            this.sessionAdapter.AuthorizationToken = null;
 
             this.coroutineRunner.Run(this.loginSession.Logout(callback));
         }
@@ -301,6 +309,56 @@ namespace AccelByte.Api
             }
 
             callback.Try(result);
+        }
+
+        /// <summary>
+        /// Upgrade a headless account using external browser. User must be logged in before this method can be
+        /// used.
+        /// </summary>
+        /// <param name="callback">Returns a Result that contains UpgradeUserRequest via callback when completed</param>
+        public void UpgradeWithPlayerPortal(ResultCallback<UpgradeUserRequest> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            this.coroutineRunner.Run(
+                UpgradeWithPlayerPortalAsync(HttpListenerExtension.GetAvailableLocalUrl(), callback));
+        }
+
+        private IEnumerator UpgradeWithPlayerPortalAsync(string returnUrl, ResultCallback<UpgradeUserRequest> callback)
+        {
+            Result<UpgradeUserRequest> result = null;
+
+            yield return this.userAccount.UpgradeWithPlayerPortal(returnUrl, ttl, r => result = r);
+
+            callback.Try(result);
+
+            while (result == null)
+            {
+                System.Threading.Thread.Sleep(100);
+                yield return null;
+            }
+
+            HttpListenerExtension.StartHttpListener(result.Value.temporary_session_id);
+
+            while (HttpListenerExtension.listenerResult == null)
+            {
+                System.Threading.Thread.Sleep(100);
+                yield return null;
+
+                if (HttpListenerExtension.availableLocalUrl != returnUrl)
+                    break;
+            }
+
+            if (HttpListenerExtension.listenerResult != null)
+            {
+                if (!HttpListenerExtension.listenerResult.IsError)
+                {
+                    Action handler = Upgraded;
+                    if (handler != null)
+                    {
+                        handler();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -495,6 +553,38 @@ namespace AccelByte.Api
 
             this.coroutineRunner.Run(
                 this.userAccount.GetUserByOtherPlatformUserId(platformType, otherPlatformUserId, callback));
+        }
+
+        /// <summary>
+        /// Get other user data by other platform userId(s) (such as SteamID, for example)
+        /// </summary>
+        /// <param name="platformType"></param>
+        /// <param name="otherPlatformUserIds"></param>
+        /// <param name="callback"></param>
+        public void BulkGetUserByOtherPlatformUserIds(PlatformType platformType, string[] otherPlatformUserId,
+            ResultCallback<BulkPlatformUserIdResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.sessionAdapter.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+            BulkPlatformUserIdRequest platformUserIds = new BulkPlatformUserIdRequest { platformUserIDs = otherPlatformUserId };
+            this.coroutineRunner.Run(
+                this.userAccount.BulkGetUserByOtherPlatformUserIds(platformType, platformUserIds, callback));
+        }
+        
+        /// <summary>
+        /// Get spesific country from user IP
+        /// </summary>
+        /// <param name="callback"> Returns a Result that contains country information via callback when completed</param>
+        public void GetCountryFromIP(ResultCallback<CountryInfo> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            this.coroutineRunner.Run(this.userAccount.GetCountryFromIP(callback));
         }
     }
 }

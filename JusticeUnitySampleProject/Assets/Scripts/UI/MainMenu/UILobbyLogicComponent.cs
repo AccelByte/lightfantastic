@@ -76,6 +76,8 @@ public class UILobbyLogicComponent : MonoBehaviour
 
     public Button cancelMatchmakingButton;
     
+    public Button refreshQoSButton;
+    
 	[Header("Player Icon")]
     public Transform PlayerDisplayNameText;
     public Text JusticeCoinValueText;
@@ -86,5 +88,9 @@ public class UILobbyLogicComponent : MonoBehaviour
     public InputField localMatch_IP_inputFields;
     [Tooltip("It can be found under the SETTING menu")]
     public InputField localMatch_Port_inputFields;
+    
+    [Header("Dropdown")]
+    [Tooltip("It can be found under the SETTING menu")]
+    public Dropdown regionSelectorDropdown;
     //public InputField localMatch_Port_inputFields; // TODO handle port changing for local match 
 }

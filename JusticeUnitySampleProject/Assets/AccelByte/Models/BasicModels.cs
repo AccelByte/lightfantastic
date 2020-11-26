@@ -1,4 +1,4 @@
-// Copyright (c) 2018 - 2019 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2018 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -62,7 +62,7 @@ namespace AccelByte.Models
         [DataMember] public string avatarLargeUrl { get; set; }
         [DataMember] public string timeZone { get; set; }
         [DataMember] public string dateOfBirth { get; set; }
-        [DataMember] public object customAttributes { get; set; }
+        [DataMember] public Dictionary<string, object> customAttributes { get; set; }
     }
 
     [DataContract]

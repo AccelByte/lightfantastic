@@ -6,9 +6,13 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using AccelByte.Api;
 using UnityEngine;
 using AccelByte.Models;
 using AccelByte.Core;
+using UnityEngine.UI;
+using WebSocketSharp;
 
 public class AccelByteMatchmakingLogic : MonoBehaviour
 {
@@ -27,12 +31,15 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
 
     private MultiplayerMenu multiplayerConnect;
     
+    private Dictionary<string,int> qosLatencies;
+    
     public void Init(UILobbyLogicComponent uiLobbyLogicComponent, AccelByteLobbyLogic lobbyLogic)
     {
         UIHandlerLobbyComponent = uiLobbyLogicComponent;
         this.lobbyLogic = lobbyLogic;
         accelByteManager = lobbyLogic.GetComponent<AccelByteManager>();
         multiplayerConnect = lobbyLogic.GetComponent<MultiplayerMenu>();
+        RefreshQoS();
     }
 
     public void AddEventListener()
@@ -57,6 +64,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         // Bind Game Play / matchmaking request configuration
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.AddListener(GameplaySetLocalIP);
         UIHandlerLobbyComponent.localMatch_Port_inputFields.onValueChanged.AddListener(GameplaySetLocalPort);
+        UIHandlerLobbyComponent.refreshQoSButton.onClick.AddListener(RefreshQoS);
     }
 
     public void RemoveListener()
@@ -65,6 +73,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
         UIHandlerLobbyComponent.localMatch_IP_inputFields.onValueChanged.RemoveListener(GameplaySetLocalIP);
         UIHandlerLobbyComponent.localMatch_Port_inputFields.onValueChanged.RemoveListener(GameplaySetLocalPort);
+        UIHandlerLobbyComponent.refreshQoSButton.onClick.RemoveListener(RefreshQoS);
     }
     
     public void SetupMatchmakingCallbacks()
@@ -102,8 +111,11 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         }
         else
         {
-            var latencies = AccelByteQosLogic.Instance.GetLatencies();
-            if (latencies != null)
+            var regionIndex = UIHandlerLobbyComponent.regionSelectorDropdown.value;
+            var selectedLatency = qosLatencies.Values.ToList()[regionIndex];
+            var selectedRegion = qosLatencies.Keys.ToList()[regionIndex];
+            Dictionary<string, int> latencies = new Dictionary<string, int>(1){{selectedRegion, selectedLatency}};
+            if (!selectedRegion.IsNullOrEmpty() && selectedLatency > 0)
             {
 #if FORCE_PROVIDER_AWS
                 Dictionary<string, int> availableRegion = new Dictionary<string, int>();
@@ -538,6 +550,35 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
             lobbyLogic.partyLogic.SetIsLocalPlayerInParty(true);
             FindMatch();
         }
+    }
+
+    /// <summary>
+    /// Get various latencies from available server regions
+    /// </summary>
+    private void RefreshQoS()
+    {
+        AccelBytePlugin.GetQos().GetServerLatencies(result =>
+        {
+            if (result.IsError || result.Value.Count == 0)
+            {
+                UIHandlerLobbyComponent.regionSelectorDropdown.options.Clear();
+                UIHandlerLobbyComponent.regionSelectorDropdown.RefreshShownValue();
+                UIHandlerLobbyComponent.regionSelectorDropdown.interactable = false;
+            }
+            else
+            {
+                UIHandlerLobbyComponent.regionSelectorDropdown.interactable = true;
+                qosLatencies = result.Value;
+                UIHandlerLobbyComponent.regionSelectorDropdown.options.Clear();
+                foreach (var latency in qosLatencies)
+                {
+                    string text = $"{latency.Key} - {latency.Value}ms";
+                    UIHandlerLobbyComponent.regionSelectorDropdown.options.Add(new Dropdown.OptionData(text));
+                }
+                UIHandlerLobbyComponent.regionSelectorDropdown.RefreshShownValue();
+                UIHandlerLobbyComponent.regionSelectorDropdown.SetValueWithoutNotify(0);
+            }
+        });
     }
 
     #endregion

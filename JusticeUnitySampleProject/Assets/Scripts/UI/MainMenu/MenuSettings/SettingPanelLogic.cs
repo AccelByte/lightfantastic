@@ -52,9 +52,43 @@ public class SettingPanelLogic : MonoBehaviour
         RegisterTabButtonsOnSelectEvent();
         RegisterAudioSettingComponentEvents();
         
-        settingAudioMasterVolume.SetTrue();
+        MainThreadTaskRunner.Instance.Run(InitialLoadConfig);
         
         audio.tabButton.onClick.Invoke();
+    }
+
+    private void OnEnable()
+    {
+        MainThreadTaskRunner.Instance.Run(InitialLoadConfig);
+    }
+
+    /// Turn off all audio & load config player preference
+    private void InitialLoadConfig()
+    {
+        bool bgmIsOn = AudioManager.Instance.GetAudioState().BGM_On;
+        bool sfxIsOn = AudioManager.Instance.GetAudioState().SFX_On;
+        if (bgmIsOn && sfxIsOn)
+        {
+            settingAudioMasterVolume.SetTrue();
+        }
+        else if (!bgmIsOn && !sfxIsOn)
+        {
+            settingAudioMasterVolume.SetFalse();
+        }
+        else
+        {
+            settingAudioMasterVolume.SetTrue();
+
+            if (!bgmIsOn)
+            {
+                settingAudioBGMVolume.SetFalse();
+            }
+
+            if (!sfxIsOn)
+            {
+                settingAudioSFXVolume.SetFalse();
+            }
+        }
     }
 
     private void RegisterTabButtonsOnSelectEvent()

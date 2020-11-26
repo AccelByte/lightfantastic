@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.Serialization;
-//using NUnit.Framework;
 
 namespace AccelByte.Models
 {
@@ -26,6 +25,8 @@ namespace AccelByte.Models
     public class SessionData
     {
         [DataMember] public string session_id { get; set; }
+        [DataMember] public int expires_in { get; set; }
+        [DataMember] public string refresh_id { get; set; }
     }
 
     [DataContract]
@@ -128,7 +129,7 @@ namespace AccelByte.Models
         [DataMember] public string languageTag { get; set; }
     }
 
-    public enum PlatformType { Steam, Google, Facebook, Twitch, Oculus, Twitter, Device }
+    public enum PlatformType { Steam, PS4, Live, Google, Facebook, Twitch, Oculus, Twitter, Device }
 
     [DataContract]
     public class PlatformLink
@@ -148,5 +149,37 @@ namespace AccelByte.Models
     {
         [DataMember] public PlatformLink[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
+    }
+
+    [DataContract]
+    public class BulkPlatformUserIdRequest
+    {
+        [DataMember] public  string[] platformUserIDs { get; set; }
+    }
+
+    [DataContract]
+    public class PlatformUserIdMap
+    {
+        [DataMember] public string userId { get; set; }
+    }
+
+    [DataContract]
+    public class BulkPlatformUserIdResponse
+    {
+        [DataMember] public PlatformUserIdMap[] userIdPlatforms { get; set; }
+    }
+
+    public class CountryInfo
+    {
+        [DataMember] public string CountryCode { get; set; }
+        [DataMember] public string CountryName { get; set; }
+        [DataMember] public string State { get; set; }
+        [DataMember] public string City { get; set; }
+    }
+
+    [DataContract]
+    public class UpgradeUserRequest
+    {
+        [DataMember] public string temporary_session_id { get; set; }
     }
 }

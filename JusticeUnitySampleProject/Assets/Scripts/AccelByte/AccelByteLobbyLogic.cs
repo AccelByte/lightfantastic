@@ -182,7 +182,7 @@ public class AccelByteLobbyLogic : MonoBehaviour
     {
         // Reset lobby to prevent dual session callback
         // Each time user connect to lobby after login, it needs to renew the lobby.
-        abLobby = new Lobby(AccelBytePlugin.Config.LobbyServerUrl, new WebSocket(), AccelBytePlugin.GetUser().Session, new CoroutineRunner());
+        abLobby = new Lobby(AccelBytePlugin.Config.LobbyServerUrl, new WebSocket(), new LobbyApi(AccelBytePlugin.Config.BaseUrl, new UnityHttpWorker()), AccelBytePlugin.GetUser().Session, AccelBytePlugin.Config.Namespace, new CoroutineRunner());
         
         //Establish connection to the lobby service
         abLobby.Connect();
@@ -287,9 +287,12 @@ public class AccelByteLobbyLogic : MonoBehaviour
     /// <param name="result"> Result callback to show on game lobby </param>
     private void OnNotificationReceived(Result<Notification> result)
     {
-        UIHandlerLobbyComponent.generalNotificationTitle.text = result.Value.topic;
-        UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
-        UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+        MainThreadTaskRunner.Instance.Run(() =>
+        {
+            UIHandlerLobbyComponent.generalNotificationTitle.text = string.IsNullOrEmpty(result.Value.topic)? "UNTITLED" : result.Value.topic;
+            UIHandlerLobbyComponent.generalNotificationText.text = result.Value.payload;
+            UIElementHandler.ShowNotification(UIElementHandler.generalNotification);
+        });
     }
 
     /// <summary>
