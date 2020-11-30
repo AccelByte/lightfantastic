@@ -38,6 +38,7 @@ namespace ABRuntimeLogic
         private SteamAuth steamAuth;
 #endif
         public bool useSteam;
+        public bool isUsingOtherPlatform;
         [SerializeField]
         private CommandLineArgs cmdLine;
 
@@ -163,6 +164,7 @@ namespace ABRuntimeLogic
             if (useSteam)
             {
 #if UNITY_STANDALONE && !DISABLESTEAMWORKS
+                isUsingOtherPlatform = true;
                 loginType = E_LoginType.Steam;
                 UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 Debug.Log("Valid ABUSER:"+abUser.Session.IsValid());
@@ -182,6 +184,7 @@ namespace ABRuntimeLogic
                 LoginWithLauncher();
 #elif UNITY_STADIA
                 // Try to login with stadia
+                Debug.Log("[LF] Login with stadia");
                 LoginWithStadia();
 #endif
             }
@@ -242,6 +245,8 @@ namespace ABRuntimeLogic
         //Attempts to login with launcher
         public void LoginWithLauncher()
         {
+            isUsingOtherPlatform = true;
+
             // Check if auth code is available from launcher
             string authCode = Environment.GetEnvironmentVariable(AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE);
 
@@ -261,6 +266,8 @@ namespace ABRuntimeLogic
         //Attempts to login with stadia
         public void LoginWithStadia()
         {
+            Debug.Log("[LF] LoginWithStadia Start");
+            isUsingOtherPlatform = true;
             GgpPlayerId playerId = StadiaNativeApis.GgpGetPrimaryPlayerId();
             float startTime = Time.realtimeSinceStartup;
             UIElementHandler.ShowLoadingPanel();
@@ -382,6 +389,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                Debug.Log("[LF] OnLogin Failed");
+
                 if (!useSteam)
                 {
                     UIElementHandler.HideLoadingPanel();
@@ -421,6 +430,8 @@ namespace ABRuntimeLogic
         //Also Checks if the user has verified their email address, if not, sends user to verification, else sends to main menu.
         private void OnGetUserData(Result<UserData> result)
         {
+            Debug.Log("[LF] OnGetUserData Start");
+
             if (result.IsError)
             {
                 Debug.Log("GetUserData failed:" + result.Error.Message);
@@ -428,26 +439,33 @@ namespace ABRuntimeLogic
             }
             else if (!result.Value.eligible)
             {
+                Debug.Log("[LF] OnGetUserData Not eligible proceeding to EULA");
                 UIElementHandler.HideLoadingPanel();
                 gameObject.GetComponent<AccelByteAgreementLogic>().GetUserPolicy();
             }
             else
             {
+                Debug.Log("[LF] OnGetUserData success!");
+
                 abUserData = result.Value;
                 UIHandlerAuthComponent.displayName.text = "DisplayName: " + abUserData.displayName;
                 UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
                 UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.emailVerified && !useSteam)
+                if (!abUserData.emailVerified && !isUsingOtherPlatform)
                 {
+                    Debug.Log("[LF] OnGetUserData emailVerified is false verify the email!");
+
                     UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.LOADING);
                     UIElementHandler.ShowExclusivePanel(ExclusivePanelType.VERIFY);
                 }
                 else
                 {
                     //Progress to Main Menu
+                    Debug.Log("[LF] OnGetUserData proceed to main menu");
                     if (!useSteam)
                     {
+                        Debug.Log("[LF] OnGetUserData proceed to main menu");
                         UIElementHandler.HideLoadingPanel();
                     }
                     UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
