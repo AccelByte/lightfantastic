@@ -2,7 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

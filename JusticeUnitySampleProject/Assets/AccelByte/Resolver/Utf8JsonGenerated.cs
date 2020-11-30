@@ -43,7 +43,7 @@ namespace Utf8Json.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(239)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(243)
             {
                 {typeof(global::AccelByte.Models.AchievementIcon[]), 0 },
                 {typeof(global::AccelByte.Models.PublicAchievement[]), 1 },
@@ -284,6 +284,10 @@ namespace Utf8Json.Resolvers
                 {typeof(global::AccelByte.Models.AccountLinkPublisherAccount), 236 },
                 {typeof(global::AccelByte.Models.AccountLinkConfictMessageVariables), 237 },
                 {typeof(global::AccelByte.Models.LinkPlatformAccountRequest), 238 },
+                {typeof(global::Equipments.StringEntry), 239 },
+                {typeof(global::Equipments.CustomAttributes), 240 },
+                {typeof(global::Equipments.EquipmentList), 241 },
+                {typeof(global::ItemInventoryPrefab), 242 },
             };
         }
 
@@ -533,6 +537,10 @@ namespace Utf8Json.Resolvers
                 case 236: return new Utf8Json.Formatters.AccelByte.Models.AccountLinkPublisherAccountFormatter();
                 case 237: return new Utf8Json.Formatters.AccelByte.Models.AccountLinkConfictMessageVariablesFormatter();
                 case 238: return new Utf8Json.Formatters.AccelByte.Models.LinkPlatformAccountRequestFormatter();
+                case 239: return new Utf8Json.Formatters.Equipments_StringEntryFormatter();
+                case 240: return new Utf8Json.Formatters.Equipments_CustomAttributesFormatter();
+                case 241: return new Utf8Json.Formatters.Equipments_EquipmentListFormatter();
+                case 242: return new Utf8Json.Formatters.ItemInventoryPrefabFormatter();
                 default: return null;
             }
         }
@@ -24757,6 +24765,423 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var ____result = new global::AccelByte.Models.LinkPlatformAccountRequest();
             if(__platformId__b__) ____result.platformId = __platformId__;
             if(__platformUserId__b__) ____result.platformUserId = __platformUserId__;
+
+            return ____result;
+        }
+    }
+
+}
+
+#pragma warning disable 168
+#pragma warning restore 219
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 219
+#pragma warning disable 168
+
+namespace Utf8Json.Formatters
+{
+    using System;
+    using UnityEngine.UI;
+    using Utf8Json;
+
+
+    public sealed class Equipments_StringEntryFormatter : global::Utf8Json.IJsonFormatter<global::Equipments.StringEntry>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public Equipments_StringEntryFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("type"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tag"), 1},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("type"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tag"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::Equipments.StringEntry value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::Equipments.Type>().Serialize(ref writer, value.type, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.tag);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::Equipments.StringEntry Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                throw new InvalidOperationException("typecode is null, struct not supported");
+            }
+            
+
+            var __type__ = default(global::Equipments.Type);
+            var __type__b__ = false;
+            var __tag__ = default(string);
+            var __tag__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __type__ = formatterResolver.GetFormatterWithVerify<global::Equipments.Type>().Deserialize(ref reader, formatterResolver);
+                        __type__b__ = true;
+                        break;
+                    case 1:
+                        __tag__ = reader.ReadString();
+                        __tag__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::Equipments.StringEntry();
+            if(__type__b__) ____result.type = __type__;
+            if(__tag__b__) ____result.tag = __tag__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class Equipments_CustomAttributesFormatter : global::Utf8Json.IJsonFormatter<global::Equipments.CustomAttributes>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public Equipments_CustomAttributesFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("hatItemId"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("effectItemId"), 1},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("hatItemId"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("effectItemId"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::Equipments.CustomAttributes value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.hatItemId);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.effectItemId);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::Equipments.CustomAttributes Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                throw new InvalidOperationException("typecode is null, struct not supported");
+            }
+            
+
+            var __hatItemId__ = default(string);
+            var __hatItemId__b__ = false;
+            var __effectItemId__ = default(string);
+            var __effectItemId__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __hatItemId__ = reader.ReadString();
+                        __hatItemId__b__ = true;
+                        break;
+                    case 1:
+                        __effectItemId__ = reader.ReadString();
+                        __effectItemId__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::Equipments.CustomAttributes();
+            if(__hatItemId__b__) ____result.hatItemId = __hatItemId__;
+            if(__effectItemId__b__) ____result.effectItemId = __effectItemId__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class Equipments_EquipmentListFormatter : global::Utf8Json.IJsonFormatter<global::Equipments.EquipmentList>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public Equipments_EquipmentListFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("Exception"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("hat"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("effect"), 2},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("Exception"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("hat"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("effect"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::Equipments.EquipmentList value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::System.Exception>().Serialize(ref writer, value.Exception, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo>().Serialize(ref writer, value.hat, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo>().Serialize(ref writer, value.effect, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::Equipments.EquipmentList Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __Exception__ = default(global::System.Exception);
+            var __Exception__b__ = false;
+            var __hat__ = default(global::AccelByte.Models.ItemInfo);
+            var __hat__b__ = false;
+            var __effect__ = default(global::AccelByte.Models.ItemInfo);
+            var __effect__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __Exception__ = formatterResolver.GetFormatterWithVerify<global::System.Exception>().Deserialize(ref reader, formatterResolver);
+                        __Exception__b__ = true;
+                        break;
+                    case 1:
+                        __hat__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo>().Deserialize(ref reader, formatterResolver);
+                        __hat__b__ = true;
+                        break;
+                    case 2:
+                        __effect__ = formatterResolver.GetFormatterWithVerify<global::AccelByte.Models.ItemInfo>().Deserialize(ref reader, formatterResolver);
+                        __effect__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::Equipments.EquipmentList();
+            if(__Exception__b__) ____result.Exception = __Exception__;
+            if(__hat__b__) ____result.hat = __hat__;
+            if(__effect__b__) ____result.effect = __effect__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ItemInventoryPrefabFormatter : global::Utf8Json.IJsonFormatter<global::ItemInventoryPrefab>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ItemInventoryPrefabFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("image"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("overlay"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("checkmark"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("defaultBorder"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("button"), 4},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("image"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("overlay"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("checkmark"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("defaultBorder"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("button"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::ItemInventoryPrefab value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Serialize(ref writer, value.image, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Serialize(ref writer, value.overlay, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Serialize(ref writer, value.checkmark, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Serialize(ref writer, value.defaultBorder, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<Button>().Serialize(ref writer, value.button, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::ItemInventoryPrefab Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __image__ = default(UnityEngine.UI.Image);
+            var __image__b__ = false;
+            var __overlay__ = default(UnityEngine.UI.Image);
+            var __overlay__b__ = false;
+            var __checkmark__ = default(UnityEngine.UI.Image);
+            var __checkmark__b__ = false;
+            var __defaultBorder__ = default(UnityEngine.UI.Image);
+            var __defaultBorder__b__ = false;
+            var __button__ = default(Button);
+            var __button__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __image__ = formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Deserialize(ref reader, formatterResolver);
+                        __image__b__ = true;
+                        break;
+                    case 1:
+                        __overlay__ = formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Deserialize(ref reader, formatterResolver);
+                        __overlay__b__ = true;
+                        break;
+                    case 2:
+                        __checkmark__ = formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Deserialize(ref reader, formatterResolver);
+                        __checkmark__b__ = true;
+                        break;
+                    case 3:
+                        __defaultBorder__ = formatterResolver.GetFormatterWithVerify<UnityEngine.UI.Image>().Deserialize(ref reader, formatterResolver);
+                        __defaultBorder__b__ = true;
+                        break;
+                    case 4:
+                        __button__ = formatterResolver.GetFormatterWithVerify<Button>().Deserialize(ref reader, formatterResolver);
+                        __button__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::ItemInventoryPrefab();
+            if(__image__b__) ____result.image = __image__;
+            if(__overlay__b__) ____result.overlay = __overlay__;
+            if(__checkmark__b__) ____result.checkmark = __checkmark__;
+            if(__defaultBorder__b__) ____result.defaultBorder = __defaultBorder__;
+            if(__button__b__) ____result.button = __button__;
 
             return ____result;
         }

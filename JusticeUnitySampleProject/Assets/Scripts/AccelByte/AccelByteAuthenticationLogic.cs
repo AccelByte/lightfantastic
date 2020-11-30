@@ -33,7 +33,7 @@ namespace ABRuntimeLogic
         private UIAuthLogicComponent UIHandlerAuthComponent;
         private UIElementHandler UIElementHandler;
 
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
         [SerializeField]
         private SteamAuth steamAuth;
 #endif
@@ -176,16 +176,17 @@ namespace ABRuntimeLogic
             }
             else 
             {
-                UIHandlerAuthComponent.gameObject.SetActive(true);
-
                 Debug.Log("Don't USE STEAM");
 #if UNITY_STANDALONE
+                UIHandlerAuthComponent.gameObject.SetActive(true);
                 // Try to login with launcher
                 LoginWithLauncher();
 #elif UNITY_STADIA
+                UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 // Try to login with stadia
                 Debug.Log("[LF] Login with stadia");
                 LoginWithStadia();
+                UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
 #endif
             }
         }
@@ -263,6 +264,7 @@ namespace ABRuntimeLogic
             }
         }
 
+#if UNITY_STADIA
         //Attempts to login with stadia
         public void LoginWithStadia()
         {
@@ -290,6 +292,7 @@ namespace ABRuntimeLogic
 
             abUser.LoginWithOtherPlatform(AccelByte.Models.PlatformType.Stadia, playerJwt.jwt, OnLogin);
         }
+#endif
 
         //Gets the user's top level account details
         public void GetUserDetails()
