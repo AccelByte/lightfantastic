@@ -1,4 +1,9 @@
 # Changelog
+## 0.0.10 (2020-12-01)
+### Added
+- Login
+  - WithOtherPlatform
+    - Add Stadia
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
