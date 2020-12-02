@@ -20,7 +20,7 @@ public class VerticalScrollViewPopulation<T> : MonoBehaviour
     {
         int existingPrefab = scrollViewContentContainer.gameObject.transform.childCount;
         int requiredPrefab = 0;
-                
+
         if (existingPrefab <= count)
         {
             requiredPrefab = count - existingPrefab;
@@ -30,6 +30,7 @@ public class VerticalScrollViewPopulation<T> : MonoBehaviour
             while(existingPrefab > count)
             {
                 DestroyImmediate(scrollViewContentContainer.gameObject.transform.GetChild(0).gameObject);
+                existingPrefab = scrollViewContentContainer.gameObject.transform.childCount;
             }
         }
         

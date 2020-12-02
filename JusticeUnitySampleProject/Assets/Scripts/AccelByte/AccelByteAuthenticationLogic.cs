@@ -487,8 +487,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
-                Debug.Log("Login failed:" + result.Error.Message);
-                Debug.Log("Login Response Code: " + result.Error.Code);
+                Debug.Log("Logout failed:" + result.Error.Message);
+                Debug.Log("Logout Response Code: " + result.Error.Code);
                 //Show Error Message
             }
             else

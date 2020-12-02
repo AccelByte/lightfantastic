@@ -92,9 +92,12 @@ public class AccelByteFriendsLogic : MonoBehaviour
         }
         if (isFriendStatusChanged)
         {
-            isFriendStatusChanged = false;
-            string friendName = friendList[friendsStatusNotif.userID].DisplayName;
-            friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
+            if (friendList.ContainsKey(friendsStatusNotif.userID))
+            {
+                isFriendStatusChanged = false;
+                string friendName = friendList[friendsStatusNotif.userID].DisplayName;
+                friendList[friendsStatusNotif.userID] = new FriendData(friendsStatusNotif.userID, friendName, friendsStatusNotif.lastSeenAt, friendsStatusNotif.availability);
+            }
             RefreshFriendsUI();
             if (lobbyLogic.chatLogic.activePlayerChatUserId == lobbyLogic.partyLogic.GetPartyUserId())
                 lobbyLogic.chatLogic.RefreshDisplayNamePartyChatListUI();
