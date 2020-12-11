@@ -52,7 +52,8 @@ public static class LightFantasticConfig
     {
         WINDOWS = 0,
         ANDROID = 1,
-        LINUX = 2
+        LINUX = 2,
+        STADIA = 3
     }
 
     public static readonly string PLATFORM_LIBRARY_ASSET_CATEGORY = "Platform";
@@ -65,6 +66,8 @@ public static class LightFantasticConfig
         return Platform.ANDROID;
 #elif UNITY_STANDALONE_LINUX
         return Platform.LINUX;
+#elif UNITY_STADIA
+        return Platform.STADIA;
 #endif
     }
 
