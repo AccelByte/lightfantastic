@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98db7b3190a5dd04cb9f880b5e4ee1b5, type: 3}
+  m_Script: {fileID: 11500000, guid: ed79454c926384e4b81f71b0b166f925, type: 3}
   m_Name: AccelByteSettings
   m_EditorClassIdentifier: 

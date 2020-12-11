@@ -17,8 +17,8 @@ public class AccelByteChatLogic : MonoBehaviour
     private static IDictionary<string, ChatData> chatBoxList;
     internal string activePlayerChatUserId;
 
-    private ChatMesssage receivedPrivateMessage;
-    private ChatMesssage receivedPartyMessage;
+    private ChatMessage receivedPrivateMessage;
+    private ChatMessage receivedPartyMessage;
 
     static bool isReceivedPrivateMessage = false;
     static bool isReceivedPartyMessage = false;
@@ -316,7 +316,7 @@ public class AccelByteChatLogic : MonoBehaviour
             Debug.Log("Send personal message failed:" + result.Error.Message);
             Debug.Log("Send personal message Response Code: " + result.Error.Code);
             //Show Error Message
-            if (result.Error.Code == ErrorCode.ReceiverNotFound)
+            if (result.Error.Code == ErrorCode.PersonalChatReceiverNotFound)
             {
                 WriteWarningInChatBox("Player is offline");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
@@ -345,7 +345,7 @@ public class AccelByteChatLogic : MonoBehaviour
         {
             Debug.Log("Send party chat failed:" + result.Error.Message);
             Debug.Log("Send party chat Response Code: " + result.Error.Code);
-            if (result.Error.Code == ErrorCode.PartyNotFound)
+            if (result.Error.Code == ErrorCode.PartyChatPartyNotFound)
             {
                 WriteWarningInChatBox("Party is not found");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
@@ -370,7 +370,7 @@ public class AccelByteChatLogic : MonoBehaviour
     /// Update the chat UI on success
     /// </summary>
     /// <param name="result"> result callback </param>
-    private void OnPersonalChatReceived(Result<ChatMesssage> result)
+    private void OnPersonalChatReceived(Result<ChatMessage> result)
     {
         if (result.IsError)
         {
@@ -390,7 +390,7 @@ public class AccelByteChatLogic : MonoBehaviour
     /// Update UI chat on success
     /// </summary>
     /// <param name="result"> result callback that contains message id, sender, timestamp, and the message </param>
-    private void OnPartyChatReceived(Result<ChatMesssage> result)
+    private void OnPartyChatReceived(Result<ChatMessage> result)
     {
         if (result.IsError)
         {

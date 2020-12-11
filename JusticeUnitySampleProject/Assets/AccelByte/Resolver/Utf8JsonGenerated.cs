@@ -130,7 +130,7 @@ namespace Utf8Json.Resolvers
                 {typeof(global::AccelByte.Models.LeaderboardRankingResult), 82 },
                 {typeof(global::AccelByte.Models.DisconnectNotif), 83 },
                 {typeof(global::AccelByte.Models.Notification), 84 },
-                {typeof(global::AccelByte.Models.ChatMesssage), 85 },
+                {typeof(global::AccelByte.Models.ChatMessage), 85 },
                 {typeof(global::AccelByte.Models.PersonalChatRequest), 86 },
                 {typeof(global::AccelByte.Models.PartyInfo), 87 },
                 {typeof(global::AccelByte.Models.PartyInviteRequest), 88 },
@@ -2572,7 +2572,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("BasicServerUrl"), 8},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("LobbyServerUrl"), 9},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("CloudStorageServerUrl"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("TelemetryServerUrl"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("GameTelemetryServerUrl"), 11},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("GameProfileServerUrl"), 12},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("StatisticServerUrl"), 13},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("QosManagerServerUrl"), 14},
@@ -2597,7 +2597,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("BasicServerUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("LobbyServerUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("CloudStorageServerUrl"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("TelemetryServerUrl"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("GameTelemetryServerUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("GameProfileServerUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("StatisticServerUrl"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("QosManagerServerUrl"),
@@ -2643,7 +2643,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteRaw(this.____stringByteKeys[10]);
             writer.WriteString(value.CloudStorageServerUrl);
             writer.WriteRaw(this.____stringByteKeys[11]);
-            writer.WriteString(value.TelemetryServerUrl);
+            writer.WriteString(value.GameTelemetryServerUrl);
             writer.WriteRaw(this.____stringByteKeys[12]);
             writer.WriteString(value.GameProfileServerUrl);
             writer.WriteRaw(this.____stringByteKeys[13]);
@@ -2696,8 +2696,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
             var __LobbyServerUrl__b__ = false;
             var __CloudStorageServerUrl__ = default(string);
             var __CloudStorageServerUrl__b__ = false;
-            var __TelemetryServerUrl__ = default(string);
-            var __TelemetryServerUrl__b__ = false;
+            var __GameTelemetryServerUrl__ = default(string);
+            var __GameTelemetryServerUrl__b__ = false;
             var __GameProfileServerUrl__ = default(string);
             var __GameProfileServerUrl__b__ = false;
             var __StatisticServerUrl__ = default(string);
@@ -2776,8 +2776,8 @@ namespace Utf8Json.Formatters.AccelByte.Models
                         __CloudStorageServerUrl__b__ = true;
                         break;
                     case 11:
-                        __TelemetryServerUrl__ = reader.ReadString();
-                        __TelemetryServerUrl__b__ = true;
+                        __GameTelemetryServerUrl__ = reader.ReadString();
+                        __GameTelemetryServerUrl__b__ = true;
                         break;
                     case 12:
                         __GameProfileServerUrl__ = reader.ReadString();
@@ -2836,7 +2836,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             if(__BasicServerUrl__b__) ____result.BasicServerUrl = __BasicServerUrl__;
             if(__LobbyServerUrl__b__) ____result.LobbyServerUrl = __LobbyServerUrl__;
             if(__CloudStorageServerUrl__b__) ____result.CloudStorageServerUrl = __CloudStorageServerUrl__;
-            if(__TelemetryServerUrl__b__) ____result.TelemetryServerUrl = __TelemetryServerUrl__;
+            if(__GameTelemetryServerUrl__b__) ____result.GameTelemetryServerUrl = __GameTelemetryServerUrl__;
             if(__GameProfileServerUrl__b__) ____result.GameProfileServerUrl = __GameProfileServerUrl__;
             if(__StatisticServerUrl__b__) ____result.StatisticServerUrl = __StatisticServerUrl__;
             if(__QosManagerServerUrl__b__) ____result.QosManagerServerUrl = __QosManagerServerUrl__;
@@ -9790,7 +9790,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
     }
 
 
-    public sealed class ChatMesssageFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.ChatMesssage>
+    public sealed class ChatMesssageFormatter : global::Utf8Json.IJsonFormatter<global::AccelByte.Models.ChatMessage>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -9817,7 +9817,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.ChatMesssage value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::AccelByte.Models.ChatMessage value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -9840,7 +9840,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
             writer.WriteEndObject();
         }
 
-        public global::AccelByte.Models.ChatMesssage Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::AccelByte.Models.ChatMessage Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -9902,7 +9902,7 @@ namespace Utf8Json.Formatters.AccelByte.Models
                 continue;
             }
 
-            var ____result = new global::AccelByte.Models.ChatMesssage();
+            var ____result = new global::AccelByte.Models.ChatMessage();
             if(__id__b__) ____result.id = __id__;
             if(__from__b__) ____result.from = __from__;
             if(__to__b__) ____result.to = __to__;
