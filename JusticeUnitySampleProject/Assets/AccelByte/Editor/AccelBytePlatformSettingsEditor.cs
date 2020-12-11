@@ -2,6 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+using System;
 using AccelByte.Models;
 
 namespace AccelByte.Api
@@ -16,6 +17,7 @@ namespace AccelByte.Api
         public Texture2D AccelByteLogo;
         public Config TemporarySetting;
         public Rect LogoRect;
+        public LogType SelectedLogFilter;
 
         [MenuItem("AccelByte/Edit Settings")]
         public static void Edit()
@@ -37,6 +39,10 @@ namespace AccelByte.Api
             AccelByteLogo = Resources.Load<Texture2D>("ab-logo");
             this.TemporarySetting = AccelByteSettings.Instance.CopyConfig();
             LogoRect = new Rect((this.position.width - 300) / 2, 10, 300, 86);
+            if( !Enum.TryParse( this.TemporarySetting.DebugLogFilter, out SelectedLogFilter ) )
+            {
+                SelectedLogFilter = LogType.Log;
+            }
         }
 
         public void CloseFinal()
@@ -68,8 +74,29 @@ namespace AccelByte.Api
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Publisher Namespace");
+            TemporarySetting.Namespace = EditorGUILayout.TextField(TemporarySetting.PublisherNamespace);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Use Session Management");
             TemporarySetting.UseSessionManagement = EditorGUILayout.Toggle(TemporarySetting.UseSessionManagement);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Use PlayerPrefs");
+            TemporarySetting.UsePlayerPrefs = EditorGUILayout.Toggle(TemporarySetting.UsePlayerPrefs);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Enable Debug Log");
+            TemporarySetting.EnableDebugLog = EditorGUILayout.Toggle(TemporarySetting.EnableDebugLog);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField( "Log Type Filter" );
+            SelectedLogFilter = (LogType) EditorGUILayout.EnumPopup( SelectedLogFilter );
+            TemporarySetting.DebugLogFilter = SelectedLogFilter.ToString();
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -118,11 +145,6 @@ namespace AccelByte.Api
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Telemetry Server Url");
-            TemporarySetting.TelemetryServerUrl = EditorGUILayout.TextField(TemporarySetting.TelemetryServerUrl);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Game Profile Server Url");
             TemporarySetting.GameProfileServerUrl = EditorGUILayout.TextField(TemporarySetting.GameProfileServerUrl);
             EditorGUILayout.EndHorizontal();
@@ -130,6 +152,11 @@ namespace AccelByte.Api
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Statistic Server Url");
             TemporarySetting.StatisticServerUrl = EditorGUILayout.TextField(TemporarySetting.StatisticServerUrl);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Achievement Server Url");
+            TemporarySetting.AchievementServerUrl = EditorGUILayout.TextField(TemporarySetting.AchievementServerUrl);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -148,6 +175,16 @@ namespace AccelByte.Api
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Game Telemetry Server Url");
+            TemporarySetting.GameTelemetryServerUrl = EditorGUILayout.TextField(TemporarySetting.GameTelemetryServerUrl);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Group Server Url");
+            TemporarySetting.GroupServerUrl = EditorGUILayout.TextField(TemporarySetting.GroupServerUrl);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Client Id");
             TemporarySetting.ClientId = EditorGUILayout.TextField(TemporarySetting.ClientId);
             EditorGUILayout.EndHorizontal();
@@ -161,6 +198,13 @@ namespace AccelByte.Api
             EditorGUILayout.LabelField("Redirect Uri");
             TemporarySetting.RedirectUri = EditorGUILayout.TextField(TemporarySetting.RedirectUri);
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("App Id");
+            TemporarySetting.AppId = EditorGUILayout.TextField(TemporarySetting.AppId);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
 
             if (GUILayout.Button("Save"))
             {                

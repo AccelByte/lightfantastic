@@ -9,6 +9,7 @@ using AccelByte.Core;
 using UnityEngine.Assertions;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Utf8Json;
 #if ENABLE_AGONES_PLUGIN
@@ -67,7 +68,7 @@ namespace AccelByte.Server
 
         internal DedicatedServerManagerApi(string baseUrl, string namespace_, IHttpWorker httpWorker)
         {
-            Debug.Log("ServerApi init serverapi start");
+            AccelByteDebug.Log("ServerApi init serverapi start");
             Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
             Assert.IsFalse(
                 string.IsNullOrEmpty(namespace_),
@@ -105,27 +106,25 @@ namespace AccelByte.Server
                 qos.GetServerLatencies(reqResult => latenciesResult = reqResult);
                 yield return new WaitUntil(() => latenciesResult != null);
 
-                KeyValuePair<string, int> minLatency = new KeyValuePair<string, int>("", 10000);
-                foreach (KeyValuePair<string, int> latency in latenciesResult.Value)
+                foreach (KeyValuePair<string, int> latency in latenciesResult.Value.OrderBy(item => item.Value))
                 {
-                    if(latency.Value < minLatency.Value)
+                    var getUrlRequest = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/dsm?region=" + latency.Key)
+                        .WithBearerAuth(accessToken)
+                        .WithContentType(MediaType.ApplicationJson)
+                        .Accepts(MediaType.ApplicationJson)
+                        .GetResult();
+
+                    IHttpResponse getUrlResponse = null;
+
+                    yield return this.httpWorker.SendRequest(getUrlRequest, rsp => getUrlResponse = rsp);
+
+                    var getUrlResult = getUrlResponse.TryParseJson<DSMClient>();
+                    if (getUrlResult.Value.status == "HEALTHY")
                     {
-                        minLatency = latency;
+                        dsmServerUrl = getUrlResult.Value.host_address;
+                        break;
                     }
                 }
-
-                var getUrlRequest = HttpRequestBuilder.CreateGet(this.baseUrl + "/public/dsm?region=" + minLatency.Key)
-                .WithBearerAuth(accessToken)
-                .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson)
-                .GetResult();
-
-                IHttpResponse getUrlResponse = null;
-
-                yield return this.httpWorker.SendRequest(getUrlRequest, rsp => getUrlResponse = rsp);
-
-                var getUrlResult = getUrlResponse.TryParseJson<DSMClient>();
-                dsmServerUrl = getUrlResult.Value.host_address;
             }
             if(serverSetup.ip.Length == 0)
             {
@@ -341,7 +340,7 @@ namespace AccelByte.Server
             bool isGameVersionFound = false;
             foreach (string arg in args)
             {
-                Debug.Log("arg: " + arg);
+                AccelByteDebug.Log("arg: " + arg);
                 if (arg.Contains("provider"))
                 {
                     string[] split = arg.Split('=');
@@ -399,23 +398,23 @@ namespace AccelByte.Server
                     if (gameServer == null && 
                         DateTime.Now.Subtract(healthCheckStarted) > agones.INITIAL_HEALTH_CHECK_TIMEOUT)
                     {
-                        Debug.Log("[Agones] GameServer is not healthy. Shutting down.");
+                        AccelByteDebug.Log("[Agones] GameServer is not healthy. Shutting down.");
                         agones.GetSDK().Shutdown();
                     }
                     else
                     {
-                        Debug.Log("[Agones] GameServer is healthy.");
+                        AccelByteDebug.Log("[Agones] GameServer is healthy.");
                         agones.SetReady(true);
                     }
                 }
                 else
                 {
-                    Debug.Log("[Agones] GameServer is not ready.");
+                    AccelByteDebug.Log("[Agones] GameServer is not ready.");
                 }
             }
             else
             {
-                Debug.Log("[Agones] Failed to establish a connection to GameServer.");
+                AccelByteDebug.Log("[Agones] Failed to establish a connection to GameServer.");
             }
             
             if (agones.IsReady())
@@ -452,7 +451,7 @@ namespace AccelByte.Server
         {
             if (await agones.GetSDK().Shutdown())
             {
-                Debug.Log("Successfully shutting down Agones GameServer.");
+                AccelByteDebug.Log("Successfully shutting down Agones GameServer.");
                 agones.SetReady(false);
                 callback.TryOk();
             }

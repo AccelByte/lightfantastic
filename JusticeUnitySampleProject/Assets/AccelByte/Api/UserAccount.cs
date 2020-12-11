@@ -53,6 +53,26 @@ namespace AccelByte.Api
             callback.Try(result);
         }
 
+        public IEnumerator Registerv2(RegisterUserRequestv2 registerUserRequest,
+            ResultCallback<RegisterUserResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(registerUserRequest, "Register failed. registerUserRequest is null!");
+
+            var request = HttpRequestBuilder.CreatePost(this.baseUrl + "/v4/public/namespaces/{namespace}/users")
+                .WithPathParam("namespace", this.@namespace)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(registerUserRequest.ToUtf8Json())
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<RegisterUserResponse>();
+            callback.Try(result);
+        }
+
         public IEnumerator GetData(ResultCallback<UserData> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
@@ -102,6 +122,29 @@ namespace AccelByte.Api
                 .WithBearerAuth(this.session.AuthorizationToken)
                 .WithContentType(MediaType.ApplicationJson)
                 .WithBody(string.Format("{{\"emailAddress\": \"{0}\", \"password\": \"{1}\"}}", username, password))
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            var result = response.TryParseJson<UserData>();
+            callback.Try(result);
+        }
+
+        public IEnumerator Upgradev2(string emailAddress, string username, string password, ResultCallback<UserData> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(emailAddress, "Can't upgrade headless account! EmailAddress parameter is null!");
+            Assert.IsNotNull(username, "Can't upgrade headless account! UserName parameter is null!");
+            Assert.IsNotNull(password, "Can't upgrade headless account! Password parameter is null!");
+
+            var request = HttpRequestBuilder
+                .CreatePost(this.baseUrl + "/v4/public/namespaces/{namespace}/users/me/headless/verify")
+                .WithPathParam("namespace", this.@namespace)
+                .WithBearerAuth(this.session.AuthorizationToken)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(string.Format("{{\"emailAddress\": \"{0}\", \"password\": \"{1}\", \"username\": \"{2}\"}}", emailAddress, password, username))
                 .GetResult();
 
             IHttpResponse response = null;
@@ -228,6 +271,11 @@ namespace AccelByte.Api
             Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(ticket, "Can't link platform account! Password parameter is null!");
 
+            if (platformType == PlatformType.Stadia)
+            {
+                ticket = ticket.TrimEnd('=');
+            }
+
             var request = HttpRequestBuilder
                 .CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/users/me/platforms/{platformId}")
                 .WithPathParam("namespace", this.@namespace)
@@ -236,6 +284,41 @@ namespace AccelByte.Api
                 .WithBearerAuth(this.session.AuthorizationToken)
                 .Accepts(MediaType.ApplicationJson)
                 .WithContentType(MediaType.ApplicationForm)
+                .GetResult();
+
+            IHttpResponse response = null;
+
+            yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
+
+            Result result = response.TryParse();
+            callback.Try(result);
+        }
+
+        public IEnumerator ForcedLinkOtherPlatform(PlatformType platformType, string platformUserId, ResultCallback callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            Assert.IsNotNull(platformUserId, "Can't link platform account! platformUserId parameter is null!");
+
+            LinkPlatformAccountRequest linkedPlatformRequest = new LinkPlatformAccountRequest
+            {
+                platformId = platformType.ToString().ToLower(),
+                platformUserId = platformUserId
+            };
+
+            Result<UserData> userDataResult = null;
+            yield return this.GetData(r =>
+            {
+                userDataResult = r;
+            });
+
+            var request = HttpRequestBuilder
+                .CreatePost(this.baseUrl + "/v3/public/namespaces/{namespace}/users/{userId}/platforms/link")
+                .WithPathParam("namespace", this.@namespace)
+                .WithPathParam("userId", userDataResult.Value.userId)
+                .WithBearerAuth(this.session.AuthorizationToken)
+                .Accepts(MediaType.ApplicationJson)
+                .WithContentType(MediaType.ApplicationJson)
+                .WithBody(linkedPlatformRequest.ToUtf8Json())
                 .GetResult();
 
             IHttpResponse response = null;
@@ -286,19 +369,24 @@ namespace AccelByte.Api
             callback.Try(result);
         }
 
-        public IEnumerator SearchUsers(string emailOrDisplayName, ResultCallback<PagedPublicUsersInfo> callback)
+        public IEnumerator SearchUsers(string query, SearchType by, ResultCallback<PagedPublicUsersInfo> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            Assert.IsNotNull(emailOrDisplayName, nameof(emailOrDisplayName) + " cannot be null.");
+            Assert.IsNotNull(query, nameof(query) + " cannot be null.");
 
-            var request = HttpRequestBuilder
+            string[] filter = new string[] { "", "emailAddress", "displayName", "username" };
+
+            var builder = HttpRequestBuilder
                 .CreateGet(this.baseUrl + "/v3/public/namespaces/{namespace}/users")
                 .WithPathParam("namespace", this.@namespace)
-                .WithQueryParam("query", emailOrDisplayName)
+                .WithQueryParam("query", query)
                 .WithBearerAuth(this.session.AuthorizationToken)
                 .WithContentType(MediaType.ApplicationJson)
-                .Accepts(MediaType.ApplicationJson)
-                .GetResult();
+                .Accepts(MediaType.ApplicationJson);
+
+            if (by != SearchType.ALL) builder.WithQueryParam("by", filter[(int)by]);
+
+            var request = builder.GetResult();
 
             IHttpResponse response = null;
 

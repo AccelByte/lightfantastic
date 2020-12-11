@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections;
+using System.Text;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
@@ -16,11 +17,11 @@ namespace AccelByte.Api
     {
         interface ILoginData
         {
-            string AuthorizationToken { get; }
-            string RefreshToken { get; }
+            string AuthorizationToken { get; set; }
+            string RefreshToken { get; set; }
             int ExpireIn { get; }
 
-            string UserId { get; }
+            string UserId { get; set; }
 
             string LoginWithUsernamePath { get; }
             string LoginWithDeviceIdPath { get; }
@@ -28,6 +29,7 @@ namespace AccelByte.Api
             string LoginWithAuthorizationCodePath { get; }
             string LogoutPath { get; }
             string RefreshTokenPath { get; }
+            string RefreshTokenKey { get; }
 
             Result TryToParse(IHttpResponse response);
             IHttpRequest CreateRefreshTokenRequest(string baseUrl, string clientId, string clientSecret);
@@ -39,6 +41,7 @@ namespace AccelByte.Api
             private readonly object syncObject = new object();
 
             private TokenData tokenData;
+            private string refreshToken;
 
             public string AuthorizationToken
             {
@@ -49,6 +52,7 @@ namespace AccelByte.Api
                         return tokenData?.access_token;
                     }
                 }
+                set { tokenData.access_token = value; }
             }
 
             public string RefreshToken
@@ -57,21 +61,24 @@ namespace AccelByte.Api
                 {
                     lock (this.syncObject)
                     {
-                        return tokenData?.refresh_token;
+                        return this.refreshToken;
                     }
                 }
+                set { this.refreshToken = value; }
             }
-            
+
             public int ExpireIn => tokenData?.expires_in ?? 0;
 
-            public string UserId => tokenData?.user_id;
+            public string UserId { get => tokenData?.user_id; set => tokenData.user_id = value; }
 
             public string LoginWithUsernamePath => "/oauth/token";
             public string LoginWithDeviceIdPath => "/oauth/platforms/{platformId}/token";
             public string LoginWithOtherPlatformPath => "/oauth/platforms/{platformId}/token";
             public string LoginWithAuthorizationCodePath => "/oauth/token";
             public string LogoutPath => "/oauth/revoke/token";
-            public string RefreshTokenPath => "/oauth/revoke/token";
+            public string RefreshTokenPath => "/v3/oauth/token";
+
+            public string RefreshTokenKey => "accelbyte_refresh_token";
 
             public Result TryToParse(IHttpResponse response)
             {
@@ -79,6 +86,7 @@ namespace AccelByte.Api
                 lock (this.syncObject)
                 {
                     this.tokenData = result.Value;
+                    this.refreshToken = tokenData.refresh_token;
                 }
 
                 if (result.IsError)
@@ -111,12 +119,14 @@ namespace AccelByte.Api
             private readonly object syncObject = new object();
 
             private SessionData sessionData;
+            private string userId;
+            private string refreshToken;
 
-            public string AuthorizationToken => sessionData?.session_id;
-            public string RefreshToken => sessionData?.refresh_id;
+            public string AuthorizationToken { get => sessionData?.session_id; set => sessionData.session_id = value; }
+            public string RefreshToken { get => this.refreshToken; set => this.refreshToken = value; }
             public int ExpireIn => sessionData?.expires_in ?? 0;
 
-            public string UserId => "me";
+            public string UserId { get => this.userId ; set => this.userId = value; }
 
             public string LoginWithUsernamePath => "/v1/login/password";
             public string LoginWithDeviceIdPath => "/v1/login/platforms/{platformId}";
@@ -125,12 +135,18 @@ namespace AccelByte.Api
             public string LogoutPath => "/v1/logout";
             public string RefreshTokenPath => "/v1/sessions/refresh";
 
+            public string RefreshTokenKey => "accelbyte_api_refresh_token";
+
             public Result TryToParse(IHttpResponse response)
             {
                 Result<SessionData> result = response.TryParseJson<SessionData>();
                 lock (this.syncObject)
                 {
                     this.sessionData = result.Value;
+                    if (!result.IsError)
+                    {
+                        this.RefreshToken = sessionData.refresh_id;
+                    }
                 }
 
                 if (result.IsError)
@@ -166,6 +182,7 @@ namespace AccelByte.Api
         private readonly string clientId;
         private readonly string clientSecret;
         private readonly string redirecUri;
+        private readonly bool usePlayerPrefs;
         private readonly IHttpWorker httpWorker;
         private readonly CoroutineRunner coroutineRunner;
 
@@ -173,9 +190,10 @@ namespace AccelByte.Api
         private DateTime nextRefreshTime;
         private ILoginData loginData;
 
+        public event Action<string> RefreshTokenCallback;
 
         internal LoginSession(string baseUrl, string @namespace, string clientId, string clientSecret,
-            string redirecUri, IHttpWorker httpWorker, CoroutineRunner coroutineRunner, bool useSession = false)
+            string redirecUri, IHttpWorker httpWorker, CoroutineRunner coroutineRunner, bool useSession = false, bool usePlayerPrefs = false)
         {
             Assert.IsNotNull(baseUrl, "Creating " + GetType().Name + " failed. Parameter baseUrl is null");
             Assert.IsNotNull(@namespace, "Creating " + GetType().Name + " failed. Namespace parameter is null!");
@@ -189,6 +207,7 @@ namespace AccelByte.Api
             this.clientId = clientId;
             this.clientSecret = clientSecret;
             this.redirecUri = redirecUri;
+            this.usePlayerPrefs = usePlayerPrefs;
             this.httpWorker = httpWorker;
             this.coroutineRunner = coroutineRunner;
 
@@ -202,11 +221,19 @@ namespace AccelByte.Api
             }
         }
 
-        public string AuthorizationToken { get { return this.loginData.AuthorizationToken; } }
+        public string AuthorizationToken
+        {
+            get { return this.loginData.AuthorizationToken; }
+            set { this.loginData.AuthorizationToken = value; }
+        }
 
-        public string UserId { get { return this.loginData.UserId; } }
+        public string UserId
+        {
+            get { return this.loginData.UserId; }
+            set { this.loginData.UserId = value; }
+        }
 
-        public IEnumerator LoginWithUsername(string username, string password, ResultCallback callback)
+        public IEnumerator LoginWithUsername(string username, string password, ResultCallback callback, bool rememberMe = false)
         {
             Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(username, "Username parameter is null.");
@@ -220,6 +247,7 @@ namespace AccelByte.Api
                 .WithFormParam("username", username)
                 .WithFormParam("password", password)
                 .WithFormParam("namespace", this.@namespace)
+                .WithFormParam("extend_exp", rememberMe ? "true" : "false")
                 .GetResult();
 
             IHttpResponse response = null;
@@ -230,6 +258,14 @@ namespace AccelByte.Api
 
             if (!result.IsError)
             {
+                if (usePlayerPrefs)
+                {
+                    SaveRefreshToken();
+                }
+                if (RefreshTokenCallback != null)
+                {
+                    RefreshTokenCallback.Invoke(this.loginData.RefreshToken);
+                }
                 this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 callback.TryOk();
             }
@@ -261,6 +297,14 @@ namespace AccelByte.Api
 
             if (!result.IsError)
             {
+                if (usePlayerPrefs)
+                {
+                    SaveRefreshToken();
+                }
+                if (RefreshTokenCallback != null)
+                {
+                    RefreshTokenCallback.Invoke(this.loginData.RefreshToken);
+                }
                 this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 callback.TryOk();
             }
@@ -275,6 +319,11 @@ namespace AccelByte.Api
         {
             Report.GetFunctionLog(this.GetType().Name);
             Assert.IsNotNull(platformToken, "PlatformToken parameter is null.");
+
+            if (platformType == PlatformType.Stadia)
+            {
+                platformToken = platformToken.TrimEnd('=');
+            }
 
             var request = HttpRequestBuilder.CreatePost(this.baseUrl + this.loginData.LoginWithOtherPlatformPath)
                 .WithPathParam("platformId", platformType.ToString().ToLower())
@@ -293,6 +342,14 @@ namespace AccelByte.Api
 
             if (!result.IsError)
             {
+                if (usePlayerPrefs)
+                {
+                    SaveRefreshToken();
+                }
+                if (RefreshTokenCallback != null)
+                {
+                    RefreshTokenCallback.Invoke(this.loginData.RefreshToken);
+                }
                 this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 callback.TryOk();
             }
@@ -324,12 +381,46 @@ namespace AccelByte.Api
 
             if (!result.IsError)
             {
+                if (usePlayerPrefs)
+                {
+                    SaveRefreshToken();
+                }
+                if (RefreshTokenCallback != null)
+                {
+                    RefreshTokenCallback.Invoke(this.loginData.RefreshToken);
+                }
                 this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
                 callback.TryOk();
             }
             else
             {
                 callback.TryError(result.Error);
+            }
+        }
+
+        public IEnumerator LoginWithLatestRefreshToken(string refreshToken, ResultCallback callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            if(refreshToken != null)
+            {
+                this.loginData.RefreshToken = refreshToken;
+                yield return RefreshToken(callback);
+            }
+            else if (usePlayerPrefs)
+            {
+                if (PlayerPrefs.HasKey(this.loginData.RefreshTokenKey))
+                {
+                    this.loginData.RefreshToken = LoadRefreshToken();
+                    yield return RefreshToken(callback);
+                }
+                else
+                {
+                    callback.TryError(ErrorCode.InvalidRequest, "Refresh token not found!");
+                }
+            }
+            else
+            {
+                callback.TryError(ErrorCode.InvalidRequest, "Refresh Token is null or PlayerPrefs is disabled!");
             }
         }
 
@@ -355,9 +446,17 @@ namespace AccelByte.Api
 
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
-            this.loginData.Clear();
             this.coroutineRunner.Stop(this.maintainAccessTokenCoroutine);
             callback.Try(Result.CreateOk());
+            if (usePlayerPrefs)
+            {
+                if (PlayerPrefs.HasKey(this.loginData.RefreshTokenKey))
+                {
+                    PlayerPrefs.DeleteKey(this.loginData.RefreshTokenKey);
+                    PlayerPrefs.Save();
+                }
+            }
+            this.loginData.Clear();
         }
 
         private IEnumerator RefreshToken(ResultCallback callback)
@@ -369,6 +468,22 @@ namespace AccelByte.Api
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             var result = this.loginData.TryToParse(response);
+
+            if (!result.IsError)
+            {
+                if (usePlayerPrefs)
+                {
+                    SaveRefreshToken();
+                }
+                if (RefreshTokenCallback != null)
+                {
+                    RefreshTokenCallback.Invoke(this.loginData.RefreshToken);
+                }
+                if (this.maintainAccessTokenCoroutine == null)
+                {
+                    this.maintainAccessTokenCoroutine = this.coroutineRunner.Run(MaintainAccessToken());
+                }
+            }
             callback.Try(result);
         }
 
@@ -419,6 +534,33 @@ namespace AccelByte.Api
             previousRefreshBackoff = TimeSpan.FromSeconds(previousRefreshBackoff.Seconds * 2);
 
             return previousRefreshBackoff + TimeSpan.FromSeconds(randomNum);
+        }
+
+        private string LoadRefreshToken()
+        {
+            DeviceProvider deviceProvider = DeviceProvider.GetFromSystemInfo();
+            string token = PlayerPrefs.GetString(this.loginData.RefreshTokenKey);
+            var bytes = Convert.FromBase64String(token);
+            token = bytes.ToObject<string>();
+            return xorIt(deviceProvider.DeviceId, token);
+        }
+
+        private void SaveRefreshToken()
+        {
+            DeviceProvider deviceProvider = DeviceProvider.GetFromSystemInfo();
+            string token = xorIt(deviceProvider.DeviceId, this.loginData.RefreshToken);
+            token = Convert.ToBase64String(token.ToUtf8Json());
+            PlayerPrefs.SetString(this.loginData.RefreshTokenKey, token);
+            PlayerPrefs.Save();
+        }
+
+        private static string xorIt(string key, string input)
+        {
+            string xor = "";
+            for (int i = 0; i < input.Length; i++)
+                xor += (char)(input[i] ^ key[(i % key.Length)]);
+
+            return xor;
         }
     }
 }

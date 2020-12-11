@@ -115,7 +115,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
             Dictionary<string, int> latencies = new Dictionary<string, int>(1){{selectedRegion, selectedLatency}};
             if (!selectedRegion.IsNullOrEmpty() && selectedLatency > 0)
             {
-                lobbyLogic.abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
+                lobbyLogic.abLobby.StartMatchmaking(gameMode, LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
             }
             else
             {

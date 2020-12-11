@@ -64,13 +64,27 @@ namespace AccelByte.Core
                     {
                         if (error.errorCode == 0)
                         {
-                            return Result.CreateError((ErrorCode) response.Code);
+                            if (error.code == 0)
+                            {
+                                return Result.CreateError((ErrorCode)response.Code);
+                            }
+                            return Result.CreateError((ErrorCode)error.code, error.message);
                         }
 
-                        return Result.CreateError((ErrorCode) error.errorCode, error.errorMessage);
+                        if (error.messageVariables == null)
+                        {
+                            return Result.CreateError((ErrorCode)error.errorCode, error.errorMessage);
+                        }
+
+                        return Result.CreateError((ErrorCode)error.errorCode, error.errorMessage, error.messageVariables);
                     }
 
-                    return Result.CreateError((ErrorCode) error.numericErrorCode, error.errorMessage);
+                    if (error.messageVariables == null)
+                    {
+                        return Result.CreateError((ErrorCode)error.numericErrorCode, error.errorMessage);
+                    }
+
+                    return Result.CreateError((ErrorCode)error.numericErrorCode, error.errorMessage, error.messageVariables);
                 }
                 catch (Exception)
                 {
@@ -178,13 +192,27 @@ namespace AccelByte.Core
                     {
                         if (error.errorCode == 0)
                         {
-                            return Result<T>.CreateError((ErrorCode) response.Code);
+                            if (error.code == 0)
+                            {
+                                return Result<T>.CreateError((ErrorCode)response.Code);
+                            }
+                            return Result<T>.CreateError((ErrorCode)error.code, error.message);
                         }
 
-                        return Result<T>.CreateError((ErrorCode) error.errorCode, error.errorMessage);
+                        if (error.messageVariables == null)
+                        {
+                            return Result<T>.CreateError((ErrorCode)error.errorCode, error.errorMessage);
+                        }
+
+                        return Result<T>.CreateError((ErrorCode)error.errorCode, error.errorMessage, error.messageVariables);
                     }
 
-                    return Result<T>.CreateError((ErrorCode) error.numericErrorCode, error.errorMessage);
+                    if (error.messageVariables == null)
+                    {
+                        return Result<T>.CreateError((ErrorCode)error.numericErrorCode, error.errorMessage);
+                    }
+
+                    return Result<T>.CreateError((ErrorCode)error.numericErrorCode, error.errorMessage, error.messageVariables);
                 }
                 catch (Exception)
                 {
