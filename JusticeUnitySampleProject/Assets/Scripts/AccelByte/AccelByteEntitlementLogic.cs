@@ -512,7 +512,7 @@ public class AccelByteEntitlementLogic : MonoBehaviour
         {
                 new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Hat, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutHats),
                 new Tuple<Equipments.Type, List<EntitlementInfo>, InventoryGridLayout>(Equipments.Type.Effect, new List<EntitlementInfo>(), UIHandlerEntitlementComponent.gridLayoutEffects)
-            };
+        };
 
         // Insert entitlement for each kind of tag / equipment type
         foreach (var entitlement in results)

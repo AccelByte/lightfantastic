@@ -1,3 +1,4 @@
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -33,3 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(Steamworks.Version.SteamworksNETVersion)]
 [assembly: AssemblyFileVersion(Steamworks.Version.SteamworksNETVersion)]
+#endif //UNITY_STANDALONE

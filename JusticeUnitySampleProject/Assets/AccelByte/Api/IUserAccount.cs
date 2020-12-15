@@ -11,11 +11,16 @@ namespace AccelByte.Api
     internal interface IUserAccount
     {
         IEnumerator Register(RegisterUserRequest registerUserRequest, ResultCallback<RegisterUserResponse> callback);
+
+        IEnumerator Registerv2(RegisterUserRequestv2 registerUserRequest, ResultCallback<RegisterUserResponse> callback);
+
         IEnumerator GetData(ResultCallback<UserData> callback);
 
         IEnumerator Update(UpdateUserRequest updateUserRequest, ResultCallback<UserData> callback);
 
         IEnumerator Upgrade(string username, string password, ResultCallback<UserData> callback);
+
+        IEnumerator Upgradev2(string emailAddress, string username, string password, ResultCallback<UserData> callback);
 
         IEnumerator UpgradeWithPlayerPortal(string returnUrl, int ttl, ResultCallback<UpgradeUserRequest> callback);
 
@@ -29,11 +34,13 @@ namespace AccelByte.Api
 
         IEnumerator LinkOtherPlatform(PlatformType platformType, string ticket, ResultCallback callback);
 
+        IEnumerator ForcedLinkOtherPlatform(PlatformType platformType, string platformUserId, ResultCallback callback);
+
         IEnumerator UnlinkOtherPlatform(PlatformType platformType, ResultCallback callback);
 
         IEnumerator GetPlatformLinks(ResultCallback<PagedPlatformLinks> callback);
 
-        IEnumerator SearchUsers(string emailOrDisplayName, ResultCallback<PagedPublicUsersInfo> callback);
+        IEnumerator SearchUsers(string query, SearchType by, ResultCallback<PagedPublicUsersInfo> callback);
 
         IEnumerator GetUserByUserId(string userId, ResultCallback<UserData> callback);
 

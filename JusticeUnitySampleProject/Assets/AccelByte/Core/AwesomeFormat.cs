@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
-using MessageType = AccelByte.Models.MessageType;
+using AccelByte.Models;
 
 namespace AccelByte.Core
 {
@@ -43,9 +44,15 @@ namespace AccelByte.Core
             {
                 writer.WriteLine();
 
+                string fieldName = ((DataMemberAttribute) fieldInfo.GetCustomAttribute(typeof(DataMemberAttribute))).Name; 
+                if (string.IsNullOrEmpty(fieldName))
+                {
+                    fieldName = fieldInfo.Name;
+                }
+
                 if (fieldInfo.FieldType.IsArray)
                 {
-                    writer.Write("{0}: [", fieldInfo.Name);
+                    writer.Write("{0}: [", fieldName);
 
                     Array items = (Array) fieldInfo.GetValue(inputPayload);
 
@@ -59,16 +66,16 @@ namespace AccelByte.Core
                 }
                 else if (fieldInfo.FieldType.IsPrimitive || fieldInfo.FieldType == typeof(string))
                 {
-                    writer.Write("{0}: {1}", fieldInfo.Name, fieldInfo.GetValue(inputPayload));
+                    writer.Write("{0}: {1}", fieldName, fieldInfo.GetValue(inputPayload));
                 }
                 else if (fieldInfo.FieldType == typeof(DateTime))
                 {
                     DateTime inputValue = ((DateTime) fieldInfo.GetValue(inputPayload)).ToUniversalTime();
-                    writer.Write("{0}: {1:O}", fieldInfo.Name, inputValue);
+                    writer.Write("{0}: {1:O}", fieldName, inputValue);
                 }
                 else
                 {
-                    writer.Write("{0}: {1:G}", fieldInfo.Name, fieldInfo.GetValue(inputPayload));
+                    writer.Write("{0}: {1:G}", fieldName, fieldInfo.GetValue(inputPayload));
                 }
             }
         }
@@ -181,7 +188,7 @@ namespace AccelByte.Core
 
                 if (!fields.TryGetValue(fieldInfo.Name, out fieldValue))
                 {
-                    return ErrorCode.MessageFieldDoesNotExist;
+                    continue;
                 }
 
                 if (fieldInfo.FieldType.IsArray)
@@ -201,8 +208,15 @@ namespace AccelByte.Core
                         {
                             for (int i = 0; i < array.Length; i++)
                             {
-                                var parsedValue = Convert.ChangeType(strItems[i], fieldInfo.FieldType.GetElementType());
-                                array.SetValue(parsedValue, i);
+                                var parsedValue = Convert.ChangeType(strItems[i].Trim(' '), fieldInfo.FieldType.GetElementType());
+                                if (fieldInfo.FieldType.GetElementType() == typeof(string))
+                                {
+                                    array.SetValue(Uri.UnescapeDataString((string)parsedValue), i);
+                                }
+                                else
+                                {
+                                    array.SetValue(parsedValue, i);
+                                }
                             }
 
                             fieldInfo.SetValue(payload, array);
@@ -215,7 +229,7 @@ namespace AccelByte.Core
                 }
                 else if (fieldInfo.FieldType == typeof(string))
                 {
-                    fieldInfo.SetValue(payload, fieldValue);
+                    fieldInfo.SetValue(payload, Uri.UnescapeDataString(fieldValue));
                 }
                 else if (fieldInfo.FieldType.IsPrimitive)
                 {
@@ -253,6 +267,18 @@ namespace AccelByte.Core
                         var obj = Activator.CreateInstance(fieldInfo.FieldType);
                         obj = Enum.Parse(fieldInfo.FieldType, fieldValue);
                         fieldInfo.SetValue(payload, obj);
+                    }
+                    catch (Exception)
+                    {
+                        return ErrorCode.MessageFieldConversionFailed;
+                    }
+                }
+                else if (fieldInfo.FieldType == typeof(Dictionary<string, object>)) // Used by party storage
+                {
+                    try
+                    {
+                        var convertedValue = Utf8Json.JsonSerializer.Deserialize<Dictionary<string, object>>(fieldValue);
+                        fieldInfo.SetValue(payload, convertedValue);
                     }
                     catch (Exception)
                     {

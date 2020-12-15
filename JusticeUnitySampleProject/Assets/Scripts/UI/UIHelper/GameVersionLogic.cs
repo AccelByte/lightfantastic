@@ -11,6 +11,7 @@ using UnityEngine.UI;
 public class GameVersionLogic : MonoBehaviour
 {
     [SerializeField] private Text gameVersion;
+    [SerializeField] private Text gameServerVersion;
     [SerializeField] private Text sdkVersion;
     [SerializeField] private Text environment;
     
@@ -19,6 +20,7 @@ public class GameVersionLogic : MonoBehaviour
         MainThreadTaskRunner.Instance.Run(delegate
         {
             gameVersion.text = "Game Version: " + LightFantasticConfig.GAME_VERSION;
+            gameServerVersion.text = "Server Version: " + LightFantasticConfig.DS_TARGET_VERSION;
             sdkVersion.text = "SDK Version: " + LightFantasticConfig.SDK_VERSION;
             environment.text = "Environment: " + AccelBytePlugin.Config.BaseUrl;
         });

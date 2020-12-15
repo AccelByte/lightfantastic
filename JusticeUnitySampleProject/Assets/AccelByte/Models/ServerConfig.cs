@@ -15,6 +15,10 @@ namespace AccelByte.Models {
         [DataMember] public string StatisticServerUrl { get; set; }
         [DataMember] public string PlatformServerUrl { get; set; }
         [DataMember] public string QosManagerServerUrl { get; set; }
+        [DataMember] public string GameTelemetryServerUrl { get; set; }
+        [DataMember] public string AchievementServerUrl { get; set; }
+        [DataMember] public string LobbyServerUrl { get; set; }
+        [DataMember] public string CloudSaveServerUrl { get; set; }
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
         [DataMember] public string RedirectUri { get; set; }
@@ -49,6 +53,14 @@ namespace AccelByte.Models {
                 if (this.StatisticServerUrl == null) this.StatisticServerUrl = httpBaseUrl + "/statistic";
 
                 if (this.QosManagerServerUrl == null) this.QosManagerServerUrl = httpBaseUrl + "/qosm";
+
+                if (this.GameTelemetryServerUrl == null) this.GameTelemetryServerUrl = httpBaseUrl + "/game-telemetry";
+
+                if (this.AchievementServerUrl == null) this.AchievementServerUrl = httpBaseUrl + "/achievement";
+
+                if (this.LobbyServerUrl == null) this.LobbyServerUrl = httpBaseUrl + "/lobby";
+
+                if (this.CloudSaveServerUrl == null) this.CloudSaveServerUrl = httpBaseUrl + "/cloudsave";
             }
         }
 
@@ -74,6 +86,14 @@ namespace AccelByte.Models {
                 if (this.StatisticServerUrl == httpBaseUrl + "/statistic") this.StatisticServerUrl = null;
 
                 if (this.QosManagerServerUrl == httpBaseUrl + "/qosm") this.QosManagerServerUrl = null;
+
+                if (this.GameTelemetryServerUrl == httpBaseUrl + "/game-telemetry") this.GameTelemetryServerUrl = null;
+
+                if (this.AchievementServerUrl == httpBaseUrl + "/achievement") this.AchievementServerUrl = null;
+
+                if (this.LobbyServerUrl == httpBaseUrl + "/lobby") this.LobbyServerUrl = null;
+
+                if (this.CloudSaveServerUrl == httpBaseUrl + "/cloudsave") this.CloudSaveServerUrl = null;
             }
         }
     }

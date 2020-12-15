@@ -3,14 +3,12 @@
 // and restrictions contact your company contract manager.
 
 using System.Text;
-using Utf8Json;
 using AccelByte.Models;
+using UnityEngine;
+using Utf8Json;
 
 namespace AccelByte.Api
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
 #if UNITY_EDITOR
     [UnityEditor.InitializeOnLoad]
 #endif
@@ -82,12 +80,6 @@ namespace AccelByte.Api
             set { AccelByteSettings.Instance.config.CloudStorageServerUrl = value; }
         }
 
-        public static string TelemetryServerUrl
-        {
-            get { return AccelByteSettings.Instance.config.TelemetryServerUrl; }
-            set { AccelByteSettings.Instance.config.TelemetryServerUrl = value; }
-        }
-
         public static string GameProfileServerUrl
         {
             get { return AccelByteSettings.Instance.config.GameProfileServerUrl; }
@@ -106,6 +98,36 @@ namespace AccelByte.Api
             set { AccelByteSettings.Instance.config.CloudSaveServerUrl = value; }
         }
 
+        public static string AchievementServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.AchievementServerUrl; }
+            set { AccelByteSettings.Instance.config.AchievementServerUrl = value; }
+        }
+
+        public static string GroupServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.GroupServerUrl; }
+            set { AccelByteSettings.Instance.config.GroupServerUrl = value; }
+        }
+        
+        public static string AgreementServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.AgreementServerUrl; }
+            set { AccelByteSettings.Instance.config.AgreementServerUrl = value; }
+        }
+
+        public static string LeaderboardServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.LeaderboardServerUrl; }
+            set { AccelByteSettings.Instance.config.LeaderboardServerUrl = value; }
+        }
+
+        public static string GameTelemetryServerUrl
+        {
+            get { return AccelByteSettings.Instance.config.GameTelemetryServerUrl; }
+            set { AccelByteSettings.Instance.config.GameTelemetryServerUrl = value; }
+        }
+
         public static string ClientId
         {
             get { return AccelByteSettings.Instance.config.ClientId; }
@@ -122,6 +144,18 @@ namespace AccelByte.Api
         {
             get { return AccelByteSettings.Instance.config.RedirectUri; }
             set { AccelByteSettings.Instance.config.RedirectUri = value; }
+        }
+
+        public static string AppId
+        {
+            get { return AccelByteSettings.Instance.config.AppId; }
+            set { AccelByteSettings.Instance.config.AppId = value; }
+        }
+
+        public static string PublisherNamespace
+        {
+            get { return AccelByteSettings.instance.config.PublisherNamespace; }
+            set { AccelByteSettings.instance.config.PublisherNamespace = value; }
         }
 
         private Config config;

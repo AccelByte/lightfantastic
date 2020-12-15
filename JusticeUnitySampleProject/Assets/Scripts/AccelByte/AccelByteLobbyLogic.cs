@@ -299,10 +299,11 @@ public class AccelByteLobbyLogic : MonoBehaviour
     /// Callback when disconnected from lobby service
     /// Clean up the lobby menu and logout from IAM
     /// </summary>
-    private void OnDisconnectNotificationReceived()
+    private void OnDisconnectNotificationReceived(WsCloseCode closeCode)
     {
         UIElementHandler.ShowLoadingPanel();
         CleanupLobbyUI();
+        Debug.Log("Lobby Disconnected, code: " + closeCode + " | " + closeCode.ToString());
         AccelByteManager.Instance.AuthLogic.Logout();
     }
     #endregion

@@ -29,7 +29,7 @@ namespace AccelByte.Api
         /// <summary>
         /// Raised when lobby is disconnected
         /// </summary>
-        public event Action Disconnected;
+        public event Action<WsCloseCode> Disconnected;
 
         /// <summary>
         /// Raised when a user is invited to party
@@ -52,14 +52,19 @@ namespace AccelByte.Api
         public event ResultCallback<LeaveNotification> LeaveFromParty;
 
         /// <summary>
+        /// Raised when a user reject party invitation
+        /// </summary>
+        public event ResultCallback<PartyRejectNotif> RejectedPartyInvitation;
+
+        /// <summary>
         /// Raised when personal chat message received.
         /// </summary>
-        public event ResultCallback<ChatMesssage> PersonalChatReceived;
+        public event ResultCallback<ChatMessage> PersonalChatReceived;
 
         /// <summary>
         /// Raised when party chat message received.
         /// </summary>
-        public event ResultCallback<ChatMesssage> PartyChatReceived;
+        public event ResultCallback<ChatMessage> PartyChatReceived;
 
         /// <summary>
         /// Raised when a notification (usually from the system or admin) is received.
@@ -97,6 +102,26 @@ namespace AccelByte.Api
         public event ResultCallback<DsNotif> DSUpdated;
 
         public event ResultCallback<RematchmakingNotification> RematchmakingNotif;
+        
+        /// <summary>
+        /// Raised when there's an update in the party's storage.
+        /// </summary>
+        public event ResultCallback<PartyDataUpdateNotif> PartyDataUpdateNotif;
+
+        /// <summary>
+        /// Raised when channel chat message received.
+        /// </summary>
+        public event ResultCallback<ChannelChatMessage> ChannelChatReceived;
+
+        /// <summary>
+        /// Raised when player is blocked.
+        /// </summary>
+        public event ResultCallback<PlayerBlockedNotif> PlayerBlockedNotif;
+        
+        /// <summary>
+        /// Raised when player is unblocked.
+        /// </summary>
+        public event ResultCallback<PlayerUnblockedNotif> PlayerUnblockedNotif;
 
         private readonly int pingDelay;
         private readonly int backoffDelay;
@@ -114,8 +139,11 @@ namespace AccelByte.Api
         private readonly object syncToken = new object();
         private readonly IWebSocket webSocket;
         private bool reconnectsOnClose;
+        private WsCloseCode wsCloseCode = WsCloseCode.NotSet;
         private long id;
+        private LobbySessionId lobbySessionId;
         private Coroutine maintainConnectionCoroutine;
+        private string channelSlug = null;
 
         public event EventHandler OnRetryAttemptFailed;
 
@@ -136,6 +164,7 @@ namespace AccelByte.Api
             this.maxDelay = maxDelay;
             this.totalTimeout = totalTimeout;
             this.reconnectsOnClose = false;
+            this.lobbySessionId = new LobbySessionId();
 
             this.webSocket.OnOpen += HandleOnOpen;
             this.webSocket.OnMessage += HandleOnMessage;
@@ -159,12 +188,33 @@ namespace AccelByte.Api
                 throw new Exception("Cannot connect to websocket because user is not logged in.");
             }
 
-            this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
-            StartMaintainConnection();
+            if (this.IsConnected)
+            {
+                Debug.LogWarning("[Lobby] already connected");
+                return;
+            }
+            
+            if (this.webSocket.ReadyState == WsState.Connecting)
+            {
+                Debug.LogWarning("[Lobby] lobby is connecting");
+                return;
+            }
+
+            this.wsCloseCode = WsCloseCode.NotSet;
+            this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken, this.lobbySessionId.lobbySessionID);
+
+            // check status after connect, only maintain connection when close code is reconnectable
+            if (this.wsCloseCode == WsCloseCode.NotSet || isReconnectable(this.wsCloseCode))
+            {
+                StartMaintainConnection();
+            }
         }
 
         private void StartMaintainConnection()
         {
+#if DEBUG
+            Debug.Log("[Lobby] Start Maintaining connection: " + wsCloseCode);
+#endif
             this.reconnectsOnClose = true;
             this.maintainConnectionCoroutine = this.coroutineRunner.Run(
                 MaintainConnection(this.backoffDelay, this.maxDelay, this.totalTimeout));
@@ -172,12 +222,16 @@ namespace AccelByte.Api
 
         private void StopMaintainConnection()
         {
+#if DEBUG
+            Debug.Log("[Lobby] Stop Maintaining connection: " + wsCloseCode);
+#endif
             this.reconnectsOnClose = false;
 
             if (this.maintainConnectionCoroutine == null) return;
 
             this.coroutineRunner.Stop(this.maintainConnectionCoroutine);
             this.maintainConnectionCoroutine = null;
+            this.channelSlug = null;
         }
 
         /// <summary>
@@ -217,14 +271,21 @@ namespace AccelByte.Api
                     System.Random rand = new System.Random();
                     int nextDelay = backoffDelay;
                     var firstClosedTime = DateTime.Now;
+                    var timeout = TimeSpan.FromSeconds(totalTimeout / 1000f);
 
                     while (this.reconnectsOnClose &&
                         this.webSocket.ReadyState == WsState.Closed &&
-                        DateTime.Now - firstClosedTime < TimeSpan.FromSeconds(totalTimeout))
+                        DateTime.Now - firstClosedTime < timeout)
                     {
-                        this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken);
+                        // debug ws connection
+#if DEBUG
+                        Debug.Log("[WS] Re-Connecting");
+#endif
+                        this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken, this.lobbySessionId.lobbySessionID);
                         float randomizedDelay = (float) (nextDelay + ((rand.NextDouble() * 0.5) - 0.5));
-
+#if DEBUG
+                        Debug.Log("[WS] Next reconnection in: " + randomizedDelay);
+#endif
                         yield return new WaitForSeconds(randomizedDelay / 1000f);
 
                         nextDelay *= 2;
@@ -335,6 +396,18 @@ namespace AccelByte.Api
         }
 
         /// <summary>
+        /// Reject a party invitation.
+        /// </summary>
+        /// <param name="partyId">Party ID of an incoming party invitation that will be declined.</param>
+        /// <param name="invitationToken">Invitation token of an incoming party invitation that will be declined.</param>
+        /// <param name="callback">Returns a Result via callback when completed.</param>
+        public void RejectPartyInvitation(string partyId, string invitationToken, ResultCallback<PartyRejectResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(MessageType.partyRejectRequest, new PartyRejectRequest{invitationToken = invitationToken, partyID =  partyId}, callback);
+        }
+
+        /// <summary>
         /// Send chat to other party members
         /// </summary>
         /// <param name="chatMessage">Message to send to party</param>
@@ -371,7 +444,7 @@ namespace AccelByte.Api
             Report.GetFunctionLog(this.GetType().Name);
             SendRequest(
                 MessageType.setUserStatusRequest,
-                new SetUserStatusRequest {availability = (uint) status, activity = activity},
+                new SetUserStatusRequest {availability = (uint) status, activity = Uri.EscapeDataString(activity)},//Escape the string first for customizable string
                 callback);
         }
 
@@ -517,6 +590,30 @@ namespace AccelByte.Api
         }
 
         /// <summary>
+        /// Send request get user presence in bulk.
+        /// </summary>
+        /// <param name="userIds">requested userIds</param>
+        /// <param name="callback">Returns a Result that contains BulkUserStatusNotif via callback when completed.</param>
+        public void BulkGetUserPresence(string[] userIds, ResultCallback<BulkUserStatusNotif> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+
+            this.coroutineRunner.Run(
+                this.api.BulkGetUserPresence(
+                    this.@namespace,
+                    userIds,
+                    this.session.AuthorizationToken,
+                    callback));
+        }
+
+        /// <summary>
         /// Send matchmaking start request.
         /// </summary>
         /// <param name="gameMode">Target matchmaking game mode</param>
@@ -569,11 +666,10 @@ namespace AccelByte.Api
         /// Send matchmaking start request.
         /// </summary>
         /// <param name="gameMode">Target matchmaking game mode</param>
-        /// <param name="serverName">Server name to do match in Local DS</param>
         /// <param name="clientVersion">Game client version to ensure match with the same version</param>
         /// <param name="latencies">Server latencies based on regions</param>
         /// <param name="callback">Result of the function with a start matchmaking status code.</param>
-        public void StartMatchmaking(string gameMode, string serverName, string clientVersion,
+        public void StartMatchmaking(string gameMode, string clientVersion,
             Dictionary<string, int> latencies, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
@@ -586,9 +682,63 @@ namespace AccelByte.Api
                 new StartMatchmakingRequest
                 {
                     gameMode = gameMode,
-                    serverName = serverName,
                     clientVersion = clientVersion,
                     latencies = strLatencies
+                },
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="latencies">Server latencies based on regions</param>
+        /// <param name="partyAttributes"></param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string clientVersion,
+            Dictionary<string, int> latencies, Dictionary<string, object> partyAttributes, ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            string strLatencies = "{" +
+                string.Join(",", latencies.Select(pair => $@"""{pair.Key}"":{pair.Value}").ToArray()) +
+                "}";
+            var jsonAttributeString = partyAttributes.ToJsonString();
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    clientVersion = clientVersion,
+                    latencies = strLatencies,
+                    partyAttributes = jsonAttributeString
+                },
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="partyAttributes"></param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, string clientVersion, Dictionary<string, object> partyAttributes, ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            var jsonAttributeString = partyAttributes.ToJsonString();
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    serverName = serverName,
+                    clientVersion = clientVersion,
+                    partyAttributes = jsonAttributeString
                 },
                 callback);
         }
@@ -616,6 +766,179 @@ namespace AccelByte.Api
                 MessageType.cancelMatchmakingRequest,
                 new StartMatchmakingRequest {gameMode = gameMode},
                 callback);
+        }
+
+        /// <summary>
+        /// Send Join default global chat channel request.
+        /// </summary>
+        /// <param name="callback">Returns a Result that contains ChatChannelSlug via callback when completed.</param>
+        public void JoinDefaultChatChannel(ResultCallback<ChatChannelSlug> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest<ChatChannelSlug>(MessageType.joinDefaultChannelRequest, result => 
+            {
+                if (result.IsError)
+                {
+                    callback.TryError(result.Error);
+                }
+                else
+                {
+                    channelSlug = result.Value.channelSlug;
+                    callback.Try(result);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Send a Chat Message to a Global Chat Channel.
+        /// </summary>
+        /// <param name="chatMessage">Message to send to the channel</param>
+        /// <param name="callback">Returns a Result via callback when completed</param>
+        public void SendChannelChat(string chatMessage, ResultCallback callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            if (string.IsNullOrEmpty(channelSlug))
+            {
+                callback.TryError(ErrorCode.InvalidRequest, "You're not in any chat channel.");
+            }
+            else
+            {
+                SendRequest(MessageType.sendChannelChatRequest, new ChannelChatRequest
+                {
+                    channelSlug = channelSlug,
+                    payload = chatMessage
+                }, callback);
+            }
+        }
+
+        /// <summary>
+        /// Get party storage by party ID.
+        /// </summary>
+        /// <param name="partyId">Targeted party ID.</param>
+        /// <param name="callback">Returns a Result via callback when completed.</param>
+        public void GetPartyStorage(string partyId, ResultCallback<PartyDataUpdateNotif> callback)
+        {
+            Assert.IsFalse(string.IsNullOrEmpty(partyId), "Party ID should not be null.");
+
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+            this.coroutineRunner.Run(
+                this.api.GetPartyStorage(
+                    this.@namespace,
+                    this.session.AuthorizationToken,
+                    partyId,
+                    callback));
+        }
+
+        /// <summary>
+        /// Block the specified player from doing some action against current user.
+        /// The specified player will be removed from current user's friend list too.
+        /// 
+        /// Actions that prevented to do each other:
+        /// * add friend
+        /// * direct chat
+        /// * invite to party 
+        /// * invite to group
+        /// * matchmaking result as one alliance 
+        ///
+        /// Additional limitation:
+        /// * blocked player cannot access blocker/current user's UserProfile.
+        /// 
+        /// </summary>
+        /// <param name="userId">Blocked user's user ID</param>
+        /// <param name="callback">Returns a result via callback when completed</param>
+        public void BlockPlayer(string userId, ResultCallback<BlockPlayerResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(MessageType.blockPlayerRequest, new BlockPlayerRequest
+            {
+                userId = this.session.UserId,
+                blockedUserId = userId,
+                Namespace = @namespace
+            }, callback);
+        }
+
+
+        /// <summary>
+        /// Unblock the specified player and allow it to some action against current user again.
+        /// 
+        /// Allow each other to:
+        /// * add friend
+        /// * direct chat
+        /// * invite to party 
+        /// * invite to group
+        /// * matchmaking result as one alliance 
+        ///
+        /// Additional limitation:
+        /// * unblocked player can access blocker/current user's UserProfile.
+        /// 
+        /// </summary>
+        /// <param name="userId">Unblocked user's user ID</param>
+        /// <param name="callback">Returns a result via callback when completed</param>
+        public void UnblockPlayer(string userId, ResultCallback<UnblockPlayerResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(MessageType.unblockPlayerRequest, new UnblockPlayerRequest
+            {
+                userId = this.session.UserId,
+                unblockedUserId = userId,
+                Namespace = @namespace
+            }, callback);
+        }
+
+        
+        public void GetListOfBlockedUser(ResultCallback<BlockedList> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+            this.coroutineRunner.Run(
+                this.api.GetListOfBlockedUser(
+                    this.@namespace,
+                    this.session.AuthorizationToken,
+                    this.session.UserId,
+                    callback));
+        }
+
+        
+        public void GetListOfBlocker(ResultCallback<BlockerList> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+            this.coroutineRunner.Run(
+                this.api.GetListOfBlocker(
+                    this.@namespace,
+                    this.session.AuthorizationToken,
+                    this.session.UserId,
+                    callback));
+        }
+
+        public void SetProfanityFilterLevel(ProfanityFilterLevel level, ResultCallback callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(MessageType.setSessionAttributeRequest, new SetSessionAttributeRequest()
+            {
+                Namespace = this.@namespace,
+                key = SessionAttributeName.profanity_filtering_level.ToString(),
+                value = level.ToString()
+            }, callback);
         }
 
         private long GenerateId()
@@ -733,6 +1056,10 @@ namespace AccelByte.Api
 
         private void HandleOnOpen()
         {
+            // debug ws connection
+#if DEBUG
+            Debug.Log("[WS] Connection open");
+#endif
             this.coroutineRunner.Run(
                 () =>
                 {
@@ -747,19 +1074,26 @@ namespace AccelByte.Api
 
         private void HandleOnClose(ushort closecode)
         {
+            // debug ws connection
+#if DEBUG
+            Debug.Log("[WS] Connection close: " + closecode);
+#endif
+            var code = (WsCloseCode)closecode;
+            this.wsCloseCode = code;
             this.coroutineRunner.Run(
                 () =>
                 {
-                    StopMaintainConnection();
-
-                    Action handler = this.Disconnected;
+                    if (!isReconnectable(code))
+                    {
+                        StopMaintainConnection();
+                    }
+                    
+                    Action<WsCloseCode> handler = this.Disconnected;
 
                     if (handler != null)
                     {
-                        handler();
+                        handler(code);
                     }
-
-                    ;
                 });
         }
 
@@ -829,10 +1163,27 @@ namespace AccelByte.Api
                 Lobby.HandleNotification(message, this.RematchmakingNotif);
 
                 break;
-            case MessageType.connectNotif: break;
+            case MessageType.channelChatNotif:
+                Lobby.HandleNotification(message, this.ChannelChatReceived);
+
+                break;
+            case MessageType.connectNotif:
+                AwesomeFormat.ReadPayload(message, out lobbySessionId);
+                break;
             case MessageType.disconnectNotif:
                 Lobby.HandleNotification(message, this.Disconnecting);
-
+                break;
+            case MessageType.partyDataUpdateNotif:
+                Lobby.HandleNotification(message, this.PartyDataUpdateNotif);
+                break;
+            case MessageType.partyRejectNotif:
+                Lobby.HandleNotification(message, this.RejectedPartyInvitation);
+                break;
+            case MessageType.blockPlayerNotif:
+                Lobby.HandleNotification(message, this.PlayerBlockedNotif);
+                break;
+            case MessageType.unblockPlayerNotif:
+                Lobby.HandleNotification(message, this.PlayerUnblockedNotif);
                 break;
             default:
                 Action<ErrorCode, string> handler;
@@ -866,6 +1217,19 @@ namespace AccelByte.Api
             else
             {
                 handler(Result<T>.CreateOk(payload));
+            }
+        }
+
+        private bool isReconnectable(WsCloseCode code)
+        {
+            switch (code)
+            {
+                case WsCloseCode.Abnormal:
+                case WsCloseCode.ServerError:
+                case WsCloseCode.ServiceRestart:
+                case WsCloseCode.TryAgainLater:
+                case WsCloseCode.TlsHandshakeFailure: return true;
+                default: return false;
             }
         }
     }

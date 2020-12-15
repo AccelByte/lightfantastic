@@ -1,6 +1,13 @@
 # Changelog
+## 0.0.10 (2020-12-01)
+### Added
+- Login
+  - WithOtherPlatform
+    - Add Stadia
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.0.10](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.10%0D0.0.9) (2020-12-10)
 
 ### [0.0.9](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/v0.0.9%0Dv0.0.8) (2020-09-16)
 

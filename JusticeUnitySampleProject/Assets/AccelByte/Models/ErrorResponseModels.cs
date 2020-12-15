@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace AccelByte.Models
 {
     [DataContract]
     public class ServiceError
     {
-        [DataMember] public int numericErrorCode { get; set; }
+        [DataMember] public long code { get; set; }
         [DataMember] public long errorCode { get; set; }
+        [DataMember] public int numericErrorCode { get; set; }
         [DataMember] public string errorMessage { get; set; }
+        [DataMember] public string message { get; set; }
+        [DataMember] public object messageVariables { get; set; }
     }
 
     [DataContract]
