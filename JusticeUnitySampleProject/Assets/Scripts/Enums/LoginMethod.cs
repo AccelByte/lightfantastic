@@ -10,5 +10,6 @@ public enum E_LoginType
 {
     Username,
     Steam,
-    Launcher
+    Launcher,
+    Stadia
 }

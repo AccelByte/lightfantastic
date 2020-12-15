@@ -1510,6 +1510,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1500485539}
     m_Modifications:
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 401527171708704586, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4698400671622531846, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1583,7 +1613,7 @@ PrefabInstance:
     - target: {fileID: 4698400671622531846, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 45
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4698400671622531846, guid: 2ca5fcdd73e9a5849866e35c1969e60f,
         type: 3}
@@ -2915,7 +2945,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f62455f26600c4e9af36d0807b2c8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steamAuth: {fileID: 2006644180}
   useSteam: 0
   cmdLine: {fileID: 2006644179}
 --- !u!4 &2006644170

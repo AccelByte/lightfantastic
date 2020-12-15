@@ -2,6 +2,8 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+#define FORCE_PROVIDER_AWS
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,7 +117,22 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
             Dictionary<string, int> latencies = new Dictionary<string, int>(1){{selectedRegion, selectedLatency}};
             if (!selectedRegion.IsNullOrEmpty() && selectedLatency > 0)
             {
+#if FORCE_PROVIDER_AWS
+                Dictionary<string, int> availableRegion = new Dictionary<string, int>();
+                foreach (KeyValuePair<string, int> region in latencies)
+                {
+                    Debug.Log("[LobbyLogic] FindMatch region :" + region.Key + " latency: " + region.Value);
+                    if (region.Key == "ap-southeast-1" || region.Key == "us-west-2")
+                    {
+                        Debug.Log("[LobbyLogic] FindMatch FORCE connect to region :" + region.Key + " latency: " + region.Value);
+                        availableRegion.Add(region.Key,region.Value);
+                    }
+                }
+                lobbyLogic.abLobby.StartMatchmaking(gameMode, LightFantasticConfig.DS_TARGET_VERSION, availableRegion, OnFindMatch);
+                return;
+#else
                 lobbyLogic.abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
+#endif //FORCE_PROVIDER_AWS
             }
             else
             {

@@ -2,7 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
-using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace AccelByte.Models
@@ -24,6 +24,7 @@ namespace AccelByte.Models
     {
         [DataMember] public float point { get; set; }
         [DataMember] public string userId { get; set; }
+        [DataMember] public Dictionary<string, object> additionalData { get; set; }
     }
 
     [DataContract]
@@ -31,6 +32,7 @@ namespace AccelByte.Models
     {
         [DataMember] public float point { get; set; }
         [DataMember] public int rank { get; set; }
+        [DataMember] public Dictionary<string, object> additionalData {get; set;}
     }
 
     [DataContract]
@@ -48,6 +50,22 @@ namespace AccelByte.Models
     public class LeaderboardRankingResult
     {
         [DataMember] public UserPoint[] data { get; set; }
+        [DataMember] public Paging paging { get; set; }
+    }
+
+    [DataContract]
+    public class LeaderboardData
+    {
+        [DataMember] public string iconURL { get; set; }
+        [DataMember] public string leaderboardCode { get; set; }
+        [DataMember] public string name { get; set; }
+        [DataMember] public string statCode { get; set; }
+    }
+
+    [DataContract]
+    public class LeaderboardPagedList
+    {
+        [DataMember] public LeaderboardData[] data { get; set; }
         [DataMember] public Paging paging { get; set; }
     }
 }

@@ -9,6 +9,8 @@ namespace AccelByte.Models
 {
     public enum AuthenticationType { EMAILPASSWD, PHONEPASSWD }
 
+    public enum SearchType { ALL, EMAILADDRESS, DISPLAYNAME, USERNAME }
+
     [DataContract]
     public class TokenData
     {
@@ -87,6 +89,7 @@ namespace AccelByte.Models
         [DataMember(Name = "namespace")] public string namespace_ { get; set; }
         [DataMember] public string phoneNumber { get; set; }
         [DataMember] public string userId { get; set; }
+        [DataMember] public string userName { get; set; }
     }
 
     [DataContract]
@@ -108,6 +111,18 @@ namespace AccelByte.Models
     }
 
     [DataContract]
+    public class RegisterUserRequestv2
+    {
+        [DataMember] public AuthenticationType authType { get; set; }
+        [DataMember] public string country { get; set; }
+        [DataMember] public string dateOfBirth { get; set; }
+        [DataMember] public string displayName { get; set; }
+        [DataMember] public string emailAddress { get; set; }
+        [DataMember] public string password { get; set; }
+        [DataMember] public string username { get; set; }
+    }
+
+    [DataContract]
     public class RegisterUserResponse
     {
         [DataMember] public AuthenticationType authType { get; set; }
@@ -117,6 +132,7 @@ namespace AccelByte.Models
         [DataMember] public string emailAddress { get; set; }
         [DataMember(Name = "namespace")] public string namespace_ { get; set; }
         [DataMember] public string userId { get; set; }
+        [DataMember] public string username { get; set; }
     }
 
     [DataContract]
@@ -127,9 +143,10 @@ namespace AccelByte.Models
         [DataMember] public string displayName { get; set; }
         [DataMember] public string emailAddress { get; set; }
         [DataMember] public string languageTag { get; set; }
+        [DataMember] public string username { get; set; }
     }
 
-    public enum PlatformType { Steam, PS4, Live, Google, Facebook, Twitch, Oculus, Twitter, Device }
+    public enum PlatformType { Steam, PS4, Live, Stadia, Google, Facebook, Twitch, Oculus, Twitter, Device }
 
     [DataContract]
     public class PlatformLink
@@ -181,5 +198,35 @@ namespace AccelByte.Models
     public class UpgradeUserRequest
     {
         [DataMember] public string temporary_session_id { get; set; }
+    }
+
+    [DataContract]
+    public class AccountLinkedPlatform
+    {
+        [DataMember(Name = "namespace")] public string namespace_ { get; set; }
+        [DataMember] public string platformUserId { get; set; }
+    }
+
+    [DataContract]
+    public class AccountLinkPublisherAccount
+    {
+        [DataMember] public string userId { get; set; }
+        [DataMember(Name = "namespace")] public string namespace_ { get; set; }
+        [DataMember] public AccountLinkedPlatform[] linkedPlatforms { get; set; }
+
+    }
+
+    [DataContract]
+    public class AccountLinkConfictMessageVariables
+    {
+        [DataMember] public string platformUserID { get; set; }
+        [DataMember] public AccountLinkPublisherAccount[] publisherAccounts { get; set; }
+    }
+
+    [DataContract]
+    public class LinkPlatformAccountRequest
+    {
+        [DataMember] public string platformId { get; set; }
+        [DataMember] public string platformUserId { get; set; }
     }
 }

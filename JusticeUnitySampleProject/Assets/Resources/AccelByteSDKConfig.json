@@ -1,6 +1,8 @@
 {
   "Namespace": "<YOUR-GAME-NAMESPACE>",
+  "PublisherNamespace" : "<YOUR-PUBLISHER-NAMESPACE>",
   "UseSessionManagement": true,
+  "UsePlayerPrefs": false,
   "BaseUrl": "https://api.demo.accelbyte.io",
   "ApiBaseUrl": "https://api.demo.accelbyte.io",
   "NonApiBaseUrl": "https://demo.accelbyte.io",
@@ -10,12 +12,16 @@
   "BasicServerUrl": "https://api.demo.accelbyte.io/basic",
   "LobbyServerUrl": "wss://demo.accelbyte.io/lobby/",
   "CloudStorageServerUrl": "https://api.demo.accelbyte.io/binary-store",
-  "TelemetryServerUrl": "https://api.demo.accelbyte.io/telemetry",
   "StatisticServerUrl": "https://api.demo.accelbyte.io/statistic",
   "QosManagerServerUrl": "https://api.demo.accelbyte.io/qosm",
+  "AchievementServerUrl": "https://api.demo.accelbyte.io/achievement",
   "AgreementServerUrl": "https://api.demo.accelbyte.io/agreement",
   "LeaderboardServerUrl": "https://api.demo.accelbyte.io/leaderboard",
+  "CloudSaveServerUrl": "https://api.demo.accelbyte.io/cloudsave",
+  "GameTelemetryServerUrl": "https://api.demo.accelbyte.io/game-telemetry",
+  "GroupServerUrl":  "https://api.demo.accelbyte.io/group",
   "ClientId": "<YOUR-GAME-CLIENT-ID>",
   "ClientSecret": "<YOUR-GAME-CLIENT-SECRET>",
-  "RedirectUri": "http://127.0.0.1"
+  "RedirectUri": "http://127.0.0.1",
+  "AppId": "<Your-appID>"
 }
