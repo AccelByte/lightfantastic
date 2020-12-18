@@ -41,6 +41,8 @@ namespace ABRuntimeLogic
         public bool isUsingOtherPlatform;
         [SerializeField]
         private CommandLineArgs cmdLine;
+        [SerializeField]
+        private EosSDKAuth eosSdk;
 
         private AccelByteLobbyLogic abLobbyLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
@@ -64,6 +66,7 @@ namespace ABRuntimeLogic
             abUser = AccelBytePlugin.GetUser();
 
             useSteam = cmdLine.ParseCommandLine();
+            eosSdk.OnSuccessLogin = LoginWithEpicGames;
         }
 
         #region UI Listeners
@@ -131,6 +134,10 @@ namespace ABRuntimeLogic
         {
             // Bind Buttons
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
+            UIHandlerAuthComponent.epicGamesLoginButton.onClick.AddListener(delegate {
+                UIElementHandler.ShowLoadingPanel();
+                eosSdk.LoginEpic();
+            });
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
@@ -261,6 +268,21 @@ namespace ABRuntimeLogic
             else
             {
                 Debug.Log("LoginWithLauncher authCode is null");
+            }
+        }
+
+        //Attemps to login with Epic Games Account Portal
+        public void LoginWithEpicGames()
+        {
+            string accessToken = eosSdk.Token.AccessToken;
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                Debug.Log("Epic Games token is null");
+            }
+            else
+            {
+                loginType = E_LoginType.EpicGames;
+                abUser.LoginWithOtherPlatform(PlatformType.EpicGames, accessToken, OnLogin);
             }
         }
 
@@ -417,6 +439,10 @@ namespace ABRuntimeLogic
                 else if(loginType == E_LoginType.Stadia)
                 {
                     ShowErrorMessage(true, "Can't login from stadia");
+                }
+                else if (loginType == E_LoginType.EpicGames)
+                {
+                    ShowErrorMessage(true, "Can't login from epic games.");
                 }
             }
             else

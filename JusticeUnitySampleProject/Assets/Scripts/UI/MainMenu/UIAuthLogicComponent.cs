@@ -44,6 +44,7 @@ public class UIAuthLogicComponent : MonoBehaviour
 
     #region Buttons
     public Button loginButton;
+    public Button epicGamesLoginButton;
 
     public Button signUpButton;
     public Button registerButton;

@@ -6,18 +6,19 @@ using ABRuntimeLogic;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
+using System;
 using UnityEngine;
 
 public class EosSDKAuth : MonoBehaviour
 {
     // this data obtained from AccelByte's Epic Dev Portal, project name "Test"
-    private string productName = "Test";
-    private string productVersion = "0.1";
-    private string productId = "e1cb9512acd148a2b804b0a1f75e7c83";
-    private string sandboxId = "5e74a0e4dde243babbc5736719ebdc24";
-    private string deployId = "a3571065a6104a2190fe74f47d3ff6c9";
-    private string clientId = "xyza7891BtxBFeBZLz9EiPX4xy2Kmc88";
-    private string clientSecret = "xNdNkKUvc0T4hGAP4iYdrWmO4fo7f4kSbUjcRWbL+aQ";
+    private string productName = "Light Fantastic";
+    private string productVersion = "0.10";
+    private string productId = "3a8112abdb0d47d3b8c3797ac5e1bb7a";
+    private string sandboxId = "79af5e809cba48468ddafd1fe99298e2";
+    private string deployId = "d498322002d34da4af587494c52af9ba";
+    private string clientId = "xyza7891VgNARHnsLvUE9i7h0d7nZ6mX";
+    private string clientSecret = "zcFtzs/Q3EkimAqX9PP5NLcj6RVcHcjJ489KuoM/4Fk";
 
     private PlatformInterface platformInterface;
     private const float platformTickInterval = 0.2f;
@@ -29,6 +30,9 @@ public class EosSDKAuth : MonoBehaviour
     public LoginCredentialType loginCredentialType;
     public string loginCredId;
     public string loginCredToken;
+
+    private Action onSuccessLogin;
+    public Action OnSuccessLogin { set { onSuccessLogin = value; } }
 
     private void Start()
     {
@@ -93,6 +97,7 @@ public class EosSDKAuth : MonoBehaviour
             Debug.Log("[EOS SDK] Login Succeeded.");
             CopyUserAuthTokenOptions copyOpt = new CopyUserAuthTokenOptions();
             platformInterface.GetAuthInterface().CopyUserAuthToken(copyOpt, info.LocalUserId, out token);
+            onSuccessLogin?.Invoke();
         }
         else
         {
