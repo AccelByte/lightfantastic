@@ -992,7 +992,9 @@ MonoBehaviour:
   sessionId: {fileID: 1568697294}
   loginPanel: {fileID: 9058917506224982006}
   loginButton: {fileID: 9058917506918685205}
-  epicGamesLoginButton: {fileID: 586898165}
+  otherPlatformLoginText: {fileID: 7093256565074485973}
+  otherPlatformLoginButton:
+  - {fileID: 586898165}
   signUpButton: {fileID: 1109378337}
   registerButton: {fileID: 1413266003}
   fromRegister_BackToLoginButton: {fileID: 2108600713}
@@ -6957,7 +6959,7 @@ PrefabInstance:
     - target: {fileID: 2899528414883775963, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -289.7
+      value: -49
       objectReference: {fileID: 0}
     - target: {fileID: 2899528414883775963, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
@@ -6972,12 +6974,12 @@ PrefabInstance:
     - target: {fileID: 2899528414883775963, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 56.91
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 2899528414883775963, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 52.28
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 5307394872510809507, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
         type: 3}
@@ -7016,6 +7018,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a, type: 3}
+--- !u!114 &7093256565074485973 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5307394872510809507, guid: fcf1fc50b5b6d624e8a9bcd6aa41e35a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7093256565074485972}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7396598426194267129 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7633663897168523069, guid: 55e2127d3980f23488d22e30a947c680,

@@ -126,7 +126,7 @@ namespace ABRuntimeLogic
             {
                 UIHandlerAuthComponent.registerCountryDropdown.options = CountryObjectCacheToDropdown(AccelByteManager.Instance.countryObjectsCache);
             }
-            
+            ControlOtherPlatformButton();
             AddEventListeners();
         }
 
@@ -134,10 +134,15 @@ namespace ABRuntimeLogic
         {
             // Bind Buttons
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
-            UIHandlerAuthComponent.epicGamesLoginButton.onClick.AddListener(delegate {
+
+            // Bind other platform Buttons
+            Button[] buttons = UIHandlerAuthComponent.otherPlatformLoginButton;
+            // 0 index = EpicGames Login
+            buttons[0].onClick.AddListener(delegate {
                 UIElementHandler.ShowLoadingPanel();
                 eosSdk.LoginEpic();
             });
+            
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
@@ -163,6 +168,26 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
 
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+        }
+
+        void ControlOtherPlatformButton()
+        {
+            Button[] otherPlatformBtns = UIHandlerAuthComponent.otherPlatformLoginButton;
+#if UNITY_EDITOR || UNITY_STANDALONE
+            otherPlatformBtns[0].gameObject.SetActive(true);
+#else
+            otherPlatformBtns[0].gameObject.SetActive(false);
+#endif
+            bool hasActiveBtn = false;
+            for (int i = 0; i < otherPlatformBtns.Length; i++)
+            {
+                if (otherPlatformBtns[i].gameObject.activeInHierarchy)
+                {
+                    hasActiveBtn = true;
+                    break;
+                }
+            }
+            UIHandlerAuthComponent.otherPlatformLoginText.gameObject.SetActive(hasActiveBtn);
         }
         #endregion // UI Listeners
 
@@ -272,6 +297,7 @@ namespace ABRuntimeLogic
         }
 
         //Attemps to login with Epic Games Account Portal
+#if UNITY_EDITOR || UNITY_STANDALONE
         public void LoginWithEpicGames()
         {
             string accessToken = eosSdk.Token.AccessToken;
@@ -285,6 +311,7 @@ namespace ABRuntimeLogic
                 abUser.LoginWithOtherPlatform(PlatformType.EpicGames, accessToken, OnLogin);
             }
         }
+#endif
 
 #if UNITY_STADIA
         //Attempts to login with stadia

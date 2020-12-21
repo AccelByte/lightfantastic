@@ -11,7 +11,6 @@ using UnityEngine;
 
 public class EosSDKAuth : MonoBehaviour
 {
-    // this data obtained from AccelByte's Epic Dev Portal, project name "Test"
     private string productName = "Light Fantastic";
     private string productVersion = "0.10";
     private string productId = "3a8112abdb0d47d3b8c3797ac5e1bb7a";
@@ -33,6 +32,8 @@ public class EosSDKAuth : MonoBehaviour
 
     private Action onSuccessLogin;
     public Action OnSuccessLogin { set { onSuccessLogin = value; } }
+    private Action onFailedLogin;
+    public Action OnFailedLogin { set { onFailedLogin = value; } }
 
     private void Start()
     {
@@ -102,6 +103,7 @@ public class EosSDKAuth : MonoBehaviour
         else
         {
             Debug.Log("[EOS SDK] Login Failed. Result : " + result);
+            onFailedLogin?.Invoke();
         }
     }
 
