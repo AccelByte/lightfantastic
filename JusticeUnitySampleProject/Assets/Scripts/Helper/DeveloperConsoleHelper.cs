@@ -49,11 +49,11 @@ public class DeveloperConsoleHelper : MonoBehaviour
 
     IEnumerator ClearConsoleAsync()
     {
-        while(!Debug.developerConsoleVisible)
+        while(true)
         {
+            Debug.ClearDeveloperConsole();
+            Debug.developerConsoleVisible = false;
             yield return null;
         }
-        yield return null;
-        Debug.ClearDeveloperConsole();
     }
 }

@@ -1,7 +1,8 @@
 ﻿// Copyright (c) 2019 - 2020 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
-#if !DISABLESTEAMWORKS
+
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +12,11 @@ using System.Text;
 public class SteamAuth : MonoBehaviour
 {
 
-    #region
+#region
     private byte[] m_Ticket;
     private uint m_pcbTicket;
     private HAuthTicket m_HAuthTicket;
-    #endregion
+#endregion
 
     protected Callback<SteamServersConnected_t> m_SteamServersConnected;
     protected Callback<SteamServerConnectFailure_t> m_SteamServerConnectFailure;
@@ -169,4 +170,4 @@ public class SteamAuth : MonoBehaviour
     }
 
 }
-#endif
+#endif //UNITY_STANDALONE

@@ -3,9 +3,9 @@ using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
-    public const string GAME_VERSION = "0.0.8.1";
+    public const string GAME_VERSION = "0.0.10";
     public const string DS_TARGET_VERSION = "v0.0.6";
-    public const string SDK_VERSION = "2.25.0";
+    public const string SDK_VERSION = "2.24.0";
     
     public const string DEFAULT_LANGUAGE = "en";
     public const string IMAGE_AS = "product-cover";

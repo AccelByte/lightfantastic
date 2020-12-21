@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class InventoryGridLayout : MonoBehaviour
 {
-    #region UI Componenet
+    #region UI Component
     [SerializeField]
     private RectTransform gridLayoutContentContainer;
     [SerializeField]

@@ -11,8 +11,12 @@ using AccelByte.Models;
 using AccelByte.Core;
 using UnityEngine.UI;
 using UITools;
-#if !DISABLESTEAMWORKS
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
 using Steamworks;
+#endif
+#if UNITY_STADIA
+using UnityEngine.Stadia;
+using Unity.StadiaWrapper;
 #endif
 using System;
 using System.Collections.Generic;
@@ -28,11 +32,13 @@ namespace ABRuntimeLogic
         private GameObject UIHandler;
         private UIAuthLogicComponent UIHandlerAuthComponent;
         private UIElementHandler UIElementHandler;
-#if !DISABLESTEAMWORKS
+
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
         [SerializeField]
         private SteamAuth steamAuth;
 #endif
         public bool useSteam;
+        public bool isUsingOtherPlatform;
         [SerializeField]
         private CommandLineArgs cmdLine;
 
@@ -56,9 +62,8 @@ namespace ABRuntimeLogic
 
             //Initialize AccelByte Plugin
             abUser = AccelBytePlugin.GetUser();
-#if !DISABLESTEAMWORKS
+
             useSteam = cmdLine.ParseCommandLine();
-#endif
         }
 
         #region UI Listeners
@@ -156,9 +161,10 @@ namespace ABRuntimeLogic
 
         public void Start()
         {
-#if !DISABLESTEAMWORKS
             if (useSteam)
             {
+#if UNITY_STANDALONE && !DISABLESTEAMWORKS
+                isUsingOtherPlatform = true;
                 loginType = E_LoginType.Steam;
                 UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
                 Debug.Log("Valid ABUSER:"+abUser.Session.IsValid());
@@ -166,19 +172,26 @@ namespace ABRuntimeLogic
                 abUser.LoginWithOtherPlatform(PlatformType.Steam, steamAuth.GetSteamTicket(), OnLogin);
                 Debug.Log("USE STEAM");
                 UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
+#endif
             }
             else 
-#endif
             {
-                UIHandlerAuthComponent.gameObject.SetActive(true);
-
                 Debug.Log("Don't USE STEAM");
+#if UNITY_STANDALONE
+                UIHandlerAuthComponent.gameObject.SetActive(true);
                 // Try to login with launcher
                 LoginWithLauncher();
+#elif UNITY_STADIA
+                UIHandlerAuthComponent.loginPanel.gameObject.SetActive(false);
+                // Try to login with stadia
+                Debug.Log("[LF] Login with stadia");
+                LoginWithStadia();
+                UIHandlerAuthComponent.mainMenuLogoutButton.gameObject.SetActive(false);
+#endif
             }
         }
 
-        #region AccelByte Authentication Functions
+#region AccelByte Authentication Functions
         
         /// <summary>
         /// Register's a new user with the information from the UIInputs
@@ -233,6 +246,8 @@ namespace ABRuntimeLogic
         //Attempts to login with launcher
         public void LoginWithLauncher()
         {
+            isUsingOtherPlatform = true;
+
             // Check if auth code is available from launcher
             string authCode = Environment.GetEnvironmentVariable(AUTHORIZATION_CODE_ENVIRONMENT_VARIABLE);
 
@@ -248,6 +263,36 @@ namespace ABRuntimeLogic
                 Debug.Log("LoginWithLauncher authCode is null");
             }
         }
+
+#if UNITY_STADIA
+        //Attempts to login with stadia
+        public void LoginWithStadia()
+        {
+            Debug.Log("[LF] LoginWithStadia Start");
+            isUsingOtherPlatform = true;
+            GgpPlayerId playerId = StadiaNativeApis.GgpGetPrimaryPlayerId();
+            float startTime = Time.realtimeSinceStartup;
+            UIElementHandler.ShowLoadingPanel();
+            while (playerId.Value == (int)GgpIdConstants.kGgpInvalidId && Time.realtimeSinceStartup - startTime < 10f)
+            {
+                new WaitForSeconds(0.5f);
+                playerId = StadiaNativeApis.GgpGetPrimaryPlayerId();
+            }
+
+            if (playerId.Value == (int)GgpIdConstants.kGgpInvalidId)
+            {
+                Debug.Log("[STADIA] Can't retrieve playerId!");
+            }
+
+            GgpStatus reqStatus;
+            GgpPlayerJwt playerJwt = StadiaNativeApis.GgpGetJwtForPlayer(playerId, 1000, new GgpJwtFields((ulong)GgpJwtFieldValues.kGgpJwtField_None)).GetResultBlocking<GgpPlayerJwt>(out reqStatus);
+
+            var user = AccelBytePlugin.GetUser();
+            loginType = E_LoginType.Stadia;
+
+            abUser.LoginWithOtherPlatform(AccelByte.Models.PlatformType.Stadia, playerJwt.jwt, OnLogin);
+        }
+#endif
 
         //Gets the user's top level account details
         public void GetUserDetails()
@@ -279,9 +324,9 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.errorPanel.SetActive(false);
             }
         }
-        #endregion
+#endregion
 
-        #region AccelByte Authentication Callbacks
+#region AccelByte Authentication Callbacks
         //Handles the Registration Response, continues to the Verification Panel on Success
         private void OnRegister(Result<RegisterUserResponse> result)
         {
@@ -347,6 +392,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
+                Debug.Log("[LF] OnLogin Failed");
+
                 if (!useSteam)
                 {
                     UIElementHandler.HideLoadingPanel();
@@ -367,6 +414,10 @@ namespace ABRuntimeLogic
                 {
                     ShowErrorMessage(true, "Can't login from steam");
                 }
+                else if(loginType == E_LoginType.Stadia)
+                {
+                    ShowErrorMessage(true, "Can't login from stadia");
+                }
             }
             else
             {
@@ -382,6 +433,8 @@ namespace ABRuntimeLogic
         //Also Checks if the user has verified their email address, if not, sends user to verification, else sends to main menu.
         private void OnGetUserData(Result<UserData> result)
         {
+            Debug.Log("[LF] OnGetUserData Start");
+
             if (result.IsError)
             {
                 Debug.Log("GetUserData failed:" + result.Error.Message);
@@ -389,26 +442,33 @@ namespace ABRuntimeLogic
             }
             else if (!result.Value.eligible)
             {
+                Debug.Log("[LF] OnGetUserData Not eligible proceeding to EULA");
                 UIElementHandler.HideLoadingPanel();
                 gameObject.GetComponent<AccelByteAgreementLogic>().GetUserPolicy();
             }
             else
             {
+                Debug.Log("[LF] OnGetUserData success!");
+
                 abUserData = result.Value;
                 UIHandlerAuthComponent.displayName.text = "DisplayName: " + abUserData.displayName;
                 UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
                 UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.emailVerified && !useSteam)
+                if (!abUserData.emailVerified && !isUsingOtherPlatform)
                 {
+                    Debug.Log("[LF] OnGetUserData emailVerified is false verify the email!");
+
                     UIElementHandler.HideNonExclusivePanel(NonExclusivePanelType.LOADING);
                     UIElementHandler.ShowExclusivePanel(ExclusivePanelType.VERIFY);
                 }
                 else
                 {
                     //Progress to Main Menu
+                    Debug.Log("[LF] OnGetUserData proceed to main menu");
                     if (!useSteam)
                     {
+                        Debug.Log("[LF] OnGetUserData proceed to main menu");
                         UIElementHandler.HideLoadingPanel();
                     }
                     UIElementHandler.ShowExclusivePanel(ExclusivePanelType.MAIN_MENU);
@@ -427,8 +487,8 @@ namespace ABRuntimeLogic
         {
             if (result.IsError)
             {
-                Debug.Log("Login failed:" + result.Error.Message);
-                Debug.Log("Login Response Code: " + result.Error.Code);
+                Debug.Log("Logout failed:" + result.Error.Message);
+                Debug.Log("Logout Response Code: " + result.Error.Code);
                 //Show Error Message
             }
             else
@@ -441,7 +501,7 @@ namespace ABRuntimeLogic
 
             UIElementHandler.HideLoadingPanel();
         }
-        #endregion
+#endregion
 
     }
 }

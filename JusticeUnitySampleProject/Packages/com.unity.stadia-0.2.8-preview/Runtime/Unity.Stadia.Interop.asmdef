@@ -1,0 +1,16 @@
+{
+    "name": "Unity.Stadia.Interop",
+    "references": [],
+    "includePlatforms": [
+        "Editor",
+        "Stadia"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
