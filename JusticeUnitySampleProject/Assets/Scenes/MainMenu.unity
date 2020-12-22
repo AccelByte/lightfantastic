@@ -993,8 +993,9 @@ MonoBehaviour:
   loginPanel: {fileID: 9058917506224982006}
   loginButton: {fileID: 9058917506918685205}
   otherPlatformLoginText: {fileID: 7093256565074485973}
-  otherPlatformLoginButton:
-  - {fileID: 586898165}
+  otherPlatformLogins:
+  - LoginType: 0
+    LoginButton: {fileID: 586898165}
   signUpButton: {fileID: 1109378337}
   registerButton: {fileID: 1413266003}
   fromRegister_BackToLoginButton: {fileID: 2108600713}

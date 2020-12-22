@@ -21,6 +21,7 @@ using Unity.StadiaWrapper;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using static UIAuthLogicComponent;
 
 namespace ABRuntimeLogic
 {
@@ -67,6 +68,7 @@ namespace ABRuntimeLogic
 
             useSteam = cmdLine.ParseCommandLine();
             eosSdk.OnSuccessLogin = LoginWithEpicGames;
+            eosSdk.OnFailedLogin = FailLoginEpic;
         }
 
         #region UI Listeners
@@ -136,9 +138,8 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
 
             // Bind other platform Buttons
-            Button[] buttons = UIHandlerAuthComponent.otherPlatformLoginButton;
-            // 0 index = EpicGames Login
-            buttons[0].onClick.AddListener(delegate {
+            UIHandlerAuthComponent.AddOtherPlatformLoginListener(OtherPlatformLoginType.EpicGames, delegate
+            {
                 UIElementHandler.ShowLoadingPanel();
                 eosSdk.LoginEpic();
             });
@@ -168,20 +169,21 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
 
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+            UIHandlerAuthComponent.RemoveOtherPlatformLoginListener();
         }
 
         void ControlOtherPlatformButton()
         {
-            Button[] otherPlatformBtns = UIHandlerAuthComponent.otherPlatformLoginButton;
 #if UNITY_EDITOR || UNITY_STANDALONE
-            otherPlatformBtns[0].gameObject.SetActive(true);
+            UIHandlerAuthComponent.SetVisibleOtherPlatformLogin(OtherPlatformLoginType.EpicGames, true);
 #else
-            otherPlatformBtns[0].gameObject.SetActive(false);
+            UIHandlerAuthComponent.SetVisibleOtherPlatformLogin(OtherPlatformLoginType.EpicGames, false);
 #endif
             bool hasActiveBtn = false;
-            for (int i = 0; i < otherPlatformBtns.Length; i++)
+            for (int i = 0; i < UIHandlerAuthComponent.otherPlatformLogins.Length; i++)
             {
-                if (otherPlatformBtns[i].gameObject.activeInHierarchy)
+                GameObject buttonObject = UIHandlerAuthComponent.otherPlatformLogins[i].LoginButton.gameObject;
+                if (buttonObject.activeInHierarchy)
                 {
                     hasActiveBtn = true;
                     break;
@@ -354,6 +356,12 @@ namespace ABRuntimeLogic
         {
             AccelBytePlugin.GetLobby().Disconnect();
             abUser.Logout(OnLogout);
+        }
+
+        private void FailLoginEpic()
+        {
+            UIElementHandler.HideLoadingPanel();
+            ShowErrorMessage(true, "Can't login from Epic Games.");
         }
 
         public UserData GetUserData()
