@@ -3,7 +3,7 @@ using AccelByte.Api;
 
 public static class LightFantasticConfig
 {
-    public const string GAME_VERSION = "0.0.10";
+    public const string GAME_VERSION = "0.0.11";
     public const string DS_TARGET_VERSION = "v0.0.6";
     public const string SDK_VERSION = "2.25.0";
     
