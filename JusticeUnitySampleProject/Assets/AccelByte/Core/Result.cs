@@ -155,26 +155,22 @@ namespace AccelByte.Core
         PartyInfoUnableGetUserRegistry = 11221,
         PartyInfoUnableGetUserPartyInfo = 11222,
         PartyInfoSuccessGetUserPartyInfoEmpty = 11223,
-        PartyInfoSuccessGetUserPartyInfo = 11224,
         //Party Creation
         PartyCreationUnableGetUserRegistry = 11231,
         PartyCreationAlreadyInParty = 11232,
         PartyCreationUnableCreateParty = 11233,
-        PartyCreationSuccessCreateParty = 11234,
         //Party Leave
         PartyLeaveUnableGetUserRegistry = 11241,
         PartyLeavePartyIsNil = 11242,
         PartyLeavePartyNotFound = 11243,
         PartyLeaveUserNotInParty = 11244,
         PartyLeaveUnableToLeaveParty = 11245,
-        PartyLeaveSuccessLeaveParty = 11246,
         // Party Invite
         PartyInviteUnableGetUserRegistry = 11251,
         PartyInviteInviteeNotFound = 11252,
         PartyInviteNotInParty = 11253,
         PartyInviteInviteeInParty = 11254,
         PartyInviteUnableInviteToParty = 11255,
-        PartyInviteSuccessInviteToParty = 11256,
         //Party Join
         PartyJoinUnableGetUserRegistry = 11261,
         PartyJoinPartyNotFound = 11262,
@@ -183,18 +179,13 @@ namespace AccelByte.Core
         PartyJoinAlreadyInParty = 11265,
         PartyJoinPartyFull = 11266,
         PartyJoinUnableJoinParty = 11267,
-        PartyJoinSuccessJoinParty = 11268,
         //Party Kick
         PartyKickUnableGetUserRegistry = 11271,
         PartyKickNotInParty = 11272,
         PartyKickNotLeader = 11273,
         PartyKickKickeeNotInParty = 11274,
         PartyKickUnableKickUser = 11275,
-        PartyKickSuccessKickUser = 11276,
         PartyKickKickOwnSelf = 11277,
-
-        ReceiverNotFound = 11284,
-        PartyNotFound = 11293,
         //Personal Chat
         PersonalChatUnableGetUserRegistry = 11281,
         PersonalChatSenderBanned = 11282,
@@ -315,6 +306,7 @@ namespace AccelByte.Core
         //AccelByte CloudSave error codes
         GameRecordNotFound = 18003,
         PlayerRecordNotFound = 18022,
+        PlayerPublicRecordNotFound = 18081,
         GameRecordPreconditionFailed = 18056,
         PlayerRecordPreconditionFailed = 18103,
         

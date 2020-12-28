@@ -190,13 +190,13 @@ namespace AccelByte.Api
 
             if (this.IsConnected)
             {
-                Debug.LogWarning("[Lobby] already connected");
+                AccelByteDebug.LogWarning("[Lobby] already connected");
                 return;
             }
             
             if (this.webSocket.ReadyState == WsState.Connecting)
             {
-                Debug.LogWarning("[Lobby] lobby is connecting");
+                AccelByteDebug.LogWarning("[Lobby] lobby is connecting");
                 return;
             }
 
@@ -213,7 +213,7 @@ namespace AccelByte.Api
         private void StartMaintainConnection()
         {
 #if DEBUG
-            Debug.Log("[Lobby] Start Maintaining connection: " + wsCloseCode);
+            AccelByteDebug.Log("[Lobby] Start Maintaining connection: " + wsCloseCode);
 #endif
             this.reconnectsOnClose = true;
             this.maintainConnectionCoroutine = this.coroutineRunner.Run(
@@ -223,7 +223,7 @@ namespace AccelByte.Api
         private void StopMaintainConnection()
         {
 #if DEBUG
-            Debug.Log("[Lobby] Stop Maintaining connection: " + wsCloseCode);
+            AccelByteDebug.Log("[Lobby] Stop Maintaining connection: " + wsCloseCode);
 #endif
             this.reconnectsOnClose = false;
 
@@ -279,12 +279,12 @@ namespace AccelByte.Api
                     {
                         // debug ws connection
 #if DEBUG
-                        Debug.Log("[WS] Re-Connecting");
+                        AccelByteDebug.Log("[WS] Re-Connecting");
 #endif
                         this.webSocket.Connect(this.websocketUrl, this.session.AuthorizationToken, this.lobbySessionId.lobbySessionID);
                         float randomizedDelay = (float) (nextDelay + ((rand.NextDouble() * 0.5) - 0.5));
 #if DEBUG
-                        Debug.Log("[WS] Next reconnection in: " + randomizedDelay);
+                        AccelByteDebug.Log("[WS] Next reconnection in: " + randomizedDelay);
 #endif
                         yield return new WaitForSeconds(randomizedDelay / 1000f);
 
@@ -594,7 +594,7 @@ namespace AccelByte.Api
         /// </summary>
         /// <param name="userIds">requested userIds</param>
         /// <param name="callback">Returns a Result that contains BulkUserStatusNotif via callback when completed.</param>
-        public void BulkGetUserPresence(string[] userIds, ResultCallback<BulkUserStatusNotif> callback)
+        public void BulkGetUserPresence(string[] userIds, ResultCallback<BulkUserStatusNotif> callback, bool countOnly = false)
         {
             Report.GetFunctionLog(this.GetType().Name);
 
@@ -610,7 +610,8 @@ namespace AccelByte.Api
                     this.@namespace,
                     userIds,
                     this.session.AuthorizationToken,
-                    callback));
+                    callback,
+                    countOnly));
         }
 
         /// <summary>
@@ -1058,7 +1059,7 @@ namespace AccelByte.Api
         {
             // debug ws connection
 #if DEBUG
-            Debug.Log("[WS] Connection open");
+            AccelByteDebug.Log("[WS] Connection open");
 #endif
             this.coroutineRunner.Run(
                 () =>
@@ -1076,7 +1077,7 @@ namespace AccelByte.Api
         {
             // debug ws connection
 #if DEBUG
-            Debug.Log("[WS] Connection close: " + closecode);
+            AccelByteDebug.Log("[WS] Connection close: " + closecode);
 #endif
             var code = (WsCloseCode)closecode;
             this.wsCloseCode = code;

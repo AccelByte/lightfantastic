@@ -316,7 +316,7 @@ public class AccelByteChatLogic : MonoBehaviour
             Debug.Log("Send personal message failed:" + result.Error.Message);
             Debug.Log("Send personal message Response Code: " + result.Error.Code);
             //Show Error Message
-            if (result.Error.Code == ErrorCode.ReceiverNotFound)
+            if (result.Error.Code == ErrorCode.PersonalChatReceiverNotFound)
             {
                 WriteWarningInChatBox("Player is offline");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
@@ -345,7 +345,7 @@ public class AccelByteChatLogic : MonoBehaviour
         {
             Debug.Log("Send party chat failed:" + result.Error.Message);
             Debug.Log("Send party chat Response Code: " + result.Error.Code);
-            if (result.Error.Code == ErrorCode.PartyNotFound)
+            if (result.Error.Code == ErrorCode.PartyChatPartyNotFound)
             {
                 WriteWarningInChatBox("Party is not found");
                 UIHandlerLobbyComponent.messageInputField.text = string.Empty;
