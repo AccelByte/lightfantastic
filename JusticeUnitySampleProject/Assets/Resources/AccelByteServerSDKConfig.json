@@ -1,5 +1,5 @@
 {
-  "Namespace": "<YOUR-GAME-NAMESPACE>",
+  "Namespace": "lightfantastic",
   "BaseUrl": "https://demo.accelbyte.io",
   "IamServerUrl": "https://demo.accelbyte.io/iam",
   "DSMControllerServerUrl": "https://demo.accelbyte.io/dsmcontroller",
@@ -9,7 +9,7 @@
   "AchievementServerUrl": "https://demo.accelbyte.io/achievement",
   "LobbyServerUrl": "https://demo.accelbyte.io/lobby",
   "CloudSaveServerUrl": "https://demo.accelbyte.io/cloudsave",
-  "ClientId": "<YOUR-DS-CLIENT-ID>",
-  "ClientSecret": "<YOUR-DS-CLIENT-SECRET>",
+  "ClientId": "8830c5ee9c924bdc806ea88b037cbcbd",
+  "ClientSecret": "",
   "RedirectUri": "http://127.0.0.1"
 }
