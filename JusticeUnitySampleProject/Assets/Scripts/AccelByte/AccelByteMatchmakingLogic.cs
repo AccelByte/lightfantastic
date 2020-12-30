@@ -2,7 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
-#define FORCE_PROVIDER_AWS
+//#define FORCE_PROVIDER_AWS
 
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +24,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
     private bool connectToLocal;
+    private bool isWaitingResponseQos = false;
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
@@ -131,7 +132,8 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
                 lobbyLogic.abLobby.StartMatchmaking(gameMode, LightFantasticConfig.DS_TARGET_VERSION, availableRegion, OnFindMatch);
                 return;
 #else
-                lobbyLogic.abLobby.StartMatchmaking(gameMode, "", LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
+                Debug.Log("[LobbyLogic] FindMatch, region :" + latencies.ElementAt(0).Key + " latency: " + latencies.ElementAt(0).Value);
+                lobbyLogic.abLobby.StartMatchmaking(gameMode, LightFantasticConfig.DS_TARGET_VERSION, latencies, OnFindMatch);
 #endif //FORCE_PROVIDER_AWS
             }
             else
@@ -557,8 +559,13 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     /// </summary>
     private void RefreshQoS()
     {
+        if (isWaitingResponseQos)
+            return;
+        isWaitingResponseQos = true;
+
         AccelBytePlugin.GetQos().GetServerLatencies(result =>
         {
+            isWaitingResponseQos = false;
             if (result.IsError || result.Value.Count == 0)
             {
                 UIHandlerLobbyComponent.regionSelectorDropdown.options.Clear();
@@ -570,6 +577,9 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
                 UIHandlerLobbyComponent.regionSelectorDropdown.interactable = true;
                 qosLatencies = result.Value;
                 UIHandlerLobbyComponent.regionSelectorDropdown.options.Clear();
+                var qosSorted = qosLatencies.OrderBy(qosLatencies => qosLatencies.Value)
+                    .ToDictionary(qosLatencies => qosLatencies.Key, qosLatencies => qosLatencies.Value);
+                qosLatencies = qosSorted;
                 foreach (var latency in qosLatencies)
                 {
                     string text = $"{latency.Key} - {latency.Value}ms";
