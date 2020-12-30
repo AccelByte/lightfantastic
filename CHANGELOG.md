@@ -3,7 +3,10 @@
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ### [0.0.11](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.11%0D0.0.10) (2020-12-23)
-
+### Added
+- Login
+  - WithOtherPlatform
+    - Add EpicGames 3rd Party Login
 
 ### Features
 
