@@ -2,7 +2,7 @@
   "Namespace": "lightfantastic",
   "UseSessionManagement": true,
   "UsePlayerPrefs": false,
-  "BaseUrl": "https://demo.accelbyte.io",
+  "BaseUrl": "https://api.demo.accelbyte.io",
   "ApiBaseUrl": "https://api.demo.accelbyte.io",
   "NonApiBaseUrl": "https://demo.accelbyte.io",
   "LoginServerUrl": "https://api.demo.accelbyte.io",
