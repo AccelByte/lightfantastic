@@ -29,6 +29,7 @@ namespace ABRuntimeLogic
     {
         private User abUser;
         private UserData abUserData;
+        private string thirdPartyDisplayName;
 
         private GameObject UIHandler;
         private UIAuthLogicComponent UIHandlerAuthComponent;
@@ -69,6 +70,7 @@ namespace ABRuntimeLogic
             useSteam = cmdLine.ParseCommandLine();
             eosSdk.OnSuccessLogin = LoginWithEpicGames;
             eosSdk.OnFailedLogin = FailLoginEpic;
+            eosSdk.OnGettingDisplayName = (string name) => { thirdPartyDisplayName = name; };
         }
 
         #region UI Listeners
@@ -512,6 +514,7 @@ namespace ABRuntimeLogic
                 Debug.Log("[LF] OnGetUserData success!");
 
                 abUserData = result.Value;
+                abUserData.displayName = !string.IsNullOrEmpty(thirdPartyDisplayName) ? thirdPartyDisplayName : abUserData.displayName;
                 UIHandlerAuthComponent.displayName.text = "DisplayName: " + abUserData.displayName;
                 UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
                 UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;

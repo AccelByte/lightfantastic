@@ -6,6 +6,7 @@ using ABRuntimeLogic;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
+using Epic.OnlineServices.UserInfo;
 using System;
 using UnityEngine;
 
@@ -25,15 +26,16 @@ public class EosSDKAuth : MonoBehaviour
 
     private Token token;
     public Token Token { get { return token; } private set { } }
+    private string displayName;
+    public string DisplayName { get { return displayName; } private set { } }
 
     public LoginCredentialType loginCredentialType;
     public string loginCredId;
     public string loginCredToken;
 
-    private Action onSuccessLogin;
-    public Action OnSuccessLogin { set { onSuccessLogin = value; } }
-    private Action onFailedLogin;
-    public Action OnFailedLogin { set { onFailedLogin = value; } }
+    public Action OnSuccessLogin;
+    public Action OnFailedLogin;
+    public Action<string> OnGettingDisplayName;
 
     private void Start()
     {
@@ -98,13 +100,37 @@ public class EosSDKAuth : MonoBehaviour
             Debug.Log("[EOS SDK] Login Succeeded.");
             CopyUserAuthTokenOptions copyOpt = new CopyUserAuthTokenOptions();
             platformInterface.GetAuthInterface().CopyUserAuthToken(copyOpt, info.LocalUserId, out token);
-            onSuccessLogin?.Invoke();
+            QueryUserData(info.LocalUserId);
+            OnSuccessLogin?.Invoke();
         }
         else
         {
             Debug.Log("[EOS SDK] Login Failed. Result : " + result);
-            onFailedLogin?.Invoke();
+            OnFailedLogin?.Invoke();
         }
+    }
+
+    private void QueryUserData(EpicAccountId accountId)
+    {
+        var queryOpt = new QueryUserInfoOptions();
+        queryOpt.LocalUserId = accountId;
+        queryOpt.TargetUserId = accountId;
+        platformInterface.GetUserInfoInterface().QueryUserInfo(queryOpt, null, (QueryUserInfoCallbackInfo callbackInfo) => 
+        {
+            var copyUserInfoOptions = new CopyUserInfoOptions();
+            copyUserInfoOptions.LocalUserId = callbackInfo.LocalUserId;
+            copyUserInfoOptions.TargetUserId = callbackInfo.TargetUserId;
+            UserInfoData userData = new UserInfoData();
+            Result result = platformInterface.GetUserInfoInterface().CopyUserInfo(copyUserInfoOptions, out userData);
+            if (result == Result.Success)
+                displayName = userData.DisplayName;
+            else
+            {
+                displayName = "";
+                Debug.Log("[EOS SDK] Get Display Name Failed. Result : " + result);
+            }
+            OnGettingDisplayName(displayName);
+        });
     }
 
     // Calling tick on a regular interval is required for callbacks to work.
