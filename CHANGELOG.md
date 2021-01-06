@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.12](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.12%0D0.0.11) (2021-01-06)
+
+
+### Features
+
+* **config:** revert unneeded changes ([fd32f4d](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/fd32f4dc42dfbc50cef48c1a931198ac1dda54a9))
+* **config:** set config to public client type ([9fdc40c](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/9fdc40c8a85ef43b3718d16c1c0f256e1c55e0e1))
+* **sdk:** update accelbyte SDK to 2.16 ([ae210c2](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/ae210c28dae5a3524190fc964951246e4e5115b4))
+* **version:** bump game version ([9f33a16](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/9f33a1647a3afc03808ae661c12b5a8e922e6f2a))
+* **version:** update SDK config version ([9c40138](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/9c40138d782667d155bf9d284849027c665467b4))
+
 ### [0.0.11](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.11%0D0.0.10) (2020-12-23)
 
 
