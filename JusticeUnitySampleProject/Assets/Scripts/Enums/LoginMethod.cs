@@ -11,5 +11,6 @@ public enum E_LoginType
     Username,
     Steam,
     Launcher,
-    Stadia
+    Stadia,
+    EpicGames
 }

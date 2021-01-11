@@ -14,7 +14,10 @@ All notable changes to this project will be documented in this file. See [standa
 * **version:** update SDK config version ([9c40138](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/9c40138d782667d155bf9d284849027c665467b4))
 
 ### [0.0.11](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.11%0D0.0.10) (2020-12-23)
-
+### Added
+- Login
+  - WithOtherPlatform
+    - Add EpicGames 3rd Party Login
 
 ### Features
 

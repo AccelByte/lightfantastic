@@ -21,6 +21,7 @@ using Unity.StadiaWrapper;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using static UIAuthLogicComponent;
 
 namespace ABRuntimeLogic
 {
@@ -28,6 +29,7 @@ namespace ABRuntimeLogic
     {
         private User abUser;
         private UserData abUserData;
+        private string thirdPartyDisplayName;
 
         private GameObject UIHandler;
         private UIAuthLogicComponent UIHandlerAuthComponent;
@@ -41,6 +43,8 @@ namespace ABRuntimeLogic
         public bool isUsingOtherPlatform;
         [SerializeField]
         private CommandLineArgs cmdLine;
+        [SerializeField]
+        private EosSDKAuth eosSdk;
 
         private AccelByteLobbyLogic abLobbyLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
@@ -64,6 +68,9 @@ namespace ABRuntimeLogic
             abUser = AccelBytePlugin.GetUser();
 
             useSteam = cmdLine.ParseCommandLine();
+            eosSdk.OnSuccessLogin = LoginWithEpicGames;
+            eosSdk.OnFailedLogin = FailLoginEpic;
+            eosSdk.OnGettingDisplayName = (string name) => { thirdPartyDisplayName = name; };
         }
 
         #region UI Listeners
@@ -123,7 +130,7 @@ namespace ABRuntimeLogic
             {
                 UIHandlerAuthComponent.registerCountryDropdown.options = CountryObjectCacheToDropdown(AccelByteManager.Instance.countryObjectsCache);
             }
-            
+            ControlOtherPlatformButton();
             AddEventListeners();
         }
 
@@ -131,6 +138,14 @@ namespace ABRuntimeLogic
         {
             // Bind Buttons
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
+
+            // Bind other platform Buttons
+            UIHandlerAuthComponent.AddOtherPlatformLoginListener(OtherPlatformLoginType.EpicGames, delegate
+            {
+                UIElementHandler.ShowLoadingPanel();
+                eosSdk.LoginEpic();
+            });
+            
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);
@@ -156,6 +171,27 @@ namespace ABRuntimeLogic
             UIHandlerAuthComponent.resendVerificationButton.onClick.RemoveListener(ResendVerification);
 
             UIHandlerAuthComponent.logoutButton.onClick.RemoveListener(Logout);
+            UIHandlerAuthComponent.RemoveOtherPlatformLoginListener();
+        }
+
+        void ControlOtherPlatformButton()
+        {
+#if UNITY_EDITOR || UNITY_STANDALONE
+            UIHandlerAuthComponent.SetVisibleOtherPlatformLogin(OtherPlatformLoginType.EpicGames, true);
+#else
+            UIHandlerAuthComponent.SetVisibleOtherPlatformLogin(OtherPlatformLoginType.EpicGames, false);
+#endif
+            bool hasActiveBtn = false;
+            for (int i = 0; i < UIHandlerAuthComponent.otherPlatformLogins.Length; i++)
+            {
+                GameObject buttonObject = UIHandlerAuthComponent.otherPlatformLogins[i].LoginButton.gameObject;
+                if (buttonObject.activeInHierarchy)
+                {
+                    hasActiveBtn = true;
+                    break;
+                }
+            }
+            UIHandlerAuthComponent.otherPlatformLoginText.gameObject.SetActive(hasActiveBtn);
         }
         #endregion // UI Listeners
 
@@ -264,6 +300,23 @@ namespace ABRuntimeLogic
             }
         }
 
+        //Attemps to login with Epic Games Account Portal
+#if UNITY_EDITOR || UNITY_STANDALONE
+        public void LoginWithEpicGames()
+        {
+            string accessToken = eosSdk.Token.AccessToken;
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                Debug.Log("Epic Games token is null");
+            }
+            else
+            {
+                loginType = E_LoginType.EpicGames;
+                abUser.LoginWithOtherPlatform(PlatformType.EpicGames, accessToken, OnLogin);
+            }
+        }
+#endif
+
 #if UNITY_STADIA
         //Attempts to login with stadia
         public void LoginWithStadia()
@@ -305,6 +358,12 @@ namespace ABRuntimeLogic
         {
             AccelBytePlugin.GetLobby().Disconnect();
             abUser.Logout(OnLogout);
+        }
+
+        private void FailLoginEpic()
+        {
+            UIElementHandler.HideLoadingPanel();
+            ShowErrorMessage(true, "Can't login from Epic Games.");
         }
 
         public UserData GetUserData()
@@ -418,6 +477,10 @@ namespace ABRuntimeLogic
                 {
                     ShowErrorMessage(true, "Can't login from stadia");
                 }
+                else if (loginType == E_LoginType.EpicGames)
+                {
+                    ShowErrorMessage(true, "Can't login from epic games.");
+                }
             }
             else
             {
@@ -451,6 +514,7 @@ namespace ABRuntimeLogic
                 Debug.Log("[LF] OnGetUserData success!");
 
                 abUserData = result.Value;
+                abUserData.displayName = !string.IsNullOrEmpty(thirdPartyDisplayName) ? thirdPartyDisplayName : abUserData.displayName;
                 UIHandlerAuthComponent.displayName.text = "DisplayName: " + abUserData.displayName;
                 UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
                 UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;

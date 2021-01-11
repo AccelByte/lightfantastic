@@ -5,11 +5,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class UIAuthLogicComponent : MonoBehaviour
 {
+    [System.Serializable]
+    public enum OtherPlatformLoginType
+    {
+        EpicGames,
+        Steam,
+        Google,
+        Facebook
+    }
+
+    [System.Serializable]
+    public struct OtherPlatformLogin
+    {
+        public OtherPlatformLoginType LoginType;
+        public Button LoginButton;
+    }
+
     #region Register UI Fields
     public InputField registerEmail;
     public InputField registerDisplayName;
@@ -44,7 +61,8 @@ public class UIAuthLogicComponent : MonoBehaviour
 
     #region Buttons
     public Button loginButton;
-
+    public Text otherPlatformLoginText;
+    public OtherPlatformLogin[] otherPlatformLogins;
     public Button signUpButton;
     public Button registerButton;
     public Button fromRegister_BackToLoginButton;
@@ -53,4 +71,30 @@ public class UIAuthLogicComponent : MonoBehaviour
     public Button logoutButton;
     public Button mainMenuLogoutButton;
     #endregion
+
+    public void AddOtherPlatformLoginListener(OtherPlatformLoginType type, UnityAction act)
+    {
+        foreach (var item in otherPlatformLogins)
+        {
+            if(item.LoginType == type)
+                item.LoginButton.onClick.AddListener(act);
+        }
+    }
+
+    public void RemoveOtherPlatformLoginListener()
+    {
+        foreach (var item in otherPlatformLogins)
+        {
+            item.LoginButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    public void SetVisibleOtherPlatformLogin(OtherPlatformLoginType type, bool isVisible)
+    {
+        foreach (var item in otherPlatformLogins)
+        {
+            if(item.LoginType == type)
+                item.LoginButton.gameObject.SetActive(isVisible);
+        }
+    }
 }
