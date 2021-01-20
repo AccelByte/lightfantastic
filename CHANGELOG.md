@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.13](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.13%0D0.0.12) (2021-01-20)
+
+
+### Features
+
+* **epic_login:** add epic online services (EOS) SDK ([242ed29](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/242ed29574e4be0aa00bfbbd719c5a0588d2dbcd))
+* **epic_login:** add login with EOS functionality ([f55a24c](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/f55a24ca1c9c33c591f74afbbbc7600d67c103ee))
+* **epic_login:** get epic display name ([fde4328](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/fde432899eef6237ef4f5f6caa137c9d97dd20a2))
+* **userLogin:** add preprocessor for EpicGames login ([67629a6](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/67629a6acb35ec29ac847b605ae5d86b5fe2c70c))
+
+
+### Bug Fixes
+
+* **lobby:** disable force aws ([c6f4e50](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/c6f4e5078181c395bc1f8f8f7c05add1d655fecc))
+* **userLogin:** change ui handle to be more expandable ([de136f3](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/de136f3ca67c3d365928f196611c7f9f2aea1e53))
+
+
+### Documentations
+
+* update changelog ([419979d](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/419979d558de01efbcb953fb795b1a4b8a7f3bcd))
+
 ### [0.0.12](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.12%0D0.0.11) (2021-01-06)
 
 
