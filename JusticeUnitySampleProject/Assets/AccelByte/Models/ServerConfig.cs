@@ -10,6 +10,7 @@ namespace AccelByte.Models {
     {
         [DataMember] public string Namespace { get; set; }
         [DataMember] public string BaseUrl { get; set; }
+        [DataMember] public string ApiBaseUrl { get; set; }
         [DataMember] public string IamServerUrl { get; set; }
         [DataMember] public string DSMControllerServerUrl { get; set; }
         [DataMember] public string StatisticServerUrl { get; set; }
@@ -22,6 +23,8 @@ namespace AccelByte.Models {
         [DataMember] public string ClientId { get; set; }
         [DataMember] public string ClientSecret { get; set; }
         [DataMember] public string RedirectUri { get; set; }
+        [DataMember] public string MatchmakingServerUrl { get; set; }
+
 
         /// <summary>
         ///  Copy member values
@@ -61,6 +64,9 @@ namespace AccelByte.Models {
                 if (this.LobbyServerUrl == null) this.LobbyServerUrl = httpBaseUrl + "/lobby";
 
                 if (this.CloudSaveServerUrl == null) this.CloudSaveServerUrl = httpBaseUrl + "/cloudsave";
+                
+                if (this.MatchmakingServerUrl == null) this.MatchmakingServerUrl = httpBaseUrl + "/matchmaking";
+
             }
         }
 
@@ -94,6 +100,9 @@ namespace AccelByte.Models {
                 if (this.LobbyServerUrl == httpBaseUrl + "/lobby") this.LobbyServerUrl = null;
 
                 if (this.CloudSaveServerUrl == httpBaseUrl + "/cloudsave") this.CloudSaveServerUrl = null;
+
+                if (this.MatchmakingServerUrl == httpBaseUrl + "/matchmaking") this.MatchmakingServerUrl = null;
+
             }
         }
     }

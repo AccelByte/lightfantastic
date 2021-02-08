@@ -119,6 +119,11 @@ namespace AccelByte.Api
 
             AccelBytePlugin.config = wholeJsonText.ToObject<Config>();
             AccelBytePlugin.config.Expand();
+            AccelBytePlugin.config.CheckRequiredField();
+#if UNITY_EDITOR
+            AccelByteSettings.Instance.UpdateConfig(AccelBytePlugin.config);
+            AccelByteSettings.Instance.Save();
+#endif
             AccelBytePlugin.coroutineRunner = new CoroutineRunner();
             AccelBytePlugin.httpWorker = new UnityHttpWorker();
             ILoginSession loginSession = new LoginSession(
