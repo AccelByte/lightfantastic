@@ -25,6 +25,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     private DsNotif abDSNotif;
     private bool connectToLocal;
     private bool isWaitingResponseQos = false;
+    private bool isGettingFirstQos = false;
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
@@ -574,19 +575,34 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
             }
             else
             {
+                int usWestIndex = 0;
                 UIHandlerLobbyComponent.regionSelectorDropdown.interactable = true;
                 qosLatencies = result.Value;
                 UIHandlerLobbyComponent.regionSelectorDropdown.options.Clear();
                 var qosSorted = qosLatencies.OrderBy(qosLatencies => qosLatencies.Value)
                     .ToDictionary(qosLatencies => qosLatencies.Key, qosLatencies => qosLatencies.Value);
                 qosLatencies = qosSorted;
+                int index = 0;
                 foreach (var latency in qosLatencies)
                 {
                     string text = $"{latency.Key} - {latency.Value}ms";
+                    
                     UIHandlerLobbyComponent.regionSelectorDropdown.options.Add(new Dropdown.OptionData(text));
+                    if (latency.Key == "us-west-2" && !isGettingFirstQos)
+                    {
+                        usWestIndex = index;
+                    }
+                    index++;
                 }
                 UIHandlerLobbyComponent.regionSelectorDropdown.RefreshShownValue();
                 UIHandlerLobbyComponent.regionSelectorDropdown.SetValueWithoutNotify(0);
+
+                if (!isGettingFirstQos)
+                {
+                    isGettingFirstQos = true;
+                    UIHandlerLobbyComponent.regionSelectorDropdown.value = usWestIndex;
+                    UIHandlerLobbyComponent.regionSelectorDropdown.SetValueWithoutNotify(usWestIndex);
+                }
             }
         });
     }
