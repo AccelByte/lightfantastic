@@ -22,7 +22,6 @@ namespace AccelByte.Server
         private readonly IServerSession session;
         private readonly string namespace_;
         private readonly CoroutineRunner coroutineRunner;
-        private const int WRITE_PARTY_STORAGE_ATTEMPT = 7;
         
         internal ServerLobby(ServerLobbyApi api, IServerSession session, string namespace_, CoroutineRunner coroutineRunner)
         {
@@ -45,7 +44,8 @@ namespace AccelByte.Server
         /// <param name="partyId">Targeted party ID.</param>
         /// <param name="callback">Returns a Result via callback when completed.</param>
         /// <param name="payloadModifier">Function to modify the latest party data with your customized modifier.</param>
-        public void WritePartyStorage(string partyId, ResultCallback<PartyDataUpdateNotif> callback, Func<Dictionary<string, object>, Dictionary<string, object>> payloadModifier)
+        /// <param name="retryAttempt">the number of retry to do when there is an error in writing to party storage (likely due to write conflicts)</param>
+        public void WritePartyStorage(string partyId, ResultCallback<PartyDataUpdateNotif> callback, Func<Dictionary<string, object>, Dictionary<string, object>> payloadModifier, int retryAttempt = 1)
         {
             Assert.IsFalse(string.IsNullOrEmpty(partyId), "Party ID should not be null.");
 
@@ -58,7 +58,7 @@ namespace AccelByte.Server
                 return;
             }
 
-            WritePartyStorageRecursive(WRITE_PARTY_STORAGE_ATTEMPT, partyId, callback, payloadModifier);
+            WritePartyStorageRecursive(retryAttempt, partyId, callback, payloadModifier);
         }
         
         private void WritePartyStorageRecursive(int remainingAttempt, string partyId, ResultCallback<PartyDataUpdateNotif> callback, Func<Dictionary<string, object>, Dictionary<string, object>> payloadModifier)
@@ -215,6 +215,31 @@ namespace AccelByte.Server
                     this.session.AuthorizationToken,
                     limit,
                     offset,
+                    callback));
+        }
+
+        /// <summary>
+        /// Get active party info by user Id
+        /// </summary>
+        /// <param name="userId">The user ID to be searched</param>
+        /// <param name="callback">Returns PartyDataUpdateNotif via callback when party is found</param>
+        public void GetPartyDataByUserId(string userId, ResultCallback<PartyDataUpdateNotif> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            Assert.IsFalse(string.IsNullOrEmpty(userId), "Parameter userId cannot be null or empty string");
+
+            if(!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+                return;
+            }
+
+            this.coroutineRunner.Run(
+                this.api.GetPartyDataByUserId(
+                    this.namespace_,
+                    this.session.AuthorizationToken,
+                    userId,
                     callback));
         }
     }

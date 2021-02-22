@@ -36,6 +36,8 @@ namespace AccelByte.Server
         private static ServerAchievement achievement;
         private static ServerLobby lobby;
         private static ServerCloudSave cloudSave;
+        private static ServerMatchmaking matchmaking;
+        private static ServerUserAccount userAccount;
 
         private static bool hasBeenInitialized = false;
 
@@ -266,6 +268,41 @@ namespace AccelByte.Server
             }
 
             return AccelByteServerPlugin.cloudSave;
+        }
+
+        public static ServerMatchmaking GetMatchmaking()
+        {
+            CheckPlugin();
+
+            if (AccelByteServerPlugin.matchmaking == null)
+            {
+                AccelByteServerPlugin.matchmaking = new ServerMatchmaking(
+                    new ServerMatchmakingApi(
+                        AccelByteServerPlugin.config.MatchmakingServerUrl,
+                        AccelByteServerPlugin.httpWorker),
+                    AccelByteServerPlugin.session,
+                    AccelByteServerPlugin.config.Namespace,
+                    AccelByteServerPlugin.coroutineRunner);
+            }
+
+            return AccelByteServerPlugin.matchmaking;
+        }
+
+        public static ServerUserAccount GetUserAccount()
+        {
+            CheckPlugin();
+
+            if (AccelByteServerPlugin.userAccount == null)
+            {
+                AccelByteServerPlugin.userAccount = new ServerUserAccount(
+                    new ServerUserAccountApi(
+                        AccelByteServerPlugin.config.BaseUrl,
+                        AccelByteServerPlugin.config.ApiBaseUrl,
+                        AccelByteServerPlugin.httpWorker),
+                    AccelByteServerPlugin.coroutineRunner);
+            }
+
+            return AccelByteServerPlugin.userAccount;
         }
     }
 }

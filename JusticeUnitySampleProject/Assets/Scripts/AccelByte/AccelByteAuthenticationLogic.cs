@@ -43,8 +43,10 @@ namespace ABRuntimeLogic
         public bool isUsingOtherPlatform;
         [SerializeField]
         private CommandLineArgs cmdLine;
+#if UNITY_EDITOR || UNITY_STANDALONE
         [SerializeField]
         private EosSDKAuth eosSdk;
+#endif
 
         private AccelByteLobbyLogic abLobbyLogic;
         private AccelByteUserProfileLogic abUserProfileLogic;
@@ -68,9 +70,11 @@ namespace ABRuntimeLogic
             abUser = AccelBytePlugin.GetUser();
 
             useSteam = cmdLine.ParseCommandLine();
+#if UNITY_EDITOR || UNITY_STANDALONE
             eosSdk.OnSuccessLogin = LoginWithEpicGames;
             eosSdk.OnFailedLogin = FailLoginEpic;
             eosSdk.OnGettingDisplayName = (string name) => { thirdPartyDisplayName = name; };
+#endif
         }
 
         #region UI Listeners
@@ -139,13 +143,15 @@ namespace ABRuntimeLogic
             // Bind Buttons
             UIHandlerAuthComponent.loginButton.onClick.AddListener(Login);
 
+#if UNITY_EDITOR || UNITY_STANDALONE
             // Bind other platform Buttons
             UIHandlerAuthComponent.AddOtherPlatformLoginListener(OtherPlatformLoginType.EpicGames, delegate
             {
                 UIElementHandler.ShowLoadingPanel();
                 eosSdk.LoginEpic();
             });
-            
+#endif
+
             UIHandlerAuthComponent.registerButton.onClick.AddListener(Register);
             UIHandlerAuthComponent.verifyButton.onClick.AddListener(VerifyRegister);
             UIHandlerAuthComponent.resendVerificationButton.onClick.AddListener(ResendVerification);

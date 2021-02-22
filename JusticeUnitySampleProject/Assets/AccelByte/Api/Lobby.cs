@@ -674,7 +674,8 @@ namespace AccelByte.Api
             Dictionary<string, int> latencies, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            string strLatencies = "{" +
+            string strLatencies = "";
+            strLatencies = "{" +
                 string.Join(",", latencies.Select(pair => $@"""{pair.Key}"":{pair.Value}").ToArray()) +
                 "}";
 
@@ -695,13 +696,14 @@ namespace AccelByte.Api
         /// <param name="gameMode">Target matchmaking game mode</param>
         /// <param name="clientVersion">Game client version to ensure match with the same version</param>
         /// <param name="latencies">Server latencies based on regions</param>
-        /// <param name="partyAttributes"></param>
+        /// <param name="partyAttributes">Matchmaker will match party with the same party attributes</param>
         /// <param name="callback">Result of the function with a start matchmaking status code.</param>
         public void StartMatchmaking(string gameMode, string clientVersion,
             Dictionary<string, int> latencies, Dictionary<string, object> partyAttributes, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-            string strLatencies = "{" +
+            string strLatencies = "";
+            strLatencies = "{" +
                 string.Join(",", latencies.Select(pair => $@"""{pair.Key}"":{pair.Value}").ToArray()) +
                 "}";
             var jsonAttributeString = partyAttributes.ToJsonString();
@@ -722,15 +724,98 @@ namespace AccelByte.Api
         /// Send matchmaking start request.
         /// </summary>
         /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="latencies">Server latencies based on regions</param>
+        /// <param name="partyAttributes">Matchmaker will match party with the same party attributes</param>
+        /// <param name="tempPartyUserIds">UserIDs to form a temporary party with (include user who started the matchmaking). Temporary party will disband when matchmaking finishes.</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string clientVersion, Dictionary<string, int> latencies,
+            Dictionary<string, object> partyAttributes, string[] tempPartyUserIds,
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            string strLatencies = "";
+            if(latencies != null && latencies.Count > 0)
+            {
+                strLatencies = "{" +
+                    string.Join(",", latencies.Select(pair => $@"""{pair.Key}"":{pair.Value}").ToArray()) +
+                    "}";
+            }
+
+            var jsonAttributeString = partyAttributes != null ? partyAttributes.ToJsonString() : "";
+            string userIdsCSV = tempPartyUserIds == null ? "" : String.Join(",", tempPartyUserIds);
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    clientVersion = clientVersion,
+                    latencies = strLatencies,
+                    partyAttributes = jsonAttributeString,
+                    tempParty = userIdsCSV
+                },
+                callback); ;
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="latencies">Server latencies based on regions</param>
+        /// <param name="partyAttributes">Matchmaker will match party with the same party attributes</param>
+        /// <param name="tempPartyUserIds">UserIDs to form a temporary party with (include user who started the matchmaking). Temporary party will disband when matchmaking finishes.</param>
+        /// <param name="extraAttributes">Custom attributes defined in game mode's matching/flexing rule</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string clientVersion, Dictionary<string, int> latencies,
+            Dictionary<string, object> partyAttributes, string[] tempPartyUserIds, string[] extraAttributes,
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            string strLatencies = "";
+            if (latencies != null && latencies.Count > 0)
+            {
+                strLatencies = "{" +
+                    string.Join(",", latencies.Select(pair => $@"""{pair.Key}"":{pair.Value}").ToArray()) +
+                    "}";
+            }
+
+            var jsonAttributeString = partyAttributes != null ? partyAttributes.ToJsonString() : "";
+
+            string userIdsCSV = tempPartyUserIds == null ? "" : String.Join(",", tempPartyUserIds);
+            
+            string extraAttributesCSV = extraAttributes == null ? "" : string.Join(",", extraAttributes);
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    clientVersion = clientVersion,
+                    latencies = strLatencies,
+                    partyAttributes = jsonAttributeString,
+                    tempParty = userIdsCSV,
+                    extraAttributes = extraAttributesCSV
+                },
+                callback); ;
+        }
+
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
         /// <param name="serverName">Server name to do match in Local DS</param>
         /// <param name="clientVersion">Game client version to ensure match with the same version</param>
-        /// <param name="partyAttributes"></param>
+        /// <param name="partyAttributes">Party attributes the matchmaker will do string equality check to matchmake with other party's party attribute</param>
         /// <param name="callback">Result of the function with a start matchmaking status code.</param>
         public void StartMatchmaking(string gameMode, string serverName, string clientVersion, Dictionary<string, object> partyAttributes, ResultCallback<MatchmakingCode> callback)
         {
             Report.GetFunctionLog(this.GetType().Name);
-
-            var jsonAttributeString = partyAttributes.ToJsonString();
+            var jsonAttributeString = partyAttributes != null ? partyAttributes.ToJsonString() : "";
 
             SendRequest(
                 MessageType.startMatchmakingRequest,
@@ -743,6 +828,73 @@ namespace AccelByte.Api
                 },
                 callback);
         }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="partyAttributes">Matchmaker will match party with the same party attributes</param>
+        /// <param name="tempPartyUserIds">UserIDs to form a temporary party with (include user who started the matchmaking). Temporary party will disband when matchmaking finishes.</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, string clientVersion, 
+            Dictionary<string, object> partyAttributes, string[] tempPartyUserIds, 
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            var jsonAttributeString = partyAttributes != null ? partyAttributes.ToJsonString() : "";
+            string userIdsCSV = tempPartyUserIds == null ? "" : String.Join(",", tempPartyUserIds);
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    serverName = serverName,
+                    clientVersion = clientVersion,
+                    partyAttributes = jsonAttributeString,
+                    tempParty = userIdsCSV
+                },
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking start request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="serverName">Server name to do match in Local DS</param>
+        /// <param name="clientVersion">Game client version to ensure match with the same version</param>
+        /// <param name="partyAttributes">Matchmaker will match party with the same party attributes</param>
+        /// <param name="tempPartyUserIds">UserIDs to form a temporary party with (include user who started the matchmaking). Temporary party will disband when matchmaking finishes.</param>
+        /// <param name="extraAttributes">Custom attributes defined in game mode's matching/flexing rule</param>
+        /// <param name="callback">Result of the function with a start matchmaking status code.</param>
+        public void StartMatchmaking(string gameMode, string serverName, string clientVersion,
+            Dictionary<string, object> partyAttributes, string[] tempPartyUserIds, string[] extraAttributes,
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            var jsonAttributeString = partyAttributes != null ? partyAttributes.ToJsonString() : "";
+
+            string userIdsCSV = tempPartyUserIds == null ? "" : String.Join(",", tempPartyUserIds);
+
+            string extraAttributesCSV = extraAttributes == null ? "" : string.Join(",", extraAttributes);
+
+            SendRequest(
+                MessageType.startMatchmakingRequest,
+                new StartMatchmakingRequest
+                {
+                    gameMode = gameMode,
+                    serverName = serverName,
+                    clientVersion = clientVersion,
+                    partyAttributes = jsonAttributeString,
+                    tempParty = userIdsCSV,
+                    extraAttributes = extraAttributesCSV
+                },
+                callback);
+        }
+
 
         /// <summary>
         /// Send a message to matchmaking service to indicate the user is ready for match
@@ -766,6 +918,25 @@ namespace AccelByte.Api
             SendRequest(
                 MessageType.cancelMatchmakingRequest,
                 new StartMatchmakingRequest {gameMode = gameMode},
+                callback);
+        }
+
+        /// <summary>
+        /// Send matchmaking cancel request.
+        /// </summary>
+        /// <param name="gameMode">Target matchmaking game mode</param>
+        /// <param name="isTempParty">Is using temp party when starting matchmaking</param>
+        /// <param name="callback">Result of the function with a cancel matchmaking status code.</param>
+        public void CancelMatchmaking(string gameMode, bool isTempParty, 
+            ResultCallback<MatchmakingCode> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(
+                MessageType.cancelMatchmakingRequest,
+                new StartMatchmakingRequest { 
+                    gameMode = gameMode,
+                    isTempParty = isTempParty
+                },
                 callback);
         }
 
@@ -835,6 +1006,68 @@ namespace AccelByte.Api
                     this.session.AuthorizationToken,
                     partyId,
                     callback));
+        }
+
+        /// <summary>
+        /// Write party storage data to the targeted party ID.
+        /// Beware:
+        /// Object will not be write immediately, please take care of the original object until it written.
+        /// </summary>
+        /// <param name="partyId">Targeted party ID.</param>
+        /// <param name="callback">Returns a Result via callback when completed.</param>
+        /// <param name="payloadModifier">Function to modify the latest party data with your customized modifier.</param>
+        /// <param name="retryAttempt">the number of retry to do when there is an error in writing to party storage (likely due to write conflicts)</param>
+        public void WritePartyStorage(string partyId, ResultCallback<PartyDataUpdateNotif> callback, Func<Dictionary<string, object>, Dictionary<string, object>> payloadModifier, int retryAttempt = 1)
+        {
+            Assert.IsFalse(string.IsNullOrEmpty(partyId), "Party ID should not be null.");
+
+            Report.GetFunctionLog(this.GetType().Name);
+
+            if (!this.session.IsValid())
+            {
+                callback.TryError(ErrorCode.IsNotLoggedIn);
+
+                return;
+            }
+
+            WritePartyStorageRecursive(retryAttempt, partyId, callback, payloadModifier);
+        }
+
+        private void WritePartyStorageRecursive(int remainingAttempt, string partyId, ResultCallback<PartyDataUpdateNotif> callback, Func<Dictionary<string, object>, Dictionary<string, object>> payloadModifier)
+        {
+            if (remainingAttempt <= 0)
+            {
+                callback.TryError(new Error(ErrorCode.PreconditionFailed, "Exhaust all retry attempt to modify party storage. Please try again."));
+                return;
+            }
+
+            GetPartyStorage(partyId, getPartyStorageResult =>
+            {
+                if (getPartyStorageResult.IsError)
+                {
+                    callback.TryError(getPartyStorageResult.Error);
+                }
+                else
+                {
+                    getPartyStorageResult.Value.custom_attribute = payloadModifier(getPartyStorageResult.Value.custom_attribute);
+
+                    var updateRequest = new PartyDataUpdateRequest();
+                    updateRequest.custom_attribute = getPartyStorageResult.Value.custom_attribute;
+                    updateRequest.updatedAt = getPartyStorageResult.Value.updatedAt;
+
+                    this.coroutineRunner.Run(
+                        this.api.WritePartyStorage(
+                            this.@namespace,
+                            this.session.AuthorizationToken,
+                            updateRequest,
+                            partyId,
+                            callback,
+                            () =>
+                            {
+                                WritePartyStorageRecursive(remainingAttempt - 1, partyId, callback, payloadModifier);
+                            }));
+                }
+            });
         }
 
         /// <summary>
@@ -939,6 +1172,18 @@ namespace AccelByte.Api
                 Namespace = this.@namespace,
                 key = SessionAttributeName.profanity_filtering_level.ToString(),
                 value = level.ToString()
+            }, callback);
+        }
+
+        public void SetSessionAttribute(string key, string value, ResultCallback callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+
+            SendRequest(MessageType.setSessionAttributeRequest, new SetSessionAttributeRequest()
+            {
+                Namespace = this.@namespace,
+                key = key,
+                value = value
             }, callback);
         }
 
