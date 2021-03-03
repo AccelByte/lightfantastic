@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.14](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.14%0D0.0.13) (2021-03-03)
+
+
+### Features
+
+* **config:** bump version and server version ([9394a14](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/9394a1424ad04e666b8958fc0fdc1613ea4dd9eb))
+* **sdk:** bump sdk version ([b96da72](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/b96da72378bfaa235c999c78f2e582b976e706f2))
+* **sdk:** update SDK to 2.28.1 ([eee5761](https://bitbucket.org/accelbyte/justice-unity-sample-project/commits/eee5761fbe7d299d6bfdaec6765da2d14914aabf))
+
 ### [0.0.13](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.13%0D0.0.12) (2021-01-20)
 
 
