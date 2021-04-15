@@ -3,6 +3,7 @@
 // and restrictions contact your company contract manager.
 
 using System.Collections.Generic;
+using AccelByte.Api;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine;
@@ -10,6 +11,8 @@ using UnityEngine.UI;
 
 public class AccelByteChatLogic : MonoBehaviour
 {
+    private enum CHAT_TYPE{PARTY, PERSONAL, CHANNEL};
+    private CHAT_TYPE currentChatType;
     private UILobbyLogicComponent UIHandlerLobbyComponent;
     private AccelByteLobbyLogic lobbyLogic;
     private AccelByteManager accelByteManager;
@@ -19,13 +22,17 @@ public class AccelByteChatLogic : MonoBehaviour
 
     private ChatMessage receivedPrivateMessage;
     private ChatMessage receivedPartyMessage;
+    private ChannelChatMessage receivedChannelMessage;
+    private ChatChannelSlug channel = null;
 
     static bool isReceivedPrivateMessage = false;
     static bool isReceivedPartyMessage = false;
+    static bool isReceivedChannelMessage = false;
 
     private void Awake()
     {
         chatBoxList = new Dictionary<string, ChatData>();
+        Debug.Log("chat box list initiated");
     }
 
     public void Init(UILobbyLogicComponent uiLobbyLogicComponent, AccelByteLobbyLogic lobbyLogic)
@@ -43,6 +50,11 @@ public class AccelByteChatLogic : MonoBehaviour
         UIHandlerLobbyComponent.partyChatButton.onClick.AddListener(OpenPartyChatBox);
         UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(ClearActivePlayerChat);
         UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(OpenEmptyChatBox);
+        UIHandlerLobbyComponent.privateChatButton.onClick.AddListener(LoadFriendList);
+        //global chat listener
+        UIHandlerLobbyComponent.channelChatButton.onClick.AddListener(JoinChannel);
+        UIHandlerLobbyComponent.channelChatButton.onClick.AddListener(ClearActivePlayerChat);
+        UIHandlerLobbyComponent.channelChatButton.onClick.AddListener(OpenEmptyChatBox);
     }
 
     public void RemoveListener()
@@ -52,18 +64,21 @@ public class AccelByteChatLogic : MonoBehaviour
         UIHandlerLobbyComponent.backChatButton.onClick.RemoveListener(ClearActivePlayerChat);
         UIHandlerLobbyComponent.partyChatButton.onClick.RemoveListener(OpenPartyChatBox);
         UIHandlerLobbyComponent.privateChatButton.onClick.RemoveAllListeners();
+        UIHandlerLobbyComponent.channelChatButton.onClick.RemoveAllListeners();
     }
 
     public void SetupChatCallbacks()
     {
         lobbyLogic.abLobby.PersonalChatReceived += result => OnPersonalChatReceived(result);
         lobbyLogic.abLobby.PartyChatReceived += result => OnPartyChatReceived(result);
+        lobbyLogic.abLobby.ChannelChatReceived += result => OnChannelChatReceived(result);
     }
 
     public void UnsubscribeAllCallbacks()
     {
         lobbyLogic.abLobby.PersonalChatReceived -= OnPersonalChatReceived;
         lobbyLogic.abLobby.PartyChatReceived -= OnPartyChatReceived;
+        lobbyLogic.abLobby.ChannelChatReceived -= OnChannelChatReceived;
     }
     // Update is called once per frame
     void Update()
@@ -71,6 +86,7 @@ public class AccelByteChatLogic : MonoBehaviour
         if (isReceivedPrivateMessage)
         {
             isReceivedPrivateMessage = false;
+            currentChatType = CHAT_TYPE.PERSONAL;
             if (!chatBoxList.ContainsKey(receivedPrivateMessage.from))
             {
                 chatBoxList.Add(receivedPrivateMessage.from, new ChatData(receivedPrivateMessage.from, new List<string>(), new List<string>()));
@@ -86,7 +102,7 @@ public class AccelByteChatLogic : MonoBehaviour
         if (isReceivedPartyMessage)
         {
             isReceivedPartyMessage = false;
-
+            currentChatType = CHAT_TYPE.PARTY;
             if (!chatBoxList.ContainsKey(lobbyLogic.partyLogic.GetPartyUserId()))
             {
                 chatBoxList.Add(lobbyLogic.partyLogic.GetPartyUserId(), new ChatData(lobbyLogic.partyLogic.GetPartyUserId(), new List<string>(), new List<string>()));
@@ -99,21 +115,48 @@ public class AccelByteChatLogic : MonoBehaviour
                 RefreshChatBoxUI();
             }
         }
+        if (isReceivedChannelMessage)
+        {
+            Debug.Log("channel chat received");
+            isReceivedChannelMessage = false;
+            currentChatType = CHAT_TYPE.CHANNEL;
+            //global message logic
+            if(!chatBoxList.ContainsKey(activePlayerChatUserId))
+            {
+                Debug.Log("add new list channel");
+                chatBoxList.Add(activePlayerChatUserId, new ChatData(receivedChannelMessage.from, new List<string>(), new List<string>()));
+            }
+            AccelBytePlugin.GetUser().GetUserByUserId(receivedChannelMessage.from, OnGetDisplayNameChannelChat);
+        }
     }
 
     #region AccelByte Chat Functions
     public void SendChatMessage()
     {
         if (string.IsNullOrEmpty(UIHandlerLobbyComponent.messageInputField.text))
-            WriteWarningInChatBox("Please enter write your message");
-        else if (string.IsNullOrEmpty(activePlayerChatUserId))
-            WriteWarningInChatBox("Please select player or party to chat");
-        else if (!UIHandlerLobbyComponent.partyChatButton.interactable)
-            SendPartyChat();
-        else
         {
-            SendPersonalChat(activePlayerChatUserId);
+            WriteWarningInChatBox("Please enter write your message");
         }
+        else if (!UIHandlerLobbyComponent.partyChatButton.interactable)
+        {
+            SendPartyChat();
+        }
+        else if (!UIHandlerLobbyComponent.channelChatButton.interactable)
+        {
+            SendChannelChat();
+        }
+        else if (!UIHandlerLobbyComponent.privateChatButton.interactable)
+        {
+            if (string.IsNullOrEmpty(activePlayerChatUserId))
+            {
+                WriteWarningInChatBox("Please select player or party to chat");
+            }
+            else
+            {
+                SendPersonalChat(activePlayerChatUserId);
+            }
+        }
+            
     }
 
     /// <summary>
@@ -131,6 +174,28 @@ public class AccelByteChatLogic : MonoBehaviour
     private void SendPersonalChat(string userId)
     {
         lobbyLogic.abLobby.SendPersonalChat(userId, UIHandlerLobbyComponent.messageInputField.text, OnSendPersonalChat);
+    }
+
+    /// <summary>
+    /// Send a chat to channel
+    /// </summary>
+    private void SendChannelChat()
+    {
+        Debug.Log("Channel Send Clicked");
+        Debug.Log("Channel Message to send : " + UIHandlerLobbyComponent.messageInputField.text);
+        lobbyLogic.abLobby.SendChannelChat(UIHandlerLobbyComponent.messageInputField.text, OnSendChannelChat);
+    }
+
+    /// <summary>
+    /// join channel 
+    /// </summary>
+    private void JoinChannel()
+    {
+        if (lobbyLogic.abLobby.channelSlug == null)
+        {
+            lobbyLogic.abLobby.JoinDefaultChatChannel(OnJoinChannel);
+        }
+        Debug.Log("Channel Slug : " + lobbyLogic.abLobby.channelSlug);
     }
 
     public void ClearChatBoxUIPrefabs()
@@ -230,11 +295,34 @@ public class AccelByteChatLogic : MonoBehaviour
                 }
                 else
                 {
-                    string playerChatName = lobbyLogic.friendsLogic.GetFriendList()[chatBoxList[activePlayerChatUserId].sender[i]].DisplayName;
+                    string playerChatName = "test";
+                    if (currentChatType == CHAT_TYPE.PERSONAL)
+                    {
+                        playerChatName = lobbyLogic.friendsLogic.GetFriendList()[chatBoxList[activePlayerChatUserId].sender[i]].DisplayName;
+                    }
+                    else if (currentChatType == CHAT_TYPE.CHANNEL)
+                    {
+                        playerChatName = chatBoxList[activePlayerChatUserId].sender[i];
+                    }
+                    
                     chatPrefab.GetComponent<ChatMessagePrefab>().WriteMessage(playerChatName, chatBoxList[activePlayerChatUserId].message[i], isMe);
                 }
                 UIHandlerLobbyComponent.friendScrollView.Rebuild(CanvasUpdate.Layout);
             }
+        }
+    }
+
+    private void OnGetDisplayNameChannelChat(Result<UserData> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("User not found");
+        }
+        else
+        {
+            chatBoxList[activePlayerChatUserId].sender.Add(result.Value.displayName);
+            chatBoxList[activePlayerChatUserId].message.Add(receivedChannelMessage.payload);
+            RefreshChatBoxUI();
         }
     }
 
@@ -252,8 +340,25 @@ public class AccelByteChatLogic : MonoBehaviour
     {
         ClearChatBoxUIPrefabs();
         ClearPlayerChatListUIPrefabs();
-        UIHandlerLobbyComponent.privateChatButton.interactable = false;
-        UIHandlerLobbyComponent.partyChatButton.interactable = true;
+        if (!UIHandlerLobbyComponent.partyChatButton.interactable)
+        {
+            LoadFriendList();
+        }
+        if (!UIHandlerLobbyComponent.channelChatButton.interactable)
+        {
+            if (channel != null)
+            {
+                if (chatBoxList.ContainsKey(channel.channelSlug))
+                {
+                    chatBoxList[channel.channelSlug].sender.Clear();
+                    chatBoxList[channel.channelSlug].message.Clear();
+                }
+            }
+        }
+    }
+
+    private void LoadFriendList()
+    {
         lobbyLogic.friendsLogic.LoadFriendsList();
     }
 
@@ -361,6 +466,34 @@ public class AccelByteChatLogic : MonoBehaviour
             RefreshChatBoxUI();
         }
     }
+
+    /// <summary>
+    /// Callback on SendPartyChat
+    /// Refresh UI chat on success
+    /// </summary>
+    /// <param name="result"> result callback </param>
+    private void OnSendChannelChat(Result result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Send channel chat failed:" + result.Error.Message);
+            Debug.Log("Send channel chat response:" + result.Error.Code);
+            if (result.Error.Code == ErrorCode.ChannelSendChatChannelError)
+            {
+                WriteWarningInChatBox("Send Chat Channel Error");
+                UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+            }
+        }
+        else
+        {
+            Debug.Log("Send channel chat succesful");
+            chatBoxList[activePlayerChatUserId].sender.Add(accelByteManager.AuthLogic.GetUserData().userId);
+            chatBoxList[activePlayerChatUserId].message.Add(UIHandlerLobbyComponent.messageInputField.text);
+            UIHandlerLobbyComponent.messageInputField.text = string.Empty;
+            
+            //RefreshChatBoxUI();
+        }
+    }
     #endregion
 
     #region AccelByte Chat Notification Callbacks
@@ -401,6 +534,52 @@ public class AccelByteChatLogic : MonoBehaviour
         {
             receivedPartyMessage = result.Value;
             isReceivedPartyMessage = true;
+        }
+    }
+    /// <summary>
+    /// Callback from ChannelChat event
+    /// Triggered if the player recieved a Channel chat message
+    /// Update the chat UI on success
+    /// </summary>
+    /// <param name="result"> result callback </param>
+    private void OnChannelChatReceived(Result<ChannelChatMessage> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("Get party chat failed:" + result.Error.Message);
+            Debug.Log("Get party chat Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            receivedChannelMessage = result.Value;
+            isReceivedChannelMessage = true;
+        }
+    }
+    /// <summary>
+    /// Callback from Join Channel event
+    /// Triggered if the player joined channel
+    /// Update the chat UI on success
+    /// </summary>
+    /// <param name="result"> result callback </param>
+    private void OnJoinChannel(Result<ChatChannelSlug> result)
+    {
+        if (result.IsError)
+        {
+            Debug.Log("join chat channel failed:" + result.Error.Message);
+            Debug.Log("join chat channel Response Code: " + result.Error.Code);
+        }
+        else
+        {
+            if (channel == null)
+            {
+                channel = new ChatChannelSlug();
+            } 
+            channel = result.Value;
+            activePlayerChatUserId = channel.channelSlug;
+            if (!chatBoxList.ContainsKey(activePlayerChatUserId))
+            {
+                chatBoxList.Add(activePlayerChatUserId, new ChatData(activePlayerChatUserId, new List<string>(), new List<string>()));
+            }
         }
     }
     #endregion

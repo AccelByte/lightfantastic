@@ -199,6 +199,9 @@ namespace AccelByte.Core
         PartyChatUnableSaveChat = 11294,
         PartyChatReceiverBanned = 11295,
         PartyChatReceiverNotFound = 11296,
+        //Channel Chat
+        ChannelSendChatChannelError = 11841,
+        ChannelChatUnableGetUserRegistry = 11842,
         //List Friends
         ListFriendsUnableGetUserRegistry = 11301,
         ListFriendsUnableGetOnlineFiends = 11303,
