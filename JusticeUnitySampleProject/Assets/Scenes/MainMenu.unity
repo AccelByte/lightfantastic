@@ -6112,6 +6112,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 287.29883
       objectReference: {fileID: 0}
+    - target: {fileID: 1905004227982873299, guid: c123910603c41ab43a71bf0446cb62da,
+        type: 3}
+      propertyPath: m_Name
+      value: ChannelButton
+      objectReference: {fileID: 0}
     - target: {fileID: 2327196212722474530, guid: c123910603c41ab43a71bf0446cb62da,
         type: 3}
       propertyPath: m_AnchoredPosition.y
