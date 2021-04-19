@@ -359,15 +359,8 @@ namespace AccelByte.Server
                 if (arg.Contains("provider"))
                 {
                     string[] split = arg.Split('=');
-                    string providerArgValue = split[1];
-                    foreach (var _enum in Enum.GetNames(typeof(Provider)))
-                    {
-                        if (providerArgValue.Equals(_enum.ToLower()))
-                        {
-                            serverSetup.provider = providerArgValue.ToLower();
-                            isProviderFound = true;
-                        }
-                    }
+                    serverSetup.provider = split[1].ToLower();
+                    isProviderFound = true;
                 }
 
                 if (arg.Contains("game_version"))
