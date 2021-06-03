@@ -408,6 +408,17 @@ namespace AccelByte.Api
         }
 
         /// <summary>
+        /// Promote member to be a party leader.
+        /// </summary>
+        /// <param name="userId">User ID that will be promoted as a party leader.</param>
+        /// <param name="callback">Returns a Result via callback when completed.</param>
+        public void PromotePartyLeader(string userId, ResultCallback<PartyPromoteLeaderResponse> callback)
+        {
+            Report.GetFunctionLog(this.GetType().Name);
+            SendRequest(MessageType.partyPromoteLeaderRequest, new PartyPromoteLeaderRequest { newLeaderUserId = userId }, callback);
+        }
+
+        /// <summary>
         /// Send chat to other party members
         /// </summary>
         /// <param name="chatMessage">Message to send to party</param>

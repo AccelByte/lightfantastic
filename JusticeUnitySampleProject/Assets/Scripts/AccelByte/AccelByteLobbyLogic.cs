@@ -190,17 +190,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             //If we successfully connected, load our friend list.
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
-            abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
-            friendsLogic.ClearFriendList();
-            SetupLobbyUI();
+            SetFriendList();
         }
         else
         {
             //If we don't connect Retry.
             // TODO: use coroutine to day the call to avoid spam
             Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
-            ConnectToLobby();
+            //ConnectToLobby();
         }
+    }
+
+    private void SetFriendList()
+    {
+
+        abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
+        friendsLogic.ClearFriendList();
+        SetupLobbyUI();
     }
 
     public void OnLogoutButtonClicked()
