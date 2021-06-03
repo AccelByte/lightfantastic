@@ -408,4 +408,17 @@ public class AccelByteLobbyLogic : MonoBehaviour
             UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
         }
     }
+
+    ///check if player is a leader/master
+    public bool IsLeader()
+    {
+        bool isLeaderHasMember = partyLogic.GetPartyMemberList().Count > 0;
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        return partyLogic.GetAbPartyInfo() != null && (data.userId == partyLogic.GetAbPartyInfo().leaderID) && isLeaderHasMember;
+    }
+
+    public bool IsReady()
+    {
+        return partyLogic.GetAbPartyInfo() != null;
+    }
 }
