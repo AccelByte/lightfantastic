@@ -409,7 +409,7 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.loginPassword.text = UIHandlerAuthComponent.registerPassword.text;
                 Login();
                 //Show Verification Panel
-                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.REGISTER);
+                UIElementHandler.ShowExclusivePanel(ExclusivePanelType.VERIFY);
             }
         }
 
@@ -525,7 +525,7 @@ namespace ABRuntimeLogic
                 UIHandlerAuthComponent.userId.text = "UserId: " + abUserData.userId;
                 UIHandlerAuthComponent.sessionId.text = "SessionId: " + abUser.Session.AuthorizationToken;
 
-                if (!abUserData.emailVerified && !isUsingOtherPlatform)
+                if (!abUserData.emailVerified)
                 {
                     Debug.Log("[LF] OnGetUserData emailVerified is false verify the email!");
 
