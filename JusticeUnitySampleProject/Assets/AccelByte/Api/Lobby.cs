@@ -143,7 +143,7 @@ namespace AccelByte.Api
         private long id;
         private LobbySessionId lobbySessionId;
         private Coroutine maintainConnectionCoroutine;
-        private string channelSlug = null;
+        public string channelSlug = null;
 
         public event EventHandler OnRetryAttemptFailed;
 

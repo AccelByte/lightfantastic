@@ -41,6 +41,7 @@ public class UILobbyLogicComponent : MonoBehaviour
     public Button backChatButton;
     public Button privateChatButton;
     public Button partyChatButton;
+    public Button channelChatButton;
     public Button sendMessageButton;
     public InputField messageInputField;
 
