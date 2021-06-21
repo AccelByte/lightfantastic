@@ -158,6 +158,8 @@ namespace Game
         {
             if (NetworkManager.Instance.IsServer)
             {
+                Debug.Log("[BaseGameManager] Setting Up Event Handler in Server");
+                NetworkManager.Instance.Networker.playerConnected += OnPlayerConnected;
                 NetworkManager.Instance.Networker.playerAccepted += OnPlayerAccepted;
                 NetworkManager.Instance.Networker.playerDisconnected += OnPlayerDisconnected;
                 AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest += onServerMatched;
@@ -334,6 +336,20 @@ namespace Game
             }
         }
 
+        private void OnPlayerConnected(NetworkingPlayer player, NetWorker sender)
+        {
+            Debug.Log("GameManager OnPlayerConnected!");
+
+            if(NetworkManager.Instance.IsServer)
+            {
+                if(PlayerConnected == 0)
+                {
+                    AccelByteManager.Instance.ServerLogic.OnPlayerFirstJoin();
+                    
+                }
+            }
+        }
+
         #region Events
         public void OnPlayerFinished(uint finishedPlayerNetId, ulong timestep)
         {
@@ -370,7 +386,7 @@ namespace Game
             Debug.Log("GameManager onServerMatched! player count: " + PlayerMatched);
                 
             // unsubscribe once get the info
-            AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest -= onServerMatched;
+            //AccelByteManager.Instance.ServerLogic.onServerGetMatchRequest -= onServerMatched;
         }
 
         private void OnPlayerDisconnected(NetworkingPlayer player, NetWorker sender)

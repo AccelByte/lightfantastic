@@ -26,6 +26,8 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     private bool connectToLocal;
     private bool isWaitingResponseQos = false;
     private bool isGettingFirstQos = false;
+    private bool isLoadingLevel = false;
+    private bool isSearching = false;
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
     private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
@@ -48,12 +50,34 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     {
         UIHandlerLobbyComponent.matchmakingButtonCollection.On1VS1ButtonClicked.AddListener(delegate
         {
+            if(!lobbyLogic.IsReady())
+            {
+                PopupManager.Instance.ShowPopupWarning("Matchmaking Problem", 
+                    "The party system is not ready, it could be that Lobby Service is down or problem with connectivity. " +
+                    "\n Restarting the game may solve the problem", "Accept");
+                return;
+            }
+
+            //don't allow leader to enter 1v1
+            if(lobbyLogic.IsLeader())
+            {
+                PopupManager.Instance.ShowPopupWarning("Matchmaking Problem", "You can't join 1v1 if you have members on board.", "Accept");
+                return;
+            }
+
             GameplaySetGameMode(LightFantasticConfig.GAME_MODES.unitytest);
             FindMatchButtonClicked();
             UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
         });
         UIHandlerLobbyComponent.matchmakingButtonCollection.On4FFAButtonClicked.AddListener(delegate
         {
+            if (!lobbyLogic.IsReady())
+            {
+                PopupManager.Instance.ShowPopupWarning("Matchmaking Problem",
+                    "The party system is not ready, it could be that Lobby Service is down or problem with connectivity. " +
+                    "\n Restarting the game may solve the problem", "Accept");
+                return;
+            }
             GameplaySetGameMode(LightFantasticConfig.GAME_MODES.upto4player);
             FindMatchButtonClicked();
             UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
@@ -98,7 +122,23 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         lobbyLogic.abLobby.RematchmakingNotif -= OnRematchmaking;
         lobbyLogic.abLobby.ReadyForMatchConfirmed -= OnGetReadyConfirmationStatus;
     }
-    
+
+    //UI handler
+    private void Update()
+    {
+        if(isSearching)
+        {
+            if (isLoadingLevel)
+            {
+                UIHandlerLobbyComponent.cancelMatchmakingButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                UIHandlerLobbyComponent.cancelMatchmakingButton.gameObject.SetActive(true);
+            }
+        }
+    }
+
     #region AccelByte MatchMaking Functions
     /// <summary>
     /// Find match function by calling lobby matchmaking
@@ -107,12 +147,19 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     /// </summary>
     private void FindMatch()
     {
+        isLoadingLevel = false;
+        isSearching = true;
         if (connectToLocal)
         {
             lobbyLogic.abLobby.StartMatchmaking(gameMode, accelByteManager.LocalDSName, OnFindMatch);
         }
         else
         {
+            if(qosLatencies == null)
+            {
+                PopupManager.Instance.ShowPopupWarning("QOS Error", "QOS is not accuired yet! Thus matchmaking cannot start. Please restart the program", "Accept");
+                return;
+            }
             var regionIndex = UIHandlerLobbyComponent.regionSelectorDropdown.value;
             var selectedLatency = qosLatencies.Values.ToList()[regionIndex];
             var selectedRegion = qosLatencies.Keys.ToList()[regionIndex];
@@ -272,6 +319,8 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         lobbyLogic.abLobby.CancelMatchmaking(gameMode, OnFindMatchCanceled);
         UIHandlerLobbyComponent.matchmakingFailedPromptPanel.SetText("MATCHMAKING FAILED", reason);
         UIHandlerLobbyComponent.matchmakingFailedPromptPanel.Show();
+        UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.AddListener(FindMatchCancelClicked);
+        //UIHandlerLobbyComponent.cancelMatchmakingButton.gameObject.SetActive(true); <-- doing this approach will break the matchmaking UI. This procedure doesn't run in main thread
     }
     #endregion
 
@@ -313,6 +362,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     /// <param name="result"></param>
     private void OnFindMatchCanceled(Result<MatchmakingCode> result)
     {
+        isSearching = false;
         if (result.IsError)
         {
             Debug.Log("OnFindMatchCanceled failed:" + result.Error.Message);
@@ -434,7 +484,9 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
                 });
                 return;
             }
-            
+            //UIHandlerLobbyComponent.cancelMatchmakingButton.gameObject.SetActive(false); <-- doing this approach will break the matchmaking UI. This procedure doesn't run in main thread
+            isLoadingLevel = true;
+            UIHandlerLobbyComponent.cancelMatchmakingButton.onClick.RemoveListener(FindMatchCancelClicked);
             UIHandlerLobbyComponent.matchmakingBoard.StartCountdown(MatchmakingWaitingPhase.WaitingDSM, 
                 delegate { OnFailedMatchmaking("Spawning a dedicated server timed out"); });
             Debug.Log("OnSuccessMatch success match completed");
@@ -451,6 +503,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
 
                 Debug.Log("Lobby OnSuccessMatch Connect");
                 MainThreadTaskRunner.Instance.Run(() => { StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString())); });
+                isSearching = false;
             }
             else if (result.Value.status == DSNotifStatus.BUSY.ToString())
             {
@@ -459,6 +512,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
                 Debug.Log("Lobby OnSuccessMatch Connect");
                 Debug.Log("ip: " + result.Value.ip + "port: " + result.Value.port);
                 MainThreadTaskRunner.Instance.Run(() => { StartCoroutine(WaitForGameServerReady(result.Value.ip, result.Value.port.ToString())); });
+                isSearching = false;
             }
 
             Debug.Log("OnSuccessMatch ip: " + result.Value.ip + "port: " + result.Value.port);

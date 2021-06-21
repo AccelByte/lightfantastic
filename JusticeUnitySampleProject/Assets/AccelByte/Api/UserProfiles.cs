@@ -129,52 +129,6 @@ namespace AccelByte.Api
         }
 
         /// <summary>
-        /// Get targeted user's public profile information
-        /// </summary>
-        /// <param name="userId">Targeted user ID</param>
-        /// <param name="callback">Returns a result that contains a PublicUserProfile via callback when completed</param>
-        public void GetUserProfilePublicInfo(string userId, ResultCallback<PublicUserProfile> callback)
-        {
-            Report.GetFunctionLog(this.GetType().Name);
-
-            if (!this.session.IsValid())
-            {
-                callback.TryError(ErrorCode.IsNotLoggedIn);
-                return;
-            }
-
-            this.coroutineRunner.Run(
-                this.api.GetUserProfilePublicInfo(
-                    this.@namespace,
-                    userId,
-                    this.session.AuthorizationToken,
-                    callback));
-        }
-        
-        /// <summary>
-        /// Get targeted users' public profile information
-        /// </summary>
-        /// <param name="userId">Targeted users' ID</param>
-        /// <param name="callback">Returns a result that contains an array of PublicUserProfile via callback when completed</param>
-        public void GetUserProfilePublicInfosByIds(string[] userIds, ResultCallback<PublicUserProfile[]> callback)
-        {
-            Report.GetFunctionLog(this.GetType().Name);
-
-            if (!this.session.IsValid())
-            {
-                callback.TryError(ErrorCode.IsNotLoggedIn);
-                return;
-            }
-
-            this.coroutineRunner.Run(
-                this.api.GetUserProfilePublicInfosByIds(
-                    this.@namespace,
-                    this.session.AuthorizationToken,
-                    userIds,
-                    callback));
-        }
-
-        /// <summary>
         /// Get list of country
         /// </summary>
         /// <param name="language">Translated country names to specified language</param>

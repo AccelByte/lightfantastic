@@ -76,7 +76,7 @@ namespace AccelByte.Server
         private static void Init()
         {
 #endif
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if (UNITY_WEBGL || ENABLE_IL2CPP) && !UNITY_EDITOR
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 new [] {
                     Utf8Json.Formatters.PrimitiveObjectFormatter.Default

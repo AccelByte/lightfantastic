@@ -10,12 +10,13 @@ namespace AccelByte.Models
     public enum MatchmakingStatus
     {
         none,
-        done, // when matchmaking request is done successfully
+        done, // when matchmaking request is done successfully, obsolete use matched instead
         cancel, // when matchmaking request is cancelled
         timeout, // when matchmaking request is timed out
         sessionInQueue, // when joinable session is in queue and players from other party can join
         sessionFull, // when joinable session is full, and removed from queue
-        sessionTimeout // when joinable session is timed out, and removed from queue
+        sessionTimeout, // when joinable session is timed out, and removed from queue
+        matched // when matchmaking request is done successfully
     }
 
     [DataContract]
@@ -132,5 +133,11 @@ namespace AccelByte.Models
     public class DequeueRequest
     {
         [DataMember] public string match_id { get; set; }
+    }
+
+    [DataContract]
+    public class ServerSessionResponse
+    {
+        [DataMember] public string session_id { get; set; }
     }
 }

@@ -190,17 +190,23 @@ public class AccelByteLobbyLogic : MonoBehaviour
         {
             //If we successfully connected, load our friend list.
             Debug.Log("Successfully Connected to the AccelByte Lobby Service");
-            abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
-            friendsLogic.ClearFriendList();
-            SetupLobbyUI();
+            SetFriendList();
         }
         else
         {
             //If we don't connect Retry.
             // TODO: use coroutine to day the call to avoid spam
             Debug.LogWarning("Not Connected To Lobby. Attempting to Connect...");
-            ConnectToLobby();
+            //ConnectToLobby();
         }
+    }
+
+    private void SetFriendList()
+    {
+
+        abLobby.SetUserStatus(UserStatus.Availabe, "OnLobby", OnSetUserStatus);
+        friendsLogic.ClearFriendList();
+        SetupLobbyUI();
     }
 
     public void OnLogoutButtonClicked()
@@ -401,5 +407,18 @@ public class AccelByteLobbyLogic : MonoBehaviour
             // Show the popup
             UIHandlerLobbyComponent.popupPartyControl.gameObject.SetActive(!UIHandlerLobbyComponent.popupPartyControl.gameObject.activeSelf);
         }
+    }
+
+    ///check if player is a leader/master
+    public bool IsLeader()
+    {
+        bool isLeaderHasMember = partyLogic.GetPartyMemberList().Count > 0;
+        UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
+        return partyLogic.GetAbPartyInfo() != null && (data.userId == partyLogic.GetAbPartyInfo().leaderID) && isLeaderHasMember;
+    }
+
+    public bool IsReady()
+    {
+        return partyLogic.GetAbPartyInfo() != null;
     }
 }

@@ -238,7 +238,6 @@ namespace AccelByte.Api
             {
                 string wholeJsonText = ((TextAsset) configFile).text;
                 this.config = JsonSerializer.Deserialize<Config>(wholeJsonText);
-                config.Expand();
             }
         }
 

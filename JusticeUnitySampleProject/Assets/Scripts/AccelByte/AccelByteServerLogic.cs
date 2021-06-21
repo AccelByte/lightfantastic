@@ -24,6 +24,7 @@ public class AccelByteServerLogic : MonoBehaviour
 
     private DedicatedServer abServer;
     private DedicatedServerManager abServerManager;
+    private ServerMatchmaking abServerMatchmaking;
     private ServerStatistic abServerStatistic;
 
     public bool isLocal = true;
@@ -44,10 +45,11 @@ public class AccelByteServerLogic : MonoBehaviour
 
     public delegate void OnServerGetMatchRequestEvent(int playerCount);
     public event OnServerGetMatchRequestEvent onServerGetMatchRequest;
-
-    private MatchRequest currentMatchmakingRequest = null;
+    
+    private MatchmakingResult currentMatchmakingResult = null;
     private int playerCount = 0;
     private int playerStatUpdatedCount = 0;
+    private bool isDSClaimed = false;
 
     private void Awake()
     {
@@ -67,15 +69,18 @@ public class AccelByteServerLogic : MonoBehaviour
         abServer = AccelByteServerPlugin.GetDedicatedServer();
         abServerManager = AccelByteServerPlugin.GetDedicatedServerManager();
         abServerStatistic = AccelByteServerPlugin.GetStatistic();
+        abServerMatchmaking = AccelByteServerPlugin.GetMatchmaking();
 
         // Log the game server in to the accelbyte's IAM service
         abServer.LoginWithClientCredentials(OnLogin);
         mainMenuSceneName = SceneManager.GetActiveScene().name;
         SceneManager.sceneUnloaded += OnCurrentSceneUnloaded;
 
+        /*
         // Register to get match request info, 
         // this will be triggered when the Dedicated Server Manager (DSM) decide if this game server will be used immediately
         abServerManager.OnMatchRequest += OnMatchRequest;
+        */
 
         #if !UNITY_EDITOR 
         isLocal = Environment.GetCommandLineArgs().Contains(LightFantasticConfig.DS_LOCALMODE_CMD_ARG);
@@ -111,8 +116,6 @@ public class AccelByteServerLogic : MonoBehaviour
         {
             Debug.Log("[AccelByteServerLogic] OnRegistered Success! Is Local DS: " + isLocal);
 
-            // Configure heartbeat to keep the DSM service know that the game server is alive
-            abServerManager.ConfigureHeartBeat();
             if (isLocal)
             {
                 // if the game server is running locally then notify the DSM service that this is local server
@@ -211,9 +214,9 @@ public class AccelByteServerLogic : MonoBehaviour
         return playerCount;
     }
 
-    public MatchRequest GetMatchRequest()
+    public MatchmakingResult GetMatchmakingResult()
     {
-        return currentMatchmakingRequest;
+        return currentMatchmakingResult;
     }
 
     /// <summary>
@@ -278,6 +281,7 @@ public class AccelByteServerLogic : MonoBehaviour
 
     #region AccelByte Server Callbacks
 
+    /*
     /// <summary>
     /// Callback that registered from DSM match request
     /// </summary>
@@ -318,6 +322,7 @@ public class AccelByteServerLogic : MonoBehaviour
             Debug.Log("[AccelByteServerLogic] OnMatchRequest head count: " + playerCount);
         }
     }
+    */
 
     /// <summary>
     /// Callback of create user stat items when the player does not yet has user statistic
@@ -355,6 +360,48 @@ public class AccelByteServerLogic : MonoBehaviour
             {
                 Debug.Log("[AccelByteServerLogic] Increment User statistic item successful, stat code is: " + data.statCode);
             }
+        }
+    }
+
+    public void OnPlayerFirstJoin()
+    {
+        Debug.Log("[AccelByteServerLogic] OnPlayerConnected, isDSClaimed " + isDSClaimed.ToString());
+
+        if (!isDSClaimed)
+        {
+            MainThreadTaskRunner.Instance.Run(() =>
+            {
+                abServerManager.GetSessionId(GetSessionIdResult =>
+                {
+                    if (GetSessionIdResult.IsError)
+                    {
+                        Debug.Log("[AccelByteServerLogic] OnPlayerConnected, GetSessionId result error: " + GetSessionIdResult.Error.Message);
+                        return;
+                    }
+
+                    abServerMatchmaking.QuerySessionStatus(GetSessionIdResult.Value.session_id, sessionStatusResult =>
+                    {
+                        if (sessionStatusResult.IsError)
+                        {
+                            Debug.Log("[AccelByteServerLogic] OnPlayerConnected, QuerySessionStatus result error : " + sessionStatusResult.Error.Message);
+                            return;
+                        }
+
+                        int playerCount = 0;
+                        foreach (var ally in sessionStatusResult.Value.matching_allies)
+                        {
+                            foreach (var party in ally.matching_parties)
+                            {
+                                playerCount += party.party_members.Length;
+                            }
+                        }
+
+                        this.playerCount = playerCount;
+                        Debug.Log("[AccelByteServerLogic] OnPlayerConnected, Head count : " + this.playerCount);
+                        onServerGetMatchRequest?.Invoke(this.playerCount);
+                    });
+                });
+            });
         }
     }
     #endregion // AccelByte Server Callbacks
