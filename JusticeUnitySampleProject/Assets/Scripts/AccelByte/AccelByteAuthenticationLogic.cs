@@ -407,7 +407,7 @@ namespace ABRuntimeLogic
                 Debug.Log("Register successful.");
                 UIHandlerAuthComponent.loginEmail.text = UIHandlerAuthComponent.registerEmail.text;
                 UIHandlerAuthComponent.loginPassword.text = UIHandlerAuthComponent.registerPassword.text;
-                //Login();
+                Login();
                 //Show Verification Panel
                 UIElementHandler.ShowExclusivePanel(ExclusivePanelType.VERIFY);
             }
