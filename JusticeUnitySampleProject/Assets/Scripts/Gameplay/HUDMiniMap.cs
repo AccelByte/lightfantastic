@@ -26,10 +26,10 @@ public class HUDMiniMap : MonoBehaviour
         }
     }
 
-    public void SetupMinimap(string playerName)
+    public void SetupMinimap(string playerName, uint indexPlayer)
     {
         GameObject obj = Instantiate(minimapSliderPrefab, transform);
-
+        
         if (obj != null)
         {
             if (positionIndicators.Count > 0)
@@ -48,16 +48,25 @@ public class HUDMiniMap : MonoBehaviour
             // arage top or bottom side
             if ((positionIndicators.Count + 1) % 2 == 0)
             {
-                obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName);
+                obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName, indexPlayer);
             }
             else
             {
-                obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName,E_MinimapSliderPosition.MiniMapSliderTop);
+                obj.GetComponent<MinimapSliderPrefab>().SetupSliderUI(playerName, indexPlayer, E_MinimapSliderPosition.MiniMapSliderTop);
             }
 
             obj.GetComponent<Slider>().minValue = SLIDER_HORIZONTAL_OFFSET;
             obj.GetComponent<Slider>().maxValue = LightFantasticConfig.FINISH_LINE_DISTANCE + SLIDER_HORIZONTAL_OFFSET;
             positionIndicators.Add(obj);
+            // update if Index position is 0, set background panel of sliders to off
+            if (positionIndicators.Count - 1 == 0)
+            {
+                positionIndicators[0].transform.GetChild(0).gameObject.SetActive(true);
+            }
+            else
+            {
+                positionIndicators[positionIndicators.Count - 1].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
     }
 
@@ -71,6 +80,32 @@ public class HUDMiniMap : MonoBehaviour
                 {
                     // update position
                     positionIndicators[i].GetComponent<Slider>().value = position;
+                    // update index to the current rank index by sibling index
+                    for (int j = 0; j < positionIndicators.Count; j++)
+                    {
+                        if (j != i) { 
+                            if (positionIndicators[i].GetComponent<Slider>().value > positionIndicators[j].GetComponent<Slider>().value)
+                            {
+                                if (positionIndicators[i].transform.GetSiblingIndex() > positionIndicators[j].transform.GetSiblingIndex())
+                                {
+                                    positionIndicators[i].transform.SetSiblingIndex(positionIndicators[j].transform.GetSiblingIndex());
+                                }
+                            }
+                        }
+                    }
+                    // Set Background Panel for sliders to off if index not 0
+                    if (positionIndicators[i].transform.GetSiblingIndex() == 0)
+                    {
+                        positionIndicators[i].transform.GetChild(0).gameObject.SetActive(true);
+                        for (int c = 0; c < positionIndicators.Count; c++)
+                        {
+                            if (c != i)
+                            {
+                                positionIndicators[c].transform.GetChild(0).gameObject.SetActive(false);
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }

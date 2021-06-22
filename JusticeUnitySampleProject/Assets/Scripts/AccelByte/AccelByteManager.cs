@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 [RequireComponent(typeof(AccelByteAuthenticationLogic))]
+[RequireComponent(typeof(AccelByteAchievementLogic))]
 [RequireComponent(typeof(AccelByteLobbyLogic))]
 [RequireComponent(typeof(AccelByteWalletLogic))]
 [RequireComponent(typeof(AccelByteUserProfileLogic))]
@@ -36,7 +37,11 @@ public class AccelByteManager : MonoBehaviour
     public AccelByteStatisticLogic UserStaticticLogic { get { return userStaticticLogic; } }
     private AccelByteEntitlementLogic entitlementLogic;
     public AccelByteEntitlementLogic EntitlementLogic { get { return entitlementLogic; } }
+    private AccelByteAchievementLogic achievementLogic;
+    public AccelByteAchievementLogic AchievementLogic { get { return achievementLogic; } }
     private MultiplayerMenu multiplayerLogic;
+    private AccelByteMatchmakingLogic matchmakingLogic;
+    public AccelByteMatchmakingLogic MatchmakingLogic { get { return matchmakingLogic; } }
 
     [Header("Server Logic")]
     [SerializeField][Tooltip("WARNING! Don't remove this prefab.")]
@@ -70,6 +75,8 @@ public class AccelByteManager : MonoBehaviour
         userStaticticLogic = gameObject.GetComponent<AccelByteStatisticLogic>();
         multiplayerLogic = gameObject.GetComponent<MultiplayerMenu>();
         entitlementLogic = gameObject.GetComponent<AccelByteEntitlementLogic>();
+        achievementLogic = gameObject.GetComponent<AccelByteAchievementLogic>();
+        matchmakingLogic = gameObject.GetComponent<AccelByteMatchmakingLogic>();
         MainThreadTaskRunner.CreateGameObject();
         DontDestroyOnLoad(gameObject);
     }

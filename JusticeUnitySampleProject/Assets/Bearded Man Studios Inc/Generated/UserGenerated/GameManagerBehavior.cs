@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"winnerPlayerNum\"][]]")]
+	[GeneratedRPC("{\"types\":[[\"uint\"][\"int\"][\"string\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"winnerPlayerNum\"][\"playerMatches\"][\"userId\"]]")]
 	public abstract partial class GameManagerBehavior : NetworkBehavior
 	{
 		public const byte RPC_BROADCAST_END_GAME = 0 + 5;
 		public const byte RPC_BROADCAST_START_GAME = 1 + 5;
+		public const byte RPC_ON_STATISTIC_UPDATED = 2 + 5;
 		
 		public GameManagerNetworkObject networkObject = null;
 
@@ -24,7 +25,8 @@ namespace BeardedManStudios.Forge.Networking.Generated
 
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("BroadcastEndGame", BroadcastEndGame, typeof(uint));
-			networkObject.RegisterRpc("BroadcastStartGame", BroadcastStartGame);
+			networkObject.RegisterRpc("BroadcastStartGame", BroadcastStartGame, typeof(int));
+			networkObject.RegisterRpc("OnStatisticUpdated", OnStatisticUpdated, typeof(string));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -108,8 +110,14 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		public abstract void BroadcastEndGame(RpcArgs args);
 		/// <summary>
 		/// Arguments:
+		/// int playerMatches
 		/// </summary>
 		public abstract void BroadcastStartGame(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// string userId
+		/// </summary>
+		public abstract void OnStatisticUpdated(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

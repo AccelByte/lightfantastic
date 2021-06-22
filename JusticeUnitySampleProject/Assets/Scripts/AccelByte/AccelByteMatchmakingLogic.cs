@@ -23,15 +23,15 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     
     private MatchmakingNotif abMatchmakingNotif;
     private DsNotif abDSNotif;
-    private bool connectToLocal;
+    public bool connectToLocal;
     private bool isWaitingResponseQos = false;
     private bool isGettingFirstQos = false;
     private bool isLoadingLevel = false;
     private bool isSearching = false;
     private string ipConnectToLocal = "127.0.0.1";
     private string portConnectToLocal = "15937";
-    private static LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
-    internal string gameMode = gameModeEnum.ToString();
+    public LightFantasticConfig.GAME_MODES gameModeEnum = LightFantasticConfig.GAME_MODES.unitytest;
+    internal string gameMode;
 
     private MultiplayerMenu multiplayerConnect;
     

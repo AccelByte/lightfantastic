@@ -8,6 +8,7 @@ TagManager:
   - UIHandler
   - HUDManager
   - GameLogic
+  - PopUpAchievement
   layers:
   - Default
   - TransparentFX

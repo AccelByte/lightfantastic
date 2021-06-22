@@ -103,11 +103,11 @@ public class MainHUD : BaseHUD
         countDownTimer.onTimerExpired += OnCountDownStartExpired;
     }
 
-    public void SetupMinimap(string playerName)
+    public void SetupMinimap(string playerName, uint indexPlayer)
     {
         if (hudMiniMap_ != null)
         {
-            hudMiniMap_.SetupMinimap(playerName);
+            hudMiniMap_.SetupMinimap(playerName, indexPlayer);
         }
         else
         {
@@ -212,6 +212,15 @@ public class MainHUD : BaseHUD
 
     private void OnGameStart()
     {
+        // Unlock Non Incremental Achievement when Game Mode is 4 player
+        // and play in a Local Server
+        // Achievement code: first-play-local-full-party
+        bool is4PlayerGameMode = AccelByteManager.Instance.MatchmakingLogic.gameModeEnum == LightFantasticConfig.GAME_MODES.upto4player;
+        bool isLocalServer = AccelByteManager.Instance.MatchmakingLogic.connectToLocal;
+        if (is4PlayerGameMode && isLocalServer)
+        {
+            AccelByteManager.Instance.AchievementLogic.UnlockNonIncrementalAchievement("first-play-local-full-party");
+        }
         countDownText_.gameObject.SetActive(false);
     }
 

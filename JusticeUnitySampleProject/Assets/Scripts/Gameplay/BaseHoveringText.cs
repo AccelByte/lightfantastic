@@ -49,5 +49,24 @@ namespace Game
         {
             hoveringText.text = text;
         }
+
+        public void ChangeTextColor(uint indexColor)
+        {
+            switch(indexColor)
+            {
+                case 0:
+                    hoveringText.color = Color.red;
+                    break;
+                case 1:
+                    hoveringText.color = Color.green;
+                    break;
+                case 2:
+                    hoveringText.color = Color.yellow;
+                    break;
+                case 3:
+                    hoveringText.color = Color.blue;
+                    break;
+            }
+        }
     }
 }

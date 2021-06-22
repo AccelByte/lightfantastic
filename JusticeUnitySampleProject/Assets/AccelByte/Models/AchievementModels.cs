@@ -2,6 +2,7 @@
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -84,9 +85,13 @@ namespace AccelByte.Models
     [DataContract]
     public class UserAchievement
     {
+        [DataMember] public DateTime achievedAt { get; set; }
         [DataMember] public string achievementCode { get; set; }
-        [DataMember] public string achievedAt { get; set; }
-        [DataMember] public int latestValue { get; set; }
+        [DataMember] public string id { get; set; }
+        [DataMember] public double latestValue { get; set; }
+        // key: language of the achievement name
+        // value: achievement name
+        [DataMember] public Dictionary<string, string> nameToDisplayNameLookUp { get; set; }
         [DataMember] public int status { get; set; } // 1: In-Progress, 2: Unlocked
     }
 
@@ -95,6 +100,13 @@ namespace AccelByte.Models
     {
         [DataMember] public CountInfo countInfo { get; set; }
         [DataMember] public UserAchievement[] data { get; set; }
-        [DataMember] public Paging paging { get; set; }
+        [DataMember] public AchievementPagingData paging { get; set; }
+    }
+
+    [DataContract]
+    public class AchievementPagingData
+    {
+        [DataMember] public string nextPage { get; set; }
+        [DataMember] public string previousPage { get; set; }
     }
 }

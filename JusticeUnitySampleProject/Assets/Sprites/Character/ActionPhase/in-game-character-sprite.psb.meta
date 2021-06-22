@@ -61,6 +61,7 @@ ScriptedImporter:
     maxTextureSizeSet: 0
     compressionQualitySet: 0
     textureFormatSet: 0
+    applyGammaDecoding: 0
   spriteImportData:
   - name: 
     originalName: 
@@ -7547,44 +7548,8 @@ ScriptedImporter:
       order: 0
     dimension: {x: 0, y: 0}
     characterGroups: []
-  boneGOs:
-  - go: {fileID: -3470109780382108099, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 0
-  - go: {fileID: -8956738170707509900, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 1
-  - go: {fileID: -1295152776170550586, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 2
-  - go: {fileID: -341263503466914296, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 3
-  - go: {fileID: 8814655158336482570, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 4
-  - go: {fileID: 4171257482822139551, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 5
-  - go: {fileID: 4847923411467542283, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 6
-  - go: {fileID: 5740455756067187306, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 7
-  - go: {fileID: -6002115504152490586, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 8
-  - go: {fileID: -7146856754598377590, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 9
-  - go: {fileID: 5248679211933580792, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 10
-  - go: {fileID: -5794976570105214929, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 11
-  - go: {fileID: -3809828766062041726, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 12
-  - go: {fileID: 7585781156207652184, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 13
-  - go: {fileID: 4714975327229078809, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 14
-  - go: {fileID: -4733035706416978695, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 15
-  - go: {fileID: -8918996312839731184, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 16
-  - go: {fileID: -6102934673333019465, guid: 4a52ee6ecfd449f4b8d4f23be1ddb5e2, type: 3}
-    index: 17
   generateGOHierarchy: 0
   textureAssetName: in-game-character Texture
   prefabAssetName: in-game-character Prefab
   spriteLibAssetName: in-game-character Sprite Lib
+  secondarySpriteTextures: []

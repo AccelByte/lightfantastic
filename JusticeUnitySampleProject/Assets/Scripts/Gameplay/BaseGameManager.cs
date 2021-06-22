@@ -46,6 +46,8 @@ namespace Game
         private bool isNetworkReady = false;
         [SerializeField]
         private int mainMenuSceneIdx_ = 0;
+        [SerializeField]
+        private GameObject achievementPopUp;
         public int MainMenuSceneIdx { get { return mainMenuSceneIdx_; } }
         private InGameHudManager hudMgr_;
         public InGameHudManager HudManager
@@ -228,7 +230,7 @@ namespace Game
             foreach (var player in players)
             {
                 var isWinner = player.Key == winnerNetId;
-                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner);
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner, OnStatisticUpdated_Server);
             }
             onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
@@ -240,10 +242,15 @@ namespace Game
             foreach (var player in players)
             {
                 var isWinner = player.Key == winnerNetId;
-                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner);
+                AccelByteManager.Instance.ServerLogic.UpdateUserStatItem(player.Value.Character.transform.position.x, player.Value.Character.UserId, isWinner, OnStatisticUpdated_Server);
             }
             onGameEnd?.Invoke();
             networkObject.SendRpc(RPC_BROADCAST_END_GAME, Receivers.Others, winnerNetId);
+        }
+
+        private void OnStatisticUpdated_Server(string userId)
+        {
+            networkObject.SendRpc(RPC_ON_STATISTIC_UPDATED, Receivers.Others, userId);
         }
 
         /// <summary>
@@ -294,20 +301,27 @@ namespace Game
         }
 
         /// <summary>
-        /// End the game, making all clients show the Race Over Screen
+        /// Start the game.
+        /// args.GetAt<int>(0) is an Integer that will retrieve PlayerMatched count from server perspective.
         /// </summary>
-        /// <param></param>
+        /// <param name="args">args.GetAt<int>(0) is PlayerMatched count</int></param>
         public override void BroadcastStartGame(RpcArgs args)
         {
             // unlock player pawn controller
             Debug.Log("BaseGameManager BroadcastStartGame!");
+            if (!networkObject.IsServer)
+            {
+                // Set Local PlayerMatched variable, then MainHUD (local UI) will retrieve PlayerMatched value for Init Non-Incremental Achievement.
+                PlayerMatched = args.GetAt<int>(0);
+                AccelByteManager.Instance.AchievementLogic.RefreshAchievement();
+            }
             onGameStart?.Invoke();
         }
 
         /// <summary>
         /// End the game, making all clients show the Race Over Screen
         /// </summary>
-        /// <param></param>
+        /// <param name="args">args.GetAt<uint>(0) is playerID</uint></param>
         public override void BroadcastEndGame(RpcArgs args)
         {
             var isWinner = networkObject.MyPlayerId == args.GetAt<uint>(0);
@@ -315,6 +329,23 @@ namespace Game
             {
                 onGameEnd?.Invoke();
                 hudMgr_.ShowRaceOverScreen(isWinner);
+                if (isWinner)
+                {
+                    // if Win, then Check "win-first-match" Non-Incremental Achievement
+                    AccelByteManager.Instance.AchievementLogic.UnlockNonIncrementalAchievement("win-first-time");
+                }
+            }
+        }
+
+        /// <summary>
+        /// When Statistic updated, then check Achievement
+        /// </summary>
+        /// <param name="args">args<string>(0) is userId, to check if ID was correctly owned by client</param>
+        public override void OnStatisticUpdated(RpcArgs args)
+        {
+            if (!networkObject.IsServer)
+            {
+                AccelByteManager.Instance.AchievementLogic.UnlockIncrementalAchievement(args.GetAt<string>(0));
             }
         }
 
@@ -332,20 +363,27 @@ namespace Game
         {
             if (networkObject.IsServer)
             {
-                networkObject.SendRpc(RPC_BROADCAST_START_GAME, Receivers.All);
+                networkObject.SendRpc(RPC_BROADCAST_START_GAME, Receivers.All, PlayerMatched);
             }
         }
 
+        /// <summary>
+        /// this function call when any players connected
+        /// this run on server. so only server that know this information
+        /// this is our BeardedManStudios Package Manager that handle Server Interaction
+        /// with clients or players
+        /// </summary>
+        /// <param name="player"> playerNetwork that join to server</param>
+        /// <param name="sender"> Networker that handle every client to join a server</param>
         private void OnPlayerConnected(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("GameManager OnPlayerConnected!");
-
+            Debug.Log("[BaseGameManager] OnPlayerConnected(), " + player.Name + " is Connected");
+            
             if(NetworkManager.Instance.IsServer)
             {
                 if(PlayerConnected == 0)
                 {
                     AccelByteManager.Instance.ServerLogic.OnPlayerFirstJoin();
-                    
                 }
             }
         }

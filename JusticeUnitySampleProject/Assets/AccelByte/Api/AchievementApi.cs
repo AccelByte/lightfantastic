@@ -6,6 +6,7 @@ using System.Collections;
 using AccelByte.Core;
 using AccelByte.Models;
 using UnityEngine.Assertions;
+using UnityEngine;
 
 namespace AccelByte.Api
 {
@@ -122,6 +123,7 @@ namespace AccelByte.Api
             yield return this.httpWorker.SendRequest(request, rsp => response = rsp);
 
             var result = response.TryParseJson<PaginatedUserAchievement>();
+
             callback.Try(result);
         }
 

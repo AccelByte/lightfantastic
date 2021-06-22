@@ -138,13 +138,13 @@ namespace Game
             AccelByte.Models.UserData ud = abAuth.GetUserData();
             userId_ = ud.userId;
             networkObject.SendRpc(RPC_SET_USER_ID, Receivers.Others, userId_);
-            
+
             // Set mine and other player's displayName and Platform
             if (!networkObject.IsServer)
             {
                 networkObject.SendRpc(RPC_SET_DISPLAY_NAME_AND_PLATFORM, Receivers.AllBuffered, new object[]
                 {
-                    ud.displayName, (uint) LightFantasticConfig.GetPlatform()
+                    ud.displayName, (uint) LightFantasticConfig.GetPlatform(), networkObject.playerNum-1
                 });
             }
             
@@ -367,16 +367,16 @@ namespace Game
         {
             hoveringText.ChangeTextLabel(args.GetAt<string>(0));
             platformSetter.SetSprite((LightFantasticConfig.Platform) args.GetAt<uint>(1));
+            hoveringText.ChangeTextColor(args.GetAt<uint>(2));
 
             //TODO: init minimap here!
             if (hudMgr != null)
             {
                 playerName = args.GetAt<string>(0);
-                ((MainHUD)hudMgr.GetPanel(PanelTypes.MainHud)).SetupMinimap(playerName);
+                ((MainHUD)hudMgr.GetPanel(PanelTypes.MainHud)).SetupMinimap(playerName, args.GetAt<uint>(2));
             }
         }
 
-        
         public override void RPCSetReady(RpcArgs args)
         {
             if (networkObject.IsServer)

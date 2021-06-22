@@ -223,9 +223,10 @@ public class AccelByteServerLogic : MonoBehaviour
     /// Update each player's user statistics to statistics service
     /// </summary>
     /// <param name="distance"> the player's distance traveled on the current match </param>
-    /// <param name="userId"> the user id of the player </param>
-    /// <param name="isWinner"> the winner in the current match </param>
-    public void UpdateUserStatItem(float distance, string userId, bool isWinner)
+    /// <param name="userId"> user id of player </param>
+    /// <param name="isWinner"> winner on the current match </param>
+    /// <param name="OnStatisticUpdated_Server"> callback when statistic updated</param>
+    public void UpdateUserStatItem(float distance, string userId, bool isWinner, Action<string> OnStatisticUpdated_Server)
     {
         if (playerStatUpdatedCount < playerCount)
         {
@@ -273,7 +274,7 @@ public class AccelByteServerLogic : MonoBehaviour
                 inc = distance
             };
 
-            abServerStatistic.IncrementUserStatItems(userId, statItemOperationResult, OnIncrementUserStatItems);
+            abServerStatistic.IncrementUserStatItems(userId, statItemOperationResult, result => OnIncrementUserStatItems(result, userId, OnStatisticUpdated_Server));
             playerStatUpdatedCount += 1;
         }
     }
@@ -346,7 +347,9 @@ public class AccelByteServerLogic : MonoBehaviour
     /// Callback of increment user stat items when the user already has user statistic created
     /// </summary>
     /// <param name="result"> Callback result that contains the statcode </param>
-    private void OnIncrementUserStatItems(Result<StatItemOperationResult[]> result)
+    /// <param name="userId"> Callback Parameter when OnStatisticUpdated_Server() called</param>
+    /// <param name="OnStatisticUpdated_Server"> Callback when Statistic is update</param>
+    private void OnIncrementUserStatItems(Result<StatItemOperationResult[]> result, string userId, Action<string> OnStatisticUpdated_Server)
     {
         if (result.IsError)
         {
@@ -356,6 +359,8 @@ public class AccelByteServerLogic : MonoBehaviour
         }
         else
         {
+            // callback OnStatisticUpdated_Server at BaseGameManager Class
+            OnStatisticUpdated_Server(userId);
             foreach (var data in result.Value)
             {
                 Debug.Log("[AccelByteServerLogic] Increment User statistic item successful, stat code is: " + data.statCode);
