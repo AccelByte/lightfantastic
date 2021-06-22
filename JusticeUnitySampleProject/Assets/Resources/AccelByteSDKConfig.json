@@ -2,7 +2,7 @@
   "Namespace": "lightfantastic",
   "UseSessionManagement": true,
   "UsePlayerPrefs": false,
-  "EnableDebugLog": false,
+  "EnableDebugLog": true,
   "DebugLogFilter": "Log",
   "BaseUrl": "https://api.demo.accelbyte.io",
   "ApiBaseUrl": "api.demo.accelbyte.io",

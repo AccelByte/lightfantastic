@@ -2,9 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.0.16](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.16%0D0.0.15) (2021-06-09)
-
-### [0.0.15](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.15%0D0.0.14) (2021-04-28)
+### [0.0.15] (2021-06-22)
+* **sdk:** update accelbyte SDK to 2.30
+* **armada** support armada nomad
+* **chat** add global chat
+* **verifymenu** reenable verification menu after registration
+* **achievement** add achievement feature menu on player profile
 
 ### [0.0.14](https://bitbucket.org/accelbyte/justice-unity-sample-project/branches/compare/0.0.14%0D0.0.13) (2021-03-03)
 

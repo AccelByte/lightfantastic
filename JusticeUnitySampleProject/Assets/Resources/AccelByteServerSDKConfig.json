@@ -1,5 +1,5 @@
 {
-  "Namespace": "<YOUR-GAME-NAMESPACE>",
+  "Namespace": "lightfantastic",
   "BaseUrl": "https://demo.accelbyte.io",
   "IamServerUrl": "https://demo.accelbyte.io/iam",
   "DSMControllerServerUrl": "https://demo.accelbyte.io/dsmcontroller",
