@@ -416,9 +416,4 @@ public class AccelByteLobbyLogic : MonoBehaviour
         UserData data = AccelByteManager.Instance.AuthLogic.GetUserData();
         return partyLogic.GetAbPartyInfo() != null && (data.userId == partyLogic.GetAbPartyInfo().leaderID) && isLeaderHasMember;
     }
-
-    public bool IsReady()
-    {
-        return partyLogic.GetAbPartyInfo() != null;
-    }
 }
