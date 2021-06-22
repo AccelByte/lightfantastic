@@ -50,15 +50,7 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
     {
         UIHandlerLobbyComponent.matchmakingButtonCollection.On1VS1ButtonClicked.AddListener(delegate
         {
-            if(!lobbyLogic.IsReady())
-            {
-                PopupManager.Instance.ShowPopupWarning("Matchmaking Problem", 
-                    "The party system is not ready, it could be that Lobby Service is down or problem with connectivity. " +
-                    "\n Restarting the game may solve the problem", "Accept");
-                return;
-            }
-
-            //don't allow leader to enter 1v1
+            // Don't allow leader to enter 1v1 if party member is not empty
             if(lobbyLogic.IsLeader())
             {
                 PopupManager.Instance.ShowPopupWarning("Matchmaking Problem", "You can't join 1v1 if you have members on board.", "Accept");
@@ -71,13 +63,6 @@ public class AccelByteMatchmakingLogic : MonoBehaviour
         });
         UIHandlerLobbyComponent.matchmakingButtonCollection.On4FFAButtonClicked.AddListener(delegate
         {
-            if (!lobbyLogic.IsReady())
-            {
-                PopupManager.Instance.ShowPopupWarning("Matchmaking Problem",
-                    "The party system is not ready, it could be that Lobby Service is down or problem with connectivity. " +
-                    "\n Restarting the game may solve the problem", "Accept");
-                return;
-            }
             GameplaySetGameMode(LightFantasticConfig.GAME_MODES.upto4player);
             FindMatchButtonClicked();
             UIHandlerLobbyComponent.matchmakingButtonCollection.UnselectAll();
